@@ -15,7 +15,10 @@ final class Authenticated extends AuthState {
 }
 
 final class Unauthenticated extends AuthState {
-  const Unauthenticated();
+  const Unauthenticated({this.sessionExpired = false});
+
+  /// The server ended the session; sign-in explains why.
+  final bool sessionExpired;
 }
 
 final authControllerProvider = AsyncNotifierProvider<AuthController, AuthState>(
@@ -30,7 +33,7 @@ class AuthController extends AsyncNotifier<AuthState> {
   @override
   Future<AuthState> build() async {
     final subscription = ref.watch(watchSessionExpiredProvider)().listen((_) {
-      state = const AsyncData(Unauthenticated());
+      state = const AsyncData(Unauthenticated(sessionExpired: true));
     });
     ref.onDispose(subscription.cancel);
 

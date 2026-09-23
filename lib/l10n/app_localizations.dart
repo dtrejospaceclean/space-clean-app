@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'SP CLN'**
+  /// **'Space Clean'**
   String get appTitle;
 
   /// No description provided for @loginTitle.
@@ -109,12 +109,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in'**
   String get loginTitle;
-
-  /// No description provided for @loginSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Use your work email and password.'**
-  String get loginSubtitle;
 
   /// No description provided for @emailLabel.
   ///
@@ -259,6 +253,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong.'**
   String get errorsUnknown;
+
+  /// No description provided for @brandTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'One Partner. Every Facility Solution.'**
+  String get brandTagline;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageLabel;
+
+  /// No description provided for @notYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Not you?'**
+  String get notYou;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'you@company.com'**
+  String get emailHint;
+
+  /// No description provided for @resetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get resetTitle;
+
+  /// No description provided for @resetEmailIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email you sign in with. We\'ll send you a 6-digit code.'**
+  String get resetEmailIntro;
+
+  /// No description provided for @sendCodeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send code'**
+  String get sendCodeButton;
+
+  /// No description provided for @codeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code'**
+  String get codeTitle;
+
+  /// No description provided for @codeIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {email}. It may take a minute to arrive.'**
+  String codeIntro(String email);
+
+  /// No description provided for @codeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit code'**
+  String get codeLabel;
+
+  /// No description provided for @codeIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter all 6 digits.'**
+  String get codeIncomplete;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a new code'**
+  String get resendCode;
+
+  /// No description provided for @resendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'New code in {seconds} s'**
+  String resendIn(String seconds);
+
+  /// No description provided for @codeResent.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a new code.'**
+  String get codeResent;
+
+  /// No description provided for @newPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new password'**
+  String get newPasswordTitle;
+
+  /// No description provided for @newPasswordIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll use it to sign in from now on.'**
+  String get newPasswordIntro;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat new password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @ruleMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'At least {min} characters'**
+  String ruleMinLength(String min);
+
+  /// No description provided for @ruleMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Both passwords match'**
+  String get ruleMatch;
+
+  /// No description provided for @ruleMet.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get ruleMet;
+
+  /// No description provided for @ruleNotMet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get ruleNotMet;
+
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The passwords don\'t match.'**
+  String get passwordsDontMatch;
+
+  /// No description provided for @savePasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save password'**
+  String get savePasswordButton;
+
+  /// No description provided for @resetDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated'**
+  String get resetDoneTitle;
+
+  /// No description provided for @resetDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your new password.'**
+  String get resetDoneBody;
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get backToSignIn;
+
+  /// No description provided for @errorsFeatureUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset isn\'t available in the app yet. Ask your supervisor or admin to reset your password.'**
+  String get errorsFeatureUnavailable;
 }
 
 class _AppLocalizationsDelegate

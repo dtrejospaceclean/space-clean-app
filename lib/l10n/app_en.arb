@@ -1,48 +1,108 @@
 {
   "@@locale": "en",
-  "appTitle": "SP CLN",
-
+  "appTitle": "Space Clean",
   "loginTitle": "Sign in",
-  "loginSubtitle": "Use your work email and password.",
   "emailLabel": "Email",
   "passwordLabel": "Password",
   "showPassword": "Show password",
   "hidePassword": "Hide password",
   "signInButton": "Sign in",
   "signOutButton": "Sign out",
-
   "homeWelcome": "Welcome, {name}",
   "@homeWelcome": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeRoles": "Roles: {roles}",
   "@homeRoles": {
-    "placeholders": { "roles": { "type": "String" } }
+    "placeholders": {
+      "roles": {
+        "type": "String"
+      }
+    }
   },
-
   "splashLoadError": "We couldn't restore your session.",
   "retryButton": "Try again",
-
   "validationRequired": "This field is required.",
   "validationInvalidEmail": "Enter a valid email address.",
   "validationMinLength": "Must be at least {min} characters.",
   "@validationMinLength": {
-    "placeholders": { "min": { "type": "String" } }
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
   },
   "validationMaxLength": "Must be at most {max} characters.",
   "@validationMaxLength": {
-    "placeholders": { "max": { "type": "String" } }
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
   },
   "validationFailed": "Some fields need your attention.",
-
   "authInvalidCredentials": "Incorrect email or password.",
   "authSessionExpired": "Your session expired. Sign in again.",
   "authInsufficientPermission": "You don't have permission to do that.",
   "authInsufficientRole": "Your role doesn't allow this action.",
-
   "errorsNetwork": "Can't reach the server. Check your connection.",
   "errorsTooManyRequests": "Too many attempts. Wait a moment and try again.",
   "errorsNotFound": "We couldn't find what you were looking for.",
   "errorsInternal": "Something went wrong on our side. Try again.",
-  "errorsUnknown": "Something went wrong."
+  "errorsUnknown": "Something went wrong.",
+  "brandTagline": "One Partner. Every Facility Solution.",
+  "languageLabel": "Language",
+  "notYou": "Not you?",
+  "forgotPassword": "Forgot password?",
+  "emailHint": "you@company.com",
+  "resetTitle": "Reset your password",
+  "resetEmailIntro": "Enter the email you sign in with. We'll send you a 6-digit code.",
+  "sendCodeButton": "Send code",
+  "codeTitle": "Enter the code",
+  "codeIntro": "We sent a 6-digit code to {email}. It may take a minute to arrive.",
+  "@codeIntro": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "codeLabel": "6-digit code",
+  "codeIncomplete": "Enter all 6 digits.",
+  "continueButton": "Continue",
+  "resendCode": "Send a new code",
+  "resendIn": "New code in {seconds} s",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "codeResent": "We sent a new code.",
+  "newPasswordTitle": "Choose a new password",
+  "newPasswordIntro": "You'll use it to sign in from now on.",
+  "newPasswordLabel": "New password",
+  "confirmPasswordLabel": "Repeat new password",
+  "ruleMinLength": "At least {min} characters",
+  "@ruleMinLength": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleMatch": "Both passwords match",
+  "ruleMet": "Done",
+  "ruleNotMet": "Not yet",
+  "passwordsDontMatch": "The passwords don't match.",
+  "savePasswordButton": "Save password",
+  "resetDoneTitle": "Password updated",
+  "resetDoneBody": "Sign in with your new password.",
+  "backToSignIn": "Back to sign in",
+  "errorsFeatureUnavailable": "Password reset isn't available in the app yet. Ask your supervisor or admin to reset your password."
 }

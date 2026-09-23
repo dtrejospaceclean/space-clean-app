@@ -4,13 +4,18 @@ import '../entities/user.dart';
 abstract interface class AuthRepository {
   Future<bool> hasSession();
 
-  /// Signs in and keeps the session. Returns the signed-in user.
+  /// Signs in, keeps the session, and remembers [email]. Returns the signed-in user.
   Future<User> login({required String email, required String password});
 
   Future<User> getCurrentUser();
 
   /// Ends the session locally. The API has no logout endpoint.
   Future<void> logout();
+
+  /// Email of the last successful sign-in on this device.
+  String? get rememberedEmail;
+
+  Future<void> forgetRememberedEmail();
 
   /// Emits when the session ends on its own (the refresh token was rejected).
   Stream<void> get sessionExpired;

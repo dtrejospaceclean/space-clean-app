@@ -1,8 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/network/api_exception.dart';
 import 'package:sp_cln_app/core/storage/token_storage.dart';
+import 'package:sp_cln_app/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:sp_cln_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:sp_cln_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
@@ -35,11 +37,16 @@ void main() {
   late TokenStorage tokenStorage;
   late AuthRepositoryImpl repository;
 
-  setUp(() {
+  setUp(() async {
     FlutterSecureStorage.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({});
     remote = FakeRemote();
     tokenStorage = TokenStorage(const FlutterSecureStorage());
-    repository = AuthRepositoryImpl(remote, tokenStorage);
+    repository = AuthRepositoryImpl(
+      remote,
+      AuthLocalDataSource(await SharedPreferences.getInstance()),
+      tokenStorage,
+    );
   });
 
   test('login stores the tokens and returns the user', () async {
@@ -50,6 +57,7 @@ void main() {
 
     expect(user.id, 'u1');
     expect(await repository.hasSession(), isTrue);
+    expect(repository.rememberedEmail, 'ana@example.com');
   });
 
   test('logout clears the session', () async {

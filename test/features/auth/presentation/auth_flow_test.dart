@@ -1,86 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sp_cln_app/app.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
-import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
-import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
-import 'package:sp_cln_app/features/auth/domain/repositories/auth_repository.dart';
 
-const _ana = User(
-  id: 'u1',
-  email: 'ana@example.com',
-  name: 'Ana Pérez',
-  userType: UserType.internal,
-  isActive: true,
-  roles: [Role(id: 'r1', name: 'supervisor')],
-);
+import '../../../helpers/test_app.dart';
 
-class FakeAuthRepository implements AuthRepository {
-  FakeAuthRepository({this.sessionUser, this.loginError});
-
-  User? sessionUser;
-  Failure? loginError;
-
-  @override
-  Future<bool> hasSession() async => sessionUser != null;
-
-  @override
-  Future<User> getCurrentUser() async => sessionUser!;
-
-  @override
-  Future<User> login({required String email, required String password}) async {
-    if (loginError case final error?) throw error;
-    return sessionUser = _ana;
-  }
-
-  @override
-  Future<void> logout() async => sessionUser = null;
-
-  @override
-  Stream<void> get sessionExpired => const Stream.empty();
-}
-
-Future<void> pumpApp(WidgetTester tester, FakeAuthRepository repository) async {
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: [authRepositoryProvider.overrideWithValue(repository)],
-      child: const App(),
-    ),
-  );
-  await tester.pumpAndSettle();
-}
+const _tagline = 'One Partner. Every Facility Solution.';
 
 Future<void> fillAndSubmit(WidgetTester tester) async {
-  await tester.enterText(find.byType(TextFormField).at(0), 'ana@example.com');
-  await tester.enterText(
-    find.byType(TextFormField).at(1),
-    'correct-horse-battery',
-  );
-  await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+  await tester.enterText(field('Email'), 'ana@example.com');
+  await tester.enterText(field('Password'), 'correct-horse-battery');
+  await tester.tap(button('Sign in'));
   await tester.pumpAndSettle();
 }
 
 void main() {
-  testWidgets('without a stored session the login screen is shown', (
+  testWidgets('without a stored session the sign-in screen is shown', (
     tester,
   ) async {
-    await pumpApp(tester, FakeAuthRepository());
+    await pumpApp(tester, auth: FakeAuthRepository());
 
-    expect(find.text('Use your work email and password.'), findsOneWidget);
+    expect(find.text(_tagline), findsOneWidget);
+    expect(find.text('Not you?'), findsNothing);
   });
 
   testWidgets('a stored session goes straight home', (tester) async {
-    await pumpApp(tester, FakeAuthRepository(sessionUser: _ana));
+    await pumpApp(tester, auth: FakeAuthRepository(sessionUser: ana));
 
     expect(find.text('Welcome, Ana Pérez'), findsOneWidget);
   });
 
   testWidgets('validates the form before calling the API', (tester) async {
-    await pumpApp(tester, FakeAuthRepository());
+    await pumpApp(tester, auth: FakeAuthRepository());
 
-    await tester.enterText(find.byType(TextFormField).at(0), 'not-an-email');
-    await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+    await tester.enterText(field('Email'), 'not-an-email');
+    await tester.tap(button('Sign in'));
     await tester.pumpAndSettle();
 
     expect(find.text('Enter a valid email address.'), findsOneWidget);
@@ -90,7 +43,7 @@ void main() {
   testWidgets('translates invalid credentials', (tester) async {
     await pumpApp(
       tester,
-      FakeAuthRepository(
+      auth: FakeAuthRepository(
         loginError: const UnauthorizedFailure('auth.invalid_credentials'),
       ),
     );
@@ -103,7 +56,7 @@ void main() {
   testWidgets('shows server field errors on the field', (tester) async {
     await pumpApp(
       tester,
-      FakeAuthRepository(
+      auth: FakeAuthRepository(
         loginError: const ValidationFailure('validation.failed', {
           'password': [
             FieldError(
@@ -123,13 +76,90 @@ void main() {
   });
 
   testWidgets('logs in and out', (tester) async {
-    await pumpApp(tester, FakeAuthRepository());
+    await pumpApp(tester, auth: FakeAuthRepository());
 
     await fillAndSubmit(tester);
     expect(find.text('Welcome, Ana Pérez'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Sign out'));
     await tester.pumpAndSettle();
-    expect(find.text('Use your work email and password.'), findsOneWidget);
+    expect(find.text(_tagline), findsOneWidget);
+  });
+
+  testWidgets('prefills the remembered email, and "Not you?" clears it', (
+    tester,
+  ) async {
+    final auth = FakeAuthRepository(rememberedEmail: 'ana@example.com');
+    await pumpApp(tester, auth: auth);
+
+    expect(find.text('ana@example.com'), findsOneWidget);
+
+    await tester.tap(find.text('Not you?'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('ana@example.com'), findsNothing);
+    expect(find.text('Not you?'), findsNothing);
+    expect(auth.rememberedEmail, isNull);
+  });
+
+  testWidgets('explains a session that expired on its own', (tester) async {
+    final auth = FakeAuthRepository(sessionUser: ana);
+    await pumpApp(tester, auth: auth);
+
+    auth.sessionUser = null;
+    auth.expiry.add(null);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your session expired. Sign in again.'), findsOneWidget);
+  });
+
+  testWidgets('stays white when the phone is in dark mode', (tester) async {
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    await pumpApp(tester, auth: FakeAuthRepository());
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    expect(scaffold.backgroundColor, const Color(0xFFFFFFFF));
+  });
+
+  testWidgets('switching language mid-animation never overflows', (
+    tester,
+  ) async {
+    // The tagline reflows (ES wraps to two lines, EN fits one) while the
+    // brand block animates. On a screen where the form fits with zero slack
+    // (a 360-dp Galaxy S21 did), any lag between reported and painted height
+    // overflows. Sweep heights so one of them is that tight fit.
+    await pumpApp(
+      tester,
+      auth: FakeAuthRepository(rememberedEmail: 'ana@example.com'),
+    );
+    tester.view.devicePixelRatio = 1;
+    var language = 'ES';
+    for (var height = 560.0; height <= 900; height += 4) {
+      tester.view.physicalSize = Size(360, height);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(language));
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: 'height $height');
+      language = language == 'ES' ? 'EN' : 'ES';
+    }
+  });
+
+  testWidgets('switches to Spanish and remembers it', (tester) async {
+    final prefs = await pumpApp(tester, auth: FakeAuthRepository());
+
+    await tester.tap(find.text('ES'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Un Solo Aliado. Toda Solución para tu Instalación.'),
+      findsOneWidget,
+    );
+    expect(button('Iniciar sesión'), findsOneWidget);
+    expect(prefs.getString('settings.language'), 'es');
   });
 }

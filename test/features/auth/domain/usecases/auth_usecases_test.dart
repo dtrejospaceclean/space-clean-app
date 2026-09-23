@@ -40,6 +40,12 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> logout() async => loggedOut = true;
 
   @override
+  String? get rememberedEmail => null;
+
+  @override
+  Future<void> forgetRememberedEmail() async {}
+
+  @override
   Stream<void> get sessionExpired => const Stream.empty();
 }
 

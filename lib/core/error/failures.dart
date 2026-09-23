@@ -30,6 +30,13 @@ final class ValidationFailure extends Failure {
   final Map<String, List<FieldError>> fieldErrors;
 }
 
+/// The backend doesn't offer this capability yet.
+final class UnavailableFailure extends Failure {
+  const UnavailableFailure() : super(key);
+
+  static const key = 'errors.feature_unavailable';
+}
+
 /// Any other error response: forbidden, not found, conflict, server error…
 final class ServerFailure extends Failure {
   const ServerFailure(super.messageKey, {required this.statusCode});

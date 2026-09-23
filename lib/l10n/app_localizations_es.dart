@@ -10,13 +10,10 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'SP CLN';
+  String get appTitle => 'Space Clean';
 
   @override
   String get loginTitle => 'Iniciar sesión';
-
-  @override
-  String get loginSubtitle => 'Usa tu correo y contraseña de trabajo.';
 
   @override
   String get emailLabel => 'Correo electrónico';
@@ -100,4 +97,104 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorsUnknown => 'Algo salió mal.';
+
+  @override
+  String get brandTagline =>
+      'Un Solo Aliado. Toda Solución para tu Instalación.';
+
+  @override
+  String get languageLabel => 'Idioma';
+
+  @override
+  String get notYou => '¿No eres tú?';
+
+  @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get emailHint => 'tu@empresa.com';
+
+  @override
+  String get resetTitle => 'Restablece tu contraseña';
+
+  @override
+  String get resetEmailIntro =>
+      'Ingresa el correo con el que inicias sesión. Te enviaremos un código de 6 dígitos.';
+
+  @override
+  String get sendCodeButton => 'Enviar código';
+
+  @override
+  String get codeTitle => 'Ingresa el código';
+
+  @override
+  String codeIntro(String email) {
+    return 'Enviamos un código de 6 dígitos a $email. Puede tardar un minuto en llegar.';
+  }
+
+  @override
+  String get codeLabel => 'Código de 6 dígitos';
+
+  @override
+  String get codeIncomplete => 'Ingresa los 6 dígitos.';
+
+  @override
+  String get continueButton => 'Continuar';
+
+  @override
+  String get resendCode => 'Enviar un código nuevo';
+
+  @override
+  String resendIn(String seconds) {
+    return 'Nuevo código en $seconds s';
+  }
+
+  @override
+  String get codeResent => 'Enviamos un código nuevo.';
+
+  @override
+  String get newPasswordTitle => 'Elige una contraseña nueva';
+
+  @override
+  String get newPasswordIntro =>
+      'La usarás para iniciar sesión de ahora en adelante.';
+
+  @override
+  String get newPasswordLabel => 'Contraseña nueva';
+
+  @override
+  String get confirmPasswordLabel => 'Repite la contraseña nueva';
+
+  @override
+  String ruleMinLength(String min) {
+    return 'Al menos $min caracteres';
+  }
+
+  @override
+  String get ruleMatch => 'Las dos contraseñas coinciden';
+
+  @override
+  String get ruleMet => 'Listo';
+
+  @override
+  String get ruleNotMet => 'Pendiente';
+
+  @override
+  String get passwordsDontMatch => 'Las contraseñas no coinciden.';
+
+  @override
+  String get savePasswordButton => 'Guardar contraseña';
+
+  @override
+  String get resetDoneTitle => 'Contraseña actualizada';
+
+  @override
+  String get resetDoneBody => 'Inicia sesión con tu contraseña nueva.';
+
+  @override
+  String get backToSignIn => 'Volver a iniciar sesión';
+
+  @override
+  String get errorsFeatureUnavailable =>
+      'Aún no se puede restablecer la contraseña desde la app. Pide a tu supervisor o administrador que la restablezca.';
 }

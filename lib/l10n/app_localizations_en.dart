@@ -10,13 +10,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'SP CLN';
+  String get appTitle => 'Space Clean';
 
   @override
   String get loginTitle => 'Sign in';
-
-  @override
-  String get loginSubtitle => 'Use your work email and password.';
 
   @override
   String get emailLabel => 'Email';
@@ -99,4 +96,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorsUnknown => 'Something went wrong.';
+
+  @override
+  String get brandTagline => 'One Partner. Every Facility Solution.';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get notYou => 'Not you?';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get emailHint => 'you@company.com';
+
+  @override
+  String get resetTitle => 'Reset your password';
+
+  @override
+  String get resetEmailIntro =>
+      'Enter the email you sign in with. We\'ll send you a 6-digit code.';
+
+  @override
+  String get sendCodeButton => 'Send code';
+
+  @override
+  String get codeTitle => 'Enter the code';
+
+  @override
+  String codeIntro(String email) {
+    return 'We sent a 6-digit code to $email. It may take a minute to arrive.';
+  }
+
+  @override
+  String get codeLabel => '6-digit code';
+
+  @override
+  String get codeIncomplete => 'Enter all 6 digits.';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get resendCode => 'Send a new code';
+
+  @override
+  String resendIn(String seconds) {
+    return 'New code in $seconds s';
+  }
+
+  @override
+  String get codeResent => 'We sent a new code.';
+
+  @override
+  String get newPasswordTitle => 'Choose a new password';
+
+  @override
+  String get newPasswordIntro => 'You\'ll use it to sign in from now on.';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
+  String get confirmPasswordLabel => 'Repeat new password';
+
+  @override
+  String ruleMinLength(String min) {
+    return 'At least $min characters';
+  }
+
+  @override
+  String get ruleMatch => 'Both passwords match';
+
+  @override
+  String get ruleMet => 'Done';
+
+  @override
+  String get ruleNotMet => 'Not yet';
+
+  @override
+  String get passwordsDontMatch => 'The passwords don\'t match.';
+
+  @override
+  String get savePasswordButton => 'Save password';
+
+  @override
+  String get resetDoneTitle => 'Password updated';
+
+  @override
+  String get resetDoneBody => 'Sign in with your new password.';
+
+  @override
+  String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get errorsFeatureUnavailable =>
+      'Password reset isn\'t available in the app yet. Ask your supervisor or admin to reset your password.';
 }

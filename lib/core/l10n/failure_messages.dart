@@ -15,6 +15,7 @@ extension FailureMessages on AppLocalizations {
     'auth.insufficient_role' => authInsufficientRole,
     'validation.failed' => validationFailed,
     NetworkFailure.key => errorsNetwork,
+    UnavailableFailure.key => errorsFeatureUnavailable,
     'errors.too_many_requests' => errorsTooManyRequests,
     'errors.not_found' => errorsNotFound,
     'errors.internal' => errorsInternal,

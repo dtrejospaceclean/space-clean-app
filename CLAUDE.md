@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `sp_cln_app` is a Flutter **mobile** app (Android and iOS only; Dart SDK `^3.13.4`) for a REST backend documented in `docs/frontend-api.md` (endpoints, envelope, permission model) and `docs/api-message-keys.md` (every translation key the API can return). `docs/` is git-ignored, so read those files locally before building a feature against an endpoint.
 
-Stack: Riverpod 3 (no codegen), Dio, go_router, flutter_secure_storage, gen-l10n (English + Spanish).
+Stack: Riverpod 3 (no codegen), Dio, go_router, flutter_secure_storage, shared_preferences, flutter_svg, gen-l10n (English + Spanish).
+
+Product and design context: `PRODUCT.md` (users, roles, principles, accessibility) and `DESIGN.md` (visual system). Read them before UI work.
 
 ## Commands
 
@@ -20,7 +22,10 @@ flutter analyze
 flutter test
 flutter test test/core/network/auth_interceptor_test.dart
 flutter test --plain-name "logs in and out"
-dart format lib test
+dart format lib test tool
+flutter test --update-goldens tool/screenshots   # phone + tablet contact sheets → build/screenshots/*.png (not in the regular suite)
+flutter test --update-goldens tool/brand         # re-render native splash logo PNGs from the SVG
+dart run flutter_native_splash:create           # regenerate native launch screens (config at the bottom of pubspec.yaml)
 ```
 
 On a Windows dev machine, building with plugins requires Developer Mode (symlink support).
@@ -30,7 +35,7 @@ The app is mobile only. Don't add web or desktop code paths (`kIsWeb`, desktop-o
 ## Architecture: Clean Architecture, feature-first
 
 ```
-lib/core/                 cross-cutting: error/ (Failure), usecase/, network/, storage/, di/, router/, l10n/
+lib/core/                 cross-cutting: error/ (Failure), usecase/, network/, storage/, di/, router/, l10n/, theme/, widgets/
 lib/features/<feature>/
   domain/                 entities/, repositories/ (abstract interfaces), usecases/  — pure Dart
   data/                   models/ (JSON → entity), datasources/, repositories/ (*_impl)
@@ -63,6 +68,14 @@ lib/features/<feature>/
 - There is no logout endpoint: logout clears the stored tokens.
 - `core/router/app_router.dart` bridges auth state into go_router's `refreshListenable`. The redirect sends no value to `/splash`, `Unauthenticated` to `/login`, and `Authenticated` away from login/splash.
 
+**Features:** `auth` (sign-in, session, remembered email), `password_reset` (email → 6-digit code → new password; its repository throws `UnavailableFailure` until the backend defines reset endpoints, so don't guess that contract), `settings` (EN/ES choice persisted in SharedPreferences; `null` follows the device), `home` (placeholder).
+
+**UI conventions**
+- Screens before sign-in use the "threshold" kit in `lib/core/widgets/threshold/`: `ThresholdScaffold` (white ground; the ember dark palette exists but is off, since the app is light-only via `themeMode: ThemeMode.light` in `app.dart`; bar pinned top; thumb-zone anchoring on phones, centered group capped at 480 dp on tablets), `BrandBlock`, `ThresholdField`, `ThresholdButton`/`ThresholdLinkButton`, `ThresholdNotice`. Colors (and the logo asset) come from `ThresholdPalette.of(context)`, never hard-coded. The native launch screen mirrors it; regenerate it after changing ground colors.
+- Adaptive per OS: branch on `useCupertino(context)` (`core/widgets/adaptive.dart`) for buttons, segmented controls, indicators and icons: Material on Android, Cupertino on iOS.
+- Use min-height rather than fixed heights for rows containing text, so 200% text scaling grows instead of clipping.
+- `sharedPreferencesProvider` is loaded in `main()` and must be overridden. Tests use `test/helpers/test_app.dart` (`pumpApp`, fakes).
+
 **Permissions** (not built yet): global roles live in `User.roles` (`GlobalRole` constants). Per-client-account permissions come from `GET /clients/:id/members/:userId` → `permissions` (see section 5 of `docs/frontend-api.md`).
 
 ## Testing
@@ -71,4 +84,5 @@ lib/features/<feature>/
 - **Use cases:** a fake `AuthRepository`.
 - **Repository impls:** a fake remote data source plus `FlutterSecureStorage.setMockInitialValues({})`.
 - **Network:** a fake Dio `HttpClientAdapter`.
-- **Widget flows:** override `authRepositoryProvider` in `ProviderScope`.
+- **Widget flows:** `pumpApp` in `test/helpers/test_app.dart` overrides preferences and the auth and password-reset repositories with fakes on a phone-sized screen.
+- **Visual checks:** `tool/screenshots/threshold_screens_test.dart` renders real fonts (Roboto stands in for San Francisco) and asserts each frame shows the state it claims.
