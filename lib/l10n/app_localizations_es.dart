@@ -197,4 +197,181 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get errorsFeatureUnavailable =>
       'Aún no se puede restablecer la contraseña desde la app. Pide a tu supervisor o administrador que la restablezca.';
+
+  @override
+  String get tabToday => 'Hoy';
+
+  @override
+  String get tabAccounts => 'Cuentas';
+
+  @override
+  String get tabProfile => 'Yo';
+
+  @override
+  String get todayTitle => 'Hoy';
+
+  @override
+  String greeting(String name) {
+    return 'Hola, $name';
+  }
+
+  @override
+  String get noJobsToday => 'No hay trabajos hoy';
+
+  @override
+  String get noJobsTodayHint =>
+      'Cuando te programen un trabajo, aparecerá aquí.';
+
+  @override
+  String someAccountsFailed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count cuentas no se pudieron cargar. Desliza hacia abajo para reintentar.',
+      one: '1 cuenta no se pudo cargar. Desliza hacia abajo para reintentar.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get accountsTitle => 'Cuentas';
+
+  @override
+  String get noAccounts => 'Aún no tienes cuentas';
+
+  @override
+  String get noAccountsHint =>
+      'Pide a tu supervisor que te agregue a una cuenta de cliente.';
+
+  @override
+  String get clientStatusProspect => 'Prospecto';
+
+  @override
+  String get clientStatusInactive => 'Inactiva';
+
+  @override
+  String yourRole(String role) {
+    return 'Tu rol: $role';
+  }
+
+  @override
+  String get sectionWork => 'Trabajo';
+
+  @override
+  String get sectionAccount => 'Cuenta';
+
+  @override
+  String get moduleJobs => 'Trabajos';
+
+  @override
+  String get moduleCalendar => 'Calendario';
+
+  @override
+  String get moduleComplaints => 'Quejas';
+
+  @override
+  String get moduleTasks => 'Tareas';
+
+  @override
+  String get moduleProposals => 'Propuestas';
+
+  @override
+  String get moduleContracts => 'Contratos';
+
+  @override
+  String get moduleScope => 'Alcance del trabajo';
+
+  @override
+  String get moduleTeam => 'Equipo';
+
+  @override
+  String get moduleInfo => 'Datos de la cuenta';
+
+  @override
+  String get moduleFiles => 'Archivos';
+
+  @override
+  String get comingSoon => 'Pronto';
+
+  @override
+  String get noModules => 'Todavía no tienes acceso a nada en esta cuenta.';
+
+  @override
+  String get jobsNextDays => 'Próximos 7 días';
+
+  @override
+  String get noJobsAhead => 'No hay trabajos en los próximos 7 días';
+
+  @override
+  String get jobStatusScheduled => 'Programado';
+
+  @override
+  String get jobStatusInProgress => 'En curso';
+
+  @override
+  String get jobStatusCompleted => 'Completado';
+
+  @override
+  String get jobStatusCancelled => 'Cancelado';
+
+  @override
+  String get jobStatusUnknown => 'Desconocido';
+
+  @override
+  String get jobWhen => 'Cuándo';
+
+  @override
+  String get jobWhere => 'Dónde';
+
+  @override
+  String get jobCrew => 'Equipo';
+
+  @override
+  String get jobChecklist => 'Lista de tareas';
+
+  @override
+  String get jobInstructions => 'Instrucciones';
+
+  @override
+  String get noCrewAssigned => 'Nadie asignado todavía';
+
+  @override
+  String checklistProgress(int done, int total) {
+    return '$done de $total listas';
+  }
+
+  @override
+  String get noChecklist => 'Sin lista de tareas';
+
+  @override
+  String get roleOwner => 'Propietario';
+
+  @override
+  String get roleAccountManager => 'Gerente de cuenta';
+
+  @override
+  String get roleSupervisor => 'Supervisor';
+
+  @override
+  String get roleCrew => 'Personal de limpieza';
+
+  @override
+  String get roleClient => 'Cliente';
+
+  @override
+  String get profileTitle => 'Yo';
+
+  @override
+  String get sectionSettings => 'Ajustes';
+
+  @override
+  String get signOutConfirmTitle => '¿Cerrar sesión?';
+
+  @override
+  String get signOutConfirmBody =>
+      'Necesitarás tu correo y contraseña para volver a entrar.';
+
+  @override
+  String get cancelButton => 'Cancelar';
 }

@@ -5,11 +5,17 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
-import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/clients/presentation/screens/account_screen.dart';
+import '../../features/clients/presentation/screens/accounts_screen.dart';
+import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
+import '../../features/jobs/presentation/screens/job_detail_screen.dart';
+import '../../features/jobs/presentation/screens/today_screen.dart';
 import '../../features/password_reset/presentation/screens/forgot_password_screen.dart';
 import '../../features/password_reset/presentation/screens/new_password_screen.dart';
 import '../../features/password_reset/presentation/screens/reset_code_screen.dart';
 import '../../features/password_reset/presentation/screens/reset_done_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/shell/presentation/app_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Bridges auth state into go_router so redirects re-run on login/logout.
@@ -33,8 +39,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         null => location == SplashScreen.path ? null : SplashScreen.path,
         Unauthenticated() => isPublic(location) ? null : LoginScreen.path,
         Authenticated() =>
-          isPublic(location) || location == SplashScreen.path
-              ? HomeScreen.path
+          isPublic(location) || location == SplashScreen.path || location == '/'
+              ? TodayScreen.path
               : null,
       };
     },
@@ -61,7 +67,70 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      GoRoute(path: HomeScreen.path, builder: (_, _) => const HomeScreen()),
+      // Signed-in app: one navigation stack per tab.
+      StatefulShellRoute.indexedStack(
+        builder: (_, _, shell) => AppShell(navigationShell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: TodayScreen.path,
+                builder: (_, _) => const TodayScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'job/:clientId/:jobId',
+                    builder: (_, state) => JobDetailScreen(
+                      clientId: state.pathParameters['clientId']!,
+                      jobId: state.pathParameters['jobId']!,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AccountsScreen.path,
+                builder: (_, _) => const AccountsScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':clientId',
+                    builder: (_, state) => AccountScreen(
+                      clientId: state.pathParameters['clientId']!,
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: 'jobs',
+                        builder: (_, state) => AccountJobsScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          GoRoute(
+                            path: ':jobId',
+                            builder: (_, state) => JobDetailScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              jobId: state.pathParameters['jobId']!,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: ProfileScreen.path,
+                builder: (_, _) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
   );
 

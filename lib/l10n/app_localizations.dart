@@ -433,6 +433,324 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password reset isn\'t available in the app yet. Ask your supervisor or admin to reset your password.'**
   String get errorsFeatureUnavailable;
+
+  /// No description provided for @tabToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get tabToday;
+
+  /// No description provided for @tabAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get tabAccounts;
+
+  /// No description provided for @tabProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get tabProfile;
+
+  /// No description provided for @todayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get todayTitle;
+
+  /// No description provided for @greeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, {name}'**
+  String greeting(String name);
+
+  /// No description provided for @noJobsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs today'**
+  String get noJobsToday;
+
+  /// No description provided for @noJobsTodayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a job is scheduled for you, it shows up here.'**
+  String get noJobsTodayHint;
+
+  /// No description provided for @someAccountsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 account couldn\'t load. Pull down to try again.} other{{count} accounts couldn\'t load. Pull down to try again.}}'**
+  String someAccountsFailed(int count);
+
+  /// No description provided for @accountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get accountsTitle;
+
+  /// No description provided for @noAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'No accounts yet'**
+  String get noAccounts;
+
+  /// No description provided for @noAccountsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask your manager to add you to a client account.'**
+  String get noAccountsHint;
+
+  /// No description provided for @clientStatusProspect.
+  ///
+  /// In en, this message translates to:
+  /// **'Prospect'**
+  String get clientStatusProspect;
+
+  /// No description provided for @clientStatusInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get clientStatusInactive;
+
+  /// No description provided for @yourRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role: {role}'**
+  String yourRole(String role);
+
+  /// No description provided for @sectionWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get sectionWork;
+
+  /// No description provided for @sectionAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get sectionAccount;
+
+  /// No description provided for @moduleJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs'**
+  String get moduleJobs;
+
+  /// No description provided for @moduleCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get moduleCalendar;
+
+  /// No description provided for @moduleComplaints.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaints'**
+  String get moduleComplaints;
+
+  /// No description provided for @moduleTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get moduleTasks;
+
+  /// No description provided for @moduleProposals.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposals'**
+  String get moduleProposals;
+
+  /// No description provided for @moduleContracts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contracts'**
+  String get moduleContracts;
+
+  /// No description provided for @moduleScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope of work'**
+  String get moduleScope;
+
+  /// No description provided for @moduleTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get moduleTeam;
+
+  /// No description provided for @moduleInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Account details'**
+  String get moduleInfo;
+
+  /// No description provided for @moduleFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get moduleFiles;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Soon'**
+  String get comingSoon;
+
+  /// No description provided for @noModules.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have access to anything in this account yet.'**
+  String get noModules;
+
+  /// No description provided for @jobsNextDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Next 7 days'**
+  String get jobsNextDays;
+
+  /// No description provided for @noJobsAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs in the next 7 days'**
+  String get noJobsAhead;
+
+  /// No description provided for @jobStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get jobStatusScheduled;
+
+  /// No description provided for @jobStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get jobStatusInProgress;
+
+  /// No description provided for @jobStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get jobStatusCompleted;
+
+  /// No description provided for @jobStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get jobStatusCancelled;
+
+  /// No description provided for @jobStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get jobStatusUnknown;
+
+  /// No description provided for @jobWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get jobWhen;
+
+  /// No description provided for @jobWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where'**
+  String get jobWhere;
+
+  /// No description provided for @jobCrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Crew'**
+  String get jobCrew;
+
+  /// No description provided for @jobChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Checklist'**
+  String get jobChecklist;
+
+  /// No description provided for @jobInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get jobInstructions;
+
+  /// No description provided for @noCrewAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'No one assigned yet'**
+  String get noCrewAssigned;
+
+  /// No description provided for @checklistProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String checklistProgress(int done, int total);
+
+  /// No description provided for @noChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'No checklist'**
+  String get noChecklist;
+
+  /// No description provided for @roleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get roleOwner;
+
+  /// No description provided for @roleAccountManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Account manager'**
+  String get roleAccountManager;
+
+  /// No description provided for @roleSupervisor.
+  ///
+  /// In en, this message translates to:
+  /// **'Supervisor'**
+  String get roleSupervisor;
+
+  /// No description provided for @roleCrew.
+  ///
+  /// In en, this message translates to:
+  /// **'Crew'**
+  String get roleCrew;
+
+  /// No description provided for @roleClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get roleClient;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get profileTitle;
+
+  /// No description provided for @sectionSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get sectionSettings;
+
+  /// No description provided for @signOutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out?'**
+  String get signOutConfirmTitle;
+
+  /// No description provided for @signOutConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll need your email and password to sign in again.'**
+  String get signOutConfirmBody;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
 }
 
 class _AppLocalizationsDelegate

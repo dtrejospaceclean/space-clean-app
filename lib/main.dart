@@ -11,6 +11,9 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [sharedPreferencesProvider.overrideWithValue(preferences)],
+      // Failed loads show an error with Retry (and pull to refresh) instead
+      // of retrying silently in the background.
+      retry: (_, _) => null,
       child: const App(),
     ),
   );

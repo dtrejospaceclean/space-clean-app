@@ -1,8 +1,8 @@
-// Renders the sign-in and reset screens as phone-sized contact sheets.
+// Renders the app's screens as phone-sized contact sheets.
 //
 //   flutter test --update-goldens tool/screenshots
 //
-// Output: build/screenshots/threshold_{android,ios}{,_tablet}.png. Not part of the
+// Output: build/screenshots/{threshold,app}_*.png. Not part of the
 // regular suite (it lives outside test/).
 import 'dart:async';
 
@@ -13,7 +13,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/app.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/router/app_router.dart';
+import 'package:sp_cln_app/features/access/di/access_providers.dart';
+import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
+import 'package:sp_cln_app/features/clients/di/clients_providers.dart';
+import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
+import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
+import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
+import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
 import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.dart';
 import 'package:sp_cln_app/features/password_reset/presentation/controllers/password_reset_controller.dart';
 import 'package:sp_cln_app/features/settings/di/settings_providers.dart';
@@ -37,6 +44,7 @@ class Phone {
     this.loginError,
     this.resetAvailable = true,
     this.restoring = false,
+    this.signedIn = false,
     this.act,
   });
 
@@ -53,6 +61,9 @@ class Phone {
 
   /// Holds the app on the splash, restoring a session.
   final bool restoring;
+
+  /// Signed in as Ana with the demo accounts, jobs and permissions below.
+  final bool signedIn;
 
   /// Interaction to reach the state, run inside this phone.
   final Future<void> Function(WidgetTester tester, Finder phone)? act;
@@ -92,13 +103,23 @@ Future<void> _sheet(
                 : null,
             loginError: phone.loginError,
             sessionCheck: phone.restoring ? Completer<bool>().future : null,
+            sessionUser: phone.signedIn ? ana : null,
           ),
         ),
+        clientsRepositoryProvider.overrideWithValue(
+          FakeClientsRepository(_demoClients),
+        ),
+        jobsRepositoryProvider.overrideWithValue(FakeJobsRepository(_demoJobs)),
+        accessRepositoryProvider.overrideWithValue(
+          FakeAccessRepository(_demoAccess),
+        ),
+        clockProvider.overrideWithValue(() => testNow),
         if (phone.resetAvailable)
           passwordResetRepositoryProvider.overrideWithValue(
             FakePasswordResetRepository(),
           ),
       ],
+      retry: (_, _) => null,
     );
     addTearDown(phone.container.dispose);
   }
@@ -344,6 +365,23 @@ void main() {
       _tablets(const Size(800, 1280)),
     );
   });
+
+  List<Phone> appPhones() => [
+    Phone('1 · Today', signedIn: true, location: '/today'),
+    Phone('2 · Accounts', signedIn: true, location: '/accounts'),
+    Phone('3 · Account', signedIn: true, location: '/accounts/c1'),
+    Phone('4 · Account jobs', signedIn: true, location: '/accounts/c1/jobs'),
+    Phone('5 · Job', signedIn: true, location: '/today/job/c1/j2'),
+    Phone('6 · Me', signedIn: true, location: '/me'),
+  ];
+
+  testWidgets('app android', (tester) async {
+    await _sheet(tester, 'app_android', TargetPlatform.android, appPhones());
+  });
+
+  testWidgets('app ios', (tester) async {
+    await _sheet(tester, 'app_ios', TargetPlatform.iOS, appPhones());
+  });
 }
 
 Future<void> _scrollToBottom(WidgetTester tester, Finder phone) async {
@@ -379,6 +417,86 @@ List<Phone> _tablets(Size portrait) {
     ),
   ];
 }
+
+// Synthetic demo data for the signed-in sheets (not real customers).
+const _demoClients = [
+  Client(id: 'c1', legalName: 'Post Oak Tower LLC', dba: 'Post Oak Tower'),
+  Client(id: 'c2', legalName: 'Bayou City Pediatrics'),
+  Client(
+    id: 'c3',
+    legalName: 'Westheimer Retail Partners',
+    status: ClientStatus.prospect,
+  ),
+];
+
+Job _demoJob(
+  String id,
+  String clientId,
+  String title,
+  int hour,
+  String place, {
+  JobStatus status = JobStatus.scheduled,
+}) => Job(
+  id: id,
+  clientId: clientId,
+  title: title,
+  status: status,
+  scheduledStart: DateTime(2026, 9, 23, hour),
+  scheduledEnd: DateTime(2026, 9, 23, hour + 2),
+  location: JobLocation(
+    name: place,
+    address: '1980 Post Oak Blvd',
+    city: 'Houston',
+  ),
+  assignees: const [
+    JobAssignee(userId: 'u1', name: 'Ana Pérez'),
+    JobAssignee(userId: 'u2', name: 'Luis Gómez'),
+  ],
+  checklistTotal: 8,
+  checklistDone: status == JobStatus.completed ? 8 : 3,
+  instructions: 'Badge in at the loading dock. Floors 3–5 only.',
+);
+
+final _demoJobs = <String, Object>{
+  'c1': [
+    _demoJob(
+      'j1',
+      'c1',
+      'Lobby and elevators',
+      6,
+      'North lobby',
+      status: JobStatus.completed,
+    ),
+    _demoJob('j2', 'c1', 'Offices, floors 3–5', 18, 'Tower A'),
+  ],
+  'c2': [
+    _demoJob(
+      'j3',
+      'c2',
+      'Exam rooms sanitation',
+      11,
+      'Clinic',
+      status: JobStatus.inProgress,
+    ),
+  ],
+};
+
+const _demoAccess = {
+  'c1': AccountAccess(
+    clientId: 'c1',
+    baseRole: 'supervisor',
+    permissions: {
+      Permissions.infoView,
+      Permissions.scopeView,
+      Permissions.jobsView,
+      Permissions.complaintsView,
+      Permissions.calendarView,
+      Permissions.tasksView,
+      Permissions.filesView,
+      Permissions.teamView,
+    },
+  ),
+};
 
 class _MemoryLanguage implements LanguageRepository {
   _MemoryLanguage(this.savedLanguage);

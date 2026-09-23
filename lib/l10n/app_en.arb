@@ -104,5 +104,89 @@
   "resetDoneTitle": "Password updated",
   "resetDoneBody": "Sign in with your new password.",
   "backToSignIn": "Back to sign in",
-  "errorsFeatureUnavailable": "Password reset isn't available in the app yet. Ask your supervisor or admin to reset your password."
+  "errorsFeatureUnavailable": "Password reset isn't available in the app yet. Ask your supervisor or admin to reset your password.",
+  "tabToday": "Today",
+  "tabAccounts": "Accounts",
+  "tabProfile": "Me",
+  "todayTitle": "Today",
+  "greeting": "Hi, {name}",
+  "@greeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noJobsToday": "No jobs today",
+  "noJobsTodayHint": "When a job is scheduled for you, it shows up here.",
+  "someAccountsFailed": "{count, plural, =1{1 account couldn't load. Pull down to try again.} other{{count} accounts couldn't load. Pull down to try again.}}",
+  "@someAccountsFailed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "accountsTitle": "Accounts",
+  "noAccounts": "No accounts yet",
+  "noAccountsHint": "Ask your manager to add you to a client account.",
+  "clientStatusProspect": "Prospect",
+  "clientStatusInactive": "Inactive",
+  "yourRole": "Your role: {role}",
+  "@yourRole": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionWork": "Work",
+  "sectionAccount": "Account",
+  "moduleJobs": "Jobs",
+  "moduleCalendar": "Calendar",
+  "moduleComplaints": "Complaints",
+  "moduleTasks": "Tasks",
+  "moduleProposals": "Proposals",
+  "moduleContracts": "Contracts",
+  "moduleScope": "Scope of work",
+  "moduleTeam": "Team",
+  "moduleInfo": "Account details",
+  "moduleFiles": "Files",
+  "comingSoon": "Soon",
+  "noModules": "You don't have access to anything in this account yet.",
+  "jobsNextDays": "Next 7 days",
+  "noJobsAhead": "No jobs in the next 7 days",
+  "jobStatusScheduled": "Scheduled",
+  "jobStatusInProgress": "In progress",
+  "jobStatusCompleted": "Completed",
+  "jobStatusCancelled": "Cancelled",
+  "jobStatusUnknown": "Unknown",
+  "jobWhen": "When",
+  "jobWhere": "Where",
+  "jobCrew": "Crew",
+  "jobChecklist": "Checklist",
+  "jobInstructions": "Instructions",
+  "noCrewAssigned": "No one assigned yet",
+  "checklistProgress": "{done} of {total} done",
+  "@checklistProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "noChecklist": "No checklist",
+  "roleOwner": "Owner",
+  "roleAccountManager": "Account manager",
+  "roleSupervisor": "Supervisor",
+  "roleCrew": "Crew",
+  "roleClient": "Client",
+  "profileTitle": "Me",
+  "sectionSettings": "Settings",
+  "signOutConfirmTitle": "Sign out?",
+  "signOutConfirmBody": "You'll need your email and password to sign in again.",
+  "cancelButton": "Cancel"
 }

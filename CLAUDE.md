@@ -68,7 +68,12 @@ lib/features/<feature>/
 - There is no logout endpoint: logout clears the stored tokens.
 - `core/router/app_router.dart` bridges auth state into go_router's `refreshListenable`. The redirect sends no value to `/splash`, `Unauthenticated` to `/login`, and `Authenticated` away from login/splash.
 
-**Features:** `auth` (sign-in, session, remembered email), `password_reset` (email → 6-digit code → new password; its repository throws `UnavailableFailure` until the backend defines reset endpoints, so don't guess that contract), `settings` (EN/ES choice persisted in SharedPreferences; `null` follows the device), `home` (placeholder).
+**Features:** `auth` (sign-in, session, remembered email), `password_reset` (email → 6-digit code → new password; its repository throws `UnavailableFailure` until the backend defines reset endpoints, so don't guess that contract), `settings` (EN/ES choice persisted in SharedPreferences; `null` follows the device), `clients` (the user's accounts), `access` (per-account permissions), `jobs`, `profile`, `shell`.
+
+**Signed-in app:** `StatefulShellRoute` with three tabs (`/today`, `/accounts`, `/me`), each with its own stack (`features/shell/presentation/app_shell.dart`: Material `NavigationBar` / `CupertinoTabBar`). Screens use `core/widgets/app/`: `AppPage` (iOS large or inline titles, Material large or small app bars, pull-to-refresh), `AppListSection`/`AppListRow` (inset-grouped on iOS), `AsyncSlivers`/`MessageSliver` (loading, error with Retry, empty). Riverpod auto-retry is off (`retry: (_, _) => null` in `main.dart` and tests).
+- **No cross-account endpoints:** jobs, calendar, complaints and tasks live under `/clients/:clientId/...`. Today merges accounts in `GetDayJobs` (one request per account in parallel; 403 accounts are skipped, other failures reported as `failedClients`).
+- **Permissions:** build every action from `accountAccessProvider(clientId).can(Permissions.x)`, never from the role name. Global owners bypass membership. Reading `/members/:userId` needs `team.view`, which crew and client members lack. On that 403, `GetAccountAccess` falls back to `Permissions.roleDefaults` (`estimated: true`; overrides unknown). `GET /clients` is already filtered to the user's accounts.
+- **Time:** `clockProvider` supplies "now" (tests pin it). Format dates and times with `core/l10n/formatting.dart`, which follows the locale and 12/24-hour setting.
 
 **UI conventions**
 - Screens before sign-in use the "threshold" kit in `lib/core/widgets/threshold/`: `ThresholdScaffold` (white ground; the ember dark palette exists but is off, since the app is light-only via `themeMode: ThemeMode.light` in `app.dart`; bar pinned top; thumb-zone anchoring on phones, centered group capped at 480 dp on tablets), `BrandBlock`, `ThresholdField`, `ThresholdButton`/`ThresholdLinkButton`, `ThresholdNotice`. Colors (and the logo asset) come from `ThresholdPalette.of(context)`, never hard-coded. The native launch screen mirrors it; regenerate it after changing ground colors.
@@ -84,5 +89,5 @@ lib/features/<feature>/
 - **Use cases:** a fake `AuthRepository`.
 - **Repository impls:** a fake remote data source plus `FlutterSecureStorage.setMockInitialValues({})`.
 - **Network:** a fake Dio `HttpClientAdapter`.
-- **Widget flows:** `pumpApp` in `test/helpers/test_app.dart` overrides preferences and the auth and password-reset repositories with fakes on a phone-sized screen.
-- **Visual checks:** `tool/screenshots/threshold_screens_test.dart` renders real fonts (Roboto stands in for San Francisco) and asserts each frame shows the state it claims.
+- **Widget flows:** `pumpApp` in `test/helpers/test_app.dart` puts fakes behind every repository (auth, password reset, clients, jobs, access), pins the clock to `testNow`, and uses a phone-sized screen. `job()` builds test jobs.
+- **Visual checks:** `tool/screenshots/threshold_screens_test.dart` renders sign-in (`threshold_*`) and signed-in (`app_*`, with synthetic demo data) sheets in real fonts (Roboto stands in for San Francisco), and asserts each frame shows the state it claims.

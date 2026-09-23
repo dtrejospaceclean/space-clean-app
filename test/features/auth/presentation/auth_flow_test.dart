@@ -26,7 +26,7 @@ void main() {
   testWidgets('a stored session goes straight home', (tester) async {
     await pumpApp(tester, auth: FakeAuthRepository(sessionUser: ana));
 
-    expect(find.text('Welcome, Ana Pérez'), findsOneWidget);
+    expect(find.text('No jobs today'), findsOneWidget);
   });
 
   testWidgets('validates the form before calling the API', (tester) async {
@@ -79,9 +79,14 @@ void main() {
     await pumpApp(tester, auth: FakeAuthRepository());
 
     await fillAndSubmit(tester);
-    expect(find.text('Welcome, Ana Pérez'), findsOneWidget);
+    expect(find.text('No jobs today'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Sign out'));
+    await tester.tap(find.text('Me'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign out'));
+    await tester.pumpAndSettle();
+    // Confirm in the dialog.
+    await tester.tap(find.text('Sign out').last);
     await tester.pumpAndSettle();
     expect(find.text(_tagline), findsOneWidget);
   });
