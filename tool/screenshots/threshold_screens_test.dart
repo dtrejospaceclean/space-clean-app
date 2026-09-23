@@ -27,6 +27,7 @@ import 'package:sp_cln_app/features/settings/di/settings_providers.dart';
 import 'package:sp_cln_app/features/settings/domain/entities/app_language.dart';
 import 'package:sp_cln_app/features/settings/domain/repositories/language_repository.dart';
 import 'package:sp_cln_app/features/settings/presentation/widgets/language_switch.dart';
+import 'package:sp_cln_app/features/users/di/users_providers.dart';
 
 import '../../test/helpers/test_app.dart';
 import 'fonts.dart';
@@ -45,6 +46,7 @@ class Phone {
     this.resetAvailable = true,
     this.restoring = false,
     this.signedIn = false,
+    this.asOwner = false,
     this.act,
   });
 
@@ -64,6 +66,9 @@ class Phone {
 
   /// Signed in as Ana with the demo accounts, jobs and permissions below.
   final bool signedIn;
+
+  /// Signed in as an owner (user administration).
+  final bool asOwner;
 
   /// Interaction to reach the state, run inside this phone.
   final Future<void> Function(WidgetTester tester, Finder phone)? act;
@@ -103,7 +108,11 @@ Future<void> _sheet(
                 : null,
             loginError: phone.loginError,
             sessionCheck: phone.restoring ? Completer<bool>().future : null,
-            sessionUser: phone.signedIn ? ana : null,
+            sessionUser: phone.asOwner
+                ? owner
+                : phone.signedIn
+                ? ana
+                : null,
           ),
         ),
         clientsRepositoryProvider.overrideWithValue(
@@ -113,6 +122,8 @@ Future<void> _sheet(
         accessRepositoryProvider.overrideWithValue(
           FakeAccessRepository(_demoAccess),
         ),
+        usersRepositoryProvider.overrideWithValue(FakeUsersRepository()),
+        rolesRepositoryProvider.overrideWithValue(FakeRolesRepository()),
         clockProvider.overrideWithValue(() => testNow),
         if (phone.resetAvailable)
           passwordResetRepositoryProvider.overrideWithValue(
@@ -382,7 +393,39 @@ void main() {
   testWidgets('app ios', (tester) async {
     await _sheet(tester, 'app_ios', TargetPlatform.iOS, appPhones());
   });
+
+  List<Phone> adminPhones() => [
+    Phone('1 · Me (owner)', asOwner: true, location: '/me'),
+    Phone('2 · Users', asOwner: true, location: '/me/users'),
+    Phone('3 · User', asOwner: true, location: '/me/users/u1'),
+    Phone('4 · New user', asOwner: true, location: '/me/users/new'),
+    Phone(
+      '5 · Edit user (scrolled)',
+      asOwner: true,
+      location: '/me/users/u1/edit',
+      act: (tester, phone) async {
+        await tester.drag(inPhoneScroll(phone), const Offset(0, -700));
+      },
+    ),
+    Phone('6 · Roles', asOwner: true, location: '/me/roles'),
+  ];
+
+  testWidgets('admin android', (tester) async {
+    await _sheet(
+      tester,
+      'admin_android',
+      TargetPlatform.android,
+      adminPhones(),
+    );
+  });
+
+  testWidgets('admin ios', (tester) async {
+    await _sheet(tester, 'admin_ios', TargetPlatform.iOS, adminPhones());
+  });
 }
+
+Finder inPhoneScroll(Finder phone) =>
+    find.descendant(of: phone, matching: find.byType(CustomScrollView)).first;
 
 Future<void> _scrollToBottom(WidgetTester tester, Finder phone) async {
   await tester.drag(

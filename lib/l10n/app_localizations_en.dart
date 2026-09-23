@@ -371,4 +371,228 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancelButton => 'Cancel';
+
+  @override
+  String get sectionAdministration => 'Administration';
+
+  @override
+  String get usersTitle => 'Users';
+
+  @override
+  String get rolesTitle => 'Roles';
+
+  @override
+  String get searchUsersHint => 'Search name, email or employee ID';
+
+  @override
+  String get filterActive => 'Active';
+
+  @override
+  String get filterInactive => 'Inactive';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get noUsersFound => 'No users match';
+
+  @override
+  String get noUsersFoundHint => 'Try another name or filter.';
+
+  @override
+  String get inactiveTag => 'Inactive';
+
+  @override
+  String get clientUserTag => 'Client';
+
+  @override
+  String get addUser => 'Add user';
+
+  @override
+  String get editUser => 'Edit user';
+
+  @override
+  String get newUserTitle => 'New user';
+
+  @override
+  String get saveButton => 'Save';
+
+  @override
+  String get sectionContact => 'Contact';
+
+  @override
+  String get sectionEmployment => 'Employment';
+
+  @override
+  String get sectionEmergency => 'Emergency contact';
+
+  @override
+  String get sectionRoles => 'Roles';
+
+  @override
+  String get sectionSignIn => 'Sign-in';
+
+  @override
+  String get nameLabel => 'Full name';
+
+  @override
+  String get phoneLabel => 'Phone';
+
+  @override
+  String get employeeIdLabel => 'Employee ID';
+
+  @override
+  String get employmentTypeLabel => 'Employment type';
+
+  @override
+  String get payRateLabel => 'Pay rate (per hour)';
+
+  @override
+  String get hireDateLabel => 'Hire date';
+
+  @override
+  String get emergencyNameLabel => 'Name';
+
+  @override
+  String get emergencyPhoneLabel => 'Phone';
+
+  @override
+  String get initialPasswordLabel => 'Password';
+
+  @override
+  String get newPasswordOptionalLabel => 'New password (optional)';
+
+  @override
+  String get passwordHelpCreate =>
+      'At least 12 characters. Share it with the person privately.';
+
+  @override
+  String get passwordHelpEdit => 'Leave empty to keep the current password.';
+
+  @override
+  String get employmentFullTime => 'Full-time';
+
+  @override
+  String get employmentPartTime => 'Part-time';
+
+  @override
+  String get employmentContractor => 'Contractor';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get chooseButton => 'Choose';
+
+  @override
+  String get clearButton => 'Clear';
+
+  @override
+  String get doneButton => 'Done';
+
+  @override
+  String get invalidPayRate => 'Enter an amount like 18.50.';
+
+  @override
+  String get noRolesSelected => 'No roles: this person can\'t do anything yet.';
+
+  @override
+  String get deactivateUser => 'Deactivate user';
+
+  @override
+  String get reactivateUser => 'Reactivate user';
+
+  @override
+  String deactivateConfirmTitle(String name) {
+    return 'Deactivate $name?';
+  }
+
+  @override
+  String get deactivateConfirmBody =>
+      'They won\'t be able to sign in. Their history stays, and you can reactivate them later.';
+
+  @override
+  String get deactivateButton => 'Deactivate';
+
+  @override
+  String get reactivateButton => 'Reactivate';
+
+  @override
+  String get userInactiveNotice =>
+      'This user is deactivated and can\'t sign in.';
+
+  @override
+  String get readOnlyNotice => 'Only owners can change users and roles.';
+
+  @override
+  String get addRole => 'Add role';
+
+  @override
+  String get editRole => 'Edit role';
+
+  @override
+  String get roleNameLabel => 'Name';
+
+  @override
+  String get roleNameHelp =>
+      'Lowercase letters, numbers and _ (e.g. floor_lead)';
+
+  @override
+  String get roleDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get roleNameInvalid =>
+      'Use lowercase letters, numbers and _, starting with a letter.';
+
+  @override
+  String get builtInRole => 'Built-in';
+
+  @override
+  String roleUserCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count users',
+      one: '1 user',
+      zero: 'No users',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteRole => 'Delete role';
+
+  @override
+  String deleteRoleConfirmTitle(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get deleteRoleConfirmBody => 'This can\'t be undone.';
+
+  @override
+  String get deleteButton => 'Delete';
+
+  @override
+  String get roleInUseHint =>
+      'Remove this role from its users before deleting it.';
+
+  @override
+  String get usersEmailTaken => 'Another user already has this email.';
+
+  @override
+  String get rolesStillAssigned => 'This role is still assigned to users.';
+
+  @override
+  String get rolesSystemRole => 'Built-in roles can\'t be renamed or deleted.';
+
+  @override
+  String get rolesSomeNotFound =>
+      'One of the selected roles no longer exists. Refresh and try again.';
+
+  @override
+  String get usersNotFound => 'This user no longer exists.';
+
+  @override
+  String get errorsUniqueViolation => 'That value is already in use.';
 }

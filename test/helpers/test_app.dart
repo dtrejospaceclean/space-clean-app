@@ -22,6 +22,10 @@ import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dar
 import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
 import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.dart';
 import 'package:sp_cln_app/features/password_reset/domain/repositories/password_reset_repository.dart';
+import 'package:sp_cln_app/features/users/di/users_providers.dart';
+import 'package:sp_cln_app/features/users/domain/entities/managed_user.dart';
+import 'package:sp_cln_app/features/users/domain/entities/role_info.dart';
+import 'package:sp_cln_app/features/users/domain/repositories/users_repository.dart';
 
 const ana = User(
   id: 'u1',
@@ -31,6 +35,154 @@ const ana = User(
   isActive: true,
   roles: [Role(id: 'r1', name: 'supervisor')],
 );
+
+const owner = User(
+  id: 'o1',
+  email: 'olga@example.com',
+  name: 'Olga Ruiz',
+  userType: UserType.internal,
+  isActive: true,
+  roles: [Role(id: 'r-owner', name: 'owner')],
+);
+
+const accountManager = User(
+  id: 'm1',
+  email: 'marco@example.com',
+  name: 'Marco Díaz',
+  userType: UserType.internal,
+  isActive: true,
+  roles: [Role(id: 'r-am', name: 'account_manager')],
+);
+
+const testRoles = [
+  RoleInfo(id: 'r-owner', name: 'owner', userCount: 1),
+  RoleInfo(id: 'r-am', name: 'account_manager', userCount: 1),
+  RoleInfo(id: 'r-sup', name: 'supervisor', userCount: 1),
+  RoleInfo(id: 'r-crew', name: 'crew', userCount: 3),
+  RoleInfo(id: 'r-client', name: 'client'),
+  RoleInfo(id: 'r-lead', name: 'floor_lead', description: 'Leads a floor'),
+];
+
+/// In-memory users behind the users screens; records every write.
+class FakeUsersRepository implements UsersRepository {
+  FakeUsersRepository([List<ManagedUser>? users]) : users = [...users ?? _seed];
+
+  static const _seed = [
+    ManagedUser(
+      id: 'u1',
+      email: 'ana@example.com',
+      name: 'Ana Pérez',
+      userType: UserType.internal,
+      isActive: true,
+      roles: [Role(id: 'r-sup', name: 'supervisor')],
+      employmentType: 'part_time',
+      payRate: '18.5',
+    ),
+    ManagedUser(
+      id: 'u2',
+      email: 'luis@example.com',
+      name: 'Luis Gómez',
+      userType: UserType.internal,
+      isActive: false,
+      roles: [Role(id: 'r-crew', name: 'crew')],
+    ),
+  ];
+
+  final List<ManagedUser> users;
+  final writes = <String>[];
+  Failure? createError;
+
+  @override
+  Future<List<ManagedUser>> getUsers(UserQuery query) async => users
+      .where((u) => query.isActive == null || u.isActive == query.isActive)
+      .where((u) => u.name.toLowerCase().contains(query.search.toLowerCase()))
+      .toList();
+
+  @override
+  Future<ManagedUser> getUser(String id) async =>
+      users.firstWhere((u) => u.id == id);
+
+  @override
+  Future<ManagedUser> createUser(UserDraft draft) async {
+    if (createError case final error?) throw error;
+    writes.add('create:${draft.email}:${draft.roleIds}');
+    final user = ManagedUser(
+      id: 'u${users.length + 1}',
+      email: draft.email!,
+      name: draft.name!,
+      userType: UserType.internal,
+      isActive: true,
+      roles: [
+        for (final id in draft.roleIds ?? const <String>[])
+          Role(id: id, name: testRoles.firstWhere((r) => r.id == id).name),
+      ],
+    );
+    users.add(user);
+    return user;
+  }
+
+  @override
+  Future<ManagedUser> updateUser(String id, UserDraft draft) async {
+    writes.add('update:$id');
+    return getUser(id);
+  }
+
+  @override
+  Future<ManagedUser> setActive(String id, {required bool active}) async {
+    writes.add('active:$id:$active');
+    final i = users.indexWhere((u) => u.id == id);
+    final u = users[i];
+    return users[i] = ManagedUser(
+      id: u.id,
+      email: u.email,
+      name: u.name,
+      userType: u.userType,
+      isActive: active,
+      roles: u.roles,
+    );
+  }
+
+  @override
+  Future<ManagedUser> setRoles(String id, List<String> roleIds) async {
+    writes.add('roles:$id:$roleIds');
+    return getUser(id);
+  }
+}
+
+class FakeRolesRepository implements RolesRepository {
+  List<RoleInfo> roles = [...testRoles];
+  final writes = <String>[];
+
+  @override
+  Future<List<RoleInfo>> getRoles() async => roles;
+
+  @override
+  Future<RoleInfo> createRole({
+    required String name,
+    String? description,
+  }) async {
+    writes.add('create:$name');
+    final role = RoleInfo(id: 'r-$name', name: name, description: description);
+    roles = [...roles, role];
+    return role;
+  }
+
+  @override
+  Future<RoleInfo> updateRole(
+    String id, {
+    String? name,
+    String? description,
+  }) async {
+    writes.add('update:$id:$name');
+    return roles.firstWhere((r) => r.id == id);
+  }
+
+  @override
+  Future<void> deleteRole(String id) async {
+    writes.add('delete:$id');
+    roles = roles.where((r) => r.id != id).toList();
+  }
+}
 
 class FakeAuthRepository implements AuthRepository {
   FakeAuthRepository({
@@ -184,6 +336,8 @@ Future<SharedPreferences> pumpApp(
   ClientsRepository? clients,
   JobsRepository? jobs,
   AccessRepository? access,
+  UsersRepository? users,
+  RolesRepository? roles,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -205,6 +359,12 @@ Future<SharedPreferences> pumpApp(
         jobsRepositoryProvider.overrideWithValue(jobs ?? FakeJobsRepository()),
         accessRepositoryProvider.overrideWithValue(
           access ?? FakeAccessRepository(),
+        ),
+        usersRepositoryProvider.overrideWithValue(
+          users ?? FakeUsersRepository(),
+        ),
+        rolesRepositoryProvider.overrideWithValue(
+          roles ?? FakeRolesRepository(),
         ),
         clockProvider.overrideWithValue(() => testNow),
       ],

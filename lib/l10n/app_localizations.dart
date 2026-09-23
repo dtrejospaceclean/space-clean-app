@@ -751,6 +751,414 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancelButton;
+
+  /// No description provided for @sectionAdministration.
+  ///
+  /// In en, this message translates to:
+  /// **'Administration'**
+  String get sectionAdministration;
+
+  /// No description provided for @usersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get usersTitle;
+
+  /// No description provided for @rolesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get rolesTitle;
+
+  /// No description provided for @searchUsersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, email or employee ID'**
+  String get searchUsersHint;
+
+  /// No description provided for @filterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get filterActive;
+
+  /// No description provided for @filterInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get filterInactive;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @noUsersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No users match'**
+  String get noUsersFound;
+
+  /// No description provided for @noUsersFoundHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name or filter.'**
+  String get noUsersFoundHint;
+
+  /// No description provided for @inactiveTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactiveTag;
+
+  /// No description provided for @clientUserTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get clientUserTag;
+
+  /// No description provided for @addUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Add user'**
+  String get addUser;
+
+  /// No description provided for @editUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit user'**
+  String get editUser;
+
+  /// No description provided for @newUserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New user'**
+  String get newUserTitle;
+
+  /// No description provided for @saveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveButton;
+
+  /// No description provided for @sectionContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get sectionContact;
+
+  /// No description provided for @sectionEmployment.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment'**
+  String get sectionEmployment;
+
+  /// No description provided for @sectionEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact'**
+  String get sectionEmergency;
+
+  /// No description provided for @sectionRoles.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get sectionRoles;
+
+  /// No description provided for @sectionSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in'**
+  String get sectionSignIn;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get nameLabel;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phoneLabel;
+
+  /// No description provided for @employeeIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee ID'**
+  String get employeeIdLabel;
+
+  /// No description provided for @employmentTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Employment type'**
+  String get employmentTypeLabel;
+
+  /// No description provided for @payRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay rate (per hour)'**
+  String get payRateLabel;
+
+  /// No description provided for @hireDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hire date'**
+  String get hireDateLabel;
+
+  /// No description provided for @emergencyNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get emergencyNameLabel;
+
+  /// No description provided for @emergencyPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get emergencyPhoneLabel;
+
+  /// No description provided for @initialPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get initialPasswordLabel;
+
+  /// No description provided for @newPasswordOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password (optional)'**
+  String get newPasswordOptionalLabel;
+
+  /// No description provided for @passwordHelpCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 12 characters. Share it with the person privately.'**
+  String get passwordHelpCreate;
+
+  /// No description provided for @passwordHelpEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to keep the current password.'**
+  String get passwordHelpEdit;
+
+  /// No description provided for @employmentFullTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-time'**
+  String get employmentFullTime;
+
+  /// No description provided for @employmentPartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Part-time'**
+  String get employmentPartTime;
+
+  /// No description provided for @employmentContractor.
+  ///
+  /// In en, this message translates to:
+  /// **'Contractor'**
+  String get employmentContractor;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @chooseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get chooseButton;
+
+  /// No description provided for @clearButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearButton;
+
+  /// No description provided for @doneButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneButton;
+
+  /// No description provided for @invalidPayRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount like 18.50.'**
+  String get invalidPayRate;
+
+  /// No description provided for @noRolesSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No roles: this person can\'t do anything yet.'**
+  String get noRolesSelected;
+
+  /// No description provided for @deactivateUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate user'**
+  String get deactivateUser;
+
+  /// No description provided for @reactivateUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate user'**
+  String get reactivateUser;
+
+  /// No description provided for @deactivateConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate {name}?'**
+  String deactivateConfirmTitle(String name);
+
+  /// No description provided for @deactivateConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They won\'t be able to sign in. Their history stays, and you can reactivate them later.'**
+  String get deactivateConfirmBody;
+
+  /// No description provided for @deactivateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivateButton;
+
+  /// No description provided for @reactivateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get reactivateButton;
+
+  /// No description provided for @userInactiveNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This user is deactivated and can\'t sign in.'**
+  String get userInactiveNotice;
+
+  /// No description provided for @readOnlyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Only owners can change users and roles.'**
+  String get readOnlyNotice;
+
+  /// No description provided for @addRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Add role'**
+  String get addRole;
+
+  /// No description provided for @editRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit role'**
+  String get editRole;
+
+  /// No description provided for @roleNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get roleNameLabel;
+
+  /// No description provided for @roleNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowercase letters, numbers and _ (e.g. floor_lead)'**
+  String get roleNameHelp;
+
+  /// No description provided for @roleDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get roleDescriptionLabel;
+
+  /// No description provided for @roleNameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Use lowercase letters, numbers and _, starting with a letter.'**
+  String get roleNameInvalid;
+
+  /// No description provided for @builtInRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in'**
+  String get builtInRole;
+
+  /// No description provided for @roleUserCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No users} =1{1 user} other{{count} users}}'**
+  String roleUserCount(int count);
+
+  /// No description provided for @deleteRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete role'**
+  String get deleteRole;
+
+  /// No description provided for @deleteRoleConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String deleteRoleConfirmTitle(String name);
+
+  /// No description provided for @deleteRoleConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be undone.'**
+  String get deleteRoleConfirmBody;
+
+  /// No description provided for @deleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteButton;
+
+  /// No description provided for @roleInUseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this role from its users before deleting it.'**
+  String get roleInUseHint;
+
+  /// No description provided for @usersEmailTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another user already has this email.'**
+  String get usersEmailTaken;
+
+  /// No description provided for @rolesStillAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'This role is still assigned to users.'**
+  String get rolesStillAssigned;
+
+  /// No description provided for @rolesSystemRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in roles can\'t be renamed or deleted.'**
+  String get rolesSystemRole;
+
+  /// No description provided for @rolesSomeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'One of the selected roles no longer exists. Refresh and try again.'**
+  String get rolesSomeNotFound;
+
+  /// No description provided for @usersNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This user no longer exists.'**
+  String get usersNotFound;
+
+  /// No description provided for @errorsUniqueViolation.
+  ///
+  /// In en, this message translates to:
+  /// **'That value is already in use.'**
+  String get errorsUniqueViolation;
 }
 
 class _AppLocalizationsDelegate

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`sp_cln_app` is a Flutter **mobile** app (Android and iOS only; Dart SDK `^3.13.4`) for a REST backend documented in `docs/frontend-api.md` (endpoints, envelope, permission model) and `docs/api-message-keys.md` (every translation key the API can return). `docs/` is git-ignored, so read those files locally before building a feature against an endpoint.
+`sp_cln_app` is a Flutter **mobile** app (Android and iOS only; Dart SDK `^3.13.4`) for a REST backend documented in `docs/frontend-api.md` (endpoints, envelope, permission model) and `docs/api-message-keys.md` (every translation key the API can return). `docs/` is git-ignored, so read those files locally before building a feature against an endpoint. The backend source (NestJS + Prisma) is at `D:\DevProjects\sp_cln_be`. Its DTOs (`src/**/dto/*.ts`) are the exact request contract (unknown fields are rejected), and they cover details the docs leave out, such as which fields `PATCH` accepts.
 
 Stack: Riverpod 3 (no codegen), Dio, go_router, flutter_secure_storage, shared_preferences, flutter_svg, gen-l10n (English + Spanish).
 
@@ -68,11 +68,12 @@ lib/features/<feature>/
 - There is no logout endpoint: logout clears the stored tokens.
 - `core/router/app_router.dart` bridges auth state into go_router's `refreshListenable`. The redirect sends no value to `/splash`, `Unauthenticated` to `/login`, and `Authenticated` away from login/splash.
 
-**Features:** `auth` (sign-in, session, remembered email), `password_reset` (email → 6-digit code → new password; its repository throws `UnavailableFailure` until the backend defines reset endpoints, so don't guess that contract), `settings` (EN/ES choice persisted in SharedPreferences; `null` follows the device), `clients` (the user's accounts), `access` (per-account permissions), `jobs`, `profile`, `shell`.
+**Features:** `auth` (sign-in, session, remembered email), `password_reset` (email → 6-digit code → new password; its repository throws `UnavailableFailure` until the backend defines reset endpoints, so don't guess that contract), `settings` (EN/ES choice persisted in SharedPreferences; `null` follows the device), `clients` (the user's accounts), `access` (per-account permissions), `jobs`, `profile`, `shell`, `users` (user and role administration).
 
 **Signed-in app:** `StatefulShellRoute` with three tabs (`/today`, `/accounts`, `/me`), each with its own stack (`features/shell/presentation/app_shell.dart`: Material `NavigationBar` / `CupertinoTabBar`). Screens use `core/widgets/app/`: `AppPage` (iOS large or inline titles, Material large or small app bars, pull-to-refresh), `AppListSection`/`AppListRow` (inset-grouped on iOS), `AsyncSlivers`/`MessageSliver` (loading, error with Retry, empty). Riverpod auto-retry is off (`retry: (_, _) => null` in `main.dart` and tests).
 - **No cross-account endpoints:** jobs, calendar, complaints and tasks live under `/clients/:clientId/...`. Today merges accounts in `GetDayJobs` (one request per account in parallel; 403 accounts are skipped, other failures reported as `failedClients`).
 - **Permissions:** build every action from `accountAccessProvider(clientId).can(Permissions.x)`, never from the role name. Global owners bypass membership. Reading `/members/:userId` needs `team.view`, which crew and client members lack. On that 403, `GetAccountAccess` falls back to `Permissions.roleDefaults` (`estimated: true`; overrides unknown). `GET /clients` is already filtered to the user's accounts.
+- **User administration** lives under Me → Administration (`/me/users`, `/me/roles`). It's visible to global `owner` and `account_manager` (`UserAdminPolicy.canView`), and only owners get write controls (`canEdit`). Users are never deleted, only deactivated with `PATCH {isActive}`. Roles change via `PUT /users/:id/roles`, which `UpdateUser` calls only when they changed. Owners can reset a password by setting a new one in Edit. Forms use `core/widgets/app/app_form.dart` (`AppFormSection`, `AppTextField`, `AppPickerRow`, `AppCheckRow`, `showAppChoice`, `showAppDatePicker`). Server field errors are shown by re-running the validators after a failed save.
 - **Time:** `clockProvider` supplies "now" (tests pin it). Format dates and times with `core/l10n/formatting.dart`, which follows the locale and 12/24-hour setting.
 
 **UI conventions**

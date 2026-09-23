@@ -18,7 +18,7 @@ class AppListSection extends StatelessWidget {
             ? null
             : Text(
                 title!.toUpperCase(),
-                style: TextStyle(
+                style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                   letterSpacing: 0.2,

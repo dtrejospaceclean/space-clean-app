@@ -16,6 +16,13 @@ extension FailureMessages on AppLocalizations {
     'validation.failed' => validationFailed,
     NetworkFailure.key => errorsNetwork,
     UnavailableFailure.key => errorsFeatureUnavailable,
+    'users.email_taken' => usersEmailTaken,
+    'users.not_found' => usersNotFound,
+    'roles.still_assigned' => rolesStillAssigned,
+    'roles.system_role_not_renamable' ||
+    'roles.system_role_not_deletable' => rolesSystemRole,
+    'roles.some_not_found' => rolesSomeNotFound,
+    'errors.unique_violation' => errorsUniqueViolation,
     'errors.too_many_requests' => errorsTooManyRequests,
     'errors.not_found' => errorsNotFound,
     'errors.internal' => errorsInternal,

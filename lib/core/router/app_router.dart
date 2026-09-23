@@ -16,6 +16,10 @@ import '../../features/password_reset/presentation/screens/reset_code_screen.dar
 import '../../features/password_reset/presentation/screens/reset_done_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/shell/presentation/app_shell.dart';
+import '../../features/users/presentation/screens/roles_screen.dart';
+import '../../features/users/presentation/screens/user_detail_screen.dart';
+import '../../features/users/presentation/screens/user_form_screen.dart';
+import '../../features/users/presentation/screens/users_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Bridges auth state into go_router so redirects re-run on login/logout.
@@ -126,6 +130,37 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: ProfileScreen.path,
                 builder: (_, _) => const ProfileScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'users',
+                    builder: (_, _) => const UsersScreen(),
+                    routes: [
+                      // Before ':userId' so "new" isn't read as an id.
+                      GoRoute(
+                        path: 'new',
+                        builder: (_, _) => const UserFormScreen(),
+                      ),
+                      GoRoute(
+                        path: ':userId',
+                        builder: (_, state) => UserDetailScreen(
+                          userId: state.pathParameters['userId']!,
+                        ),
+                        routes: [
+                          GoRoute(
+                            path: 'edit',
+                            builder: (_, state) => UserFormScreen(
+                              userId: state.pathParameters['userId'],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'roles',
+                    builder: (_, _) => const RolesScreen(),
+                  ),
+                ],
               ),
             ],
           ),
