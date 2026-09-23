@@ -1,0 +1,36 @@
+{
+  "@@locale": "es",
+  "appTitle": "SP CLN",
+
+  "loginTitle": "Iniciar sesión",
+  "loginSubtitle": "Usa tu correo y contraseña de trabajo.",
+  "emailLabel": "Correo electrónico",
+  "passwordLabel": "Contraseña",
+  "showPassword": "Mostrar contraseña",
+  "hidePassword": "Ocultar contraseña",
+  "signInButton": "Iniciar sesión",
+  "signOutButton": "Cerrar sesión",
+
+  "homeWelcome": "Bienvenido, {name}",
+  "homeRoles": "Roles: {roles}",
+
+  "splashLoadError": "No pudimos restaurar tu sesión.",
+  "retryButton": "Reintentar",
+
+  "validationRequired": "Este campo es obligatorio.",
+  "validationInvalidEmail": "Ingresa un correo electrónico válido.",
+  "validationMinLength": "Debe tener al menos {min} caracteres.",
+  "validationMaxLength": "Debe tener como máximo {max} caracteres.",
+  "validationFailed": "Revisa los campos marcados.",
+
+  "authInvalidCredentials": "Correo o contraseña incorrectos.",
+  "authSessionExpired": "Tu sesión expiró. Vuelve a iniciar sesión.",
+  "authInsufficientPermission": "No tienes permiso para hacer esto.",
+  "authInsufficientRole": "Tu rol no permite esta acción.",
+
+  "errorsNetwork": "No se puede conectar con el servidor. Revisa tu conexión.",
+  "errorsTooManyRequests": "Demasiados intentos. Espera un momento y vuelve a intentarlo.",
+  "errorsNotFound": "No encontramos lo que buscabas.",
+  "errorsInternal": "Algo salió mal en el servidor. Vuelve a intentarlo.",
+  "errorsUnknown": "Algo salió mal."
+}

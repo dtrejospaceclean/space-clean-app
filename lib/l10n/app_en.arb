@@ -1,0 +1,48 @@
+{
+  "@@locale": "en",
+  "appTitle": "SP CLN",
+
+  "loginTitle": "Sign in",
+  "loginSubtitle": "Use your work email and password.",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "signInButton": "Sign in",
+  "signOutButton": "Sign out",
+
+  "homeWelcome": "Welcome, {name}",
+  "@homeWelcome": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "homeRoles": "Roles: {roles}",
+  "@homeRoles": {
+    "placeholders": { "roles": { "type": "String" } }
+  },
+
+  "splashLoadError": "We couldn't restore your session.",
+  "retryButton": "Try again",
+
+  "validationRequired": "This field is required.",
+  "validationInvalidEmail": "Enter a valid email address.",
+  "validationMinLength": "Must be at least {min} characters.",
+  "@validationMinLength": {
+    "placeholders": { "min": { "type": "String" } }
+  },
+  "validationMaxLength": "Must be at most {max} characters.",
+  "@validationMaxLength": {
+    "placeholders": { "max": { "type": "String" } }
+  },
+  "validationFailed": "Some fields need your attention.",
+
+  "authInvalidCredentials": "Incorrect email or password.",
+  "authSessionExpired": "Your session expired. Sign in again.",
+  "authInsufficientPermission": "You don't have permission to do that.",
+  "authInsufficientRole": "Your role doesn't allow this action.",
+
+  "errorsNetwork": "Can't reach the server. Check your connection.",
+  "errorsTooManyRequests": "Too many attempts. Wait a moment and try again.",
+  "errorsNotFound": "We couldn't find what you were looking for.",
+  "errorsInternal": "Something went wrong on our side. Try again.",
+  "errorsUnknown": "Something went wrong."
+}
