@@ -1,18 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/design/design.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/l10n/formatting.dart';
 import '../../../../core/l10n/role_names.dart';
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/app/app_form.dart';
-import '../../../../core/widgets/app/app_page.dart';
-import '../../../../core/widgets/app/async_slivers.dart';
-import '../../../../core/widgets/threshold/threshold_notice.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../password_reset/domain/entities/password_policy.dart';
 import '../../di/users_providers.dart';
@@ -44,9 +39,8 @@ class UserFormScreen extends ConsumerWidget {
     };
     if (ready == null) {
       final failed = roles.hasError ? roles : user;
-      return AppPage(
+      return SpacePage(
         title: title,
-        grouped: true,
         slivers: [
           AsyncSlivers<Object?>(
             value: failed ?? const AsyncLoading(),
@@ -153,25 +147,20 @@ class _UserFormState extends ConsumerState<_UserForm> {
 
   UserDraft _draft() {
     final initial = widget.initial;
+    bool emptied(String? before, TextEditingController now) =>
+        (before ?? '').isNotEmpty && now.text.trim().isEmpty;
     // On edit, an emptied optional field is sent as null to clear it.
     final cleared = <String>{
       if (initial != null) ...{
-        if ((initial.phoneNumber ?? '').isNotEmpty &&
-            _phone.text.trim().isEmpty)
-          'phoneNumber',
-        if ((initial.employeeId ?? '').isNotEmpty &&
-            _employeeId.text.trim().isEmpty)
-          'employeeId',
-        if ((initial.payRate ?? '').isNotEmpty && _payRate.text.trim().isEmpty)
-          'payRate',
+        if (emptied(initial.phoneNumber, _phone)) 'phoneNumber',
+        if (emptied(initial.employeeId, _employeeId)) 'employeeId',
+        if (emptied(initial.payRate, _payRate)) 'payRate',
         if (initial.employmentType != null && _employmentType == null)
           'employmentType',
         if (initial.hireDate != null && _hireDate == null) 'hireDate',
-        if ((initial.emergencyContactName ?? '').isNotEmpty &&
-            _emergencyName.text.trim().isEmpty)
+        if (emptied(initial.emergencyContactName, _emergencyName))
           'emergencyContactName',
-        if ((initial.emergencyContactPhone ?? '').isNotEmpty &&
-            _emergencyPhone.text.trim().isEmpty)
+        if (emptied(initial.emergencyContactPhone, _emergencyPhone))
           'emergencyContactPhone',
       },
     };
@@ -215,9 +204,9 @@ class _UserFormState extends ConsumerState<_UserForm> {
         ..invalidate(rolesProvider);
       if (!mounted) return;
       if (initial == null) {
-        context.pushReplacement(
-          '${GoRouterState.of(context).matchedLocation.replaceAll(RegExp(r'/new$'), '')}/${saved.id}',
-        );
+        final list = GoRouterState.of(context).matchedLocation
+            .replaceAll(RegExp(r'/new$'), '');
+        context.pushReplacement('$list/${saved.id}');
       } else {
         context.pop();
       }
@@ -232,10 +221,41 @@ class _UserFormState extends ConsumerState<_UserForm> {
     }
   }
 
+  /// A titled white card of fields, with page margins.
+  Widget _section(String title, List<Widget> fields, {String? footer}) =>
+      Padding(
+        padding: EdgeInsets.fromLTRB(
+          pageSide(context),
+          12,
+          pageSide(context),
+          0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SectionHeader(title: title),
+            SpaceCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final (i, f) in fields.indexed) ...[
+                    if (i > 0) const SizedBox(height: 12),
+                    f,
+                  ],
+                  if (footer != null) ...[
+                    const SizedBox(height: 10),
+                    Text(footer, style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
     final failure = _failure;
     // Field-level failures show on their fields; everything else on top.
     final showBanner =
@@ -243,29 +263,24 @@ class _UserFormState extends ConsumerState<_UserForm> {
         failure is! ValidationFailure &&
         failure.messageKey != 'users.email_taken';
 
-    final save = _saving
-        ? const Padding(
-            padding: EdgeInsets.all(12),
-            child: SizedBox.square(
-              dimension: 20,
-              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-            ),
-          )
-        : cupertino
-        ? CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: _save,
-            child: Text(
-              l10n.saveButton,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          )
-        : TextButton(onPressed: _save, child: Text(l10n.saveButton));
-
-    return AppPage(
+    return SpacePage(
       title: widget.title,
-      grouped: true,
-      actions: [save],
+      bottom: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            pageSide(context),
+            8,
+            pageSide(context),
+            12,
+          ),
+          child: PrimaryButton(
+            label: l10n.saveButton,
+            busy: _saving,
+            onPressed: _save,
+          ),
+        ),
+      ),
       slivers: [
         SliverToBoxAdapter(
           child: Form(
@@ -276,190 +291,181 @@ class _UserFormState extends ConsumerState<_UserForm> {
                 children: [
                   if (showBanner)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                      child: ThresholdNotice(
-                        message: l10n.failureMessage(failure),
+                      padding: EdgeInsets.fromLTRB(
+                        pageSide(context),
+                        4,
+                        pageSide(context),
+                        0,
+                      ),
+                      child: Notice(message: l10n.failureMessage(failure)),
+                    ),
+                  _section(l10n.sectionContact, [
+                    SpaceTextField(
+                      label: l10n.nameLabel,
+                      controller: _name,
+                      enabled: !_saving,
+                      textCapitalization: TextCapitalization.words,
+                      autofillHints: const [AutofillHints.name],
+                      validator: _validator(
+                        'name',
+                        (v) =>
+                            v.trim().isEmpty ? l10n.validationRequired : null,
                       ),
                     ),
-                  AppFormSection(
-                    title: l10n.sectionContact,
-                    children: [
-                      AppTextField(
-                        label: l10n.nameLabel,
-                        controller: _name,
-                        enabled: !_saving,
-                        textCapitalization: TextCapitalization.words,
-                        autofillHints: const [AutofillHints.name],
-                        validator: _validator(
-                          'name',
-                          (v) =>
-                              v.trim().isEmpty ? l10n.validationRequired : null,
-                        ),
-                      ),
-                      AppTextField(
-                        label: l10n.emailLabel,
-                        controller: _email,
-                        enabled: !_saving,
-                        keyboardType: TextInputType.emailAddress,
-                        hint: l10n.emailHint,
-                        validator: _validator('email', (v) {
-                          if (v.trim().isEmpty) return l10n.validationRequired;
-                          if (!_emailPattern.hasMatch(v.trim())) {
-                            return l10n.validationInvalidEmail;
-                          }
-                          return null;
-                        }),
-                      ),
-                      AppTextField(
-                        label: l10n.phoneLabel,
-                        controller: _phone,
-                        enabled: !_saving,
-                        keyboardType: TextInputType.phone,
-                        validator: _validator('phoneNumber'),
-                      ),
-                    ],
-                  ),
-                  AppFormSection(
-                    title: l10n.sectionSignIn,
-                    footer: _creating
-                        ? l10n.passwordHelpCreate
-                        : l10n.passwordHelpEdit,
-                    children: [
-                      AppTextField(
-                        label: _creating
-                            ? l10n.initialPasswordLabel
-                            : l10n.newPasswordOptionalLabel,
-                        controller: _password,
-                        enabled: !_saving,
-                        obscureText: true,
-                        autofillHints: const [AutofillHints.newPassword],
-                        validator: _validator('password', (v) {
-                          if (v.isEmpty) {
-                            return _creating ? l10n.validationRequired : null;
-                          }
-                          return v.length < PasswordPolicy.minLength
-                              ? l10n.validationMinLength(
-                                  '${PasswordPolicy.minLength}',
-                                )
-                              : null;
-                        }),
-                      ),
-                    ],
-                  ),
-                  AppFormSection(
-                    title: l10n.sectionRoles,
-                    footer: _roleIds.isEmpty ? l10n.noRolesSelected : null,
-                    children: [
-                      for (final role in widget.roles)
-                        AppCheckRow(
-                          title: l10n.roleName(role.name),
-                          subtitle: role.description,
-                          checked: _roleIds.contains(role.id),
-                          onChanged: _saving
-                              ? null
-                              : (checked) => setState(
-                                  () => checked
-                                      ? _roleIds.add(role.id)
-                                      : _roleIds.remove(role.id),
-                                ),
-                        ),
-                    ],
-                  ),
-                  AppFormSection(
-                    title: l10n.sectionEmployment,
-                    children: [
-                      AppTextField(
-                        label: l10n.employeeIdLabel,
-                        controller: _employeeId,
-                        enabled: !_saving,
-                        validator: _validator('employeeId'),
-                      ),
-                      AppPickerRow(
-                        label: l10n.employmentTypeLabel,
-                        value: switch (_employmentType) {
-                          final t? => l10n.employmentLabel(t),
-                          null => null,
-                        },
-                        onTap: _saving
-                            ? null
-                            : () async {
-                                final picked = await showAppChoice(
-                                  context,
-                                  title: l10n.employmentTypeLabel,
-                                  options: {
-                                    for (final t in {
-                                      ...EmploymentTypes.all,
-                                      ?_employmentType,
-                                    })
-                                      t: l10n.employmentLabel(t),
-                                  },
+                    SpaceTextField(
+                      label: l10n.emailLabel,
+                      controller: _email,
+                      enabled: !_saving,
+                      keyboardType: TextInputType.emailAddress,
+                      hint: l10n.emailHint,
+                      validator: _validator('email', (v) {
+                        if (v.trim().isEmpty) return l10n.validationRequired;
+                        if (!_emailPattern.hasMatch(v.trim())) {
+                          return l10n.validationInvalidEmail;
+                        }
+                        return null;
+                      }),
+                    ),
+                    SpaceTextField(
+                      label: l10n.phoneLabel,
+                      controller: _phone,
+                      enabled: !_saving,
+                      keyboardType: TextInputType.phone,
+                      validator: _validator('phoneNumber'),
+                    ),
+                  ]),
+                  _section(l10n.sectionSignIn, [
+                    SpaceTextField(
+                      label: _creating
+                          ? l10n.initialPasswordLabel
+                          : l10n.newPasswordOptionalLabel,
+                      controller: _password,
+                      enabled: !_saving,
+                      obscureText: true,
+                      autofillHints: const [AutofillHints.newPassword],
+                      helper: _creating
+                          ? l10n.passwordHelpCreate
+                          : l10n.passwordHelpEdit,
+                      validator: _validator('password', (v) {
+                        if (v.isEmpty) {
+                          return _creating ? l10n.validationRequired : null;
+                        }
+                        return v.length < PasswordPolicy.minLength
+                            ? l10n.validationMinLength(
+                                '${PasswordPolicy.minLength}',
+                              )
+                            : null;
+                      }),
+                    ),
+                  ]),
+                  _section(l10n.sectionRoles, [
+                    ChoicePills<String>(
+                      options: {
+                        for (final role in widget.roles)
+                          role.id: l10n.roleName(role.name),
+                      },
+                      selected: _roleIds,
+                      onToggle: _saving
+                          ? null
+                          : (id) => setState(
+                              () => _roleIds.contains(id)
+                                  ? _roleIds.remove(id)
+                                  : _roleIds.add(id),
+                            ),
+                    ),
+                  ], footer: _roleIds.isEmpty ? l10n.noRolesSelected : null),
+                  _section(l10n.sectionEmployment, [
+                    SpaceTextField(
+                      label: l10n.employeeIdLabel,
+                      controller: _employeeId,
+                      enabled: !_saving,
+                      validator: _validator('employeeId'),
+                    ),
+                    PickerField(
+                      label: l10n.employmentTypeLabel,
+                      value: switch (_employmentType) {
+                        final t? => l10n.employmentLabel(t),
+                        null => null,
+                      },
+                      onTap: _saving
+                          ? null
+                          : () async {
+                              final picked = await showAppChoice(
+                                context,
+                                title: l10n.employmentTypeLabel,
+                                // Only offered once there's a value to unset.
+                                allowClear: _employmentType != null,
+                                options: {
+                                  for (final t in {
+                                    ...EmploymentTypes.all,
+                                    ?_employmentType,
+                                  })
+                                    t: l10n.employmentLabel(t),
+                                },
+                              );
+                              if (picked != null) {
+                                setState(
+                                  () => _employmentType = picked.isEmpty
+                                      ? null
+                                      : picked,
                                 );
-                                if (picked != null) {
-                                  setState(
-                                    () => _employmentType = picked.isEmpty
-                                        ? null
-                                        : picked,
-                                  );
-                                }
-                              },
+                              }
+                            },
+                    ),
+                    SpaceTextField(
+                      label: l10n.payRateLabel,
+                      controller: _payRate,
+                      enabled: !_saving,
+                      hint: '18.50',
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
                       ),
-                      AppTextField(
-                        label: l10n.payRateLabel,
-                        controller: _payRate,
-                        enabled: !_saving,
-                        hint: '18.50',
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                        ],
-                        validator: _validator('payRate', (v) {
-                          final text = v.trim();
-                          return text.isEmpty || _moneyPattern.hasMatch(text)
-                              ? null
-                              : l10n.invalidPayRate;
-                        }),
-                      ),
-                      AppPickerRow(
-                        label: l10n.hireDateLabel,
-                        value: _hireDate == null
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                      ],
+                      validator: _validator('payRate', (v) {
+                        final text = v.trim();
+                        return text.isEmpty || _moneyPattern.hasMatch(text)
                             ? null
-                            : context.formatDayLong(_hireDate!),
-                        onTap: _saving
-                            ? null
-                            : () async {
-                                final picked = await showAppDatePicker(
-                                  context,
-                                  initial: _hireDate,
-                                );
-                                if (picked != null) {
-                                  setState(() => _hireDate = picked);
-                                }
-                              },
-                      ),
-                    ],
-                  ),
-                  AppFormSection(
-                    title: l10n.sectionEmergency,
-                    children: [
-                      AppTextField(
-                        label: l10n.emergencyNameLabel,
-                        controller: _emergencyName,
-                        enabled: !_saving,
-                        textCapitalization: TextCapitalization.words,
-                        validator: _validator('emergencyContactName'),
-                      ),
-                      AppTextField(
-                        label: l10n.emergencyPhoneLabel,
-                        controller: _emergencyPhone,
-                        enabled: !_saving,
-                        keyboardType: TextInputType.phone,
-                        textInputAction: TextInputAction.done,
-                        validator: _validator('emergencyContactPhone'),
-                      ),
-                    ],
-                  ),
+                            : l10n.invalidPayRate;
+                      }),
+                    ),
+                    PickerField(
+                      label: l10n.hireDateLabel,
+                      icon: Icons.calendar_today_outlined,
+                      value: _hireDate == null
+                          ? null
+                          : context.formatDayLong(_hireDate!),
+                      onTap: _saving
+                          ? null
+                          : () async {
+                              final picked = await showAppDatePicker(
+                                context,
+                                initial: _hireDate,
+                              );
+                              if (picked != null) {
+                                setState(() => _hireDate = picked);
+                              }
+                            },
+                    ),
+                  ]),
+                  _section(l10n.sectionEmergency, [
+                    SpaceTextField(
+                      label: l10n.emergencyNameLabel,
+                      controller: _emergencyName,
+                      enabled: !_saving,
+                      textCapitalization: TextCapitalization.words,
+                      validator: _validator('emergencyContactName'),
+                    ),
+                    SpaceTextField(
+                      label: l10n.emergencyPhoneLabel,
+                      controller: _emergencyPhone,
+                      enabled: !_saving,
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      validator: _validator('emergencyContactPhone'),
+                    ),
+                  ]),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sp_cln_app/core/design/tokens.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 
 import '../../../helpers/test_app.dart';
@@ -19,7 +20,7 @@ void main() {
   ) async {
     await pumpApp(tester, auth: FakeAuthRepository());
 
-    expect(find.text(_tagline), findsOneWidget);
+    expect(find.textContaining(_tagline, findRichText: true), findsOneWidget);
     expect(find.text('Not you?'), findsNothing);
   });
 
@@ -88,7 +89,7 @@ void main() {
     // Confirm in the dialog.
     await tester.tap(find.text('Sign out').last);
     await tester.pumpAndSettle();
-    expect(find.text(_tagline), findsOneWidget);
+    expect(find.textContaining(_tagline, findRichText: true), findsOneWidget);
   });
 
   testWidgets('prefills the remembered email, and "Not you?" clears it', (
@@ -118,13 +119,15 @@ void main() {
     expect(find.text('Your session expired. Sign in again.'), findsOneWidget);
   });
 
-  testWidgets('stays white when the phone is in dark mode', (tester) async {
+  testWidgets('keeps the light ground when the phone is in dark mode', (
+    tester,
+  ) async {
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
     addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
     await pumpApp(tester, auth: FakeAuthRepository());
 
     final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-    expect(scaffold.backgroundColor, const Color(0xFFFFFFFF));
+    expect(scaffold.backgroundColor, SpaceColors.ground);
   });
 
   testWidgets('switching language mid-animation never overflows', (
@@ -161,7 +164,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('Un Solo Aliado. Toda Solución para tu Instalación.'),
+      find.textContaining(
+        'Un Solo Aliado. Toda Solución para tu Instalación.',
+        findRichText: true,
+      ),
       findsOneWidget,
     );
     expect(button('Iniciar sesión'), findsOneWidget);

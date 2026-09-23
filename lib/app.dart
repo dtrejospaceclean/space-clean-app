@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
-import 'core/theme/app_theme.dart';
+import 'core/design/theme.dart';
 import 'features/settings/presentation/controllers/language_controller.dart';
 import 'l10n/app_localizations.dart';
 
@@ -18,11 +18,8 @@ class App extends ConsumerWidget {
       locale: ref.watch(languageControllerProvider)?.locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      // Light only for now: the user wants a white background even when the
-      // phone is in dark mode. Switch to ThemeMode.system to re-enable the
-      // dark palettes (and set the native splash `color_dark` back to ember).
+      theme: SpaceTheme.light(),
+      // Light only: one design on both platforms (docs/example_app.png).
       themeMode: ThemeMode.light,
     );
   }

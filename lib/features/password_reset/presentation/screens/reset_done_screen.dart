@@ -1,12 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/threshold_palette.dart';
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/threshold/threshold_buttons.dart';
-import '../../../../core/widgets/threshold/threshold_scaffold.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/password_reset_controller.dart';
 
@@ -19,58 +15,42 @@ class ResetDoneScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final palette = ThresholdPalette.of(context);
     final email = ref.watch(passwordResetControllerProvider).email;
 
-    return ThresholdScaffold(
-      centerHeader: true,
-      header: Column(
-        children: [
-          Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              color: palette.onGround,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              useCupertino(context)
-                  ? CupertinoIcons.checkmark_alt
-                  : Icons.check,
-              size: 56,
-              color: palette.ground,
+    return SpacePage(
+      showBack: false,
+      slivers: [
+        PageBox(
+          top: 48,
+          child: SpaceCard(
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                const IconBadge.strong(icon: Icons.check_rounded, size: 72),
+                const SizedBox(height: 24),
+                HeroHeadline(primary: l10n.resetDoneTitle),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.resetDoneBody,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.copyWith(color: SpaceColors.inkMuted),
+                ),
+                const SizedBox(height: 28),
+                PrimaryButton(
+                  label: l10n.backToSignIn,
+                  onPressed: () => context.go(
+                    Uri(
+                      path: '/login',
+                      queryParameters: {if (email.isNotEmpty) 'email': email},
+                    ).toString(),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 28),
-          Semantics(
-            header: true,
-            child: Text(
-              l10n.resetDoneTitle,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: palette.onGround,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            l10n.resetDoneBody,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge
-                ?.copyWith(color: palette.onGroundMuted, fontSize: 17),
-          ),
-        ],
-      ),
-      body: ThresholdButton(
-        label: l10n.backToSignIn,
-        onPressed: () => context.go(
-          Uri(
-            path: '/login',
-            queryParameters: {if (email.isNotEmpty) 'email': email},
-          ).toString(),
         ),
-      ),
+      ],
     );
   }
 }

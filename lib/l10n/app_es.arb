@@ -146,7 +146,6 @@
   "employmentContractor": "Contratista",
   "notSet": "Sin definir",
   "chooseButton": "Elegir",
-  "clearButton": "Borrar",
   "doneButton": "Listo",
   "invalidPayRate": "Ingresa un monto como 18.50.",
   "noRolesSelected": "Sin roles: esta persona todavía no puede hacer nada.",
@@ -176,5 +175,11 @@
   "rolesSystemRole": "Los roles predefinidos no se pueden renombrar ni eliminar.",
   "rolesSomeNotFound": "Uno de los roles elegidos ya no existe. Actualiza e inténtalo de nuevo.",
   "usersNotFound": "Este usuario ya no existe.",
-  "errorsUniqueViolation": "Ese valor ya está en uso."
+  "errorsUniqueViolation": "Ese valor ya está en uso.",
+  "jobsTodayCount": "{count, plural, =0{Nada programado hoy} =1{1 trabajo hoy} other{{count} trabajos hoy}}",
+  "yourJobs": "Tus trabajos",
+  "statToDo": "Pendientes",
+  "accountsCount": "{count, plural, =0{Aún no tienes cuentas} =1{1 cuenta} other{{count} cuentas}}",
+  "comingSoonLong": "Próximamente",
+  "openSection": "Abrir"
 }

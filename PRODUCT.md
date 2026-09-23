@@ -49,7 +49,7 @@ A single system that connects what was sold (proposal and contract) to what gets
 
 - Name: **Space Clean**.
 - An existing brand (logo, colors, voice) is published on the company website. **https://www.spacecleanllc.com** Future visual work must use that brand, not invent one.
-- Design language adapts per OS: Material conventions on Android, Cupertino conventions on iOS (navigation, dialogs, pickers).
+- One custom design on both Android and iOS, following the reference `docs/example_app.png`: gray ground, white rounded cards, big bold titles, black round and pill actions, a custom white tab bar. Space Clean colors: logo navy #0A4781 as the strong accent, brand orange #C2410C as the highlight. Typeface: Manrope (bundled). Native behaviors stay per OS: back gestures, dialogs, date and choice pickers, haptics, and page transitions. The app is light-only.
 
 ## Evidence on Hand
 

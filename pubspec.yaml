@@ -71,6 +71,22 @@ flutter:
   assets:
     - assets/brand/
 
+  # Manrope (SIL Open Font License, assets/fonts/Manrope-OFL.txt): the app's
+  # single typeface on both platforms.
+  fonts:
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Manrope-ExtraBold.ttf
+          weight: 800
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -102,17 +118,17 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-# Native launch screen: matches the Flutter splash, white with the color logo
-# in both light and dark system modes (the app is light-only for now).
+# Native launch screen: matches the Flutter splash (gray ground, color logo)
+# in both light and dark system modes (the app is light-only).
 # Regenerate with: flutter test --update-goldens tool/brand && dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#FFFFFF"
-  color_dark: "#FFFFFF"
+  color: "#F1F1F3"
+  color_dark: "#F1F1F3"
   image: assets/brand/splash_logo.png
   image_dark: assets/brand/splash_logo.png
   android_12:
-    color: "#FFFFFF"
-    color_dark: "#FFFFFF"
+    color: "#F1F1F3"
+    color_dark: "#F1F1F3"
     image: assets/brand/splash_logo_android12.png
     image_dark: assets/brand/splash_logo_android12.png
   web: false

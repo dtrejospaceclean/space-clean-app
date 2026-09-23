@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/widgets/adaptive.dart';
+import '../../../core/design/design.dart';
 import '../../../l10n/app_localizations.dart';
 
-/// Signed-in shell: Today, Accounts, Me. A Material navigation bar on
-/// Android, a Cupertino tab bar on iOS. Each tab keeps its own stack.
+/// Signed-in shell: Today, Accounts, Me, with the custom white tab bar.
+/// Each tab keeps its own stack.
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -21,53 +20,30 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
-    final tabs = [
-      (
-        cupertino ? CupertinoIcons.sun_max : Icons.today_outlined,
-        cupertino ? CupertinoIcons.sun_max_fill : Icons.today,
-        l10n.tabToday,
-      ),
-      (
-        cupertino ? CupertinoIcons.building_2_fill : Icons.apartment_outlined,
-        cupertino ? CupertinoIcons.building_2_fill : Icons.apartment,
-        l10n.tabAccounts,
-      ),
-      (
-        cupertino ? CupertinoIcons.person_crop_circle : Icons.person_outline,
-        cupertino ? CupertinoIcons.person_crop_circle_fill : Icons.person,
-        l10n.tabProfile,
-      ),
-    ];
-
     return Scaffold(
+      backgroundColor: SpaceColors.ground,
       body: navigationShell,
-      bottomNavigationBar: cupertino
-          ? CupertinoTabBar(
-              currentIndex: navigationShell.currentIndex,
-              onTap: _select,
-              iconSize: 26,
-              items: [
-                for (final (icon, activeIcon, label) in tabs)
-                  BottomNavigationBarItem(
-                    icon: Icon(icon),
-                    activeIcon: Icon(activeIcon),
-                    label: label,
-                  ),
-              ],
-            )
-          : NavigationBar(
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: _select,
-              destinations: [
-                for (final (icon, activeIcon, label) in tabs)
-                  NavigationDestination(
-                    icon: Icon(icon),
-                    selectedIcon: Icon(activeIcon),
-                    label: label,
-                  ),
-              ],
-            ),
+      bottomNavigationBar: SpaceBottomBar(
+        currentIndex: navigationShell.currentIndex,
+        onTap: _select,
+        items: [
+          BottomBarItem(
+            icon: Icons.today_outlined,
+            activeIcon: Icons.today_rounded,
+            label: l10n.tabToday,
+          ),
+          BottomBarItem(
+            icon: Icons.apartment_outlined,
+            activeIcon: Icons.apartment_rounded,
+            label: l10n.tabAccounts,
+          ),
+          BottomBarItem(
+            icon: Icons.person_outline_rounded,
+            activeIcon: Icons.person_rounded,
+            label: l10n.tabProfile,
+          ),
+        ],
+      ),
     );
   }
 }

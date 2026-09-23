@@ -1,330 +1,330 @@
 ---
 name: Space Clean
-description: Operations app for commercial cleaning companies; a clean white door in carried by the full-color logo, and the work inside stays quiet.
+description: Operations app for commercial cleaning companies; soft gray ground, white rounded cards, big bold Manrope titles, black pill actions, logo navy as the accent.
 colors:
-  brand-orange: "#C2410C"
-  ember: "#431407"
+  ground: "#F1F1F3"
+  surface: "#FFFFFF"
+  sunken: "#F4F4F6"
+  line: "#E6E6EA"
+  ink: "#111114"
+  ink-muted: "#6B6B75"
+  ink-soft: "#80808A"
+  ink-faint: "#A2A2AB"
   logo-navy: "#0A4781"
-  accent-orange: "#F97316"
-  logo-orange: "#F45302"
-  danger-red: "#B91C1C"
-  white: "#FFFFFF"
-  stone-ink: "#1C1917"
-  stone-muted: "#57534E"
-  stone-hint: "#6B5E57"
-  stone-outline: "#78716C"
-  stone-track: "#E7E5E4"
-  notice-error-tint: "#FEF2F2"
-  notice-info-tint: "#EFF6FF"
-  apricot-muted: "#FED7AA"
-  ember-field: "#5A1F0B"
-  ember-field-hint: "#E9B99A"
-  kiln-border: "#EA580C"
-  cream-notice: "#FFF7ED"
+  navy-wash: "#DCE8F6"
+  on-navy: "#FFFFFF"
+  brand-orange: "#C2410C"
+  orange-wash: "#FCE7DC"
+  orange-ink: "#9A3412"
+  success: "#15803D"
+  success-wash: "#DDF3E4"
+  success-ink: "#166534"
+  danger: "#B91C1C"
+  danger-wash: "#FDE8E8"
 typography:
-  headline:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "28sp"
+  page-title:
+    fontFamily: "Manrope"
+    fontSize: "30px"
     fontWeight: 700
-    lineHeight: 1.29
-    letterSpacing: "-0.5"
-  intro:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "17sp"
+    lineHeight: 1.15
+    letterSpacing: "-0.8px"
+  hero:
+    fontFamily: "Manrope"
+    fontSize: "28px"
+    fontWeight: 700
+    lineHeight: 1.15
+    letterSpacing: "-0.8px"
+  figure:
+    fontFamily: "Manrope"
+    fontSize: "24px"
+    fontWeight: 800
+    letterSpacing: "-0.5px"
+    fontFeature: "tnum"
+  title:
+    fontFamily: "Manrope"
+    fontSize: "16px"
+    fontWeight: 700
+  body:
+    fontFamily: "Manrope"
+    fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.45
-  title:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "16sp"
-    fontWeight: 600
-    lineHeight: 1.5
-  tagline:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "16sp"
-    fontWeight: 500
-    lineHeight: 1.35
-  action:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "18sp"
-    fontWeight: 600
-  input:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "18sp"
+  body-muted:
+    fontFamily: "Manrope"
+    fontSize: "14px"
     fontWeight: 400
-  body:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "16sp"
+  field-label:
+    fontFamily: "Manrope"
+    fontSize: "14px"
+    fontWeight: 600
+  field-value:
+    fontFamily: "Manrope"
+    fontSize: "17px"
     fontWeight: 500
-    lineHeight: 1.35
-  error:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "15sp"
+  button:
+    fontFamily: "Manrope"
+    fontSize: "16px"
     fontWeight: 700
-    lineHeight: 1.35
-  label:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "15sp"
+  pill:
+    fontFamily: "Manrope"
+    fontSize: "12.5px"
     fontWeight: 700
-    letterSpacing: "0.5"
-  code-digit:
-    fontFamily: "Roboto (Android), San Francisco (iOS)"
-    fontSize: "30sp"
-    fontWeight: 700
-    fontFeature: "tnum"
 rounded:
-  box: "12dp"
-  panel: "14dp"
+  inner: "16px"
+  card: "24px"
+  sheet: "28px"
+  pill: "999px"
 spacing:
-  xs: "8dp"
-  sm: "12dp"
-  md: "16dp"
-  lg: "24dp"
-  xl: "28dp"
-  xxl: "32dp"
-  tablet-gap: "48dp"
+  gap: "12px"
+  page: "20px"
+  card: "20px"
 components:
   button-primary:
-    backgroundColor: "{colors.logo-navy}"
-    textColor: "{colors.white}"
-    typography: "{typography.action}"
-    rounded: "{rounded.panel}"
-    height: "60dp"
-    width: "100%"
-  button-primary-dark:
-    backgroundColor: "{colors.accent-orange}"
-    textColor: "{colors.ember}"
-    typography: "{typography.action}"
-    rounded: "{rounded.panel}"
-    height: "60dp"
-    width: "100%"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.surface}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    height: "56px"
+  button-secondary:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    height: "56px"
+  button-secondary-destructive:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.danger}"
+    rounded: "{rounded.pill}"
+    height: "56px"
   button-link:
-    textColor: "{colors.brand-orange}"
-    typography: "{typography.title}"
-    padding: "0 12dp"
-    height: "48dp"
-  button-link-dark:
-    textColor: "{colors.white}"
-    typography: "{typography.title}"
-    padding: "0 12dp"
-    height: "48dp"
-  text-field:
-    backgroundColor: "{colors.white}"
-    textColor: "{colors.stone-ink}"
-    typography: "{typography.input}"
-    rounded: "{rounded.panel}"
-    padding: "21dp 18dp"
-    height: "64dp"
-  text-field-dark:
-    backgroundColor: "{colors.ember-field}"
-    textColor: "{colors.white}"
-    typography: "{typography.input}"
-    rounded: "{rounded.panel}"
-    padding: "21dp 18dp"
-    height: "64dp"
+    textColor: "{colors.logo-navy}"
+    height: "48px"
+  circle-button-dark:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.surface}"
+    rounded: "{rounded.pill}"
+    size: "44px"
+  circle-button-light:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    size: "44px"
+  card:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.card}"
+    padding: "{spacing.card}"
+  accent-banner:
+    backgroundColor: "{colors.logo-navy}"
+    textColor: "{colors.on-navy}"
+    padding: "12px 20px"
+  input:
+    backgroundColor: "{colors.sunken}"
+    textColor: "{colors.ink}"
+    typography: "{typography.field-value}"
+    rounded: "{rounded.inner}"
+    padding: "18px"
+  pill-toggle-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.surface}"
+    rounded: "{rounded.pill}"
+    height: "40px"
+  pill-toggle-idle:
+    textColor: "{colors.ink-muted}"
+    rounded: "{rounded.pill}"
+    height: "40px"
+  choice-pill:
+    backgroundColor: "{colors.sunken}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    height: "44px"
+  choice-pill-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.surface}"
+    rounded: "{rounded.pill}"
+    height: "44px"
+  status-pill-scheduled:
+    backgroundColor: "{colors.navy-wash}"
+    textColor: "{colors.logo-navy}"
+    typography: "{typography.pill}"
+    rounded: "{rounded.pill}"
+    padding: "5px 10px"
+  status-pill-in-progress:
+    backgroundColor: "{colors.orange-wash}"
+    textColor: "{colors.orange-ink}"
+    typography: "{typography.pill}"
+    rounded: "{rounded.pill}"
+    padding: "5px 10px"
+  status-pill-completed:
+    backgroundColor: "{colors.success-wash}"
+    textColor: "{colors.success-ink}"
+    typography: "{typography.pill}"
+    rounded: "{rounded.pill}"
+    padding: "5px 10px"
   notice-error:
-    backgroundColor: "{colors.notice-error-tint}"
-    textColor: "{colors.stone-ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.panel}"
-    padding: "16dp"
-  notice-info:
-    backgroundColor: "{colors.notice-info-tint}"
-    textColor: "{colors.stone-ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.panel}"
-    padding: "16dp"
-  notice-dark:
-    backgroundColor: "{colors.cream-notice}"
-    textColor: "{colors.stone-ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.panel}"
-    padding: "16dp"
-  code-box:
-    backgroundColor: "{colors.white}"
-    textColor: "{colors.stone-ink}"
-    typography: "{typography.code-digit}"
-    rounded: "{rounded.box}"
-    height: "68dp"
-  language-switch-selected:
-    backgroundColor: "{colors.stone-ink}"
-    textColor: "{colors.white}"
-    typography: "{typography.label}"
-    height: "48dp"
-  language-switch-unselected:
-    textColor: "{colors.stone-ink}"
-    typography: "{typography.label}"
-    height: "48dp"
-  language-switch-selected-dark:
-    backgroundColor: "{colors.white}"
-    textColor: "{colors.ember}"
-    typography: "{typography.label}"
-    height: "48dp"
-  language-switch-unselected-dark:
-    textColor: "{colors.white}"
-    typography: "{typography.label}"
-    height: "48dp"
+    backgroundColor: "{colors.danger-wash}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.inner}"
+    padding: "16px"
+  bottom-bar:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink-muted}"
+    height: "72px"
+  bottom-bar-active:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    height: "72px"
 ---
 
 # Design System: Space Clean
 
 ## Overview
 
-**Creative North Star: "The Brand Threshold"**
+**Creative North Star: "The Pocket Ledger"**
 
-Space Clean has two registers. The **threshold** is everything before sign-in (native launch, splash, sign-in, the three password-reset steps). In light mode it is a clean white door: a full-bleed white ground, the full-color planet mark and wordmark in the upper free space, and an oversized, plain form low in the thumb zone. The brand is carried by the logo, one logo-navy action, and brand-orange text links. The form sits directly on the ground with no card. Fields are white with a stone outline, not gray fills. In dark mode the threshold keeps its ember ground with the white knockout logo and a bright-orange action.
+Every screen is a stack of white rounded cards floating on a soft gray ground, headed by a big bold Manrope title. The system follows the user's reference (`docs/example_app.png`) in structure: gray ground, white cards with no borders or shadows, two-tone hero headlines, round black and white header buttons, black pill actions, and a custom white tab bar. The reference's electric blue is replaced by Space Clean's logo navy, with brand orange held back for "in progress" and highlights.
 
-The **interior** is the working app after sign-in: restrained neutral surfaces with the brand orange as the only accent, built from a Material scheme seeded on the brand orange. This register is the intended rule but is **not yet exercised**. Only a placeholder home screen exists, so treat interior guidance as provisional until real screens are built.
+One custom design runs on both Android and iOS. What stays native is behavior, not look: back gestures and page transitions (go_router pages), adaptive dialogs (`lib/core/widgets/adaptive.dart`), native date and choice pickers (`lib/core/design/widgets/pickers.dart`), the adaptive pull-to-refresh, and haptics. The app is light-only (`themeMode: light`), and the native launch screen and Android window background use the same gray ground (#F1F1F3) with the color logo, so launch never flashes.
 
-Both registers speak each OS's native language: Material components on Android, Cupertino on iOS, platform system fonts, platform icons. The brand comes from the logo, the colors of spacecleanllc.com, and the proportions of the threshold, not from custom chrome. Accessibility is part of the look: big targets, rows that grow with text size, errors that never depend on color alone.
+Density is calm and thumb-first. Cards are generous (20px padding, 24px corners). Numbers crew scan for (time ranges, counts, checklist fractions) are the biggest thing in their card. Primary actions are full-width 56px black pills.
+
+**Retired:** the earlier "threshold" system is gone. It had an orange/white sign-in door, an ember dark mode, per-OS Material/Cupertino widgets, and the `app_theme`/`threshold_*` widget files. Do not revive those. The old orange/ember constants file (`brand_colors.dart`) has been deleted too.
 
 **Key Characteristics:**
-- White threshold with the full-color logo in light mode; ember with the white logo in dark mode; quiet neutrals after sign-in.
-- One primary action per screen, full width, 60 dp, logo navy, in the thumb zone on phones.
-- Outlined white fields on white; brand orange appears only as underlined text links.
-- Red errors on white (never red on ember, never orange on orange in dark mode), tinted notice panels.
-- Native controls per OS (Material / Cupertino), system type.
-- Flat: no shadows anywhere; depth comes from outlines and fill contrast.
-
-**Theme mode (current):** the app is light-only (`themeMode: ThemeMode.light`); the user wants a white background even when the phone is in dark mode. The dark (ember) values below are kept for when dark mode is re-enabled, and the native launch screen is white in both system modes.
+- Gray ground, white 24px cards, no shadows. Fields are the only elements with an outline at rest.
+- Manrope everywhere, bold and tightly tracked at display sizes.
+- Black is the action color: pills, round "+" buttons, selected toggles, and the active tab.
+- Logo navy is the accent: banners, progress, links, focus, and info.
+- One custom look on both platforms, with native behaviors kept.
 
 ## Colors
 
-A white ground with logo navy for action, brand orange for links, and stone neutrals for text and outlines; dark mode swaps to an ember ground with bright orange for action.
+The palette is near-black ink on white cards and a cool gray ground. Logo navy is the single strong accent, and brand orange appears only as a status highlight.
 
 ### Primary
-- **Brand Orange** (brand-orange): the website's button fill. On the light threshold it is the text-link color ("Forgot password?", "Not you?"), 5.2:1 on white. It seeds the interior Material scheme and is the interior primary in light mode. It is not a threshold fill in light mode.
-- **Ember** (ember): the threshold ground in dark mode, the dark native launch color, and the label color on the bright-orange dark-mode action.
+- **Ink Black** (ink): primary action fill (FilledButton, dark circle buttons, selected pill toggles and choice pills, active tab), all headline and body ink, progress spinners.
+- **Logo Navy** (logo-navy): the strong accent. It fills the accent banner along a card's bottom edge, the progress bar, strong icon badges and avatars, text links, the cursor, field focus rings, and info notices.
+- **Navy Wash** (navy-wash): progress track, soft icon badges, "Scheduled" status pill, role pills, and info notice fill.
 
 ### Secondary
-- **Logo Navy** (logo-navy): the logo wordmark's color. On the threshold it fills the light-mode primary action (white label 9.4:1), marks the focused field (3 dp border and cursor, 9.4:1 on white), and colors the info-notice icon (8.7:1 on its tint).
-- **Site Accent Orange** (accent-orange): the website's accent. In dark mode it is the threshold action fill (ember label 5.6:1) and the field focus color (4.6:1 on the ember field). It is also the interior primary in dark mode.
-
-### Tertiary
-- **Logo Orange** (logo-orange): the planet mark in the logo only. It is not used as a UI color.
-- **Danger Red** (danger-red): light-mode field and code-box error text (bold, 6.5:1 on white) and error borders (3 dp), and the error icon in notice panels (5.9:1 on the error tint, 6.1:1 on cream).
+- **Brand Orange** (brand-orange) with **Orange Wash** (orange-wash): highlight only. It is the scheme's tertiary color and the icon on the emergency-contact badge (4.34:1 on the wash, an icon, so the 3:1 floor applies).
+- **Orange Ink** (orange-ink): text and icons on Orange Wash (6.13:1). The "In progress" status pill uses it.
 
 ### Neutral
-- **White** (white): the light threshold ground, light fields and code boxes, the native launch in light mode, the primary-action label, and in dark mode text on ember, the white knockout logo, and dark field errors.
-- **Stone Ink** (stone-ink): headlines, labels, and body text on white (17.5:1), typed text in fields, and all notice text. It is also the light-mode language-switch selection fill.
-- **Stone Muted** (stone-muted): secondary text on white (tagline, intros, unmet password rules, disabled links), 7.6:1.
-- **Stone Hint** (stone-hint): placeholder text and suffix icons in white fields (6.2:1).
-- **Stone Outline** (stone-outline): the 1.5 dp resting outline of light fields and code boxes, 4.8:1 on white, so outlines survive bright light.
-- **Stone Track** (stone-track): the iOS language-switch track in light mode; unselected labels on it read 13.9:1.
-- **Notice Error Tint** (notice-error-tint) and **Notice Info Tint** (notice-info-tint): light-mode notice panel fills. They sit only 1.09:1 off the white ground; the icon and the text identify the panel, not its edge.
-- **Apricot Muted** (apricot-muted): secondary text on ember (11.6:1).
-- **Ember Field** (ember-field): dark-mode field fill; **Ember Field Hint** (ember-field-hint) is its placeholder (7.3:1).
-- **Kiln Border** (kiln-border): the resting border of dark-mode fields, 4.4:1 against ember and 3.6:1 against the field fill, so empty fields still read as fields.
-- **Cream Notice** (cream-notice): notice panel fill in dark mode, for both errors and information.
+- **Gray Ground** (ground): every page background, bottom sheets, native splash, and the Android window background.
+- **White Surface** (surface): cards, the bottom bar, dialogs, secondary pills, and light circle buttons.
+- **Sunken** (sunken): input fills, picker fields, code boxes, idle choice pills, initials avatars, and the cancelled/unknown status fill.
+- **Hairline** (line): dividers between rows inside a list card.
+- **Muted Ink** (ink-muted): secondary text, captions, helper text, idle toggle labels, and trailing values. It is the lightest tone allowed for small text on any ground.
+- **Soft Ink** (ink-soft): large text and UI parts only. It sets the second line of hero headlines, the time on finished job cards, the 1px outline on enabled fields, picker fields, and idle code boxes, row chevrons, and unmet password-rule icons. It measures 3.47:1 on ground, 3.91:1 on white, and 3.56:1 on sunken.
+- **Faint Ink** (ink-faint): disabled controls only (disabled button text). At 2.53:1 on white it never carries meaning.
+
+### Status
+- **Success** (success / success-wash): met password-rule icons (5.02:1 on white) and the success notice icon.
+- **Success Ink** (success-ink): text and icons on Success Wash (6.12:1). The "Completed" status pill uses it.
+- **Danger** (danger / danger-wash): field errors, error notices, destructive list rows, and destructive secondary buttons ("Sign out").
 
 ### Named Rules
-**The Orange Link Rule.** On the white threshold, brand orange appears as underlined text links and inside the logo, nowhere else. It is never a fill, a border, or an error color there.
+**The Black Acts, Navy Speaks Rule.** Anything you press to act is black (or white on black). Navy marks information and state (progress, links, banners, focus). Never make a primary action navy or orange.
 
-**The No Orange-on-Orange Rule.** In dark mode nothing that signals trouble is orange or red on the ember ground. Field errors are bold white text below the field. Form-level errors and information use cream panels with a red or navy icon.
+**The Orange Is Status Rule.** Brand orange appears only as a status or highlight tint: the "in progress" pill and the emergency-contact badge. It is never a fill for a button, banner, or ground.
 
-**The Two Registers Rule.** The threshold owns the full-screen identity (white with the full-color logo, or ember with the white logo). Interior screens use neutral surfaces with orange as the single accent (brand orange in light mode, site accent orange in dark mode). Do not drench interior screens in orange or ember.
+**The Wash Ink Rule.** Text on a wash uses that hue's ink tone, not its brand tone: Orange Ink on Orange Wash, Success Ink on Success Wash, Logo Navy on Navy Wash (7.58:1), Danger on Danger Wash (5.51:1). The brand tones on their own washes (orange 4.34:1, success 4.30:1) are for icons only.
 
-**The Logo Colors Rule.** Navy and orange come from the logo and the website. Do not invent new brand hues. Logo orange stays inside the logo.
+**The Muted Floor Rule.** Text below large size never goes lighter than Muted Ink (5.27:1 on white, 4.67:1 on ground, 4.80:1 on sunken). That includes hints, placeholders, and idle tab labels. Soft Ink is only for large text (18.66px bold or 24px regular and up) and for UI boundaries and icons, where it clears 3:1 on every ground. Faint Ink is only for disabled controls.
 
 ## Typography
 
-**Display Font:** none yet. The brand has no display face. The website uses a system/Inter stack, and choosing a brand display face is an open decision.
-**Body Font:** platform system font: Roboto on Android, San Francisco on iOS.
+**Display Font:** Manrope (bundled, OFL, weights 400/500/600/700/800 in `assets/fonts`)
+**Body Font:** Manrope
+**Label Font:** Manrope
 
-**Character:** Native, heavy, and large. Hierarchy comes from weight (500/600/700) and size, never from a decorative face. Sizes are in sp and scale with the OS text setting.
+**Character:** A single geometric sans. It is bold and tightly tracked at title sizes, then plain and roomy in body copy, and it respects OS text scaling at every size.
 
 ### Hierarchy
-- **Headline** (700, 28sp, -0.5 tracking): screen titles on the threshold ("Sign in", "Enter the code"), in stone ink (white on ember), marked as a semantic header.
-- **Intro** (400, 17sp, 1.45 line height): the one-paragraph explanation under a task-screen headline, in the muted text color.
-- **Title** (600, 16sp): field labels, on a row with a minimum height of 48 dp.
-- **Tagline** (500, 16sp, 1.35): the real brand tagline under the logo, muted color, centered.
-- **Action** (600, 18sp): primary button labels.
-- **Input** (400, 18sp): typed text and placeholders in fields.
-- **Body** (500, 16sp, 1.35): notice text and password rule rows (met rules at 700).
-- **Error** (700, 15sp, 1.35): field errors, danger red in light mode and white in dark mode, up to three lines.
-- **Label** (700, 15sp, 0.5 tracking): the EN/ES language switch segments.
-- **Code Digit** (700, 30sp, tabular figures): one-time-code boxes.
+- **Page title** (700, 30px, 1.15, -0.8 tracking): the big header title on every SpacePage ("Today", "Accounts").
+- **Hero** (700, 28px, 1.15, -0.8): two-tone headlines. The first line is ink and the second is Soft Ink ("Hi, Ana / 3 jobs today", "Sign in / One Partner. Every Facility Solution.").
+- **Figure** (800, 24px, -0.5, tabular figures): big numbers in stat cards (26px compact, three across), 22px job-card time ranges, and 32px on job detail (time and checklist fraction).
+- **Title** (700, 16px): card and tile titles, section headers, list-row titles (600).
+- **Body** (400, 16px, 1.45): intros and prose. Reset step intros use Muted Ink.
+- **Body muted** (400, 14px, Muted Ink): labels above numbers, subtitles, captions.
+- **Field label** (600, 14px, ink) over **field value** (500, 17px).
+- **Button** (700, 16px). Text links use 700 at 15px in navy.
+- **Pill** (700, 12.5px): status pills and tab labels.
 
 ### Named Rules
-**The Native Type Rule.** Use the platform system font (Roboto or San Francisco) for all UI text until a brand display face is chosen. Never bundle a substitute to fake one.
+**The Tabular Numbers Rule.** Every count, time range, and fraction uses tabular figures, so digits don't jitter when values change.
 
-**The Scale-Don't-Clip Rule.** Text grows with the OS setting. Rows that hold text get minimum heights, never fixed heights.
+**The Sentence Case Rule.** Titles, labels, and buttons are sentence case. The only uppercase text is initials in avatars and the compact "EN/ES" language codes.
 
 ## Layout
 
-The threshold is a single column with a maximum width of 480 dp, 24 dp side padding and 24 dp bottom padding, inside the safe area. It scrolls when the keyboard or large text leaves too little room. The system status bar is transparent with dark icons on white (light icons on ember), and the navigation bar takes the ground color.
+Single column with a 20px side margin (`page`). Content is capped at 640px (`maxContentWidth`) and centered on wider screens, so on tablets the side margin grows to `(width − 640) / 2`. Every page sliver and pinned bottom action uses the same `pageSide()` margin. The header sits 12px below the safe area. Top-level screens put the title and round action buttons on one 56px-minimum row. Pushed screens get a white round back button first, then the title 16px below it. Content blocks start 16px apart by default, and cards stack with a 12px gap (`gap`). Sibling cards pair up in two-column grids (CardGrid) or equal-width rows (CardRow, e.g. three compact stats) with equal heights. Inside cards, padding is 20px and fields stack 12px apart, with 24px before the primary button. Every scroll view ends with safe-area bottom padding plus 24px. Pinned bottom actions (Save) sit in the Scaffold's bottom slot above the keyboard.
 
-- **Top bar:** a minimum height of 64 dp that grows with text. It holds the platform back button (pulled 12 dp left to align optically) and a trailing slot (the language switch).
-- **Phones (shortest side < 600 dp):** the thumb-zone rule applies. On brand screens (splash, sign-in) the header is centered in the upper free space. On task screens the headline sits 8 dp under the bar. Flexible space then pushes the form toward the bottom, with a 32 dp minimum clearance above it.
-- **Tablets (shortest side >= 600 dp):** the thumb-zone rule does not apply. Header and body form one vertically centered group separated by a fixed 48 + 32 dp gap, still capped at 480 dp.
-- **Rhythm:** 8 dp (label to field, button to link), 12 dp (headline to intro, heading to first field), 16 dp (notice gaps, notice padding), 24 dp (page padding, notice to action), 28 dp (last field to primary action), 32 dp (header clearance).
-- **Brand block yielding:** the logo is 17% of screen height (104-160 dp) at rest, 12% (80-104 dp) when a notice needs room, and 64 dp with no tagline when the keyboard is open or when large text (>= 130%) meets a short screen (< 700 dp).
-
-### Named Rules
-**The Thumb Zone Rule.** On phones the primary action sits low, within thumb reach, and stays in the first viewport. The brand gives up space before the action does.
+**The 640 Column Rule.** No content column is wider than 640px. Wider screens center it on the gray ground rather than stretching cards or fields.
 
 ## Elevation & Depth
 
-Fully flat. No component casts a shadow, and the Material filled button and Cupertino button are used without elevation. Depth is outline and fill only: on white, fields and code boxes are defined by their stone outline; on ember, by the ember-field fill and kiln border. Focus and error are shown with border weight (1.5 dp at rest, 3 dp when focused or in error), not by lifting.
+The system is flat. No BoxShadow and no Material elevation appear anywhere in the design layer. Depth comes from tone alone: white surfaces on the gray ground (1.13:1), sunken fills inside white cards (1.1:1), and full-bleed navy banners at the base of a card. Because these tonal steps are too faint to mark an input, fields carry a 1px Soft Ink outline. The only lift is ink ripples (InkSparkle) on press and the native sheet and dialog presentation.
 
 ### Named Rules
-**The Sign-on-a-Wall Rule.** Surfaces on the threshold are flat planes on the ground. Separate them with color and border, never with shadow.
+**The No-Shadow Rule.** Cards, buttons, bars, and sheets carry no shadow and no border. If something needs to separate, change its tone, not its elevation. The one exception is the field outline (see Shapes), which exists for input legibility, not depth.
 
 ## Shapes
 
-Softly rounded rectangles in one family: 14 dp for the primary button, fields, and notice panels, and 12 dp for the smaller one-time-code boxes. Borders are solid, 1.5 dp at rest and 3 dp when active. The only curved silhouettes are the platform's own (segmented controls, circular rule icons, activity indicators), the round planet mark in the logo, and the 96 dp solid circle behind the check on the reset-done screen.
+The shapes are rounded throughout, in four steps. Cards and dialogs use 24px corners. Inner elements use 16px: fields, picker fields, code boxes, and notices. Bottom sheets use 28px top corners and show a drag handle. Buttons, toggles, choice pills, status pills, and progress bars are full pills (999). Circles are reserved for header buttons (44px visible, 48px target), icon badges (40px), and initials avatars (44px). Borders are reserved for inputs. At rest, enabled fields, picker fields, and idle code boxes have a 1px Soft Ink outline (Hairline when disabled). Focus replaces it with a 2px navy ring, and errors with a 2px danger ring. Hairline dividers inside list cards are inset 20px from each side.
 
 ## Components
 
 ### Buttons
-Big, solid, and alone: one per screen.
-- **Shape:** 14 dp corners, full width, 60 dp tall.
-- **Primary:** logo navy with a white label in light mode; site accent orange with an ember label in dark mode. A Material FilledButton on Android and a filled CupertinoButton on iOS.
-- **Busy:** keeps its fill and shows a 24 dp platform spinner (CircularProgressIndicator 2.5 stroke / CupertinoActivityIndicator) in the label color, and ignores taps. It never greys out while working.
-- **Link (secondary):** 16sp/600 text with a 1.5-thickness underline in brand orange (white in dark mode), 12 dp horizontal padding, 48 × 48 dp minimum target. A 15sp compact variant sits in label rows ("Not you?"). Disabled links take the muted text color. TextButton on Android, CupertinoButton on iOS.
+- **Primary:** a full-width black pill, 56px tall, with white 16px/700 text and an optional 20px leading icon. While busy it keeps its black fill and shows a white 22px spinner, and disabled keeps the fill too. Use one per screen.
+- **Secondary:** a white pill with the same geometry and ink text. The destructive variant uses danger text ("Sign out"). Disabled text is Faint Ink.
+- **Link:** a navy text button, 15px/700, 48px minimum target ("Forgot password?", "Not you?").
+- **Circle buttons:** 44px circles inside a 48px target, with 22px rounded icons. Black is for the screen's main add or edit action, and white is for back and secondary actions. Every one has a tooltip and a semantic label.
+
+### Chips / Pills
+- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a black pill with white 14px/700 text, and idle options are transparent with Muted Ink text. Used for the language toggle and the users list filter (Active / Inactive / All).
+- **Choice pills** (multi-select): pills at least 44px tall, sunken when idle and black with a white check when selected. Used to pick roles.
+- **Status pill:** a wash fill with a matching icon and 12.5px/700 label in that hue's ink tone. The pairs are Logo Navy on Navy Wash for Scheduled (7.58:1), Orange Ink on Orange Wash for In progress (6.13:1), Success Ink on Success Wash for Completed (6.12:1), and Muted Ink on Sunken for Cancelled (4.80:1). The icon is always present, so status never depends on color alone.
+
+### Cards / Containers
+- **SpaceCard:** white, 24px corners, 20px padding, no border or shadow, and a whole-card ink ripple when tappable. It is the only container.
+- **StatCard:** a muted label over a big 800-weight tabular number, with an optional icon badge, corner arrow, and caption. Compact uses 16px padding and a 26px number.
+- **TileCard:** an icon badge, 28px space, a 700 title, and a muted subtitle, placed in a two-column CardGrid.
+- **ListCard / ListRow:** rows inside one card, separated by inset hairlines. Rows are at least 60px tall, with a leading badge or avatar, a title and muted subtitle, a trailing muted value, and a Soft Ink chevron when tappable (3.91:1).
+- **AccentBanner:** a full-bleed navy strip in a card's footer with white 14px/600 text and an optional white icon ("3 of 8 done").
 
 ### Inputs / Fields
-- **Style:** label row above (title type in stone ink, white in dark mode, 48 dp minimum height, optional trailing link action), then a filled field with 64 dp visual height, 14 dp corners, and 18dp/21dp padding. Light mode: white fill, stone-outline 1.5 dp border. Dark mode: ember-field fill, kiln 1.5 dp border.
-- **Focus:** 3 dp border and cursor in navy (light) or site accent orange (dark).
-- **Error:** 3 dp border and a bold message below, both in the error color: danger red on white (6.5:1), white on ember (12.8:1 on the ember field). Red is never drawn on ember, where it measures under 3:1.
-- **Suffix:** platform eye icon (visibility_outlined / CupertinoIcons.eye) for show/hide password, in the hint color.
+- **Text field:** a 14px/600 ink label in a row at least 36px tall (it can hold a trailing link), over a sunken fill with 16px corners, 18px padding, and 17px/500 ink text. At rest the field has a 1px Soft Ink outline (3.56:1 against the fill, 3.91:1 against the white card), and the hint is Muted Ink. Focus shows a 2px navy border and navy cursor, errors show a 2px danger border, and error text is 13px/600 danger. Fields sit inside a white card.
+- **Picker field:** looks like a text field, with the same 1px Soft Ink outline and a trailing Muted Ink expand icon. "Not set" appears in Muted Ink. It opens the platform's native picker.
+- **Code input:** six sunken 64px-tall boxes, 8px apart, over one invisible field (supports paste and OS one-time-code autofill). Digits are 28px/800 tabular. Idle boxes have a 1px Soft Ink outline, and the active box gets a 2px navy border with a 160ms ease-out-cubic transition.
+- **Notice:** a wash-tinted 16px-corner block (danger, navy info, or success) with a 22px icon in the strong tone and 15px/500 ink text. It is announced as a live region.
 
-### One-Time-Code Input
-Six boxes 68 dp tall, gapped 8 dp, with 12 dp corners and 30sp tabular digits, styled like fields (white with a stone outline, ember-field with a kiln border in dark mode). They sit over one invisible text field so paste and OS one-time-code autofill fill every box. The active box takes the focus border, and every box takes the red border on error (legible on white; see the dark-mode note under Inputs). Border changes animate over 160 ms with easeOutCubic.
+### Navigation
+- **Bottom bar:** white, 72px plus safe area, and the same on both platforms. The active tab is ink with a filled 26px icon and a 12.5px/700 label. Idle tabs use outlined icons and 500-weight labels in Muted Ink (5.27:1). Active and idle differ in weight and icon fill as well as color. Tabs are Today, Accounts, and Me.
+- **Header:** the page title plus round action buttons. Pushed screens start with a white back circle, and the native back gesture still works.
 
-### Notice Panel
-A tinted panel with 14 dp corners and 16 dp padding: pale red for errors and pale blue for information in light mode, cream for both in dark mode. It has a 24 dp platform icon (error: red filled circle; info: navy filled info) and body text in stone ink. It is a live region for screen readers. Used for form-level errors, session expiry, and splash load failures.
-
-### Language Switch
-EN/ES codes in label type, placed at the top right of the threshold. On Android it is a Material SegmentedButton with a 1.5 dp outline in the text color and 56 × 48 dp segments; the selected segment is filled with the text color (stone ink on white, white on ember) and its label takes the ground color. On iOS it is a CupertinoSlidingSegmentedControl with a stone-track background (white 20% on ember) and a thumb in the text color. Each segment announces the full language name.
-
-### Password Rule Rows
-One rule per row with 4 dp vertical padding: a 24 dp platform icon, then 16sp text. Met rules show a filled check in 700 text in the main text color. Unmet rules show an empty circle in 500 text in the muted color. Met and unmet differ by icon shape and weight, not only by color. The icon swaps with a 180 ms crossfade.
-
-### Brand Block
-The full-color logo in light mode, or the white knockout logo on ember (the inked shapes become white and the logo's own white highlights become holes), with the brand tagline beneath it in the muted color. Height changes animate over 280 ms with easeOutCubic (see Layout for the yielding states).
-
-### Launch and Splash
-The native launch fills with white and the full-color logo raster (ember with the white logo in dark mode), so a cold start matches the first Flutter frame. The Flutter splash continues the same ground with the brand block and a centered platform activity indicator in the main text color.
-
-### Motion and Feedback
-280 ms easeOutCubic for brand-block compaction; 160-180 ms for small state swaps (code box borders, rule icons). A medium haptic impact accompanies every submit error.
+### Signature: Two-Tone Hero
+The HeroHeadline is a 28px/700 headline whose second line drops to Soft Ink. It opens sign-in, Today, account, and job detail screens, and it may replace the page title when the hero says it all.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** fill the whole screen with white and the full-color logo (ember and the white logo in dark mode) on every pre-sign-in screen, native launch included.
-- **Do** keep one primary action per screen: full width, 60 dp, logo navy (site accent orange in dark mode), in the thumb zone on phones.
-- **Do** keep every tappable target at least 48 × 48 dp and fields at 64 dp.
-- **Do** use minimum heights, not fixed heights, on any row that holds text, so 200% text grows instead of clipping.
-- **Do** show field errors as bold danger-red text plus a red 3 dp border on white (bold white text on ember), and form-level errors as a tinted panel with a red icon.
-- **Do** tell states apart by shape or weight as well as color (check vs empty circle, 700 vs 500).
-- **Do** use Material components on Android and Cupertino components on iOS for buttons, segmented controls, spinners, and icons.
-- **Do** cap threshold content at 480 dp and center it as one group on tablets.
+- **Do** build every screen from SpacePage, with the gray ground, a 20px margin, and white 24px cards spaced 12px apart.
+- **Do** use one black full-width 56px pill per screen for the main action. Make secondary actions white pills or navy links.
+- **Do** reserve navy for information and state (progress, banners, links, focus, info). Use orange only inside the "in progress" status pill.
+- **Do** pair every status color with an icon.
+- **Do** keep native behaviors: adaptive dialogs, native pickers, back gestures, and adaptive refresh.
+- **Do** use tabular figures for times, counts, and fractions.
+- **Do** keep text below large size at Muted Ink or darker, on white, ground, and sunken alike.
+- **Do** put text on a wash in that hue's ink tone (Orange Ink, Success Ink, Logo Navy, Danger).
+- **Do** give every enabled input a 1px Soft Ink outline.
+- **Do** cap content at 640px and center it on wide screens.
 
 ### Don't:
-- **Don't** put error or warning signals in orange, or anything red or orange on the ember ground.
-- **Don't** put the threshold form in a card or give fields gray fills; the form sits on the full-bleed ground and fields are outlined white.
-- **Don't** use brand orange as a fill or border on the white threshold; it is the link color there.
-- **Don't** drench interior screens in orange or ember; inside the app, orange is an accent on neutral surfaces.
-- **Don't** add shadows or elevation to threshold surfaces.
-- **Don't** use logo orange as a UI color; it belongs to the logo.
+- **Don't** add shadows, borders, or Material elevation to cards, bars, or buttons.
+- **Don't** reintroduce the retired threshold system: no orange sign-in ground, no ember dark mode, and no per-OS Material/Cupertino widget sets.
+- **Don't** add a dark theme. The app is light-only.
+- **Don't** use Soft Ink for body-size text, hints, placeholders, or navigation labels, or use Faint Ink for anything but disabled controls.
+- **Don't** set label text in brand orange or success green on their own washes.
+- **Don't** add uppercase eyebrows or kickers above titles.
+- **Don't** use a font other than Manrope.

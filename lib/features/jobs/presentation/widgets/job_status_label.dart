@@ -1,12 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/brand_colors.dart';
-import '../../../../core/widgets/adaptive.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/job.dart';
 
-/// Status as icon plus word, so it never depends on color alone.
+/// Status as a tinted pill with an icon, so it never depends on color alone.
 class JobStatusLabel extends StatelessWidget {
   const JobStatusLabel({super.key, required this.status});
 
@@ -15,52 +13,49 @@ class JobStatusLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final (IconData icon, Color color, String label) = switch (status) {
+    final (
+      IconData icon,
+      Color color,
+      Color background,
+      String label,
+    ) = switch (status) {
       JobStatus.scheduled => (
-        cupertino ? CupertinoIcons.clock : Icons.schedule,
-        BrandColors.navy,
+        Icons.schedule_rounded,
+        SpaceColors.accent,
+        SpaceColors.accentSoft,
         l10n.jobStatusScheduled,
       ),
       JobStatus.inProgress => (
-        cupertino ? CupertinoIcons.play_circle_fill : Icons.play_circle,
-        BrandColors.orangeDeep,
+        Icons.play_arrow_rounded,
+        SpaceColors.highlightInk,
+        SpaceColors.highlightSoft,
         l10n.jobStatusInProgress,
       ),
       JobStatus.completed => (
-        cupertino ? CupertinoIcons.checkmark_circle_fill : Icons.check_circle,
-        const Color(0xFF15803D),
+        Icons.check_rounded,
+        SpaceColors.successInk,
+        SpaceColors.successSoft,
         l10n.jobStatusCompleted,
       ),
       JobStatus.cancelled => (
-        cupertino ? CupertinoIcons.xmark_circle : Icons.cancel_outlined,
-        muted,
+        Icons.close_rounded,
+        SpaceColors.inkMuted,
+        SpaceColors.sunken,
         l10n.jobStatusCancelled,
       ),
       JobStatus.unknown => (
-        cupertino ? CupertinoIcons.question_circle : Icons.help_outline,
-        muted,
+        Icons.help_outline_rounded,
+        SpaceColors.inkMuted,
+        SpaceColors.sunken,
         l10n.jobStatusUnknown,
       ),
     };
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: color),
-        const SizedBox(width: 6),
-        Flexible(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-          ),
-        ),
-      ],
+    return StatusPill(
+      label: label,
+      icon: icon,
+      color: color,
+      background: background,
     );
   }
 }

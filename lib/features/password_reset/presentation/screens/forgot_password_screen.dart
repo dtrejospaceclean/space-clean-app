@@ -5,12 +5,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
-import '../../../../core/widgets/threshold/threshold_buttons.dart';
-import '../../../../core/widgets/threshold/threshold_field.dart';
-import '../../../../core/widgets/threshold/threshold_notice.dart';
-import '../../../../core/widgets/threshold/threshold_scaffold.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/password_reset_controller.dart';
+import '../widgets/reset_step_page.dart';
 import 'reset_code_screen.dart';
 
 /// Step 1 of 3: the email to send the code to.
@@ -74,21 +72,19 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       _ => null,
     };
 
-    return ThresholdScaffold(
-      header: ThresholdHeading(
-        title: l10n.resetTitle,
-        intro: l10n.resetEmailIntro,
-      ),
-      body: Form(
+    return ResetStepPage(
+      title: l10n.resetTitle,
+      intro: l10n.resetEmailIntro,
+      child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (failure != null && failure is! ValidationFailure) ...[
-              ThresholdNotice(message: l10n.failureMessage(failure)),
+              Notice(message: l10n.failureMessage(failure)),
               const SizedBox(height: 12),
             ],
-            ThresholdField(
+            SpaceTextField(
               label: l10n.emailLabel,
               controller: _emailController,
               enabled: !_submitting,
@@ -109,7 +105,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               },
             ),
             const SizedBox(height: 28),
-            ThresholdButton(
+            PrimaryButton(
               label: l10n.sendCodeButton,
               busy: _submitting,
               onPressed: _submit,

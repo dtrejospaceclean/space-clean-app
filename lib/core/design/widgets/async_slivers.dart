@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../error/failures.dart';
 import '../../l10n/failure_messages.dart';
 import '../../../l10n/app_localizations.dart';
-import '../adaptive.dart';
+import '../tokens.dart';
 
 /// Loading, error and data states of an [AsyncValue] as slivers. Keeps the
 /// previous data on screen while a refresh is running.
@@ -27,9 +26,7 @@ class AsyncSlivers<T> extends StatelessWidget {
     if (value.hasError) {
       final l10n = AppLocalizations.of(context);
       return MessageSliver(
-        icon: useCupertino(context)
-            ? CupertinoIcons.wifi_exclamationmark
-            : Icons.cloud_off_outlined,
+        icon: Icons.cloud_off_rounded,
         title: switch (value.error) {
           final Failure failure => l10n.failureMessage(failure),
           _ => l10n.errorsUnknown,
@@ -44,7 +41,7 @@ class AsyncSlivers<T> extends StatelessWidget {
   }
 }
 
-/// Centered icon, title and hint for empty and error states.
+/// Centered badge, title and hint for empty and error states.
 class MessageSliver extends StatelessWidget {
   const MessageSliver({
     super.key,
@@ -69,26 +66,30 @@ class MessageSliver extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: theme.colorScheme.onSurfaceVariant),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: const BoxDecoration(
+                color: SpaceColors.surface,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 32, color: SpaceColors.accent),
+            ),
             const SizedBox(height: 16),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: theme.textTheme.titleLarge,
             ),
             if (hint != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
                 hint!,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+                style: theme.textTheme.bodyMedium,
               ),
             ],
-            if (action != null) ...[const SizedBox(height: 16), action!],
+            if (action != null) ...[const SizedBox(height: 12), action!],
           ],
         ),
       ),

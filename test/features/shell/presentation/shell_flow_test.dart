@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:sp_cln_app/core/design/design.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
@@ -31,7 +31,8 @@ void main() {
       },
     );
 
-    expect(find.text('Hi, Ana · Wednesday, September 23'), findsOneWidget);
+    expect(find.textContaining('Hi, Ana', findRichText: true), findsOneWidget);
+    expect(find.text('Wednesday, September 23'), findsOneWidget);
     final first = tester.getTopLeft(find.text('Exam rooms')).dy;
     final second = tester.getTopLeft(find.text('Lobby deep clean')).dy;
     expect(first, lessThan(second));
@@ -89,7 +90,10 @@ void main() {
     await tester.tap(find.text('Tower'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Your role: Crew'), findsOneWidget);
+    expect(
+      find.textContaining('Your role: Crew', findRichText: true),
+      findsOneWidget,
+    );
     expect(find.text('Jobs'), findsOneWidget);
     expect(find.text('Tasks'), findsOneWidget);
     expect(find.text('Team'), findsNothing);
@@ -150,7 +154,7 @@ void main() {
     await tester.tap(find.text('Español'));
     await tester.pumpAndSettle();
     expect(find.text('Cerrar sesión'), findsOneWidget);
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(SpaceBottomBar), findsOneWidget);
     expect(find.text('Hoy'), findsOneWidget);
   });
 }

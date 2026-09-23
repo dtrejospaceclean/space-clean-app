@@ -1,17 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/app/app_list.dart';
-import '../../../../core/widgets/app/app_page.dart';
-import '../../../../core/widgets/app/async_slivers.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/client.dart';
 import '../controllers/clients_providers.dart';
 
-/// The client accounts the user belongs to (the server filters them).
+/// The client accounts the user belongs to (the server filters them), as a
+/// two-column grid of tiles.
 class AccountsScreen extends ConsumerWidget {
   const AccountsScreen({super.key});
 
@@ -23,10 +20,8 @@ class AccountsScreen extends ConsumerWidget {
     final clients = ref.watch(myClientsProvider);
     Future<void> refresh() => ref.refresh(myClientsProvider.future);
 
-    return AppPage(
-      grouped: true,
+    return SpacePage(
       title: l10n.accountsTitle,
-      topLevel: true,
       onRefresh: refresh,
       slivers: [
         AsyncSlivers(
@@ -35,35 +30,40 @@ class AccountsScreen extends ConsumerWidget {
           builder: (list) {
             if (list.isEmpty) {
               return MessageSliver(
-                icon: useCupertino(context)
-                    ? CupertinoIcons.building_2_fill
-                    : Icons.apartment_outlined,
+                icon: Icons.apartment_rounded,
                 title: l10n.noAccounts,
                 hint: l10n.noAccountsHint,
               );
             }
-            return SliverToBoxAdapter(
-              child: AppListSection(
-                children: [
-                  for (final client in list)
-                    AppListRow(
-                      title: client.displayName,
-                      subtitle: client.displayName == client.legalName
-                          ? null
-                          : client.legalName,
-                      trailing: switch (client.status) {
-                        ClientStatus.prospect => _StatusText(
-                          l10n.clientStatusProspect,
+            return SliverMainAxisGroup(
+              slivers: [
+                PageBox(
+                  top: 0,
+                  child: Text(
+                    l10n.accountsCount(list.length),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                PageBox(
+                  child: CardGrid(
+                    children: [
+                      for (final (i, client) in list.indexed)
+                        TileCard(
+                          icon: _AccountBadge(client: client, index: i),
+                          title: client.displayName,
+                          subtitle: switch (client.status) {
+                            ClientStatus.prospect => l10n.clientStatusProspect,
+                            ClientStatus.inactive => l10n.clientStatusInactive,
+                            _ when client.displayName != client.legalName =>
+                              client.legalName,
+                            _ => null,
+                          },
+                          onTap: () => context.push('$path/${client.id}'),
                         ),
-                        ClientStatus.inactive => _StatusText(
-                          l10n.clientStatusInactive,
-                        ),
-                        _ => null,
-                      },
-                      onTap: () => context.push('$path/${client.id}'),
-                    ),
-                ],
-              ),
+                    ],
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -72,14 +72,21 @@ class AccountsScreen extends ConsumerWidget {
   }
 }
 
-class _StatusText extends StatelessWidget {
-  const _StatusText(this.text);
+/// Initials on alternating soft and strong navy, like bank logos in a list.
+class _AccountBadge extends StatelessWidget {
+  const _AccountBadge({required this.client, required this.index});
 
-  final String text;
+  final Client client;
+  final int index;
 
   @override
-  Widget build(BuildContext context) => Text(
-    text,
-    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-  );
+  Widget build(BuildContext context) {
+    final strong = index.isOdd;
+    return InitialsAvatar(
+      name: client.displayName,
+      size: 48,
+      background: strong ? SpaceColors.accent : SpaceColors.accentSoft,
+      foreground: strong ? SpaceColors.onAccent : SpaceColors.accent,
+    );
+  }
 }

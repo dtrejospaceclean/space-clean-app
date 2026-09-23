@@ -1,43 +1,23 @@
-/*
-THESIS: A clean white door into work. The full-color logo carries the brand;
-the form is oversized and plain so every role, crew included, gets in fast.
-(Revised at the user's request: the ground was brand orange #C2410C; it is now
-white in light mode. Dark mode keeps the ember ground.)
-OWN-WORLD: white ground (ember #431407 in dark mode); the full-color planet mark
-and wordmark (white knockout on ember); 64-dp fields with a stone #78716C
-outline and 18-sp ink; a logo-navy #0A4781 full-width 60-dp action; brand
-orange #C2410C for text links; red errors and tinted notice panels; native
-controls per OS.
-STORY: Any role (owner through crew or client) recognizes Space Clean, sees
-their email already filled in, types a password, taps the one navy button, and
-lands on their own day.
-FIRST VIEWPORT: EN/ES switch top right; logo and the real tagline centered in
-the upper free space; "Sign in" heading, email with "Not you?", password with a
-show toggle, the navy button in the thumb zone, "Forgot password?" under it.
-FORM: grounded list #4 (brand drench), seed key cc5b039b.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
-*/
-import 'package:flutter/cupertino.dart';
+// Visual reference for the whole app: docs/example_app.png (gray ground,
+// white rounded cards, big bold titles, black round and pill actions),
+// in Space Clean's colors. See DESIGN.md.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/design/design.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/usecase/usecase.dart';
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/threshold/brand_block.dart';
-import '../../../../core/widgets/threshold/threshold_buttons.dart';
-import '../../../../core/widgets/threshold/threshold_field.dart';
-import '../../../../core/widgets/threshold/threshold_notice.dart';
-import '../../../../core/widgets/threshold/threshold_scaffold.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../password_reset/presentation/screens/forgot_password_screen.dart';
-import '../../../settings/presentation/widgets/language_switch.dart';
+import '../../../settings/presentation/widgets/language_toggle.dart';
 import '../../di/auth_providers.dart';
 import '../controllers/auth_controller.dart';
 
+/// Sign-in: logo, two-tone headline, and the form in one white card.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key, this.prefillEmail});
 
@@ -134,8 +114,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
-    final cupertino = useCupertino(context);
     final sessionExpired = switch (ref.watch(authControllerProvider).value) {
       Unauthenticated(:final sessionExpired) => sessionExpired,
       _ => false,
@@ -143,120 +121,129 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final notice = switch (_failure) {
       null || ValidationFailure() =>
         sessionExpired && !_dismissedExpiryNotice
-            ? ThresholdNotice(
-                message: l10n.authSessionExpired,
-                tone: NoticeTone.info,
-              )
+            ? Notice(message: l10n.authSessionExpired, tone: NoticeTone.info)
             : null,
-      final failure => ThresholdNotice(message: l10n.failureMessage(failure)),
+      final failure => Notice(message: l10n.failureMessage(failure)),
     };
 
-    return ThresholdScaffold(
-      trailing: const LanguageSwitch(),
-      centerHeader: true,
-      header: BrandBlock(
-        tagline: l10n.brandTagline,
-        compact: keyboardOpen,
-        condensed: notice != null,
-      ),
-      body: Form(
-        key: _formKey,
-        child: AutofillGroup(
+    return SpacePage(
+      showBack: false,
+      actions: const [LanguageToggle(compact: true)],
+      slivers: [
+        PageBox(
+          top: 8,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ThresholdHeading(title: l10n.loginTitle),
-              if (notice != null) ...[const SizedBox(height: 16), notice],
-              const SizedBox(height: 12),
-              ThresholdField(
-                label: l10n.emailLabel,
-                controller: _emailController,
-                focusNode: _emailFocus,
-                enabled: !_submitting,
-                hint: l10n.emailHint,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                autofillHints: const [
-                  AutofillHints.username,
-                  AutofillHints.email,
-                ],
-                errorText: _serverFieldError(l10n, 'email'),
-                labelAction: _hasRememberedEmail
-                    ? ThresholdLinkButton(
-                        label: l10n.notYou,
-                        compact: true,
-                        onPressed: _submitting ? null : _notYou,
-                      )
-                    : null,
-                onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
-                validator: (value) {
-                  final email = value?.trim() ?? '';
-                  if (email.isEmpty) return l10n.validationRequired;
-                  if (!_emailPattern.hasMatch(email)) {
-                    return l10n.validationInvalidEmail;
-                  }
-                  return null;
-                },
+              SvgPicture.asset(
+                'assets/brand/space_clean_logo.svg',
+                height: 72,
+                semanticsLabel: 'Space Clean',
               ),
-              const SizedBox(height: 8),
-              ThresholdField(
-                label: l10n.passwordLabel,
-                controller: _passwordController,
-                focusNode: _passwordFocus,
-                enabled: !_submitting,
-                obscureText: _obscurePassword,
-                textInputAction: TextInputAction.done,
-                autofillHints: const [AutofillHints.password],
-                errorText: _serverFieldError(l10n, 'password'),
-                onFieldSubmitted: (_) => _submit(),
-                validator: (value) =>
-                    (value ?? '').isEmpty ? l10n.validationRequired : null,
-                suffix: IconButton(
-                  tooltip: _obscurePassword
-                      ? l10n.showPassword
-                      : l10n.hidePassword,
-                  iconSize: 26,
-                  constraints: const BoxConstraints.tightFor(
-                    width: 56,
-                    height: 56,
-                  ),
-                  icon: Icon(switch ((cupertino, _obscurePassword)) {
-                    (true, true) => CupertinoIcons.eye,
-                    (true, false) => CupertinoIcons.eye_slash,
-                    (false, true) => Icons.visibility_outlined,
-                    (false, false) => Icons.visibility_off_outlined,
-                  }),
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
-                ),
-              ),
-              const SizedBox(height: 28),
-              ThresholdButton(
-                label: l10n.signInButton,
-                busy: _submitting,
-                onPressed: _submit,
-              ),
-              const SizedBox(height: 8),
-              Center(
-                child: ThresholdLinkButton(
-                  label: l10n.forgotPassword,
-                  onPressed: _submitting
-                      ? null
-                      : () => context.push(
-                          Uri(
-                            path: ForgotPasswordScreen.path,
-                            queryParameters: {
-                              if (_emailController.text.trim().isNotEmpty)
-                                'email': _emailController.text.trim(),
-                            },
-                          ).toString(),
-                        ),
-                ),
+              const SizedBox(height: 24),
+              HeroHeadline(
+                primary: l10n.loginTitle,
+                secondary: l10n.brandTagline,
               ),
             ],
           ),
         ),
-      ),
+        PageBox(
+          top: 24,
+          child: SpaceCard(
+            child: Form(
+              key: _formKey,
+              child: AutofillGroup(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (notice != null) ...[notice, const SizedBox(height: 12)],
+                    SpaceTextField(
+                      label: l10n.emailLabel,
+                      controller: _emailController,
+                      focusNode: _emailFocus,
+                      enabled: !_submitting,
+                      hint: l10n.emailHint,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [
+                        AutofillHints.username,
+                        AutofillHints.email,
+                      ],
+                      errorText: _serverFieldError(l10n, 'email'),
+                      labelAction: _hasRememberedEmail
+                          ? LinkButton(
+                              label: l10n.notYou,
+                              onPressed: _submitting ? null : _notYou,
+                            )
+                          : null,
+                      onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
+                      validator: (value) {
+                        final email = value?.trim() ?? '';
+                        if (email.isEmpty) return l10n.validationRequired;
+                        if (!_emailPattern.hasMatch(email)) {
+                          return l10n.validationInvalidEmail;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    SpaceTextField(
+                      label: l10n.passwordLabel,
+                      controller: _passwordController,
+                      focusNode: _passwordFocus,
+                      enabled: !_submitting,
+                      obscureText: _obscurePassword,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.password],
+                      errorText: _serverFieldError(l10n, 'password'),
+                      onFieldSubmitted: (_) => _submit(),
+                      validator: (value) => (value ?? '').isEmpty
+                          ? l10n.validationRequired
+                          : null,
+                      suffix: IconButton(
+                        tooltip: _obscurePassword
+                            ? l10n.showPassword
+                            : l10n.hidePassword,
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    PrimaryButton(
+                      label: l10n.signInButton,
+                      busy: _submitting,
+                      onPressed: _submit,
+                    ),
+                    const SizedBox(height: 4),
+                    Center(
+                      child: LinkButton(
+                        label: l10n.forgotPassword,
+                        onPressed: _submitting
+                            ? null
+                            : () => context.push(
+                                Uri(
+                                  path: ForgotPasswordScreen.path,
+                                  queryParameters: {
+                                    if (_emailController.text.trim().isNotEmpty)
+                                      'email': _emailController.text.trim(),
+                                  },
+                                ).toString(),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

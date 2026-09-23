@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,15 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
-import '../../../../core/theme/threshold_palette.dart';
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/threshold/threshold_buttons.dart';
-import '../../../../core/widgets/threshold/threshold_field.dart';
-import '../../../../core/widgets/threshold/threshold_notice.dart';
-import '../../../../core/widgets/threshold/threshold_scaffold.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/password_policy.dart';
 import '../controllers/password_reset_controller.dart';
+import '../widgets/reset_step_page.dart';
 import 'reset_done_screen.dart';
 
 /// Step 3 of 3: the new password, with its rules checked as you type.
@@ -75,7 +70,6 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
     final failure = _failure;
     final passwordError = switch (failure) {
       ValidationFailure(:final fieldErrors) =>
@@ -89,31 +83,26 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
       tooltip: _obscure ? l10n.showPassword : l10n.hidePassword,
       iconSize: 26,
       constraints: const BoxConstraints.tightFor(width: 56, height: 56),
-      icon: Icon(switch ((cupertino, _obscure)) {
-        (true, true) => CupertinoIcons.eye,
-        (true, false) => CupertinoIcons.eye_slash,
-        (false, true) => Icons.visibility_outlined,
-        (false, false) => Icons.visibility_off_outlined,
-      }),
+      icon: Icon(
+        _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+      ),
       onPressed: () => setState(() => _obscure = !_obscure),
     );
 
-    return ThresholdScaffold(
-      header: ThresholdHeading(
-        title: l10n.newPasswordTitle,
-        intro: l10n.newPasswordIntro,
-      ),
-      body: Form(
+    return ResetStepPage(
+      title: l10n.newPasswordTitle,
+      intro: l10n.newPasswordIntro,
+      child: Form(
         key: _formKey,
         child: AutofillGroup(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (failure != null && failure is! ValidationFailure) ...[
-                ThresholdNotice(message: l10n.failureMessage(failure)),
+                Notice(message: l10n.failureMessage(failure)),
                 const SizedBox(height: 12),
               ],
-              ThresholdField(
+              SpaceTextField(
                 label: l10n.newPasswordLabel,
                 controller: _passwordController,
                 enabled: !_submitting,
@@ -131,7 +120,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
                     : null,
               ),
               const SizedBox(height: 8),
-              ThresholdField(
+              SpaceTextField(
                 label: l10n.confirmPasswordLabel,
                 controller: _confirmController,
                 focusNode: _confirmFocus,
@@ -152,7 +141,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
               ),
               _Rule(met: _matches, label: l10n.ruleMatch),
               const SizedBox(height: 20),
-              ThresholdButton(
+              PrimaryButton(
                 label: l10n.savePasswordButton,
                 busy: _submitting,
                 onPressed: _submit,
@@ -174,15 +163,10 @@ class _Rule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ThresholdPalette.of(context);
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
-    final icon = switch ((cupertino, met)) {
-      (true, true) => CupertinoIcons.checkmark_circle_fill,
-      (true, false) => CupertinoIcons.circle,
-      (false, true) => Icons.check_circle,
-      (false, false) => Icons.radio_button_unchecked,
-    };
+    final icon = met
+        ? Icons.check_circle_rounded
+        : Icons.radio_button_unchecked;
 
     return Semantics(
       label: '$label: ${met ? l10n.ruleMet : l10n.ruleNotMet}',
@@ -197,7 +181,7 @@ class _Rule extends StatelessWidget {
                 icon,
                 key: ValueKey(met),
                 size: 24,
-                color: met ? palette.onGround : palette.onGroundMuted,
+                color: met ? SpaceColors.success : SpaceColors.inkSoft,
               ),
             ),
             const SizedBox(width: 10),
@@ -205,9 +189,10 @@ class _Rule extends StatelessWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontFamily: 'Manrope',
+                  fontSize: 15,
                   fontWeight: met ? FontWeight.w700 : FontWeight.w500,
-                  color: met ? palette.onGround : palette.onGroundMuted,
+                  color: met ? SpaceColors.ink : SpaceColors.inkMuted,
                 ),
               ),
             ),

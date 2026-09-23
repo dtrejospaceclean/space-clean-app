@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
@@ -20,10 +19,6 @@ Future<void> openUsers(
   await tester.tap(find.text('Users'));
   await tester.pumpAndSettle();
 }
-
-/// The Material text field labeled [label].
-Finder formField(String label) =>
-    find.widgetWithText(TextFormField, label).first;
 
 void main() {
   testWidgets('people without an admin role see no Administration', (
@@ -76,9 +71,12 @@ void main() {
 
     await tester.tap(find.byTooltip('Add user'));
     await tester.pumpAndSettle();
-    await tester.enterText(formField('Full name'), 'Rosa Vega');
-    await tester.enterText(formField('Email'), 'rosa@example.com');
-    await tester.enterText(formField('Password'), 'short');
+    await tester.enterText(field('Full name'), 'Rosa Vega');
+    await tester.enterText(field('Email'), 'rosa@example.com');
+    await tester.enterText(field('Password'), 'short');
+    // Roles sit further down the form.
+    await tester.ensureVisible(find.text('Crew'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Crew'));
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
@@ -87,13 +85,14 @@ void main() {
     expect(find.text('Must be at least 12 characters.'), findsOneWidget);
     expect(users.writes, isEmpty);
 
-    await tester.enterText(formField('Password'), 'a-long-first-password');
+    await tester.enterText(field('Password'), 'a-long-first-password');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
     expect(users.writes, ['create:rosa@example.com:[r-crew]']);
-    // Lands on the new user's page.
-    expect(find.text('rosa@example.com'), findsOneWidget);
+    // Lands on the new user's page (profile card and contact list).
+    expect(find.text('Rosa Vega'), findsOneWidget);
+    expect(find.text('rosa@example.com'), findsWidgets);
   });
 
   testWidgets('a taken email is shown on the email field', (tester) async {
@@ -103,9 +102,9 @@ void main() {
 
     await tester.tap(find.byTooltip('Add user'));
     await tester.pumpAndSettle();
-    await tester.enterText(formField('Full name'), 'Rosa Vega');
-    await tester.enterText(formField('Email'), 'ana@example.com');
-    await tester.enterText(formField('Password'), 'a-long-first-password');
+    await tester.enterText(field('Full name'), 'Rosa Vega');
+    await tester.enterText(field('Email'), 'ana@example.com');
+    await tester.enterText(field('Password'), 'a-long-first-password');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 

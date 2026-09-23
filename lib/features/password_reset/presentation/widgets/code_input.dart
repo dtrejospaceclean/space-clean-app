@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../core/theme/threshold_palette.dart';
+import '../../../../core/design/design.dart';
 
 /// Six large digit boxes over one invisible text field, so paste and the
 /// OS one-time-code autofill (SMS / email suggestions) fill every box at once.
@@ -48,8 +48,6 @@ class _CodeInputState extends State<CodeInput> {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ThresholdPalette.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final code = widget.controller.text;
     final hasError = widget.errorText != null;
 
@@ -57,23 +55,19 @@ class _CodeInputState extends State<CodeInput> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ConstrainedBox(
-          // Grows with large text instead of clipping.
-          constraints: const BoxConstraints(minHeight: 48),
+          constraints: const BoxConstraints(minHeight: 36),
           child: Align(
             alignment: Alignment.centerLeft,
             child: ExcludeSemantics(
               child: Text(
                 widget.label,
-                style: textTheme.titleMedium?.copyWith(
-                  color: palette.onGround,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
           ),
         ),
         SizedBox(
-          height: 68,
+          height: 64,
           child: Stack(
             children: [
               ExcludeSemantics(
@@ -113,7 +107,7 @@ class _CodeInputState extends State<CodeInput> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration.collapsed(
                       hintText: widget.label,
-                    ).copyWith(counterText: ''),
+                    ).copyWith(counterText: '', filled: false),
                     onChanged: (value) {
                       if (value.length == widget.length) {
                         widget.onCompleted?.call(value);
@@ -129,11 +123,11 @@ class _CodeInputState extends State<CodeInput> {
           const SizedBox(height: 8),
           Text(
             widget.errorText!,
-            style: TextStyle(
-              color: palette.fieldError,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              height: 1.35,
+            style: const TextStyle(
+              fontFamily: 'Manrope',
+              color: SpaceColors.danger,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -151,29 +145,28 @@ class _Box extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = ThresholdPalette.of(context);
-    final (color, width) = error
-        ? (palette.fieldError, 3.0)
+    final border = error
+        ? Border.all(color: SpaceColors.danger, width: 2)
         : active
-        ? (palette.fieldFocus, 3.0)
-        : (palette.fieldBorder, 1.5);
-
+        ? Border.all(color: SpaceColors.accent, width: 2)
+        : Border.all(color: SpaceColors.inkSoft);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 160),
       curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
-        color: palette.field,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color, width: width),
+        color: SpaceColors.sunken,
+        borderRadius: BorderRadius.circular(SpaceRadius.inner),
+        border: border,
       ),
       alignment: Alignment.center,
       child: Text(
         digit,
-        style: TextStyle(
-          color: palette.fieldText,
-          fontSize: 30,
-          fontWeight: FontWeight.w700,
-          fontFeatures: const [FontFeature.tabularFigures()],
+        style: const TextStyle(
+          fontFamily: 'Manrope',
+          color: SpaceColors.ink,
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+          fontFeatures: [FontFeature.tabularFigures()],
         ),
       ),
     );

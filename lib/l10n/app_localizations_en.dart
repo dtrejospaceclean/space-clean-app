@@ -485,9 +485,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseButton => 'Choose';
 
   @override
-  String get clearButton => 'Clear';
-
-  @override
   String get doneButton => 'Done';
 
   @override
@@ -595,4 +592,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorsUniqueViolation => 'That value is already in use.';
+
+  @override
+  String jobsTodayCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jobs today',
+      one: '1 job today',
+      zero: 'Nothing scheduled today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yourJobs => 'Your jobs';
+
+  @override
+  String get statToDo => 'To do';
+
+  @override
+  String accountsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count accounts',
+      one: '1 account',
+      zero: 'No accounts yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get comingSoonLong => 'Coming soon';
+
+  @override
+  String get openSection => 'Open';
 }

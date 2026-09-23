@@ -974,12 +974,6 @@ abstract class AppLocalizations {
   /// **'Choose'**
   String get chooseButton;
 
-  /// No description provided for @clearButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear'**
-  String get clearButton;
-
   /// No description provided for @doneButton.
   ///
   /// In en, this message translates to:
@@ -1159,6 +1153,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That value is already in use.'**
   String get errorsUniqueViolation;
+
+  /// No description provided for @jobsTodayCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing scheduled today} =1{1 job today} other{{count} jobs today}}'**
+  String jobsTodayCount(int count);
+
+  /// No description provided for @yourJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Your jobs'**
+  String get yourJobs;
+
+  /// No description provided for @statToDo.
+  ///
+  /// In en, this message translates to:
+  /// **'To do'**
+  String get statToDo;
+
+  /// No description provided for @accountsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No accounts yet} =1{1 account} other{{count} accounts}}'**
+  String accountsCount(int count);
+
+  /// No description provided for @comingSoonLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoonLong;
+
+  /// No description provided for @openSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openSection;
 }
 
 class _AppLocalizationsDelegate

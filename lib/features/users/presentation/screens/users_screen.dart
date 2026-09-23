@@ -1,14 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/app/app_list.dart';
-import '../../../../core/widgets/app/app_page.dart';
-import '../../../../core/widgets/app/async_slivers.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../controllers/users_providers.dart';
@@ -49,81 +45,66 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
     final users = ref.watch(usersProvider);
     final query = ref.watch(userQueryProvider);
     final canEdit = ref.watch(canEditUsersProvider);
     Future<void> refresh() => ref.refresh(usersProvider.future);
 
-    final statusOptions = <bool?, String>{
-      true: l10n.filterActive,
-      false: l10n.filterInactive,
-      null: l10n.filterAll,
-    };
-
-    return AppPage(
+    return SpacePage(
       title: l10n.usersTitle,
-      grouped: true,
       onRefresh: refresh,
       actions: [
         if (canEdit)
-          IconButton(
+          CircleButton.dark(
+            icon: Icons.add_rounded,
             tooltip: l10n.addUser,
-            icon: Icon(cupertino ? CupertinoIcons.add : Icons.person_add_alt),
             onPressed: () => context.push('${UsersScreen.path}/new'),
           ),
       ],
       slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (cupertino)
-                  CupertinoSearchTextField(
-                    controller: _search,
-                    placeholder: l10n.searchUsersHint,
-                    onChanged: _onSearch,
-                  )
-                else
-                  SearchBar(
-                    controller: _search,
-                    hintText: l10n.searchUsersHint,
-                    leading: const Icon(Icons.search),
-                    elevation: const WidgetStatePropertyAll(0),
-                    onChanged: _onSearch,
+        PageBox(
+          top: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _search,
+                onChanged: _onSearch,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: l10n.searchUsersHint,
+                  fillColor: SpaceColors.surface,
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(SpaceRadius.pill),
+                    borderSide: BorderSide.none,
                   ),
-                const SizedBox(height: 12),
-                if (cupertino)
-                  CupertinoSlidingSegmentedControl<int>(
-                    groupValue: statusOptions.keys.toList().indexOf(
-                      query.isActive,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(SpaceRadius.pill),
+                    // Same 1px outline as every other input.
+                    borderSide: const BorderSide(color: SpaceColors.inkSoft),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(SpaceRadius.pill),
+                    borderSide: const BorderSide(
+                      color: SpaceColors.accent,
+                      width: 2,
                     ),
-                    onValueChanged: (i) => ref
-                        .read(userQueryProvider.notifier)
-                        .status(statusOptions.keys.elementAt(i!)),
-                    children: {
-                      for (final (i, label) in statusOptions.values.indexed)
-                        i: Text(label),
-                    },
-                  )
-                else
-                  SegmentedButton<int>(
-                    showSelectedIcon: false,
-                    selected: {
-                      statusOptions.keys.toList().indexOf(query.isActive),
-                    },
-                    onSelectionChanged: (s) => ref
-                        .read(userQueryProvider.notifier)
-                        .status(statusOptions.keys.elementAt(s.single)),
-                    segments: [
-                      for (final (i, label) in statusOptions.values.indexed)
-                        ButtonSegment(value: i, label: Text(label)),
-                    ],
                   ),
-              ],
-            ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              PillToggle<bool?>(
+                options: {
+                  true: l10n.filterActive,
+                  false: l10n.filterInactive,
+                  null: l10n.filterAll,
+                },
+                selected: query.isActive,
+                onChanged: (v) =>
+                    ref.read(userQueryProvider.notifier).status(v),
+              ),
+            ],
           ),
         ),
         AsyncSlivers(
@@ -132,16 +113,17 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
           builder: (list) {
             if (list.isEmpty) {
               return MessageSliver(
-                icon: cupertino ? CupertinoIcons.person_2 : Icons.group_off,
+                icon: Icons.group_off_outlined,
                 title: l10n.noUsersFound,
                 hint: l10n.noUsersFoundHint,
               );
             }
-            return SliverToBoxAdapter(
-              child: AppListSection(
+            return PageBox(
+              child: ListCard(
                 children: [
                   for (final user in list)
-                    AppListRow(
+                    ListRow(
+                      leading: InitialsAvatar(name: user.name),
                       title: user.name,
                       subtitle: [
                         user.email,
@@ -149,9 +131,17 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                           l10n.rolesLabel(user.roles.map((r) => r.name)),
                       ].join(' · '),
                       trailing: !user.isActive
-                          ? Text(l10n.inactiveTag)
+                          ? StatusPill(
+                              label: l10n.inactiveTag,
+                              color: SpaceColors.inkMuted,
+                              background: SpaceColors.sunken,
+                            )
                           : user.userType == UserType.external
-                          ? Text(l10n.clientUserTag)
+                          ? StatusPill(
+                              label: l10n.clientUserTag,
+                              color: SpaceColors.accent,
+                              background: SpaceColors.accentSoft,
+                            )
                           : null,
                       onTap: () =>
                           context.push('${UsersScreen.path}/${user.id}'),

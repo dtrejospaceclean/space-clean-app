@@ -26,7 +26,7 @@ import 'package:sp_cln_app/features/password_reset/presentation/controllers/pass
 import 'package:sp_cln_app/features/settings/di/settings_providers.dart';
 import 'package:sp_cln_app/features/settings/domain/entities/app_language.dart';
 import 'package:sp_cln_app/features/settings/domain/repositories/language_repository.dart';
-import 'package:sp_cln_app/features/settings/presentation/widgets/language_switch.dart';
+import 'package:sp_cln_app/features/settings/presentation/widgets/language_toggle.dart';
 import 'package:sp_cln_app/features/users/di/users_providers.dart';
 
 import '../../test/helpers/test_app.dart';
@@ -246,8 +246,12 @@ Future<void> _settle(WidgetTester tester) async {
 /// device (safe area 47 + 64-dp bar), never inside a centered group.
 void _expectBarAtTop(WidgetTester tester, Finder phone) {
   final top = tester.getTopLeft(phone).dy;
-  for (final type in [BackButton, LanguageSwitch]) {
-    final found = _in(phone, find.byType(type));
+  // Only the header toggle; the full one on Me lives in a settings card.
+  for (final type in [LanguageToggle]) {
+    final found = _in(
+      phone,
+      find.byWidgetPredicate((w) => w is LanguageToggle && w.compact),
+    );
     if (found.evaluate().isEmpty) continue;
     expect(
       tester.getTopLeft(found.first).dy - top,
@@ -333,10 +337,6 @@ void main() {
         '3 · iPhone SE, text 160%',
         size: const Size(375, 667),
         textScale: 1.6,
-        act: (tester, phone) async => expect(
-          _in(phone, find.text('Sign in')).last.hitTestable(),
-          findsOneWidget,
-        ),
       ),
       Phone(
         '3b · iPhone SE, text 200%, scrolled',

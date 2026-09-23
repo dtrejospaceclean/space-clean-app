@@ -7,12 +7,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
-import '../../../../core/widgets/threshold/threshold_buttons.dart';
-import '../../../../core/widgets/threshold/threshold_notice.dart';
-import '../../../../core/widgets/threshold/threshold_scaffold.dart';
+import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/password_policy.dart';
 import '../controllers/password_reset_controller.dart';
+import '../widgets/reset_step_page.dart';
 import '../widgets/code_input.dart';
 import 'new_password_screen.dart';
 
@@ -108,18 +107,16 @@ class _ResetCodeScreenState extends ConsumerState<ResetCodeScreen> {
     final wait = draft.resendWait(DateTime.now());
     final failure = _failure;
 
-    return ThresholdScaffold(
-      header: ThresholdHeading(
-        title: l10n.codeTitle,
-        intro: l10n.codeIntro(draft.email),
-      ),
-      body: Column(
+    return ResetStepPage(
+      title: l10n.codeTitle,
+      intro: l10n.codeIntro(draft.email),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (failure != null)
-            ThresholdNotice(message: l10n.failureMessage(failure))
+            Notice(message: l10n.failureMessage(failure))
           else if (_resent)
-            ThresholdNotice(message: l10n.codeResent, tone: NoticeTone.info),
+            Notice(message: l10n.codeResent, tone: NoticeTone.info),
           if (failure != null || _resent) const SizedBox(height: 12),
           CodeInput(
             controller: _codeController,
@@ -130,14 +127,14 @@ class _ResetCodeScreenState extends ConsumerState<ResetCodeScreen> {
             onCompleted: (_) => _submit(),
           ),
           const SizedBox(height: 28),
-          ThresholdButton(
+          PrimaryButton(
             label: l10n.continueButton,
             busy: _submitting,
             onPressed: _submit,
           ),
           const SizedBox(height: 8),
           Center(
-            child: ThresholdLinkButton(
+            child: LinkButton(
               label: wait > Duration.zero
                   ? l10n.resendIn('${wait.inSeconds + 1}')
                   : l10n.resendCode,

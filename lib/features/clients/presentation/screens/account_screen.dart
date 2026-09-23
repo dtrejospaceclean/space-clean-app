@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/design/design.dart';
 import '../../../../core/l10n/role_names.dart';
-import '../../../../core/widgets/adaptive.dart';
-import '../../../../core/widgets/app/app_list.dart';
-import '../../../../core/widgets/app/app_page.dart';
-import '../../../../core/widgets/app/async_slivers.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -23,128 +19,118 @@ class AccountScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final cupertino = useCupertino(context);
     final client = ref.watch(clientByIdProvider(clientId)).value;
     final access = ref.watch(accountAccessProvider(clientId));
     final here = GoRouterState.of(context).matchedLocation;
     Future<void> refresh() =>
         ref.refresh(accountAccessProvider(clientId).future);
 
-    // Built modules navigate; the rest are listed as coming soon.
-    final modules = <(String, IconData, String, String?)>[
+    // Built modules navigate; the rest are shown as coming soon.
+    final work = <(String, IconData, String, String?)>[
       (
         Permissions.jobsView,
-        cupertino ? CupertinoIcons.briefcase : Icons.work_outline,
+        Icons.cleaning_services_outlined,
         l10n.moduleJobs,
         '$here/jobs',
       ),
       (
         Permissions.calendarView,
-        cupertino ? CupertinoIcons.calendar : Icons.calendar_month_outlined,
+        Icons.calendar_month_outlined,
         l10n.moduleCalendar,
         null,
       ),
       (
         Permissions.complaintsView,
-        cupertino
-            ? CupertinoIcons.exclamationmark_bubble
-            : Icons.report_outlined,
+        Icons.report_outlined,
         l10n.moduleComplaints,
         null,
       ),
-      (
-        Permissions.tasksView,
-        cupertino ? CupertinoIcons.checkmark_square : Icons.task_alt,
-        l10n.moduleTasks,
-        null,
-      ),
-      (
-        Permissions.filesView,
-        cupertino ? CupertinoIcons.folder : Icons.folder_outlined,
-        l10n.moduleFiles,
-        null,
-      ),
+      (Permissions.tasksView, Icons.task_alt_rounded, l10n.moduleTasks, null),
+      (Permissions.filesView, Icons.folder_outlined, l10n.moduleFiles, null),
     ];
-    final accountModules = <(String, IconData, String, String?)>[
-      (
-        Permissions.infoView,
-        cupertino ? CupertinoIcons.info : Icons.info_outline,
-        l10n.moduleInfo,
-        null,
-      ),
+    final account = <(String, IconData, String, String?)>[
+      (Permissions.infoView, Icons.info_outline_rounded, l10n.moduleInfo, null),
       (
         Permissions.proposalView,
-        cupertino ? CupertinoIcons.doc_text : Icons.request_quote_outlined,
+        Icons.request_quote_outlined,
         l10n.moduleProposals,
         null,
       ),
       (
         Permissions.contractView,
-        cupertino ? CupertinoIcons.doc_checkmark : Icons.description_outlined,
+        Icons.description_outlined,
         l10n.moduleContracts,
         null,
       ),
       (
         Permissions.scopeView,
-        cupertino ? CupertinoIcons.square_list : Icons.fact_check_outlined,
+        Icons.fact_check_outlined,
         l10n.moduleScope,
         null,
       ),
-      (
-        Permissions.teamView,
-        cupertino ? CupertinoIcons.person_2 : Icons.groups_outlined,
-        l10n.moduleTeam,
-        null,
-      ),
+      (Permissions.teamView, Icons.groups_outlined, l10n.moduleTeam, null),
     ];
 
-    List<Widget> rows(
+    List<Widget> tiles(
       AccountAccess access,
       List<(String, IconData, String, String?)> list,
     ) => [
       for (final (permission, icon, label, route) in list)
         if (access.can(permission))
-          AppListRow(
-            leading: icon,
+          TileCard(
+            icon: route == null
+                ? IconBadge(
+                    icon: icon,
+                    color: SpaceColors.inkMuted,
+                    background: SpaceColors.sunken,
+                  )
+                : IconBadge.strong(icon: icon),
             title: label,
-            trailing: route == null ? Text(l10n.comingSoon) : null,
+            subtitle: route == null ? l10n.comingSoonLong : l10n.openSection,
             onTap: route == null ? null : () => context.push(route),
           ),
     ];
 
-    return AppPage(
-      grouped: true,
-      title: client?.displayName ?? l10n.accountsTitle,
+    return SpacePage(
       onRefresh: refresh,
       slivers: [
         AsyncSlivers(
           value: access,
           onRetry: refresh,
           builder: (access) {
-            final work = rows(access, modules);
-            final account = rows(access, accountModules);
-            if (work.isEmpty && account.isEmpty) {
-              return MessageSliver(
-                icon: cupertino ? CupertinoIcons.lock : Icons.lock_outline,
-                title: l10n.noModules,
-              );
-            }
-            return SliverList.list(
-              children: [
-                if (access.baseRole case final role?)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Text(
-                      l10n.yourRole(l10n.roleName(role)),
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
+            final workTiles = tiles(access, work);
+            final accountTiles = tiles(access, account);
+            return SliverMainAxisGroup(
+              slivers: [
+                PageBox(
+                  top: 16,
+                  child: HeroHeadline(
+                    primary: client?.displayName ?? l10n.accountsTitle,
+                    secondary: switch (access.baseRole) {
+                      final role? => l10n.yourRole(l10n.roleName(role)),
+                      null => null,
+                    },
                   ),
-                if (work.isNotEmpty)
-                  AppListSection(title: l10n.sectionWork, children: work),
-                if (account.isNotEmpty)
-                  AppListSection(title: l10n.sectionAccount, children: account),
+                ),
+                if (workTiles.isEmpty && accountTiles.isEmpty)
+                  MessageSliver(
+                    icon: Icons.lock_outline_rounded,
+                    title: l10n.noModules,
+                  ),
+                if (workTiles.isNotEmpty) ...[
+                  PageBox(
+                    top: 16,
+                    child: SectionHeader(title: l10n.sectionWork),
+                  ),
+                  PageBox(top: 0, child: CardGrid(children: workTiles)),
+                ],
+                if (accountTiles.isNotEmpty) ...[
+                  PageBox(
+                    top: 16,
+                    child: SectionHeader(title: l10n.sectionAccount),
+                  ),
+                  PageBox(top: 0, child: CardGrid(children: accountTiles)),
+                ],
               ],
             );
           },
