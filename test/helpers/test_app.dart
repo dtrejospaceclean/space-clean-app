@@ -253,16 +253,63 @@ class FakePasswordResetRepository implements PasswordResetRepository {
   }) async => calls.add('reset:$code');
 }
 
+/// In-memory accounts; records every write.
 class FakeClientsRepository implements ClientsRepository {
-  FakeClientsRepository([this.clients = const []]);
+  FakeClientsRepository([List<Client> clients = const []])
+    : clients = [...clients];
 
   List<Client> clients;
   Failure? error;
+  Failure? deleteError;
+  final writes = <String>[];
+  final drafts = <ClientDraft>[];
 
   @override
   Future<List<Client>> getMyClients() async {
     if (error case final error?) throw error;
     return clients;
+  }
+
+  @override
+  Future<Client> getClient(String id) async =>
+      clients.firstWhere((c) => c.id == id);
+
+  @override
+  Future<Client> createClient(ClientDraft draft) async {
+    writes.add('create:${draft.legalName}');
+    drafts.add(draft);
+    final client = Client(
+      id: 'c${clients.length + 1}',
+      legalName: draft.legalName!,
+      dba: draft.dba,
+      status: draft.status ?? ClientStatus.prospect,
+    );
+    clients = [...clients, client];
+    return client;
+  }
+
+  @override
+  Future<Client> updateClient(String id, ClientDraft draft) async {
+    writes.add('update:$id');
+    drafts.add(draft);
+    final i = clients.indexWhere((c) => c.id == id);
+    final c = clients[i];
+    final updated = Client(
+      id: c.id,
+      legalName: draft.legalName ?? c.legalName,
+      dba: draft.dba ?? c.dba,
+      status: draft.status ?? c.status,
+      industry: draft.industry ?? c.industry,
+    );
+    clients = [...clients]..[i] = updated;
+    return updated;
+  }
+
+  @override
+  Future<void> deleteClient(String id) async {
+    if (deleteError case final error?) throw error;
+    writes.add('delete:$id');
+    clients = clients.where((c) => c.id != id).toList();
   }
 }
 

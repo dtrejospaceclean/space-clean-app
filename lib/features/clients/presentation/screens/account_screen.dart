@@ -49,7 +49,12 @@ class AccountScreen extends ConsumerWidget {
       (Permissions.filesView, Icons.folder_outlined, l10n.moduleFiles, null),
     ];
     final account = <(String, IconData, String, String?)>[
-      (Permissions.infoView, Icons.info_outline_rounded, l10n.moduleInfo, null),
+      (
+        Permissions.infoView,
+        Icons.info_outline_rounded,
+        l10n.moduleInfo,
+        '$here/info',
+      ),
       (
         Permissions.proposalView,
         Icons.request_quote_outlined,

@@ -628,4 +628,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSection => 'Open';
+
+  @override
+  String get clientStatusActive => 'Active';
+
+  @override
+  String get addAccount => 'Add account';
+
+  @override
+  String get newAccountTitle => 'New account';
+
+  @override
+  String get editAccount => 'Edit account';
+
+  @override
+  String get sectionGeneral => 'General';
+
+  @override
+  String get sectionBilling => 'Billing';
+
+  @override
+  String get sectionPeopleInCharge => 'People in charge';
+
+  @override
+  String get legalNameLabel => 'Legal name';
+
+  @override
+  String get dbaLabel => 'Trade name (DBA)';
+
+  @override
+  String get dbaHelp =>
+      'The name people use, if different from the legal name.';
+
+  @override
+  String get industryLabel => 'Industry';
+
+  @override
+  String get serviceTypeLabel => 'Service type';
+
+  @override
+  String get serviceTypeHint => 'e.g. Office cleaning';
+
+  @override
+  String get accountStatusLabel => 'Status';
+
+  @override
+  String get taxIdLabel => 'Tax ID';
+
+  @override
+  String get billingAddressLabel => 'Address';
+
+  @override
+  String get billingCityLabel => 'City';
+
+  @override
+  String get billingStateLabel => 'State';
+
+  @override
+  String get billingZipLabel => 'ZIP code';
+
+  @override
+  String get salespersonLabel => 'Salesperson';
+
+  @override
+  String get assigneesReadOnly =>
+      'Only owners and account managers can change who\'s in charge.';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'Only accounts that were never used can be deleted. This can\'t be undone.';
+
+  @override
+  String get accountCreatedTitle => 'Account created';
+
+  @override
+  String get accountCreatedNotMember =>
+      'To open it, ask an owner to add you to its team.';
+
+  @override
+  String get clientsHasRelatedRecords =>
+      'This account has history (proposals, contracts, locations, jobs or invoices), so it can\'t be deleted. Set its status to Inactive instead.';
+
+  @override
+  String get clientsAssigneeNotActive =>
+      'The account manager, supervisor and salesperson must be active users.';
+
+  @override
+  String get clientsNotFound => 'This account no longer exists.';
 }

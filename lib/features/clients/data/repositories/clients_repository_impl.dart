@@ -8,12 +8,29 @@ class ClientsRepositoryImpl implements ClientsRepository {
 
   final ClientsRemoteDataSource _remote;
 
-  @override
-  Future<List<Client>> getMyClients() async {
+  Future<T> _guard<T>(Future<T> Function() action) async {
     try {
-      return await _remote.getClients();
+      return await action();
     } on ApiException catch (e) {
       throw e.toFailure();
     }
   }
+
+  @override
+  Future<List<Client>> getMyClients() => _guard(_remote.getClients);
+
+  @override
+  Future<Client> getClient(String id) => _guard(() => _remote.getClient(id));
+
+  @override
+  Future<Client> createClient(ClientDraft draft) =>
+      _guard(() => _remote.createClient(draft));
+
+  @override
+  Future<Client> updateClient(String id, ClientDraft draft) =>
+      _guard(() => _remote.updateClient(id, draft));
+
+  @override
+  Future<void> deleteClient(String id) =>
+      _guard(() => _remote.deleteClient(id));
 }

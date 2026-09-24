@@ -8,7 +8,7 @@ import '../../domain/entities/client.dart';
 import '../controllers/clients_providers.dart';
 
 /// The client accounts the user belongs to (the server filters them), as a
-/// two-column grid of tiles.
+/// two-column grid of tiles. Owners and account managers can add one.
 class AccountsScreen extends ConsumerWidget {
   const AccountsScreen({super.key});
 
@@ -23,6 +23,14 @@ class AccountsScreen extends ConsumerWidget {
     return SpacePage(
       title: l10n.accountsTitle,
       onRefresh: refresh,
+      actions: [
+        if (ref.watch(canCreateAccountsProvider))
+          CircleButton.dark(
+            icon: Icons.add_rounded,
+            tooltip: l10n.addAccount,
+            onPressed: () => context.push('$path/new'),
+          ),
+      ],
       slivers: [
         AsyncSlivers(
           value: clients,

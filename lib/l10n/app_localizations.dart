@@ -1189,6 +1189,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get openSection;
+
+  /// No description provided for @clientStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get clientStatusActive;
+
+  /// No description provided for @addAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Add account'**
+  String get addAccount;
+
+  /// No description provided for @newAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New account'**
+  String get newAccountTitle;
+
+  /// No description provided for @editAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit account'**
+  String get editAccount;
+
+  /// No description provided for @sectionGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get sectionGeneral;
+
+  /// No description provided for @sectionBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing'**
+  String get sectionBilling;
+
+  /// No description provided for @sectionPeopleInCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'People in charge'**
+  String get sectionPeopleInCharge;
+
+  /// No description provided for @legalNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal name'**
+  String get legalNameLabel;
+
+  /// No description provided for @dbaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade name (DBA)'**
+  String get dbaLabel;
+
+  /// No description provided for @dbaHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The name people use, if different from the legal name.'**
+  String get dbaHelp;
+
+  /// No description provided for @industryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Industry'**
+  String get industryLabel;
+
+  /// No description provided for @serviceTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service type'**
+  String get serviceTypeLabel;
+
+  /// No description provided for @serviceTypeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Office cleaning'**
+  String get serviceTypeHint;
+
+  /// No description provided for @accountStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get accountStatusLabel;
+
+  /// No description provided for @taxIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax ID'**
+  String get taxIdLabel;
+
+  /// No description provided for @billingAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get billingAddressLabel;
+
+  /// No description provided for @billingCityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get billingCityLabel;
+
+  /// No description provided for @billingStateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get billingStateLabel;
+
+  /// No description provided for @billingZipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ZIP code'**
+  String get billingZipLabel;
+
+  /// No description provided for @salespersonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Salesperson'**
+  String get salespersonLabel;
+
+  /// No description provided for @assigneesReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only owners and account managers can change who\'s in charge.'**
+  String get assigneesReadOnly;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only accounts that were never used can be deleted. This can\'t be undone.'**
+  String get deleteAccountConfirmBody;
+
+  /// No description provided for @accountCreatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created'**
+  String get accountCreatedTitle;
+
+  /// No description provided for @accountCreatedNotMember.
+  ///
+  /// In en, this message translates to:
+  /// **'To open it, ask an owner to add you to its team.'**
+  String get accountCreatedNotMember;
+
+  /// No description provided for @clientsHasRelatedRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has history (proposals, contracts, locations, jobs or invoices), so it can\'t be deleted. Set its status to Inactive instead.'**
+  String get clientsHasRelatedRecords;
+
+  /// No description provided for @clientsAssigneeNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'The account manager, supervisor and salesperson must be active users.'**
+  String get clientsAssigneeNotActive;
+
+  /// No description provided for @clientsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This account no longer exists.'**
+  String get clientsNotFound;
 }
 
 class _AppLocalizationsDelegate

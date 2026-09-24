@@ -1,9 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/usecase/usecase.dart';
+import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../users/di/users_providers.dart';
+import '../../../users/domain/entities/managed_user.dart';
+import '../../../users/domain/usecases/user_usecases.dart';
 import '../../di/clients_providers.dart';
 import '../../domain/entities/client.dart';
+import '../../domain/usecases/manage_clients.dart';
 
 /// The signed-in user's accounts. Refresh with `ref.invalidate`.
 final myClientsProvider = FutureProvider<List<Client>>((ref) {
@@ -22,4 +27,40 @@ final clientByIdProvider = FutureProvider.family<Client?, String>((
     if (client.id == clientId) return client;
   }
   return null;
+});
+
+/// One account with all its details (`GET /clients/:id`, needs `info.view`).
+final clientDetailProvider = FutureProvider.family<Client, String>(
+  (ref, clientId) => ref.watch(getClientProvider)(clientId),
+);
+
+User? _signedIn(Ref ref) => switch (ref.watch(authControllerProvider).value) {
+  Authenticated(:final user) => user,
+  _ => null,
+};
+
+/// Whether the signed-in user may add accounts (owners, account managers).
+final canCreateAccountsProvider = Provider<bool>((ref) {
+  final user = _signedIn(ref);
+  return user != null && AccountAdminPolicy.canCreate(user);
+});
+
+/// Whether they may delete accounts (owners).
+final canDeleteAccountsProvider = Provider<bool>((ref) {
+  final user = _signedIn(ref);
+  return user != null && AccountAdminPolicy.canDelete(user);
+});
+
+/// Whether a new account can be opened right away (owners see them all).
+final seesAllAccountsProvider = Provider<bool>((ref) {
+  final user = _signedIn(ref);
+  return user != null && AccountAdminPolicy.seesAllAccounts(user);
+});
+
+/// Active users to pick an account's manager, supervisor and salesperson
+/// from. `null` when the signed-in user can't list users.
+final assignableUsersProvider = FutureProvider<List<ManagedUser>?>((ref) {
+  final user = _signedIn(ref);
+  if (user == null || !UserAdminPolicy.canView(user)) return null;
+  return ref.watch(getUsersProvider)(const UserQuery());
 });

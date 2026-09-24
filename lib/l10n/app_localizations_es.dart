@@ -634,4 +634,94 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get openSection => 'Abrir';
+
+  @override
+  String get clientStatusActive => 'Activa';
+
+  @override
+  String get addAccount => 'Añadir cuenta';
+
+  @override
+  String get newAccountTitle => 'Nueva cuenta';
+
+  @override
+  String get editAccount => 'Editar cuenta';
+
+  @override
+  String get sectionGeneral => 'General';
+
+  @override
+  String get sectionBilling => 'Facturación';
+
+  @override
+  String get sectionPeopleInCharge => 'Responsables';
+
+  @override
+  String get legalNameLabel => 'Razón social';
+
+  @override
+  String get dbaLabel => 'Nombre comercial';
+
+  @override
+  String get dbaHelp =>
+      'El nombre que se usa a diario, si es distinto de la razón social.';
+
+  @override
+  String get industryLabel => 'Sector';
+
+  @override
+  String get serviceTypeLabel => 'Tipo de servicio';
+
+  @override
+  String get serviceTypeHint => 'p. ej. Limpieza de oficinas';
+
+  @override
+  String get accountStatusLabel => 'Estado de la cuenta';
+
+  @override
+  String get taxIdLabel => 'Identificación fiscal';
+
+  @override
+  String get billingAddressLabel => 'Dirección';
+
+  @override
+  String get billingCityLabel => 'Ciudad';
+
+  @override
+  String get billingStateLabel => 'Estado o provincia';
+
+  @override
+  String get billingZipLabel => 'Código postal';
+
+  @override
+  String get salespersonLabel => 'Vendedor';
+
+  @override
+  String get assigneesReadOnly =>
+      'Solo los propietarios y gerentes de cuenta pueden cambiar a los responsables.';
+
+  @override
+  String get deleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'Solo se pueden eliminar cuentas que nunca se usaron. Esto no se puede deshacer.';
+
+  @override
+  String get accountCreatedTitle => 'Cuenta creada';
+
+  @override
+  String get accountCreatedNotMember =>
+      'Para abrirla, pide a un propietario que te añada a su equipo.';
+
+  @override
+  String get clientsHasRelatedRecords =>
+      'Esta cuenta tiene historial (propuestas, contratos, ubicaciones, trabajos o facturas), así que no se puede eliminar. Cambia su estado a Inactiva.';
+
+  @override
+  String get clientsAssigneeNotActive =>
+      'El gerente de cuenta, el supervisor y el vendedor deben ser usuarios activos.';
+
+  @override
+  String get clientsNotFound => 'Esta cuenta ya no existe.';
 }

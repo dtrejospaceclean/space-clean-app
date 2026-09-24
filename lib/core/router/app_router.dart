@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
+import '../../features/clients/presentation/screens/account_form_screen.dart';
+import '../../features/clients/presentation/screens/account_info_screen.dart';
 import '../../features/clients/presentation/screens/account_screen.dart';
 import '../../features/clients/presentation/screens/accounts_screen.dart';
 import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
@@ -98,12 +100,31 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 path: AccountsScreen.path,
                 builder: (_, _) => const AccountsScreen(),
                 routes: [
+                  // Before ':clientId' so "new" isn't read as an id.
+                  GoRoute(
+                    path: 'new',
+                    builder: (_, _) => const AccountFormScreen(),
+                  ),
                   GoRoute(
                     path: ':clientId',
                     builder: (_, state) => AccountScreen(
                       clientId: state.pathParameters['clientId']!,
                     ),
                     routes: [
+                      GoRoute(
+                        path: 'info',
+                        builder: (_, state) => AccountInfoScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          GoRoute(
+                            path: 'edit',
+                            builder: (_, state) => AccountFormScreen(
+                              clientId: state.pathParameters['clientId'],
+                            ),
+                          ),
+                        ],
+                      ),
                       GoRoute(
                         path: 'jobs',
                         builder: (_, state) => AccountJobsScreen(

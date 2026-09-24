@@ -22,6 +22,9 @@ extension FailureMessages on AppLocalizations {
     'roles.system_role_not_renamable' ||
     'roles.system_role_not_deletable' => rolesSystemRole,
     'roles.some_not_found' => rolesSomeNotFound,
+    'clients.not_found' => clientsNotFound,
+    'clients.assignee_not_active' => clientsAssigneeNotActive,
+    'clients.has_related_records' => clientsHasRelatedRecords,
     'errors.unique_violation' => errorsUniqueViolation,
     'errors.too_many_requests' => errorsTooManyRequests,
     'errors.not_found' => errorsNotFound,
