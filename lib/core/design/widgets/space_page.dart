@@ -109,7 +109,7 @@ class SpacePage extends StatelessWidget {
             ? scroll
             : RefreshIndicator.adaptive(
                 onRefresh: onRefresh!,
-                color: SpaceColors.ink,
+                color: SpaceColors.primary,
                 child: scroll,
               ),
         bottomNavigationBar: bottom,

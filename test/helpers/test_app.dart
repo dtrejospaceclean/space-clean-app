@@ -206,8 +206,14 @@ class FakeAuthRepository implements AuthRepository {
   Future<bool> hasSession() =>
       sessionCheck ?? Future.value(sessionUser != null);
 
+  /// When set, the session check finds a session but `/auth/me` fails.
+  Failure? meFailure;
+
   @override
-  Future<User> getCurrentUser() async => sessionUser!;
+  Future<User> getCurrentUser() async {
+    if (meFailure case final failure?) throw failure;
+    return sessionUser!;
+  }
 
   @override
   Future<User> login({required String email, required String password}) async {

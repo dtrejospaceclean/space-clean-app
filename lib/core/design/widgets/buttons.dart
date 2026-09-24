@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens.dart';
 
-/// The one main action on a screen: a black pill, full width, 56 dp.
+/// The one main action on a screen: an orange pill, full width, 56 dp.
 /// Keeps its color and shows a spinner while [busy].
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({

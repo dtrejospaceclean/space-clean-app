@@ -148,7 +148,7 @@ class _Box extends StatelessWidget {
     final border = error
         ? Border.all(color: SpaceColors.danger, width: 2)
         : active
-        ? Border.all(color: SpaceColors.accent, width: 2)
+        ? Border.all(color: SpaceColors.primary, width: 2)
         : Border.all(color: SpaceColors.inkSoft);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 160),

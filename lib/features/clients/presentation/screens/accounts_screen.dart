@@ -72,7 +72,7 @@ class AccountsScreen extends ConsumerWidget {
   }
 }
 
-/// Initials on alternating soft and strong navy, like bank logos in a list.
+/// Initials alternating between the logo's navy and orange.
 class _AccountBadge extends StatelessWidget {
   const _AccountBadge({required this.client, required this.index});
 
@@ -81,12 +81,12 @@ class _AccountBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strong = index.isOdd;
+    final orange = index.isOdd;
     return InitialsAvatar(
       name: client.displayName,
       size: 48,
-      background: strong ? SpaceColors.accent : SpaceColors.accentSoft,
-      foreground: strong ? SpaceColors.onAccent : SpaceColors.accent,
+      background: orange ? SpaceColors.highlightSoft : SpaceColors.accentSoft,
+      foreground: orange ? SpaceColors.highlightInk : SpaceColors.accent,
     );
   }
 }

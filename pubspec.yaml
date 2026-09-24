@@ -118,17 +118,17 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-# Native launch screen: matches the Flutter splash (gray ground, color logo)
+# Native launch screen: matches the Flutter splash (blue-gray ground, color logo)
 # in both light and dark system modes (the app is light-only).
 # Regenerate with: flutter test --update-goldens tool/brand && dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#F1F1F3"
-  color_dark: "#F1F1F3"
+  color: "#EEF2F6"
+  color_dark: "#EEF2F6"
   image: assets/brand/splash_logo.png
   image_dark: assets/brand/splash_logo.png
   android_12:
-    color: "#F1F1F3"
-    color_dark: "#F1F1F3"
+    color: "#EEF2F6"
+    color_dark: "#EEF2F6"
     image: assets/brand/splash_logo_android12.png
     image_dark: assets/brand/splash_logo_android12.png
   web: false

@@ -87,7 +87,7 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(SpaceRadius.pill),
                     borderSide: const BorderSide(
-                      color: SpaceColors.accent,
+                      color: SpaceColors.primary,
                       width: 2,
                     ),
                   ),

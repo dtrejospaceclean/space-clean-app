@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../design/tokens.dart';
+
 /// Whether to use Cupertino conventions (iOS) instead of Material (Android).
 bool useCupertino(BuildContext context) => switch (Theme.of(context).platform) {
   TargetPlatform.iOS || TargetPlatform.macOS => true,
@@ -18,6 +20,11 @@ Widget adaptiveAction(
     return CupertinoDialogAction(
       isDestructiveAction: destructive,
       onPressed: onPressed,
+      // Navy, not the orange primary: orange text on the translucent iOS
+      // alert would fall under 4.5:1. Destructive actions keep system red.
+      textStyle: destructive
+          ? null
+          : const TextStyle(color: SpaceColors.accent),
       child: Text(label),
     );
   }

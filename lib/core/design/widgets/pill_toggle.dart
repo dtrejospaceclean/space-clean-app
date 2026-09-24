@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens.dart';
 
-/// Pill-shaped single choice: the selected option is a black pill with white
+/// Pill-shaped single choice: the selected option is an orange pill with white
 /// text on a white (or sunken) track.
 class PillToggle<T> extends StatelessWidget {
   const PillToggle({
@@ -33,7 +33,7 @@ class PillToggle<T> extends StatelessWidget {
         selected: isSelected,
         button: true,
         child: Material(
-          color: isSelected ? SpaceColors.ink : Colors.transparent,
+          color: isSelected ? SpaceColors.primary : Colors.transparent,
           shape: const StadiumBorder(),
           clipBehavior: Clip.antiAlias,
           child: InkWell(

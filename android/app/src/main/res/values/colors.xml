@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The app's gray ground (SpaceColors.ground), shown behind Flutter
+    <!-- The app's blue-gray ground (SpaceColors.ground), shown behind Flutter
          before its first frame so launch never flashes white or black. -->
-    <color name="ground">#F1F1F3</color>
+    <color name="ground">#EEF2F6</color>
 </resources>

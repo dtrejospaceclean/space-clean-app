@@ -218,7 +218,7 @@ class UserDetailScreen extends ConsumerWidget {
                     ListRow(
                       leading: const IconBadge(
                         icon: Icons.contact_emergency_outlined,
-                        color: SpaceColors.highlight,
+                        color: SpaceColors.highlightInk,
                         background: SpaceColors.highlightSoft,
                       ),
                       title: orNull(user.emergencyContactName) ?? l10n.notSet,

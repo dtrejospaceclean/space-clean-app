@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthTokens {
@@ -34,11 +36,23 @@ class TokenStorage {
 
   Future<AuthTokens?> read() async {
     if (_loaded) return _cached;
-    final access = await _storage.read(key: _accessKey);
-    final refresh = await _storage.read(key: _refreshKey);
-    _cached = access != null && refresh != null
-        ? AuthTokens(accessToken: access, refreshToken: refresh)
-        : null;
+    try {
+      final access = await _storage.read(key: _accessKey);
+      final refresh = await _storage.read(key: _refreshKey);
+      _cached = access != null && refresh != null
+          ? AuthTokens(accessToken: access, refreshToken: refresh)
+          : null;
+    } on PlatformException catch (e) {
+      // The stored values can't be decrypted, e.g. Android restored the app's
+      // data from a backup but not the keystore key. Start signed out.
+      debugPrint('TokenStorage: unreadable tokens, clearing them ($e)');
+      _cached = null;
+      try {
+        await _storage.deleteAll();
+      } on PlatformException {
+        // Nothing more to do; the next save overwrites them.
+      }
+    }
     _loaded = true;
     return _cached;
   }

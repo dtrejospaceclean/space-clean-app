@@ -93,7 +93,7 @@ class SpaceTextField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
             onFieldSubmitted: onFieldSubmitted,
-            cursorColor: SpaceColors.accent,
+            cursorColor: SpaceColors.primary,
             style: const TextStyle(
               fontFamily: 'Manrope',
               fontSize: 17,
@@ -194,7 +194,7 @@ class PickerField extends StatelessWidget {
   }
 }
 
-/// Multi-select pills: selected ones are black with a check.
+/// Multi-select pills: selected ones are orange with a check.
 class ChoicePills<T> extends StatelessWidget {
   const ChoicePills({
     super.key,
@@ -236,7 +236,7 @@ class _Pill extends StatelessWidget {
     selected: selected,
     button: true,
     child: Material(
-      color: selected ? SpaceColors.ink : SpaceColors.sunken,
+      color: selected ? SpaceColors.primary : SpaceColors.sunken,
       shape: const StadiumBorder(),
       clipBehavior: Clip.antiAlias,
       child: InkWell(

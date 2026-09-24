@@ -14,8 +14,8 @@ class BottomBarItem {
   final String label;
 }
 
-/// White tab bar: outlined gray icons, the active tab black with a filled
-/// icon and bold label. Same on both platforms.
+/// White tab bar: outlined blue-gray icons; the active tab orange with a filled
+/// icon and bold label, over a navy dot. Same on both platforms.
 class SpaceBottomBar extends StatelessWidget {
   const SpaceBottomBar({
     super.key,
@@ -63,7 +63,7 @@ class _Tab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? SpaceColors.ink : SpaceColors.inkMuted;
+    final color = active ? SpaceColors.primary : SpaceColors.inkMuted;
     return Semantics(
       selected: active,
       button: true,
@@ -84,6 +84,17 @@ class _Tab extends StatelessWidget {
                 fontSize: 12.5,
                 fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 color: color,
+              ),
+            ),
+            const SizedBox(height: 3),
+            // A navy dot pairs the logo's two colors on the current tab.
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              width: active ? 5 : 0,
+              height: 5,
+              decoration: const BoxDecoration(
+                color: SpaceColors.accent,
+                shape: BoxShape.circle,
               ),
             ),
           ],

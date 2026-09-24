@@ -1,42 +1,54 @@
 import 'package:flutter/widgets.dart';
 
-/// Space Clean's interface tokens: a soft gray ground, white rounded cards
-/// with no borders or shadows, near-black ink and actions, logo navy as the
-/// strong accent, brand orange as the highlight.
+/// Space Clean's interface tokens: a light blue-gray ground, white rounded
+/// cards, logo orange as the primary (action) color, logo navy as secondary.
 abstract final class SpaceColors {
-  /// Page background.
-  static const ground = Color(0xFFF1F1F3);
+  // Every color comes from the Space Clean logo: navy #0A4781, orange
+  // #F45302, and its blue-gray tints (#7F9FBD, #CAD7E4, #EAEFF4).
+
+  /// Page background: the logo's lightest blue-gray.
+  static const ground = Color(0xFFEEF2F6);
 
   /// Cards, fields, the bottom bar.
   static const surface = Color(0xFFFFFFFF);
 
   /// Recessed areas inside a card (inputs on white, tracks).
-  static const sunken = Color(0xFFF4F4F6);
-  static const line = Color(0xFFE6E6EA);
+  static const sunken = Color(0xFFF4F7FA);
+  static const line = Color(0xFFDCE4EC);
 
-  static const ink = Color(0xFF111114);
+  /// Text: a navy-black (16.7:1 on white).
+  static const ink = Color(0xFF0B1F33);
 
-  /// Secondary text on white and on the ground (5.3:1 on white).
-  static const inkMuted = Color(0xFF6B6B75);
+  /// Secondary text (5.8:1 on white, 5.2:1 on the ground).
+  static const inkMuted = Color(0xFF56677B);
 
   /// Second tone of large headlines, chevrons and field outlines
-  /// (3.5:1 on the ground, 3.9:1 on white: large text and UI parts only).
-  static const inkSoft = Color(0xFF80808A);
+  /// (3.6:1 on the ground, 4.1:1 on white: large text and UI parts only).
+  static const inkSoft = Color(0xFF66809C);
 
   /// Disabled controls only (exempt from contrast minimums).
-  static const inkFaint = Color(0xFFA2A2AB);
+  static const inkFaint = Color(0xFFA9B8C8);
 
-  /// Logo navy: banners, active states, progress, links.
+  /// Primary: the logo orange deepened just enough to carry white text
+  /// (4.55:1). Buttons, round "+" buttons, selected pills and toggles, the
+  /// active tab, focus rings. Use on white or as a fill, not as small text
+  /// on the ground (4.0:1).
+  static const primary = Color(0xFFD14702);
+  static const onPrimary = Color(0xFFFFFFFF);
+
+  /// Logo navy, the secondary color: links, progress, banners, strong
+  /// badges, info (9.4:1 on white).
   static const accent = Color(0xFF0A4781);
-  static const accentSoft = Color(0xFFDCE8F6);
+  static const accentSoft = Color(0xFFE3EBF4);
   static const onAccent = Color(0xFFFFFFFF);
 
-  /// Brand orange: highlights and "in progress".
-  static const highlight = Color(0xFFC2410C);
-  static const highlightSoft = Color(0xFFFCE7DC);
+  /// Logo orange as drawn in the logo: graphic marks only (3.45:1 on white).
+  /// Orange text uses [highlightInk]; orange fills behind text use [primary].
+  static const highlight = Color(0xFFF45302);
+  static const highlightSoft = Color(0xFFFEEDE3);
 
-  /// Text/icons on [highlightSoft] (6.1:1).
-  static const highlightInk = Color(0xFF9A3412);
+  /// Orange text/icons on [highlightSoft] (5.6:1).
+  static const highlightInk = Color(0xFFA83A02);
 
   static const success = Color(0xFF15803D);
   static const successSoft = Color(0xFFDDF3E4);

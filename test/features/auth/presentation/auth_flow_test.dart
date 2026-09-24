@@ -108,6 +108,17 @@ void main() {
     expect(auth.rememberedEmail, isNull);
   });
 
+  testWidgets('a stored session for a deleted user goes to sign-in', (
+    tester,
+  ) async {
+    final auth = FakeAuthRepository(sessionUser: ana)
+      ..meFailure = const ServerFailure('users.not_found', statusCode: 404);
+    await pumpApp(tester, auth: auth);
+
+    expect(find.text('Your session expired. Sign in again.'), findsOneWidget);
+    expect(auth.sessionUser, isNull);
+  });
+
   testWidgets('explains a session that expired on its own', (tester) async {
     final auth = FakeAuthRepository(sessionUser: ana);
     await pumpApp(tester, auth: auth);

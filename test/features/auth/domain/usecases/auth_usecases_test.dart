@@ -68,11 +68,11 @@ void main() {
     test('returns null without a stored session', () async {
       repository.session = false;
 
-      expect(await RestoreSession(repository)(const NoParams()), isNull);
+      expect((await RestoreSession(repository)(const NoParams())).user, isNull);
     });
 
     test('returns the user of a valid session', () async {
-      expect(await RestoreSession(repository)(const NoParams()), _user);
+      expect((await RestoreSession(repository)(const NoParams())).user, _user);
     });
 
     test('drops a session the server rejects', () async {
@@ -80,8 +80,34 @@ void main() {
         'auth.invalid_refresh_token',
       );
 
-      expect(await RestoreSession(repository)(const NoParams()), isNull);
+      expect((await RestoreSession(repository)(const NoParams())).user, isNull);
       expect(repository.loggedOut, isTrue);
+    });
+
+    test('drops a session whose user no longer exists', () async {
+      repository.meFailure = const ServerFailure(
+        'users.not_found',
+        statusCode: 404,
+      );
+
+      final restored = await RestoreSession(repository)(const NoParams());
+
+      expect(restored.user, isNull);
+      expect(restored.ended, isTrue);
+      expect(repository.loggedOut, isTrue);
+    });
+
+    test('keeps the session on other server errors', () async {
+      repository.meFailure = const ServerFailure(
+        'errors.internal',
+        statusCode: 500,
+      );
+
+      await expectLater(
+        RestoreSession(repository)(const NoParams()),
+        throwsA(isA<ServerFailure>()),
+      );
+      expect(repository.loggedOut, isFalse);
     });
 
     test('keeps the session and rethrows other failures', () async {

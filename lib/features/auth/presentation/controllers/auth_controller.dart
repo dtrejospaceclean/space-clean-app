@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/usecase/usecase.dart';
@@ -37,8 +38,21 @@ class AuthController extends AsyncNotifier<AuthState> {
     });
     ref.onDispose(subscription.cancel);
 
-    final user = await ref.watch(restoreSessionProvider)(const NoParams());
-    return user == null ? const Unauthenticated() : Authenticated(user);
+    try {
+      final restored = await ref.watch(restoreSessionProvider)(
+        const NoParams(),
+      );
+      return switch (restored.user) {
+        final user? => Authenticated(user),
+        // A stored session that no longer works: sign-in explains why.
+        null => Unauthenticated(sessionExpired: restored.ended),
+      };
+    } catch (error, stack) {
+      // The splash shows a short message; the console gets the real cause.
+      debugPrint('Session restore failed: $error');
+      debugPrintStack(stackTrace: stack);
+      rethrow;
+    }
   }
 
   /// Throws a `Failure` so the login form can show it.

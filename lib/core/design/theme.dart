@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// One theme for both platforms: Manrope, gray ground, white cards, black
-/// pill actions. Native behaviors (back gestures, dialogs, pickers) stay.
+/// One theme for both platforms: Manrope, blue-gray ground, white cards,
+/// orange pill actions. Native behaviors (back gestures, dialogs, pickers) stay.
 abstract final class SpaceTheme {
   static const font = 'Manrope';
 
   static ThemeData light() {
     const scheme = ColorScheme.light(
-      primary: SpaceColors.ink,
+      primary: SpaceColors.primary,
       onPrimary: Colors.white,
       secondary: SpaceColors.accent,
       onSecondary: SpaceColors.onAccent,
@@ -85,9 +85,9 @@ abstract final class SpaceTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: SpaceColors.ink,
+          backgroundColor: SpaceColors.primary,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: SpaceColors.ink,
+          disabledBackgroundColor: SpaceColors.primary,
           disabledForegroundColor: Colors.white,
           minimumSize: const Size.fromHeight(56),
           shape: const StadiumBorder(),
@@ -121,7 +121,7 @@ abstract final class SpaceTheme {
         border: _field(SpaceColors.inkSoft),
         enabledBorder: _field(SpaceColors.inkSoft),
         disabledBorder: _field(SpaceColors.line),
-        focusedBorder: _field(SpaceColors.accent, 2),
+        focusedBorder: _field(SpaceColors.primary, 2),
         errorBorder: _field(SpaceColors.danger, 2),
         focusedErrorBorder: _field(SpaceColors.danger, 2),
         errorStyle: const TextStyle(
@@ -150,11 +150,11 @@ abstract final class SpaceTheme {
         ),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: SpaceColors.ink,
+        color: SpaceColors.primary,
       ),
       cupertinoOverrideTheme: const CupertinoThemeData(
         brightness: Brightness.light,
-        primaryColor: SpaceColors.accent,
+        primaryColor: SpaceColors.primary,
         scaffoldBackgroundColor: SpaceColors.ground,
         textTheme: CupertinoTextThemeData(
           textStyle: TextStyle(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens.dart';
 
-/// The round header buttons: black for the main action ("+"), white for
+/// The round header buttons: orange for the main action ("+"), white for
 /// secondary ones (back, arrows). 44 dp visible, 48 dp touch target.
 class CircleButton extends StatelessWidget {
   const CircleButton.dark({
@@ -36,7 +36,7 @@ class CircleButton extends StatelessWidget {
           dimension: 48,
           child: Center(
             child: Material(
-              color: _dark ? SpaceColors.ink : SpaceColors.surface,
+              color: _dark ? SpaceColors.primary : SpaceColors.surface,
               shape: const CircleBorder(),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
