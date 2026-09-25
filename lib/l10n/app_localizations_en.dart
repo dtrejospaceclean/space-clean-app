@@ -765,4 +765,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeDark => 'Dark';
+
+  @override
+  String get builtInRoleNameHelp =>
+      'Built-in roles keep their name. You can change the description.';
 }

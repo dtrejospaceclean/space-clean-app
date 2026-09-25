@@ -339,5 +339,6 @@
   "appearanceLabel": "Appearance",
   "themeSystem": "System",
   "themeLight": "Light",
-  "themeDark": "Dark"
+  "themeDark": "Dark",
+  "builtInRoleNameHelp": "Built-in roles keep their name. You can change the description."
 }

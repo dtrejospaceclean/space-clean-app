@@ -1447,6 +1447,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get themeDark;
+
+  /// No description provided for @builtInRoleNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in roles keep their name. You can change the description.'**
+  String get builtInRoleNameHelp;
 }
 
 class _AppLocalizationsDelegate

@@ -199,11 +199,19 @@ void main() {
 
     expect(find.text('3 users'), findsOneWidget);
     expect(find.textContaining('Built-in'), findsNWidgets(5));
+    // Roles can be edited but not added.
+    expect(find.byTooltip('Add role'), findsNothing);
 
-    // Built-in roles don't open an editor; custom ones do.
+    // Built-in roles: description only, no rename or delete.
     await tester.tap(find.text('Crew'));
     await tester.pumpAndSettle();
-    expect(find.text('Edit role'), findsNothing);
+    expect(find.text('Edit role'), findsOneWidget);
+    expect(tester.widget<TextFormField>(field('Name')).enabled, isFalse);
+    expect(find.text('Delete role'), findsNothing);
+    await tester.enterText(field('Description (optional)'), 'Cleaners on site');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(roles.writes, ['update:r-crew:crew']);
 
     await tester.tap(find.text('floor_lead'));
     await tester.pumpAndSettle();
@@ -213,8 +221,30 @@ void main() {
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
 
-    expect(roles.writes, ['delete:r-lead']);
+    expect(roles.writes, ['update:r-crew:crew', 'delete:r-lead']);
     expect(find.text('floor_lead'), findsNothing);
+  });
+
+  testWidgets('the role editor keeps Save above the navigation bar', (
+    tester,
+  ) async {
+    // A three-button navigation bar: 48 dp at the bottom of the screen.
+    tester.view.padding = const FakeViewPadding(bottom: 48 * 3);
+    tester.view.viewPadding = const FakeViewPadding(bottom: 48 * 3);
+    await pumpApp(tester, auth: FakeAuthRepository(sessionUser: owner));
+    await tester.tap(find.text('Me'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Roles'));
+    await tester.pumpAndSettle();
+    // Built-in: Save is the last thing in the sheet.
+    await tester.tap(find.text('Crew'));
+    await tester.pumpAndSettle();
+
+    final screenHeight = tester.view.physicalSize.height / 3;
+    expect(
+      tester.getRect(find.widgetWithText(FilledButton, 'Save')).bottom,
+      lessThanOrEqualTo(screenHeight - 48),
+    );
   });
 
   group('own profile', () {

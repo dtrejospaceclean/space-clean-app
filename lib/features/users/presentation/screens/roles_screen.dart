@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,14 +31,7 @@ class RolesScreen extends ConsumerWidget {
     return SpacePage(
       title: l10n.rolesTitle,
       onRefresh: refresh,
-      actions: [
-        if (canEdit)
-          CircleButton.dark(
-            icon: Icons.add_rounded,
-            tooltip: l10n.addRole,
-            onPressed: () => _RoleEditor.open(context),
-          ),
-      ],
+      // No new roles from the app; owners edit the existing ones.
       slivers: [
         AsyncSlivers(
           value: roles,
@@ -72,7 +67,7 @@ class RolesScreen extends ConsumerWidget {
                           ?role.description,
                         ].join(' · '),
                         trailing: Text(l10n.roleUserCount(role.userCount)),
-                        onTap: canEdit && !role.isSystem
+                        onTap: canEdit
                             ? () => _RoleEditor.open(context, role: role)
                             : null,
                       ),
@@ -87,13 +82,14 @@ class RolesScreen extends ConsumerWidget {
   }
 }
 
-/// Create or edit a custom role in a bottom sheet.
+/// Edits a role in a bottom sheet. Built-in roles keep their name (the API
+/// refuses to rename or delete them); only their description changes.
 class _RoleEditor extends ConsumerStatefulWidget {
-  const _RoleEditor({this.role});
+  const _RoleEditor({required this.role});
 
-  final RoleInfo? role;
+  final RoleInfo role;
 
-  static Future<void> open(BuildContext context, {RoleInfo? role}) =>
+  static Future<void> open(BuildContext context, {required RoleInfo role}) =>
       showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
@@ -107,9 +103,9 @@ class _RoleEditor extends ConsumerStatefulWidget {
 
 class _RoleEditorState extends ConsumerState<_RoleEditor> {
   final _formKey = GlobalKey<FormState>();
-  late final _name = TextEditingController(text: widget.role?.name);
+  late final _name = TextEditingController(text: widget.role.name);
   late final _description = TextEditingController(
-    text: widget.role?.description,
+    text: widget.role.description,
   );
   bool _busy = false;
   Failure? _failure;
@@ -142,8 +138,9 @@ class _RoleEditorState extends ConsumerState<_RoleEditor> {
     await _run(
       () => ref.read(saveRoleProvider)(
         SaveRoleParams(
-          id: widget.role?.id,
-          name: _name.text,
+          id: widget.role.id,
+          // Unchanged for built-in roles, which the API accepts.
+          name: widget.role.isSystem ? widget.role.name : _name.text,
           description: _description.text,
         ),
       ),
@@ -152,7 +149,7 @@ class _RoleEditorState extends ConsumerState<_RoleEditor> {
 
   Future<void> _delete() async {
     final l10n = AppLocalizations.of(context);
-    final role = widget.role!;
+    final role = widget.role;
     final confirmed = await showAdaptiveDialog<bool>(
       context: context,
       builder: (context) => AlertDialog.adaptive(
@@ -190,7 +187,13 @@ class _RoleEditorState extends ConsumerState<_RoleEditor> {
         SpaceSpace.page,
         0,
         SpaceSpace.page,
-        MediaQuery.viewInsetsOf(context).bottom + 20,
+        // Above the keyboard when open, otherwise above the system
+        // navigation bar or gesture strip.
+        math.max(
+              MediaQuery.viewInsetsOf(context).bottom,
+              MediaQuery.viewPaddingOf(context).bottom,
+            ) +
+            20,
       ),
       child: SingleChildScrollView(
         child: Form(
@@ -199,10 +202,7 @@ class _RoleEditorState extends ConsumerState<_RoleEditor> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                role == null ? l10n.addRole : l10n.editRole,
-                style: theme.textTheme.headlineMedium,
-              ),
+              Text(l10n.editRole, style: theme.textTheme.headlineMedium),
               const SizedBox(height: 16),
               if (failure != null) ...[
                 Notice(message: l10n.failureMessage(failure)),
@@ -215,9 +215,11 @@ class _RoleEditorState extends ConsumerState<_RoleEditor> {
                     SpaceTextField(
                       label: l10n.roleNameLabel,
                       controller: _name,
-                      enabled: !_busy,
+                      enabled: !_busy && !role.isSystem,
                       hint: 'floor_lead',
-                      helper: l10n.roleNameHelp,
+                      helper: role.isSystem
+                          ? l10n.builtInRoleNameHelp
+                          : l10n.roleNameHelp,
                       validator: (v) {
                         final name = (v ?? '').trim().toLowerCase();
                         if (name.isEmpty) return l10n.validationRequired;
@@ -243,7 +245,7 @@ class _RoleEditorState extends ConsumerState<_RoleEditor> {
                 busy: _busy,
                 onPressed: _save,
               ),
-              if (role != null) ...[
+              if (!role.isSystem) ...[
                 const SizedBox(height: 10),
                 if (role.isDeletable)
                   SecondaryButton(

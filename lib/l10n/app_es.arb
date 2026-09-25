@@ -224,5 +224,6 @@
   "appearanceLabel": "Apariencia",
   "themeSystem": "Sistema",
   "themeLight": "Claro",
-  "themeDark": "Oscuro"
+  "themeDark": "Oscuro",
+  "builtInRoleNameHelp": "Los roles integrados conservan su nombre. Puedes cambiar la descripción."
 }
