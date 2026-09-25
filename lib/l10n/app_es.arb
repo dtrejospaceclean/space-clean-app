@@ -219,5 +219,6 @@
   "adminUsersHint": "Personal y accesos de clientes",
   "adminRolesHint": "Roles del personal y quién los tiene",
   "usersCannotDeactivateSelf": "No puedes desactivar tu propia cuenta.",
-  "ownAccountNotice": "Esta es tu cuenta. No puedes desactivarte; otro propietario sí puede."
+  "ownAccountNotice": "Esta es tu cuenta. No puedes desactivarte; otro propietario sí puede.",
+  "editProfile": "Editar perfil"
 }

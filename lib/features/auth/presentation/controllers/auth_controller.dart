@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../../di/auth_providers.dart';
 import '../../domain/entities/user.dart';
@@ -61,6 +62,18 @@ class AuthController extends AsyncNotifier<AuthState> {
       LoginParams(email: email, password: password),
     );
     state = AsyncData(Authenticated(user));
+  }
+
+  /// Picks up changes to the signed-in user's own record (name, email,
+  /// roles). Keeps the current details if the reload fails.
+  Future<void> refreshUser() async {
+    if (state.value is! Authenticated) return;
+    try {
+      final user = await ref.read(refreshCurrentUserProvider)(const NoParams());
+      if (state.value is Authenticated) state = AsyncData(Authenticated(user));
+    } on Failure {
+      // Stale details are harmless; they refresh on the next start.
+    }
   }
 
   Future<void> logout() async {

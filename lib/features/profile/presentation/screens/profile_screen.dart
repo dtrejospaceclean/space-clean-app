@@ -8,7 +8,9 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/widgets/language_toggle.dart';
+import '../../../users/domain/usecases/user_usecases.dart';
 import '../admin_modules.dart';
+import 'edit_profile_screen.dart';
 
 /// The signed-in user, administration, settings, and sign-out.
 class ProfileScreen extends ConsumerWidget {
@@ -55,6 +57,14 @@ class ProfileScreen extends ConsumerWidget {
 
     return SpacePage(
       title: l10n.profileTitle,
+      actions: [
+        if (UserAdminPolicy.canEdit(user))
+          CircleButton.dark(
+            icon: Icons.edit_outlined,
+            tooltip: l10n.editProfile,
+            onPressed: () => context.push(EditProfileScreen.path),
+          ),
+      ],
       slivers: [
         PageBox(
           top: 8,

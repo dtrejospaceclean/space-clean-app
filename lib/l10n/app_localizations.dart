@@ -1417,6 +1417,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This is your account. You can\'t deactivate yourself; another owner can.'**
   String get ownAccountNotice;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get editProfile;
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import '../../../../core/l10n/formatting.dart';
 import '../../../../core/l10n/role_names.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../password_reset/domain/entities/password_policy.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../di/users_providers.dart';
 import '../../domain/entities/managed_user.dart';
 import '../../domain/entities/role_info.dart';
@@ -19,9 +22,12 @@ import '../widgets/user_labels.dart';
 
 /// Create a user ([userId] null) or edit one. Owners only.
 class UserFormScreen extends ConsumerWidget {
-  const UserFormScreen({super.key, this.userId});
+  const UserFormScreen({super.key, this.userId, this.title});
 
   final String? userId;
+
+  /// Overrides the default "New user" / "Edit user" title.
+  final String? title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +35,8 @@ class UserFormScreen extends ConsumerWidget {
     final id = userId;
     final roles = ref.watch(rolesProvider);
     final user = id == null ? null : ref.watch(userProvider(id));
-    final title = id == null ? l10n.newUserTitle : l10n.editUser;
+    final title =
+        this.title ?? (id == null ? l10n.newUserTitle : l10n.editUser);
 
     // Wait for the roles (and the user when editing) before building fields.
     final ready = switch ((roles, user)) {
@@ -202,6 +209,12 @@ class _UserFormState extends ConsumerState<_UserForm> {
         ..invalidate(usersProvider)
         ..invalidate(userProvider(saved.id))
         ..invalidate(rolesProvider);
+      // Editing yourself: the Me screen and permissions use these details.
+      if (ref.read(authControllerProvider).value case Authenticated(:final user)
+          when user.id == saved.id) {
+        // Not awaited: the form must close before its data reloads.
+        unawaited(ref.read(authControllerProvider.notifier).refreshUser());
+      }
       if (!mounted) return;
       if (initial == null) {
         final list = GoRouterState.of(context).matchedLocation

@@ -750,4 +750,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ownAccountNotice =>
       'This is your account. You can\'t deactivate yourself; another owner can.';
+
+  @override
+  String get editProfile => 'Edit profile';
 }

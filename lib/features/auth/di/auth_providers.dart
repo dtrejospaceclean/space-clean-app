@@ -8,6 +8,7 @@ import '../data/repositories/auth_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/usecases/login.dart';
 import '../domain/usecases/logout.dart';
+import '../domain/usecases/refresh_current_user.dart';
 import '../domain/usecases/remembered_email.dart';
 import '../domain/usecases/restore_session.dart';
 import '../domain/usecases/watch_session_expired.dart';
@@ -37,6 +38,10 @@ final loginProvider = Provider<Login>(
 
 final logoutProvider = Provider<Logout>(
   (ref) => Logout(ref.watch(authRepositoryProvider)),
+);
+
+final refreshCurrentUserProvider = Provider<RefreshCurrentUser>(
+  (ref) => RefreshCurrentUser(ref.watch(authRepositoryProvider)),
 );
 
 final restoreSessionProvider = Provider<RestoreSession>(
