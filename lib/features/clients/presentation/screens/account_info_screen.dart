@@ -102,19 +102,41 @@ class AccountInfoScreen extends ConsumerWidget {
           value: client,
           onRetry: refresh,
           builder: (c) {
-            final billing = [
+            // "1980 Post Oak Blvd" / "Houston, TX 77056".
+            final region = [
+              orNull(c.billingState),
+              orNull(c.billingZip),
+            ].nonNulls.join(' ');
+            final address = [
               orNull(c.billingAddress),
-              [
-                orNull(c.billingCity),
-                orNull(c.billingState),
-                orNull(c.billingZip),
-              ].nonNulls.join(', '),
+              [orNull(c.billingCity), orNull(region)].nonNulls.join(', '),
             ].map(orNull).nonNulls.join('\n');
-            ListRow person(String role, ClientAssignee? who) => ListRow(
-              leading: const IconBadge(icon: Icons.person_outline_rounded),
-              title: who?.name ?? l10n.notSet,
-              subtitle: role,
+
+            /// A fact: its value as the title, what it is underneath.
+            /// Missing values say so, muted, instead of posing as data.
+            ListRow fact(IconData icon, String label, String? value) => ListRow(
+              leading: IconBadge(icon: icon),
+              title: orNull(value) ?? l10n.notSet,
+              subtitle: label,
+              muted: orNull(value) == null,
             );
+
+            final status = switch (c.status) {
+              ClientStatus.active => (
+                context.colors.accent,
+                context.colors.accentSoft,
+              ),
+              // Same tones as the Accounts list.
+              ClientStatus.prospect => (
+                context.colors.highlightInk,
+                context.colors.highlightSoft,
+              ),
+              ClientStatus.inactive => (
+                context.colors.inkMuted,
+                context.colors.sunken,
+              ),
+              ClientStatus.unknown => null,
+            };
 
             return SliverMainAxisGroup(
               slivers: [
@@ -143,16 +165,14 @@ class AccountInfoScreen extends ConsumerWidget {
                                   c.legalName,
                                   style: theme.textTheme.bodyMedium,
                                 ),
-                              const SizedBox(height: 8),
-                              StatusPill(
-                                label: l10n.clientStatusLabel(c.status),
-                                color: c.status == ClientStatus.active
-                                    ? context.colors.accent
-                                    : context.colors.inkMuted,
-                                background: c.status == ClientStatus.active
-                                    ? context.colors.accentSoft
-                                    : context.colors.sunken,
-                              ),
+                              if (status case (final fg, final bg)) ...[
+                                const SizedBox(height: 8),
+                                StatusPill(
+                                  label: l10n.clientStatusLabel(c.status),
+                                  color: fg,
+                                  background: bg,
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -166,15 +186,17 @@ class AccountInfoScreen extends ConsumerWidget {
                 ),
                 PageBox(
                   top: 0,
-                  child: CardGrid(
+                  child: ListCard(
                     children: [
-                      StatCard(
-                        label: l10n.industryLabel,
-                        value: orNull(c.industry) ?? '—',
+                      fact(
+                        Icons.domain_rounded,
+                        l10n.industryLabel,
+                        c.industry,
                       ),
-                      StatCard(
-                        label: l10n.serviceTypeLabel,
-                        value: orNull(c.serviceType) ?? '—',
+                      fact(
+                        Icons.cleaning_services_outlined,
+                        l10n.serviceTypeLabel,
+                        c.serviceType,
                       ),
                     ],
                   ),
@@ -187,17 +209,11 @@ class AccountInfoScreen extends ConsumerWidget {
                   top: 0,
                   child: ListCard(
                     children: [
-                      ListRow(
-                        leading: const IconBadge(icon: Icons.badge_outlined),
-                        title: orNull(c.taxId) ?? l10n.notSet,
-                        subtitle: l10n.taxIdLabel,
-                      ),
-                      ListRow(
-                        leading: const IconBadge(
-                          icon: Icons.location_on_outlined,
-                        ),
-                        title: orNull(billing) ?? l10n.notSet,
-                        subtitle: l10n.billingAddressLabel,
+                      fact(Icons.badge_outlined, l10n.taxIdLabel, c.taxId),
+                      fact(
+                        Icons.location_on_outlined,
+                        l10n.billingAddressLabel,
+                        address,
                       ),
                     ],
                   ),
@@ -210,9 +226,12 @@ class AccountInfoScreen extends ConsumerWidget {
                   top: 0,
                   child: ListCard(
                     children: [
-                      person(l10n.roleAccountManager, c.accountManager),
-                      person(l10n.roleSupervisor, c.supervisor),
-                      person(l10n.salespersonLabel, c.salesperson),
+                      for (final (role, who) in [
+                        (l10n.roleAccountManager, c.accountManager),
+                        (l10n.roleSupervisor, c.supervisor),
+                        (l10n.salespersonLabel, c.salesperson),
+                      ])
+                        fact(Icons.person_outline_rounded, role, who?.name),
                     ],
                   ),
                 ),

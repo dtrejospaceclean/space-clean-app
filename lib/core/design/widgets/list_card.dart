@@ -40,6 +40,7 @@ class ListRow extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.destructive = false,
+    this.muted = false,
   });
 
   final String title;
@@ -48,6 +49,10 @@ class ListRow extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
   final bool destructive;
+
+  /// For a missing value ("Not set"): the title recedes to muted ink so it
+  /// doesn't read like real data.
+  final bool muted;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +77,12 @@ class ListRow extends StatelessWidget {
                     Text(
                       title,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: destructive ? context.colors.danger : null,
+                        color: destructive
+                            ? context.colors.danger
+                            : muted
+                            ? context.colors.inkMuted
+                            : null,
+                        fontWeight: muted ? FontWeight.w500 : null,
                       ),
                     ),
                     if (subtitle != null && subtitle!.isNotEmpty) ...[

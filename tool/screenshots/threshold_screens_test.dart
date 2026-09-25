@@ -438,6 +438,40 @@ void main() {
     await _sheet(tester, 'admin_ios', TargetPlatform.iOS, adminPhones());
   });
 
+  // Account details: full, sparse, editing, dark, and Spanish at 200%.
+  testWidgets('account info', (tester) async {
+    await _sheet(tester, 'account_info', TargetPlatform.iOS, [
+      Phone('1 · Details', asOwner: true, location: '/accounts/c1/info'),
+      Phone(
+        '2 · Details (scrolled)',
+        asOwner: true,
+        location: '/accounts/c1/info',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -700));
+        },
+      ),
+      Phone(
+        '3 · Sparse prospect',
+        asOwner: true,
+        location: '/accounts/c3/info',
+      ),
+      Phone('4 · Edit', asOwner: true, location: '/accounts/c1/info/edit'),
+      Phone(
+        '5 · Dark',
+        asOwner: true,
+        dark: true,
+        location: '/accounts/c1/info',
+      ),
+      Phone(
+        '6 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '/accounts/c1/info',
+      ),
+    ]);
+  });
+
   testWidgets('admin dark', (tester) async {
     await _sheet(
       tester,
@@ -487,7 +521,21 @@ List<Phone> _tablets(Size portrait) {
 
 // Synthetic demo data for the signed-in sheets (not real customers).
 const _demoClients = [
-  Client(id: 'c1', legalName: 'Post Oak Tower LLC', dba: 'Post Oak Tower'),
+  Client(
+    id: 'c1',
+    legalName: 'Post Oak Tower LLC',
+    dba: 'Post Oak Tower',
+    status: ClientStatus.active,
+    industry: 'Commercial offices',
+    serviceType: 'Nightly janitorial',
+    taxId: '74-3920185',
+    billingAddress: '1980 Post Oak Blvd, Suite 400',
+    billingCity: 'Houston',
+    billingState: 'TX',
+    billingZip: '77056',
+    accountManager: ClientAssignee(id: 'm1', name: 'Marco Díaz'),
+    supervisor: ClientAssignee(id: 'u1', name: 'Ana Pérez'),
+  ),
   Client(id: 'c2', legalName: 'Bayou City Pediatrics'),
   Client(
     id: 'c3',
