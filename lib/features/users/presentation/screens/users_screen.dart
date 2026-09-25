@@ -118,14 +118,14 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                       trailing: !user.isActive
                           ? StatusPill(
                               label: l10n.inactiveTag,
-                              color: SpaceColors.inkMuted,
-                              background: SpaceColors.sunken,
+                              color: context.colors.inkMuted,
+                              background: context.colors.sunken,
                             )
                           : user.userType == UserType.external
                           ? StatusPill(
                               label: l10n.clientUserTag,
-                              color: SpaceColors.accent,
-                              background: SpaceColors.accentSoft,
+                              color: context.colors.accent,
+                              background: context.colors.accentSoft,
                             )
                           : null,
                       onTap: () =>

@@ -10,14 +10,16 @@ class SpaceCard extends StatelessWidget {
     required this.child,
     this.onTap,
     this.padding = const EdgeInsets.all(SpaceSpace.card),
-    this.color = SpaceColors.surface,
+    this.color,
     this.footer,
   });
 
   final Widget child;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry padding;
-  final Color color;
+
+  /// Defaults to the surface color.
+  final Color? color;
 
   /// Full-bleed strip at the bottom edge (see [AccentBanner]).
   final Widget? footer;
@@ -26,7 +28,7 @@ class SpaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = Padding(padding: padding, child: child);
     return Material(
-      color: color,
+      color: color ?? context.colors.surface,
       borderRadius: BorderRadius.circular(SpaceRadius.card),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -93,7 +95,7 @@ class StatCard extends StatelessWidget {
                 ),
               ),
               if (trailingIcon != null)
-                Icon(trailingIcon, size: 18, color: SpaceColors.ink),
+                Icon(trailingIcon, size: 18, color: context.colors.ink),
             ],
           ),
           const SizedBox(height: 4),
@@ -233,7 +235,7 @@ class AccentBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: SpaceColors.accent,
+      color: context.colors.accent,
       padding: const EdgeInsets.symmetric(
         horizontal: SpaceSpace.card,
         vertical: 12,
@@ -243,8 +245,8 @@ class AccentBanner extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                color: SpaceColors.onAccent,
+              style: TextStyle(
+                color: context.colors.onAccent,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),

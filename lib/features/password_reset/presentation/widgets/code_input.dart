@@ -123,9 +123,9 @@ class _CodeInputState extends State<CodeInput> {
           const SizedBox(height: 8),
           Text(
             widget.errorText!,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Manrope',
-              color: SpaceColors.danger,
+              color: context.colors.danger,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
@@ -146,24 +146,24 @@ class _Box extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final border = error
-        ? Border.all(color: SpaceColors.danger, width: 2)
+        ? Border.all(color: context.colors.danger, width: 2)
         : active
-        ? Border.all(color: SpaceColors.primary, width: 2)
-        : Border.all(color: SpaceColors.inkSoft);
+        ? Border.all(color: context.colors.primary, width: 2)
+        : Border.all(color: context.colors.inkSoft);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 160),
       curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
-        color: SpaceColors.sunken,
+        color: context.colors.sunken,
         borderRadius: BorderRadius.circular(SpaceRadius.inner),
         border: border,
       ),
       alignment: Alignment.center,
       child: Text(
         digit,
-        style: const TextStyle(
+        style: TextStyle(
           fontFamily: 'Manrope',
-          color: SpaceColors.ink,
+          color: context.colors.ink,
           fontSize: 28,
           fontWeight: FontWeight.w800,
           fontFeatures: [FontFeature.tabularFigures()],

@@ -25,7 +25,7 @@ class ResetStepPage extends StatelessWidget {
         child: Text(
           intro,
           style: Theme.of(context).textTheme.bodyLarge
-              ?.copyWith(color: SpaceColors.inkMuted),
+              ?.copyWith(color: context.colors.inkMuted),
         ),
       ),
       PageBox(top: 20, child: SpaceCard(child: child)),

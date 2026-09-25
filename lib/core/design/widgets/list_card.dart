@@ -72,7 +72,7 @@ class ListRow extends StatelessWidget {
                     Text(
                       title,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: destructive ? SpaceColors.danger : null,
+                        color: destructive ? context.colors.danger : null,
                       ),
                     ),
                     if (subtitle != null && subtitle!.isNotEmpty) ...[
@@ -91,9 +91,9 @@ class ListRow extends StatelessWidget {
               ],
               if (onTap != null) ...[
                 const SizedBox(width: 8),
-                const Icon(
+                Icon(
                   Icons.chevron_right_rounded,
-                  color: SpaceColors.inkSoft,
+                  color: context.colors.inkSoft,
                 ),
               ],
             ],

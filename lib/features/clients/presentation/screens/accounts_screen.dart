@@ -152,13 +152,13 @@ class _StatusTag extends StatelessWidget {
     return switch (status) {
       ClientStatus.prospect => StatusPill(
         label: l10n.clientStatusProspect,
-        color: SpaceColors.highlightInk,
-        background: SpaceColors.highlightSoft,
+        color: context.colors.highlightInk,
+        background: context.colors.highlightSoft,
       ),
       ClientStatus.inactive => StatusPill(
         label: l10n.clientStatusInactive,
-        color: SpaceColors.inkMuted,
-        background: SpaceColors.sunken,
+        color: context.colors.inkMuted,
+        background: context.colors.sunken,
       ),
       _ => const SizedBox.shrink(),
     };
@@ -178,8 +178,10 @@ class _AccountBadge extends StatelessWidget {
     return InitialsAvatar(
       name: client.displayName,
       size: 44,
-      background: orange ? SpaceColors.highlightSoft : SpaceColors.accentSoft,
-      foreground: orange ? SpaceColors.highlightInk : SpaceColors.accent,
+      background: orange
+          ? context.colors.highlightSoft
+          : context.colors.accentSoft,
+      foreground: orange ? context.colors.highlightInk : context.colors.accent,
     );
   }
 }

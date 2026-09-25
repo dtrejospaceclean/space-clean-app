@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/design/design.dart';
 import '../../../../core/error/failures.dart';
@@ -21,18 +20,14 @@ class SplashScreen extends ConsumerWidget {
     final failed = auth.hasError && !auth.isLoading;
 
     return Scaffold(
-      backgroundColor: SpaceColors.ground,
+      backgroundColor: context.colors.ground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(SpaceSpace.page),
           child: Column(
             children: [
               const Spacer(),
-              SvgPicture.asset(
-                'assets/brand/space_clean_logo.svg',
-                height: 132,
-                semanticsLabel: 'Space Clean',
-              ),
+              const SpaceLogo(height: 132),
               const SizedBox(height: 20),
               Text(
                 l10n.brandTagline,

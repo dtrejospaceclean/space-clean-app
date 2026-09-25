@@ -8,6 +8,7 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/widgets/language_toggle.dart';
+import '../../../settings/presentation/widgets/theme_mode_toggle.dart';
 import '../../../users/domain/usecases/user_usecases.dart';
 import '../admin_modules.dart';
 import 'edit_profile_screen.dart';
@@ -53,7 +54,7 @@ class ProfileScreen extends ConsumerWidget {
       Authenticated(:final user) => user,
       _ => null,
     };
-    if (user == null) return const SizedBox.shrink();
+    if (user == null) return SizedBox.shrink();
 
     return SpacePage(
       title: l10n.profileTitle,
@@ -74,8 +75,8 @@ class ProfileScreen extends ConsumerWidget {
                 InitialsAvatar(
                   name: user.name,
                   size: 56,
-                  background: SpaceColors.accent,
-                  foreground: SpaceColors.onAccent,
+                  background: context.colors.accent,
+                  foreground: context.colors.onAccent,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -93,8 +94,8 @@ class ProfileScreen extends ConsumerWidget {
                             for (final role in user.roles)
                               StatusPill(
                                 label: l10n.roleName(role.name),
-                                color: SpaceColors.accent,
-                                background: SpaceColors.accentSoft,
+                                color: context.colors.accent,
+                                background: context.colors.accentSoft,
                               ),
                           ],
                         ),
@@ -134,18 +135,33 @@ class ProfileScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const IconBadge(icon: Icons.language_rounded, size: 36),
-                    const SizedBox(width: 12),
-                    Text(
-                      l10n.languageLabel,
-                      style: theme.textTheme.titleMedium,
+                for (final (i, (icon, label, control)) in [
+                  (
+                    Icons.language_rounded,
+                    l10n.languageLabel,
+                    const LanguageToggle(),
+                  ),
+                  (
+                    Icons.contrast_rounded,
+                    l10n.appearanceLabel,
+                    const ThemeModeToggle(),
+                  ),
+                ].indexed) ...[
+                  if (i > 0)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 18),
+                      child: Divider(),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                const LanguageToggle(),
+                  Row(
+                    children: [
+                      IconBadge(icon: icon, size: 36),
+                      const SizedBox(width: 12),
+                      Text(label, style: theme.textTheme.titleMedium),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  control,
+                ],
               ],
             ),
           ),

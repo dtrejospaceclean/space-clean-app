@@ -58,10 +58,10 @@ class RolesScreen extends ConsumerWidget {
                     for (final role in list)
                       ListRow(
                         leading: role.isSystem
-                            ? const IconBadge(
+                            ? IconBadge(
                                 icon: Icons.lock_outline_rounded,
-                                color: SpaceColors.inkMuted,
-                                background: SpaceColors.sunken,
+                                color: context.colors.inkMuted,
+                                background: context.colors.sunken,
                               )
                             : const IconBadge(
                                 icon: Icons.label_outline_rounded,

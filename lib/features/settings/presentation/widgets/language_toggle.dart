@@ -24,7 +24,7 @@ class LanguageToggle extends ConsumerWidget {
     return PillToggle<AppLanguage>(
       semanticLabel: AppLocalizations.of(context).languageLabel,
       expand: !compact,
-      track: compact ? SpaceColors.surface : SpaceColors.sunken,
+      track: compact ? context.colors.surface : context.colors.sunken,
       options: {
         for (final l in AppLanguage.values)
           l: compact ? l.name.toUpperCase() : _names[l]!,

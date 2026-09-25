@@ -34,7 +34,7 @@ class ResetDoneScreen extends ConsumerWidget {
                   l10n.resetDoneBody,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge
-                      ?.copyWith(color: SpaceColors.inkMuted),
+                      ?.copyWith(color: context.colors.inkMuted),
                 ),
                 const SizedBox(height: 28),
                 PrimaryButton(

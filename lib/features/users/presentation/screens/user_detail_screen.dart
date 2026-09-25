@@ -124,11 +124,11 @@ class UserDetailScreen extends ConsumerWidget {
                         name: user.name,
                         size: 56,
                         background: user.isActive
-                            ? SpaceColors.accent
-                            : SpaceColors.sunken,
+                            ? context.colors.accent
+                            : context.colors.sunken,
                         foreground: user.isActive
-                            ? SpaceColors.onAccent
-                            : SpaceColors.inkMuted,
+                            ? context.colors.onAccent
+                            : context.colors.inkMuted,
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -145,14 +145,14 @@ class UserDetailScreen extends ConsumerWidget {
                                 if (!user.isActive)
                                   StatusPill(
                                     label: l10n.inactiveTag,
-                                    color: SpaceColors.inkMuted,
-                                    background: SpaceColors.sunken,
+                                    color: context.colors.inkMuted,
+                                    background: context.colors.sunken,
                                   ),
                                 for (final role in user.roles)
                                   StatusPill(
                                     label: l10n.roleName(role.name),
-                                    color: SpaceColors.accent,
-                                    background: SpaceColors.accentSoft,
+                                    color: context.colors.accent,
+                                    background: context.colors.accentSoft,
                                   ),
                               ],
                             ),
@@ -229,10 +229,10 @@ class UserDetailScreen extends ConsumerWidget {
                       title: orNull(user.phoneNumber) ?? l10n.notSet,
                     ),
                     ListRow(
-                      leading: const IconBadge(
+                      leading: IconBadge(
                         icon: Icons.contact_emergency_outlined,
-                        color: SpaceColors.highlightInk,
-                        background: SpaceColors.highlightSoft,
+                        color: context.colors.highlightInk,
+                        background: context.colors.highlightSoft,
                       ),
                       title: orNull(user.emergencyContactName) ?? l10n.notSet,
                       subtitle: [

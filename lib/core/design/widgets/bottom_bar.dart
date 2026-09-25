@@ -31,7 +31,7 @@ class SpaceBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: SpaceColors.surface,
+      color: context.colors.surface,
       child: SafeArea(
         top: false,
         child: SizedBox(
@@ -63,7 +63,7 @@ class _Tab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? SpaceColors.primary : SpaceColors.inkMuted;
+    final color = active ? context.colors.primary : context.colors.inkMuted;
     return Semantics(
       selected: active,
       button: true,
@@ -92,8 +92,8 @@ class _Tab extends StatelessWidget {
               duration: const Duration(milliseconds: 180),
               width: active ? 5 : 0,
               height: 5,
-              decoration: const BoxDecoration(
-                color: SpaceColors.accent,
+              decoration: BoxDecoration(
+                color: context.colors.accent,
                 shape: BoxShape.circle,
               ),
             ),

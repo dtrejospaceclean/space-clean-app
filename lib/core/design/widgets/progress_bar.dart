@@ -29,13 +29,13 @@ class SpaceProgressBar extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              const ColoredBox(color: SpaceColors.accentSoft),
+              ColoredBox(color: context.colors.accentSoft),
               FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: v,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: SpaceColors.accent,
+                    color: context.colors.accent,
                     borderRadius: BorderRadius.circular(SpaceRadius.pill),
                   ),
                 ),

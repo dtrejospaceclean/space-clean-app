@@ -44,7 +44,7 @@ class JobCard extends StatelessWidget {
               context.formatTimeRange(job.scheduledStart, job.scheduledEnd),
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontSize: 22,
-                color: done ? SpaceColors.inkSoft : SpaceColors.ink,
+                color: done ? context.colors.inkSoft : context.colors.ink,
                 fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
@@ -53,7 +53,7 @@ class JobCard extends StatelessWidget {
               job.title,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: done ? SpaceColors.inkMuted : SpaceColors.ink,
+                color: done ? context.colors.inkMuted : context.colors.ink,
               ),
             ),
             if (place.isNotEmpty) ...[
@@ -77,7 +77,7 @@ class JobCard extends StatelessWidget {
               Text(
                 l10n.checklistProgress(job.checklistDone, job.checklistTotal),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: SpaceColors.inkMuted,
+                  color: context.colors.inkMuted,
                 ),
               ),
             ],

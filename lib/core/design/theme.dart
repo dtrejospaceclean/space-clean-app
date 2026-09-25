@@ -3,39 +3,47 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// One theme for both platforms: Manrope, blue-gray ground, white cards,
-/// orange pill actions. Native behaviors (back gestures, dialogs, pickers) stay.
+/// One design for both platforms, in light and dark: Manrope, rounded cards,
+/// orange pill actions. Native behaviors (back gestures, dialogs, pickers)
+/// stay.
 abstract final class SpaceTheme {
   static const font = 'Manrope';
 
-  static ThemeData light() {
-    const scheme = ColorScheme.light(
-      primary: SpaceColors.primary,
-      onPrimary: Colors.white,
-      secondary: SpaceColors.accent,
-      onSecondary: SpaceColors.onAccent,
-      tertiary: SpaceColors.highlight,
-      surface: SpaceColors.surface,
-      onSurface: SpaceColors.ink,
-      onSurfaceVariant: SpaceColors.inkMuted,
-      surfaceContainerHighest: SpaceColors.sunken,
-      outline: SpaceColors.line,
-      outlineVariant: SpaceColors.line,
-      error: SpaceColors.danger,
+  static ThemeData light() => _build(SpaceColors.light, Brightness.light);
+
+  static ThemeData dark() => _build(SpaceColors.dark, Brightness.dark);
+
+  static ThemeData _build(SpaceColors c, Brightness brightness) {
+    final scheme = ColorScheme(
+      brightness: brightness,
+      primary: c.primary,
+      onPrimary: c.onPrimary,
+      secondary: c.accent,
+      onSecondary: c.onAccent,
+      tertiary: c.highlight,
+      surface: c.surface,
+      onSurface: c.ink,
+      onSurfaceVariant: c.inkMuted,
+      surfaceContainerHighest: c.sunken,
+      outline: c.line,
+      outlineVariant: c.line,
+      error: c.danger,
+      onError: c.onPrimary,
     );
 
     final base = ThemeData(
       useMaterial3: true,
       fontFamily: font,
       colorScheme: scheme,
-      scaffoldBackgroundColor: SpaceColors.ground,
+      scaffoldBackgroundColor: c.ground,
+      extensions: [c],
       splashFactory: InkSparkle.splashFactory,
     );
 
     final text = base.textTheme.apply(
       fontFamily: font,
-      bodyColor: SpaceColors.ink,
-      displayColor: SpaceColors.ink,
+      bodyColor: c.ink,
+      displayColor: c.ink,
     );
 
     return base.copyWith(
@@ -74,10 +82,7 @@ abstract final class SpaceTheme {
           fontWeight: FontWeight.w600,
         ),
         bodyLarge: text.bodyLarge?.copyWith(fontSize: 16, height: 1.45),
-        bodyMedium: text.bodyMedium?.copyWith(
-          fontSize: 14,
-          color: SpaceColors.inkMuted,
-        ),
+        bodyMedium: text.bodyMedium?.copyWith(fontSize: 14, color: c.inkMuted),
         labelLarge: text.labelLarge?.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w700,
@@ -85,10 +90,10 @@ abstract final class SpaceTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: SpaceColors.primary,
-          foregroundColor: Colors.white,
-          disabledBackgroundColor: SpaceColors.primary,
-          disabledForegroundColor: Colors.white,
+          backgroundColor: c.primary,
+          foregroundColor: c.onPrimary,
+          disabledBackgroundColor: c.primary,
+          disabledForegroundColor: c.onPrimary,
           minimumSize: const Size.fromHeight(56),
           shape: const StadiumBorder(),
           textStyle: const TextStyle(
@@ -100,7 +105,7 @@ abstract final class SpaceTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: SpaceColors.accent,
+          foregroundColor: c.accent,
           minimumSize: const Size(48, 48),
           textStyle: const TextStyle(
             fontFamily: font,
@@ -111,62 +116,52 @@ abstract final class SpaceTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: SpaceColors.sunken,
-        hintStyle: const TextStyle(color: SpaceColors.inkMuted),
+        fillColor: c.sunken,
+        hintStyle: TextStyle(color: c.inkMuted),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 18,
         ),
         // A visible edge (3.9:1) so filled fields read as fields.
-        border: _field(SpaceColors.inkSoft),
-        enabledBorder: _field(SpaceColors.inkSoft),
-        disabledBorder: _field(SpaceColors.line),
-        focusedBorder: _field(SpaceColors.primary, 2),
-        errorBorder: _field(SpaceColors.danger, 2),
-        focusedErrorBorder: _field(SpaceColors.danger, 2),
-        errorStyle: const TextStyle(
-          color: SpaceColors.danger,
+        border: _field(c.inkSoft),
+        enabledBorder: _field(c.inkSoft),
+        disabledBorder: _field(c.line),
+        focusedBorder: _field(c.primary, 2),
+        errorBorder: _field(c.danger, 2),
+        focusedErrorBorder: _field(c.danger, 2),
+        errorStyle: TextStyle(
+          color: c.danger,
           fontWeight: FontWeight.w600,
           fontSize: 13,
         ),
         errorMaxLines: 3,
       ),
-      dividerTheme: const DividerThemeData(
-        color: SpaceColors.line,
-        thickness: 1,
-        space: 1,
-      ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: SpaceColors.ground,
+      dividerTheme: DividerThemeData(color: c.line, thickness: 1, space: 1),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: c.ground,
         showDragHandle: true,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
-      dialogTheme: const DialogThemeData(
-        backgroundColor: SpaceColors.surface,
+      dialogTheme: DialogThemeData(
+        backgroundColor: c.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(SpaceRadius.card)),
         ),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: SpaceColors.primary,
-      ),
-      cupertinoOverrideTheme: const CupertinoThemeData(
-        brightness: Brightness.light,
-        primaryColor: SpaceColors.primary,
-        scaffoldBackgroundColor: SpaceColors.ground,
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: c.primary),
+      cupertinoOverrideTheme: CupertinoThemeData(
+        brightness: brightness,
+        primaryColor: c.primary,
+        scaffoldBackgroundColor: c.ground,
         textTheme: CupertinoTextThemeData(
-          textStyle: TextStyle(
-            fontFamily: font,
-            fontSize: 16,
-            color: SpaceColors.ink,
-          ),
+          textStyle: TextStyle(fontFamily: font, fontSize: 16, color: c.ink),
           actionTextStyle: TextStyle(
             fontFamily: font,
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: SpaceColors.accent,
+            color: c.accent,
           ),
         ),
       ),

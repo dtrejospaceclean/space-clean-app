@@ -22,9 +22,7 @@ Widget adaptiveAction(
       onPressed: onPressed,
       // Navy, not the orange primary: orange text on the translucent iOS
       // alert would fall under 4.5:1. Destructive actions keep system red.
-      textStyle: destructive
-          ? null
-          : const TextStyle(color: SpaceColors.accent),
+      textStyle: destructive ? null : TextStyle(color: context.colors.accent),
       child: Text(label),
     );
   }

@@ -335,5 +335,9 @@
   "adminRolesHint": "Staff roles and who has them",
   "usersCannotDeactivateSelf": "You can't deactivate your own account.",
   "ownAccountNotice": "This is your account. You can't deactivate yourself; another owner can.",
-  "editProfile": "Edit profile"
+  "editProfile": "Edit profile",
+  "appearanceLabel": "Appearance",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark"
 }

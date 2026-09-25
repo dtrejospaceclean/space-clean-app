@@ -69,11 +69,11 @@ class MessageSliver extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              decoration: const BoxDecoration(
-                color: SpaceColors.surface,
+              decoration: BoxDecoration(
+                color: context.colors.surface,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 32, color: SpaceColors.accent),
+              child: Icon(icon, size: 32, color: context.colors.accent),
             ),
             const SizedBox(height: 16),
             Text(

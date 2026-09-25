@@ -220,5 +220,9 @@
   "adminRolesHint": "Roles del personal y quién los tiene",
   "usersCannotDeactivateSelf": "No puedes desactivar tu propia cuenta.",
   "ownAccountNotice": "Esta es tu cuenta. No puedes desactivarte; otro propietario sí puede.",
-  "editProfile": "Editar perfil"
+  "editProfile": "Editar perfil",
+  "appearanceLabel": "Apariencia",
+  "themeSystem": "Sistema",
+  "themeLight": "Claro",
+  "themeDark": "Oscuro"
 }

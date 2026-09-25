@@ -158,9 +158,9 @@ class _ChecklistCard extends StatelessWidget {
     return SpaceCard(
       footer: AccentBanner(
         text: l10n.checklistProgress(job.checklistDone, job.checklistTotal),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.checklist_rounded,
-          color: SpaceColors.onAccent,
+          color: context.colors.onAccent,
           size: 20,
         ),
       ),

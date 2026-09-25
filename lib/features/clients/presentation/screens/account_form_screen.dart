@@ -420,7 +420,7 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
                       const SizedBox(height: 8),
                       PillToggle<ClientStatus>(
                         semanticLabel: l10n.accountStatusLabel,
-                        track: SpaceColors.sunken,
+                        track: context.colors.sunken,
                         options: {
                           for (final s in [
                             ClientStatus.prospect,

@@ -130,15 +130,13 @@ void main() {
     expect(find.text('Your session expired. Sign in again.'), findsOneWidget);
   });
 
-  testWidgets('keeps the light ground when the phone is in dark mode', (
-    tester,
-  ) async {
+  testWidgets('follows the phone into dark mode by default', (tester) async {
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
     addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
     await pumpApp(tester, auth: FakeAuthRepository());
 
     final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-    expect(scaffold.backgroundColor, SpaceColors.ground);
+    expect(scaffold.backgroundColor, SpaceColors.dark.ground);
   });
 
   testWidgets('switching language mid-animation never overflows', (

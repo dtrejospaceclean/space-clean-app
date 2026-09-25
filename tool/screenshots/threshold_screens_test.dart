@@ -26,6 +26,8 @@ import 'package:sp_cln_app/features/password_reset/presentation/controllers/pass
 import 'package:sp_cln_app/features/settings/di/settings_providers.dart';
 import 'package:sp_cln_app/features/settings/domain/entities/app_language.dart';
 import 'package:sp_cln_app/features/settings/domain/repositories/language_repository.dart';
+import 'package:sp_cln_app/features/settings/domain/repositories/theme_mode_repository.dart';
+import 'package:sp_cln_app/features/settings/domain/entities/app_theme_mode.dart';
 import 'package:sp_cln_app/features/settings/presentation/widgets/language_toggle.dart';
 import 'package:sp_cln_app/features/users/di/users_providers.dart';
 
@@ -101,6 +103,8 @@ Future<void> _sheet(
         languageRepositoryProvider.overrideWithValue(
           _MemoryLanguage(phone.spanish ? AppLanguage.es : AppLanguage.en),
         ),
+        // Appearance: System, so each phone's own light/dark mode shows.
+        themeModeRepositoryProvider.overrideWithValue(_MemoryThemeMode()),
         authRepositoryProvider.overrideWithValue(
           FakeAuthRepository(
             rememberedEmail: phone.remembered
@@ -377,13 +381,18 @@ void main() {
     );
   });
 
-  List<Phone> appPhones() => [
-    Phone('1 · Today', signedIn: true, location: '/today'),
-    Phone('2 · Accounts', signedIn: true, location: '/accounts'),
-    Phone('3 · Account', signedIn: true, location: '/accounts/c1'),
-    Phone('4 · Account jobs', signedIn: true, location: '/accounts/c1/jobs'),
-    Phone('5 · Job', signedIn: true, location: '/today/job/c1/j2'),
-    Phone('6 · Me', signedIn: true, location: '/me'),
+  List<Phone> appPhones({bool dark = false}) => [
+    Phone('1 · Today', signedIn: true, dark: dark, location: '/today'),
+    Phone('2 · Accounts', signedIn: true, dark: dark, location: '/accounts'),
+    Phone('3 · Account', signedIn: true, dark: dark, location: '/accounts/c1'),
+    Phone(
+      '4 · Account jobs',
+      signedIn: true,
+      dark: dark,
+      location: '/accounts/c1/jobs',
+    ),
+    Phone('5 · Job', signedIn: true, dark: dark, location: '/today/job/c1/j2'),
+    Phone('6 · Me', signedIn: true, dark: dark, location: '/me'),
   ];
 
   testWidgets('app android', (tester) async {
@@ -394,20 +403,26 @@ void main() {
     await _sheet(tester, 'app_ios', TargetPlatform.iOS, appPhones());
   });
 
-  List<Phone> adminPhones() => [
-    Phone('1 · Me (owner)', asOwner: true, location: '/me'),
-    Phone('2 · Users', asOwner: true, location: '/me/users'),
-    Phone('3 · User', asOwner: true, location: '/me/users/u1'),
-    Phone('4 · New user', asOwner: true, location: '/me/users/new'),
+  // The same screens with the phone in dark mode (Appearance: System).
+  testWidgets('app dark', (tester) async {
+    await _sheet(tester, 'app_dark', TargetPlatform.iOS, appPhones(dark: true));
+  });
+
+  List<Phone> adminPhones({bool dark = false}) => [
+    Phone('1 · Me (owner)', asOwner: true, dark: dark, location: '/me'),
+    Phone('2 · Users', asOwner: true, dark: dark, location: '/me/users'),
+    Phone('3 · User', asOwner: true, dark: dark, location: '/me/users/u1'),
+    Phone('4 · New user', asOwner: true, dark: dark, location: '/me/users/new'),
     Phone(
       '5 · Edit user (scrolled)',
       asOwner: true,
+      dark: dark,
       location: '/me/users/u1/edit',
       act: (tester, phone) async {
         await tester.drag(inPhoneScroll(phone), const Offset(0, -700));
       },
     ),
-    Phone('6 · Roles', asOwner: true, location: '/me/roles'),
+    Phone('6 · Roles', asOwner: true, dark: dark, location: '/me/roles'),
   ];
 
   testWidgets('admin android', (tester) async {
@@ -421,6 +436,15 @@ void main() {
 
   testWidgets('admin ios', (tester) async {
     await _sheet(tester, 'admin_ios', TargetPlatform.iOS, adminPhones());
+  });
+
+  testWidgets('admin dark', (tester) async {
+    await _sheet(
+      tester,
+      'admin_dark',
+      TargetPlatform.android,
+      adminPhones(dark: true),
+    );
   });
 }
 
@@ -550,4 +574,12 @@ class _MemoryLanguage implements LanguageRepository {
   @override
   Future<void> saveLanguage(AppLanguage language) async =>
       savedLanguage = language;
+}
+
+class _MemoryThemeMode implements ThemeModeRepository {
+  @override
+  AppThemeMode? savedThemeMode;
+
+  @override
+  Future<void> saveThemeMode(AppThemeMode mode) async => savedThemeMode = mode;
 }

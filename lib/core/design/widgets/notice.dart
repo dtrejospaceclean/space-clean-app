@@ -20,18 +20,18 @@ class Notice extends StatelessWidget {
     final (IconData icon, Color color, Color background) = switch (tone) {
       NoticeTone.error => (
         Icons.error_rounded,
-        SpaceColors.danger,
-        SpaceColors.dangerSoft,
+        context.colors.danger,
+        context.colors.dangerSoft,
       ),
       NoticeTone.info => (
         Icons.info_rounded,
-        SpaceColors.accent,
-        SpaceColors.accentSoft,
+        context.colors.accent,
+        context.colors.accentSoft,
       ),
       NoticeTone.success => (
         Icons.check_circle_rounded,
-        SpaceColors.success,
-        SpaceColors.successSoft,
+        context.colors.success,
+        context.colors.successSoft,
       ),
     };
 
@@ -51,9 +51,9 @@ class Notice extends StatelessWidget {
             Expanded(
               child: Text(
                 message,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Manrope',
-                  color: SpaceColors.ink,
+                  color: context.colors.ink,
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
                   height: 1.4,

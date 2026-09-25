@@ -28,11 +28,11 @@ class PrimaryButton extends StatelessWidget {
       child: FilledButton(
         onPressed: busy ? null : onPressed,
         child: busy
-            ? const SizedBox.square(
+            ? SizedBox.square(
                 dimension: 22,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  color: Colors.white,
+                  color: context.colors.onPrimary,
                 ),
               )
             : Row(
@@ -67,14 +67,14 @@ class SecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = destructive ? SpaceColors.danger : SpaceColors.ink;
+    final color = destructive ? context.colors.danger : context.colors.ink;
     return FilledButton(
       onPressed: onPressed,
       style: FilledButton.styleFrom(
-        backgroundColor: SpaceColors.surface,
+        backgroundColor: context.colors.surface,
         foregroundColor: color,
-        disabledBackgroundColor: SpaceColors.surface,
-        disabledForegroundColor: SpaceColors.inkFaint,
+        disabledBackgroundColor: context.colors.surface,
+        disabledForegroundColor: context.colors.inkFaint,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -99,7 +99,7 @@ class LinkButton extends StatelessWidget {
     onPressed: onPressed,
     style: TextButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      disabledForegroundColor: SpaceColors.inkFaint,
+      disabledForegroundColor: context.colors.inkFaint,
     ),
     child: Text(label),
   );

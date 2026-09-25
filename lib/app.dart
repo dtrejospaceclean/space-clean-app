@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/router/app_router.dart';
 import 'core/design/theme.dart';
 import 'features/settings/presentation/controllers/language_controller.dart';
+import 'features/settings/presentation/controllers/theme_mode_controller.dart';
 import 'l10n/app_localizations.dart';
 
 class App extends ConsumerWidget {
@@ -19,8 +20,8 @@ class App extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: SpaceTheme.light(),
-      // Light only: one design on both platforms (docs/example_app.png).
-      themeMode: ThemeMode.light,
+      darkTheme: SpaceTheme.dark(),
+      themeMode: ref.watch(themeModeControllerProvider).material,
     );
   }
 }

@@ -21,32 +21,32 @@ class JobStatusLabel extends StatelessWidget {
     ) = switch (status) {
       JobStatus.scheduled => (
         Icons.schedule_rounded,
-        SpaceColors.accent,
-        SpaceColors.accentSoft,
+        context.colors.accent,
+        context.colors.accentSoft,
         l10n.jobStatusScheduled,
       ),
       JobStatus.inProgress => (
         Icons.play_arrow_rounded,
-        SpaceColors.highlightInk,
-        SpaceColors.highlightSoft,
+        context.colors.highlightInk,
+        context.colors.highlightSoft,
         l10n.jobStatusInProgress,
       ),
       JobStatus.completed => (
         Icons.check_rounded,
-        SpaceColors.successInk,
-        SpaceColors.successSoft,
+        context.colors.successInk,
+        context.colors.successSoft,
         l10n.jobStatusCompleted,
       ),
       JobStatus.cancelled => (
         Icons.close_rounded,
-        SpaceColors.inkMuted,
-        SpaceColors.sunken,
+        context.colors.inkMuted,
+        context.colors.sunken,
         l10n.jobStatusCancelled,
       ),
       JobStatus.unknown => (
         Icons.help_outline_rounded,
-        SpaceColors.inkMuted,
-        SpaceColors.sunken,
+        context.colors.inkMuted,
+        context.colors.sunken,
         l10n.jobStatusUnknown,
       ),
     };

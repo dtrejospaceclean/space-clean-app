@@ -22,7 +22,7 @@ class HeroHeadline extends StatelessWidget {
             if (secondary != null)
               TextSpan(
                 text: '\n$secondary',
-                style: const TextStyle(color: SpaceColors.inkSoft),
+                style: TextStyle(color: context.colors.inkSoft),
               ),
           ],
         ),
@@ -67,7 +67,7 @@ class SectionHeader extends StatelessWidget {
             TextButton(
               onPressed: onAction,
               style: TextButton.styleFrom(
-                foregroundColor: SpaceColors.inkMuted,
+                foregroundColor: context.colors.inkMuted,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 textStyle: const TextStyle(
                   fontFamily: 'Manrope',

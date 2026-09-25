@@ -36,7 +36,7 @@ class CircleButton extends StatelessWidget {
           dimension: 48,
           child: Center(
             child: Material(
-              color: _dark ? SpaceColors.primary : SpaceColors.surface,
+              color: _dark ? context.colors.primary : context.colors.surface,
               shape: const CircleBorder(),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
@@ -46,7 +46,9 @@ class CircleButton extends StatelessWidget {
                   child: Icon(
                     icon,
                     size: 22,
-                    color: _dark ? Colors.white : SpaceColors.ink,
+                    color: _dark
+                        ? context.colors.onPrimary
+                        : context.colors.ink,
                   ),
                 ),
               ),

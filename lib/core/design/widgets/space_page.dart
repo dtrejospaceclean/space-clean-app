@@ -100,16 +100,19 @@ class SpacePage extends StatelessWidget {
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
+      // Status bar icons contrast with the ground in either theme.
+      value:
+          (Theme.of(context).brightness == Brightness.dark
+                  ? SystemUiOverlayStyle.light
+                  : SystemUiOverlayStyle.dark)
+              .copyWith(statusBarColor: Colors.transparent),
       child: Scaffold(
-        backgroundColor: SpaceColors.ground,
+        backgroundColor: context.colors.ground,
         body: onRefresh == null
             ? scroll
             : RefreshIndicator.adaptive(
                 onRefresh: onRefresh!,
-                color: SpaceColors.primary,
+                color: context.colors.primary,
                 child: scroll,
               ),
         bottomNavigationBar: bottom,

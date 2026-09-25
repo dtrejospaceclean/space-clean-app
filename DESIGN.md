@@ -185,7 +185,7 @@ components:
 
 Every screen is a stack of white rounded cards on a light blue-gray ground, headed by a big bold Manrope title. The system follows the user's reference (`docs/example_app.png`) in structure: a pale ground, white cards with no shadows, two-tone hero headlines, round header buttons, full-width pill actions, and a custom white tab bar. Every color comes from the Space Clean logo. Primary orange (the logo orange deepened just enough to carry white text) is the action color. Logo navy is the secondary color that informs: links, progress, banners, badges, info. The logo's blue-grays tint the ground, the text grays, and the outlines.
 
-One custom design runs on both Android and iOS. What stays native is behavior, not look: back gestures and page transitions (go_router pages), adaptive dialogs (`lib/core/widgets/adaptive.dart`), native date and choice pickers (`lib/core/design/widgets/pickers.dart`), the adaptive pull-to-refresh, and haptics. The app is light-only (`themeMode: light`), and the native launch screen and Android window background use the same ground (#EEF2F6) with the color logo, so launch never flashes.
+One custom design runs on both Android and iOS. What stays native is behavior, not look: back gestures and page transitions (go_router pages), adaptive dialogs (`lib/core/widgets/adaptive.dart`), native date and choice pickers (`lib/core/design/widgets/pickers.dart`), the adaptive pull-to-refresh, and haptics. The app has a light and a dark theme. Appearance (Me → Settings) is System, Light or Dark, and defaults to System. The native launch screen matches either one: the ground #EEF2F6 with the color logo, or the night ground #0B1420 with the white logo, so launch never flashes.
 
 Density is calm and thumb-first. Cards are generous (20px padding, 24px corners). Numbers crew scan for (time ranges, counts, checklist fractions) are the biggest thing in their card. Primary actions are full-width 56px orange pills.
 
@@ -231,6 +231,17 @@ Navy-black ink on white cards and a light blue-gray ground, all from the logo. O
 - **Success Ink** (success-ink): text on Success Wash (6.12:1), used by the "Completed" status pill.
 - **Danger** (danger / danger-wash): field errors, error notices, destructive list rows, and destructive secondary buttons such as "Sign out" (6.47:1 on white, 5.51:1 on its wash).
 
+### Dark Palette
+
+Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/core/design/tokens.dart`). Every text pair meets the same minimums as in light mode.
+
+- **Ground** #0B1420 (night navy), **Surface** #152232, **Sunken** #0F1A27, **Line** #26384C.
+- **Ink** #E9EFF5 (13.9:1 on surface). **Muted Ink** #A6B6C7 (7.8:1). **Soft Ink** #7E97B1 (5.3:1). **Faint Ink** #4B5E73 (disabled only).
+- **Primary Orange** stays #D14702 with white on it (4.55:1). On the surface it measures 3.5:1, so it is used for fills and UI parts only.
+- **Accent** becomes the navy's light tint #8FBCEB (8.1:1 on surface), with navy #0B1F33 text and icons on accent fills. The logo navy is too dark to read on a dark ground. **Accent Soft** is #1A3450.
+- **Orange Ink** #FFA474 on **Orange Soft** #3B2013. **Success** #4ADE80, **Success Ink** #86EFAC on #12301F. **Danger** #F87171 on #3A1719.
+- The logo switches to the white knockout (`SpaceLogo`), and the status bar icons turn light.
+
 ### Named Rules
 **The Orange Acts, Navy Informs Rule.** Anything you press to act, and any control's selected or focused state, is Primary Orange: primary pills, the "+" circle, selected toggles and pills, the active tab, focus rings, the cursor, and spinners. Anything that informs is navy: links, progress, banners, badges, avatars, info notices, and the "Scheduled" status. Never make a primary action navy or black, and never draw progress or a link in orange.
 
@@ -259,6 +270,17 @@ Navy-black ink on white cards and a light blue-gray ground, all from the logo. O
 - **Button** (700, 16px). Text links use 700 at 15px in navy.
 - **Pill** (700, 12.5px): status pills and tab labels.
 
+### Dark Palette
+
+Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/core/design/tokens.dart`). Every text pair meets the same minimums as in light mode.
+
+- **Ground** #0B1420 (night navy), **Surface** #152232, **Sunken** #0F1A27, **Line** #26384C.
+- **Ink** #E9EFF5 (13.9:1 on surface). **Muted Ink** #A6B6C7 (7.8:1). **Soft Ink** #7E97B1 (5.3:1). **Faint Ink** #4B5E73 (disabled only).
+- **Primary Orange** stays #D14702 with white on it (4.55:1). On the surface it measures 3.5:1, so it is used for fills and UI parts only.
+- **Accent** becomes the navy's light tint #8FBCEB (8.1:1 on surface), with navy #0B1F33 text and icons on accent fills. The logo navy is too dark to read on a dark ground. **Accent Soft** is #1A3450.
+- **Orange Ink** #FFA474 on **Orange Soft** #3B2013. **Success** #4ADE80, **Success Ink** #86EFAC on #12301F. **Danger** #F87171 on #3A1719.
+- The logo switches to the white knockout (`SpaceLogo`), and the status bar icons turn light.
+
 ### Named Rules
 **The Tabular Numbers Rule.** Every count, time range, and fraction uses tabular figures, so digits don't jitter when values change.
 
@@ -273,6 +295,17 @@ Single column with a 20px side margin (`page`). Content is capped at 640px (`max
 ## Elevation & Depth
 
 The system is flat. No BoxShadow and no Material elevation appear anywhere in the design layer. Depth comes from tone alone: white surfaces on the ground (1.12:1), sunken fills inside white cards (1.08:1), and full-bleed navy banners at the base of a card. These tonal steps are too faint to mark an input, so fields carry a 1px Soft Ink outline. The only lift is ink ripples (InkSparkle) on press and the native sheet and dialog presentation.
+
+### Dark Palette
+
+Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/core/design/tokens.dart`). Every text pair meets the same minimums as in light mode.
+
+- **Ground** #0B1420 (night navy), **Surface** #152232, **Sunken** #0F1A27, **Line** #26384C.
+- **Ink** #E9EFF5 (13.9:1 on surface). **Muted Ink** #A6B6C7 (7.8:1). **Soft Ink** #7E97B1 (5.3:1). **Faint Ink** #4B5E73 (disabled only).
+- **Primary Orange** stays #D14702 with white on it (4.55:1). On the surface it measures 3.5:1, so it is used for fills and UI parts only.
+- **Accent** becomes the navy's light tint #8FBCEB (8.1:1 on surface), with navy #0B1F33 text and icons on accent fills. The logo navy is too dark to read on a dark ground. **Accent Soft** is #1A3450.
+- **Orange Ink** #FFA474 on **Orange Soft** #3B2013. **Success** #4ADE80, **Success Ink** #86EFAC on #12301F. **Danger** #F87171 on #3A1719.
+- The logo switches to the white knockout (`SpaceLogo`), and the status bar icons turn light.
 
 ### Named Rules
 **The No-Shadow Rule.** Cards, buttons, bars, and sheets carry no shadow and no border. If something needs to separate, change its tone, not its elevation. The one exception is the field outline (see Shapes), which exists for input legibility, not depth.
@@ -337,7 +370,7 @@ The HeroHeadline is a 28px/700 headline whose second line drops to Soft Ink (3.6
 - **Don't** fill a primary action with navy or black. Actions are Primary Orange.
 - **Don't** set text in the raw logo orange (3.45:1 on white), in Primary Orange on the ground or sunken, or in success green on its own wash.
 - **Don't** reintroduce the retired threshold system: no orange sign-in ground, no ember dark mode, and no per-OS Material/Cupertino widget sets.
-- **Don't** add a dark theme. The app is light-only.
+- **Don't** hard-code a color or read a palette directly (`SpaceColors.light`). Widgets take colors from the theme (`context.colors`) so they work in both modes.
 - **Don't** use Soft Ink for body-size text, hints, placeholders, or navigation labels, or use Faint Ink for anything but disabled controls.
 - **Don't** add uppercase eyebrows or kickers above titles.
 - **Don't** use a font other than Manrope.

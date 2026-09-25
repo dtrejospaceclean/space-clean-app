@@ -7,28 +7,42 @@ class IconBadge extends StatelessWidget {
   const IconBadge({
     super.key,
     required this.icon,
-    this.color = SpaceColors.accent,
-    this.background = SpaceColors.accentSoft,
+    this.color,
+    this.background,
     this.size = 40,
-  });
+  }) : _strong = false;
 
-  /// Solid navy badge with a white icon.
+  /// Solid accent badge (navy in light mode) with a contrasting icon.
   const IconBadge.strong({super.key, required this.icon, this.size = 40})
-    : color = SpaceColors.onAccent,
-      background = SpaceColors.accent;
+    : color = null,
+      background = null,
+      _strong = true;
 
   final IconData icon;
-  final Color color;
-  final Color background;
+
+  /// Defaults to the accent on its soft tint.
+  final Color? color;
+  final Color? background;
   final double size;
+  final bool _strong;
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: size,
-    height: size,
-    decoration: BoxDecoration(color: background, shape: BoxShape.circle),
-    child: Icon(icon, color: color, size: size * 0.5),
-  );
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: background ?? (_strong ? c.accent : c.accentSoft),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        icon,
+        color: color ?? (_strong ? c.onAccent : c.accent),
+        size: size * 0.5,
+      ),
+    );
+  }
 }
 
 /// Initials in a circle ("WJ"), for people and accounts.
@@ -37,14 +51,16 @@ class InitialsAvatar extends StatelessWidget {
     super.key,
     required this.name,
     this.size = 44,
-    this.background = SpaceColors.sunken,
-    this.foreground = SpaceColors.ink,
+    this.background,
+    this.foreground,
   });
 
   final String name;
   final double size;
-  final Color background;
-  final Color foreground;
+
+  /// Default to the sunken tone with ink initials.
+  final Color? background;
+  final Color? foreground;
 
   static String initialsOf(String name) {
     final parts = name
@@ -64,12 +80,15 @@ class InitialsAvatar extends StatelessWidget {
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: background, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: background ?? context.colors.sunken,
+        shape: BoxShape.circle,
+      ),
       child: Text(
         initialsOf(name),
         style: TextStyle(
           fontFamily: 'Manrope',
-          color: foreground,
+          color: foreground ?? context.colors.ink,
           fontWeight: FontWeight.w700,
           fontSize: size * 0.34,
         ),

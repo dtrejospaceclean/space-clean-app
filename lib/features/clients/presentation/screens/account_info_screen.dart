@@ -126,8 +126,8 @@ class AccountInfoScreen extends ConsumerWidget {
                         InitialsAvatar(
                           name: c.displayName,
                           size: 56,
-                          background: SpaceColors.accentSoft,
-                          foreground: SpaceColors.accent,
+                          background: context.colors.accentSoft,
+                          foreground: context.colors.accent,
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -147,11 +147,11 @@ class AccountInfoScreen extends ConsumerWidget {
                               StatusPill(
                                 label: l10n.clientStatusLabel(c.status),
                                 color: c.status == ClientStatus.active
-                                    ? SpaceColors.accent
-                                    : SpaceColors.inkMuted,
+                                    ? context.colors.accent
+                                    : context.colors.inkMuted,
                                 background: c.status == ClientStatus.active
-                                    ? SpaceColors.accentSoft
-                                    : SpaceColors.sunken,
+                                    ? context.colors.accentSoft
+                                    : context.colors.sunken,
                               ),
                             ],
                           ),

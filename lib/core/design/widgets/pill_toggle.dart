@@ -12,7 +12,7 @@ class PillToggle<T> extends StatelessWidget {
     required this.onChanged,
     this.semanticLabel,
     this.expand = true,
-    this.track = SpaceColors.surface,
+    this.track,
   });
 
   /// Value → label, in display order.
@@ -23,7 +23,9 @@ class PillToggle<T> extends StatelessWidget {
 
   /// Stretch to the available width, sharing it equally.
   final bool expand;
-  final Color track;
+
+  /// Defaults to the surface color.
+  final Color? track;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class PillToggle<T> extends StatelessWidget {
         selected: isSelected,
         button: true,
         child: Material(
-          color: isSelected ? SpaceColors.primary : Colors.transparent,
+          color: isSelected ? context.colors.primary : Colors.transparent,
           shape: const StadiumBorder(),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
@@ -55,7 +57,9 @@ class PillToggle<T> extends StatelessWidget {
                       fontFamily: 'Manrope',
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
-                      color: isSelected ? Colors.white : SpaceColors.inkMuted,
+                      color: isSelected
+                          ? context.colors.onPrimary
+                          : context.colors.inkMuted,
                     ),
                   ),
                 ),
@@ -73,7 +77,7 @@ class PillToggle<T> extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: track,
+          color: track ?? context.colors.surface,
           borderRadius: BorderRadius.circular(SpaceRadius.pill),
         ),
         child: Row(

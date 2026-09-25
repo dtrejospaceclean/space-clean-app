@@ -69,7 +69,7 @@ class SpaceTextField extends StatelessWidget {
                   child: Text(
                     label,
                     style: theme.textTheme.titleSmall?.copyWith(
-                      color: SpaceColors.ink,
+                      color: context.colors.ink,
                     ),
                   ),
                 ),
@@ -93,23 +93,23 @@ class SpaceTextField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
             onFieldSubmitted: onFieldSubmitted,
-            cursorColor: SpaceColors.primary,
-            style: const TextStyle(
+            cursorColor: context.colors.primary,
+            style: TextStyle(
               fontFamily: 'Manrope',
               fontSize: 17,
               fontWeight: FontWeight.w500,
-              color: SpaceColors.ink,
+              color: context.colors.ink,
             ),
             decoration: InputDecoration(
               hintText: hint,
               helperText: helper,
               helperMaxLines: 3,
               helperStyle: theme.textTheme.bodySmall?.copyWith(
-                color: SpaceColors.inkMuted,
+                color: context.colors.inkMuted,
               ),
               errorText: errorText,
               suffixIcon: suffix,
-              suffixIconColor: SpaceColors.inkMuted,
+              suffixIconColor: context.colors.inkMuted,
             ),
           ),
         ],
@@ -154,10 +154,10 @@ class PickerField extends StatelessWidget {
           label: '$label: ${value ?? l10n.notSet}',
           excludeSemantics: true,
           child: Material(
-            color: SpaceColors.sunken,
+            color: context.colors.sunken,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(SpaceRadius.inner),
-              side: const BorderSide(color: SpaceColors.inkSoft),
+              side: BorderSide(color: context.colors.inkSoft),
             ),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
@@ -177,12 +177,12 @@ class PickerField extends StatelessWidget {
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
                           color: value == null
-                              ? SpaceColors.inkMuted
-                              : SpaceColors.ink,
+                              ? context.colors.inkMuted
+                              : context.colors.ink,
                         ),
                       ),
                     ),
-                    Icon(icon, color: SpaceColors.inkMuted),
+                    Icon(icon, color: context.colors.inkMuted),
                   ],
                 ),
               ),
@@ -236,7 +236,7 @@ class _Pill extends StatelessWidget {
     selected: selected,
     button: true,
     child: Material(
-      color: selected ? SpaceColors.primary : SpaceColors.sunken,
+      color: selected ? context.colors.primary : context.colors.sunken,
       shape: const StadiumBorder(),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -249,10 +249,10 @@ class _Pill extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (selected) ...[
-                  const Icon(
+                  Icon(
                     Icons.check_rounded,
                     size: 18,
-                    color: Colors.white,
+                    color: context.colors.onPrimary,
                   ),
                   const SizedBox(width: 6),
                 ],
@@ -262,7 +262,9 @@ class _Pill extends StatelessWidget {
                     fontFamily: 'Manrope',
                     fontWeight: FontWeight.w600,
                     fontSize: 14.5,
-                    color: selected ? Colors.white : SpaceColors.ink,
+                    color: selected
+                        ? context.colors.onPrimary
+                        : context.colors.ink,
                   ),
                 ),
               ],
@@ -305,7 +307,7 @@ class SearchField extends StatelessWidget {
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: hint,
-        fillColor: SpaceColors.surface,
+        fillColor: context.colors.surface,
         prefixIcon: const Icon(Icons.search_rounded),
         suffixIcon: busy
             ? Semantics(
@@ -322,9 +324,9 @@ class SearchField extends StatelessWidget {
             : null,
         border: border(BorderSide.none),
         // Same 1px outline as every other input.
-        enabledBorder: border(const BorderSide(color: SpaceColors.inkSoft)),
+        enabledBorder: border(BorderSide(color: context.colors.inkSoft)),
         focusedBorder: border(
-          const BorderSide(color: SpaceColors.primary, width: 2),
+          BorderSide(color: context.colors.primary, width: 2),
         ),
       ),
     );

@@ -12,6 +12,7 @@ export 'widgets/cards.dart';
 export 'widgets/circle_button.dart';
 export 'widgets/fields.dart';
 export 'widgets/list_card.dart';
+export 'widgets/logo.dart';
 export 'widgets/notice.dart';
 export 'widgets/pickers.dart';
 export 'widgets/pill_toggle.dart';

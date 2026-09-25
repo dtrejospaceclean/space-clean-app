@@ -45,7 +45,7 @@ class TodayScreen extends ConsumerWidget {
             message: user.name,
             child: InitialsAvatar(
               name: user.name,
-              background: SpaceColors.surface,
+              background: context.colors.surface,
             ),
           ),
       ],

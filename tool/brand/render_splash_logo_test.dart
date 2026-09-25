@@ -25,9 +25,7 @@ Future<void> _render(
           child: Center(
             child: SizedBox.square(
               dimension: logo,
-              child: SvgPicture.asset(
-                'assets/brand/space_clean_logo_white.svg',
-              ),
+              child: SvgPicture.asset(asset),
             ),
           ),
         ),
