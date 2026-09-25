@@ -9,10 +9,12 @@ class ClientsRemoteDataSource {
 
   final ApiClient _api;
 
-  Future<List<Client>> getClients() async => (await fetchAllPages(
-    _api,
-    '/clients',
-  )).map(ClientModel.fromJson).toList();
+  Future<List<Client>> getClients({String search = ''}) async =>
+      (await fetchAllPages(
+        _api,
+        '/clients',
+        query: {if (search.isNotEmpty) 'search': search},
+      )).map(ClientModel.fromJson).toList();
 
   Future<Client> getClient(String id) async =>
       ClientModel.fromJson(_map(await _api.get('/clients/$id')));

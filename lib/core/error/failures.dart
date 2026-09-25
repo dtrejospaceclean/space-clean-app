@@ -37,6 +37,13 @@ final class UnavailableFailure extends Failure {
   static const key = 'errors.feature_unavailable';
 }
 
+/// A rule the app enforces itself before calling the server (the API
+/// doesn't check it). [messageKey] is an app key, e.g.
+/// `users.cannot_deactivate_self`.
+final class RuleFailure extends Failure {
+  const RuleFailure(super.messageKey);
+}
+
 /// Any other error response: forbidden, not found, conflict, server error…
 final class ServerFailure extends Failure {
   const ServerFailure(super.messageKey, {required this.statusCode});

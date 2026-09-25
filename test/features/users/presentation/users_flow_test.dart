@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
+import 'package:sp_cln_app/features/users/domain/entities/managed_user.dart';
 
 import '../../../helpers/test_app.dart';
 
@@ -46,6 +50,55 @@ void main() {
 
     expect(find.text('Luis Gómez'), findsOneWidget);
     expect(find.text('Ana Pérez'), findsNothing);
+  });
+
+  testWidgets('the search shows a spinner until the results are in', (
+    tester,
+  ) async {
+    final users = FakeUsersRepository()..searchGate = Completer();
+    await openUsers(tester, owner, users: users);
+    final spinner = find.bySemanticsLabel('Searching…');
+    expect(spinner, findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'ana');
+    await tester.pump();
+    // Waiting out the debounce.
+    expect(spinner, findsOneWidget);
+
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump();
+    // Sent, and the server hasn't answered.
+    expect(spinner, findsOneWidget);
+
+    users.searchGate!.complete();
+    await tester.pumpAndSettle();
+    expect(spinner, findsNothing);
+    expect(find.text('Ana Pérez'), findsOneWidget);
+  });
+
+  testWidgets("owners can't deactivate themselves", (tester) async {
+    final users = FakeUsersRepository([
+      ...FakeUsersRepository().users,
+      const ManagedUser(
+        id: 'o1',
+        email: 'olga@example.com',
+        name: 'Olga Ruiz',
+        userType: UserType.internal,
+        isActive: true,
+        roles: [Role(id: 'r-owner', name: 'owner')],
+      ),
+    ]);
+    await openUsers(tester, owner, users: users);
+
+    await tester.tap(find.text('Olga Ruiz'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.textContaining('This is your account'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+
+    expect(find.text('Deactivate user'), findsNothing);
   });
 
   testWidgets('account managers can look but not change', (tester) async {

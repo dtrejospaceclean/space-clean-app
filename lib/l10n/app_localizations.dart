@@ -1357,6 +1357,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This account no longer exists.'**
   String get clientsNotFound;
+
+  /// No description provided for @searchAccountsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name or tax ID'**
+  String get searchAccountsHint;
+
+  /// No description provided for @noAccountsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No accounts match'**
+  String get noAccountsFound;
+
+  /// No description provided for @noAccountsFoundHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name or tax ID.'**
+  String get noAccountsFoundHint;
+
+  /// No description provided for @searchingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get searchingLabel;
+
+  /// No description provided for @moduleJobsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule, crew and progress'**
+  String get moduleJobsHint;
+
+  /// No description provided for @moduleInfoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing and people in charge'**
+  String get moduleInfoHint;
+
+  /// No description provided for @adminUsersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff and client sign-ins'**
+  String get adminUsersHint;
+
+  /// No description provided for @adminRolesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff roles and who has them'**
+  String get adminRolesHint;
+
+  /// No description provided for @usersCannotDeactivateSelf.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t deactivate your own account.'**
+  String get usersCannotDeactivateSelf;
+
+  /// No description provided for @ownAccountNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This is your account. You can\'t deactivate yourself; another owner can.'**
+  String get ownAccountNotice;
 }
 
 class _AppLocalizationsDelegate

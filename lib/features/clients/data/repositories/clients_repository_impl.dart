@@ -17,7 +17,8 @@ class ClientsRepositoryImpl implements ClientsRepository {
   }
 
   @override
-  Future<List<Client>> getMyClients() => _guard(_remote.getClients);
+  Future<List<Client>> getMyClients({String search = ''}) =>
+      _guard(() => _remote.getClients(search: search));
 
   @override
   Future<Client> getClient(String id) => _guard(() => _remote.getClient(id));

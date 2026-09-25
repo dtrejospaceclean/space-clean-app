@@ -95,9 +95,11 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Jobs'), findsOneWidget);
-    expect(find.text('Tasks'), findsOneWidget);
-    expect(find.text('Team'), findsNothing);
-    expect(find.text('Contracts'), findsNothing);
+    // No info.view, so no Account details.
+    expect(find.text('Account details'), findsNothing);
+    // Allowed, but not built yet: nothing is shown for it.
+    expect(find.text('Tasks'), findsNothing);
+    expect(find.text('Coming soon'), findsNothing);
   });
 
   testWidgets('a non-member account explains there is nothing to open', (

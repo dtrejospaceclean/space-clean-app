@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,18 +9,59 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/client.dart';
 import '../controllers/clients_providers.dart';
 
-/// The client accounts the user belongs to (the server filters them), as a
-/// two-column grid of tiles. Owners and account managers can add one.
-class AccountsScreen extends ConsumerWidget {
+/// The client accounts the user belongs to (the server filters them), as one
+/// list with a search box. Owners and account managers can add one.
+class AccountsScreen extends ConsumerStatefulWidget {
   const AccountsScreen({super.key});
 
   static const path = '/accounts';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AccountsScreen> createState() => _AccountsScreenState();
+}
+
+class _AccountsScreenState extends ConsumerState<AccountsScreen> {
+  late final TextEditingController _search;
+  Timer? _debounce;
+
+  /// Typed text waiting out the debounce, not yet searched.
+  bool _pending = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Eager: the box may never be shown, but dispose() still needs it.
+    _search = TextEditingController(text: ref.read(accountSearchProvider));
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _search.dispose();
+    super.dispose();
+  }
+
+  /// Searches once typing pauses, not on every keystroke.
+  void _onSearch(String text) {
+    _debounce?.cancel();
+    setState(() => _pending = true);
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      ref.read(accountSearchProvider.notifier).search(text);
+      setState(() => _pending = false);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final clients = ref.watch(myClientsProvider);
-    Future<void> refresh() => ref.refresh(myClientsProvider.future);
+    final clients = ref.watch(accountsListProvider);
+    final searching = ref.watch(accountSearchProvider).isNotEmpty;
+    // Nothing to search until the user has at least one account.
+    final hasAccounts = ref.watch(myClientsProvider).value?.isNotEmpty ?? false;
+    Future<void> refresh() async {
+      ref.invalidate(myClientsProvider);
+      await ref.read(accountsListProvider.future);
+    }
 
     return SpacePage(
       title: l10n.accountsTitle,
@@ -28,45 +71,62 @@ class AccountsScreen extends ConsumerWidget {
           CircleButton.dark(
             icon: Icons.add_rounded,
             tooltip: l10n.addAccount,
-            onPressed: () => context.push('$path/new'),
+            onPressed: () => context.push('${AccountsScreen.path}/new'),
           ),
       ],
       slivers: [
+        if (hasAccounts)
+          PageBox(
+            top: 4,
+            child: SearchField(
+              controller: _search,
+              hint: l10n.searchAccountsHint,
+              onChanged: _onSearch,
+              // From the first keystroke until the results are in.
+              busy: _pending || clients.isLoading,
+            ),
+          ),
         AsyncSlivers(
           value: clients,
           onRetry: refresh,
           builder: (list) {
             if (list.isEmpty) {
-              return MessageSliver(
-                icon: Icons.apartment_rounded,
-                title: l10n.noAccounts,
-                hint: l10n.noAccountsHint,
-              );
+              return searching
+                  ? MessageSliver(
+                      icon: Icons.search_off_rounded,
+                      title: l10n.noAccountsFound,
+                      hint: l10n.noAccountsFoundHint,
+                    )
+                  : MessageSliver(
+                      icon: Icons.apartment_rounded,
+                      title: l10n.noAccounts,
+                      hint: l10n.noAccountsHint,
+                    );
             }
             return SliverMainAxisGroup(
               slivers: [
                 PageBox(
-                  top: 0,
+                  top: 12,
                   child: Text(
                     l10n.accountsCount(list.length),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
                 PageBox(
-                  child: CardGrid(
+                  top: 8,
+                  child: ListCard(
                     children: [
                       for (final (i, client) in list.indexed)
-                        TileCard(
-                          icon: _AccountBadge(client: client, index: i),
+                        ListRow(
+                          leading: _AccountBadge(client: client, index: i),
                           title: client.displayName,
-                          subtitle: switch (client.status) {
-                            ClientStatus.prospect => l10n.clientStatusProspect,
-                            ClientStatus.inactive => l10n.clientStatusInactive,
-                            _ when client.displayName != client.legalName =>
-                              client.legalName,
-                            _ => null,
-                          },
-                          onTap: () => context.push('$path/${client.id}'),
+                          subtitle: client.displayName != client.legalName
+                              ? client.legalName
+                              : null,
+                          trailing: _StatusTag(status: client.status),
+                          onTap: () => context.push(
+                            '${AccountsScreen.path}/${client.id}',
+                          ),
                         ),
                     ],
                   ),
@@ -77,6 +137,31 @@ class AccountsScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+/// Flags accounts that aren't active yet or anymore; active ones stay quiet.
+class _StatusTag extends StatelessWidget {
+  const _StatusTag({required this.status});
+
+  final ClientStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return switch (status) {
+      ClientStatus.prospect => StatusPill(
+        label: l10n.clientStatusProspect,
+        color: SpaceColors.highlightInk,
+        background: SpaceColors.highlightSoft,
+      ),
+      ClientStatus.inactive => StatusPill(
+        label: l10n.clientStatusInactive,
+        color: SpaceColors.inkMuted,
+        background: SpaceColors.sunken,
+      ),
+      _ => const SizedBox.shrink(),
+    };
   }
 }
 
@@ -92,7 +177,7 @@ class _AccountBadge extends StatelessWidget {
     final orange = index.isOdd;
     return InitialsAvatar(
       name: client.displayName,
-      size: 48,
+      size: 44,
       background: orange ? SpaceColors.highlightSoft : SpaceColors.accentSoft,
       foreground: orange ? SpaceColors.highlightInk : SpaceColors.accent,
     );

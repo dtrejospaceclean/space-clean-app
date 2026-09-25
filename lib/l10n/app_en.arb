@@ -324,5 +324,15 @@
   "accountCreatedNotMember": "To open it, ask an owner to add you to its team.",
   "clientsHasRelatedRecords": "This account has history (proposals, contracts, locations, jobs or invoices), so it can't be deleted. Set its status to Inactive instead.",
   "clientsAssigneeNotActive": "The account manager, supervisor and salesperson must be active users.",
-  "clientsNotFound": "This account no longer exists."
+  "clientsNotFound": "This account no longer exists.",
+  "searchAccountsHint": "Search name or tax ID",
+  "noAccountsFound": "No accounts match",
+  "noAccountsFoundHint": "Try another name or tax ID.",
+  "searchingLabel": "Searching…",
+  "moduleJobsHint": "Schedule, crew and progress",
+  "moduleInfoHint": "Billing and people in charge",
+  "adminUsersHint": "Staff and client sign-ins",
+  "adminRolesHint": "Staff roles and who has them",
+  "usersCannotDeactivateSelf": "You can't deactivate your own account.",
+  "ownAccountNotice": "This is your account. You can't deactivate yourself; another owner can."
 }

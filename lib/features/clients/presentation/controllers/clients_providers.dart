@@ -17,6 +17,33 @@ final myClientsProvider = FutureProvider<List<Client>>((ref) {
   return ref.watch(getMyClientsProvider)(const NoParams());
 });
 
+/// The Accounts tab's search text, as last applied (already debounced).
+/// Cleared when the session changes.
+final accountSearchProvider = NotifierProvider<AccountSearchController, String>(
+  AccountSearchController.new,
+);
+
+class AccountSearchController extends Notifier<String> {
+  @override
+  String build() {
+    ref.watch(authControllerProvider.select((s) => s.value));
+    return '';
+  }
+
+  void search(String text) => state = text.trim();
+}
+
+/// What the Accounts tab lists: every account, or the server's matches for
+/// the search text.
+final accountsListProvider = FutureProvider<List<Client>>((ref) async {
+  final search = ref.watch(accountSearchProvider);
+  // Also re-runs the search whenever the full list reloads (pull to
+  // refresh, an account created, edited or deleted).
+  final all = await ref.watch(myClientsProvider.future);
+  if (search.isEmpty) return all;
+  return ref.watch(searchMyClientsProvider)(search);
+});
+
 /// One account from the list, by id.
 final clientByIdProvider = FutureProvider.family<Client?, String>((
   ref,

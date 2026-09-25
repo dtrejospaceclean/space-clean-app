@@ -209,5 +209,15 @@
   "accountCreatedNotMember": "Para abrirla, pide a un propietario que te añada a su equipo.",
   "clientsHasRelatedRecords": "Esta cuenta tiene historial (propuestas, contratos, ubicaciones, trabajos o facturas), así que no se puede eliminar. Cambia su estado a Inactiva.",
   "clientsAssigneeNotActive": "El gerente de cuenta, el supervisor y el vendedor deben ser usuarios activos.",
-  "clientsNotFound": "Esta cuenta ya no existe."
+  "clientsNotFound": "Esta cuenta ya no existe.",
+  "searchAccountsHint": "Buscar por nombre o identificación fiscal",
+  "noAccountsFound": "Ninguna cuenta coincide",
+  "noAccountsFoundHint": "Prueba con otro nombre o identificación fiscal.",
+  "searchingLabel": "Buscando…",
+  "moduleJobsHint": "Agenda, equipo y avance",
+  "moduleInfoHint": "Facturación y responsables",
+  "adminUsersHint": "Personal y accesos de clientes",
+  "adminRolesHint": "Roles del personal y quién los tiene",
+  "usersCannotDeactivateSelf": "No puedes desactivar tu propia cuenta.",
+  "ownAccountNotice": "Esta es tu cuenta. No puedes desactivarte; otro propietario sí puede."
 }

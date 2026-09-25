@@ -8,9 +8,7 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/widgets/language_toggle.dart';
-import '../../../users/presentation/controllers/users_providers.dart';
-import '../../../users/presentation/screens/roles_screen.dart';
-import '../../../users/presentation/screens/users_screen.dart';
+import '../admin_modules.dart';
 
 /// The signed-in user, administration, settings, and sign-out.
 class ProfileScreen extends ConsumerWidget {
@@ -98,29 +96,23 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
         ),
-        if (ref.watch(canViewUsersProvider)) ...[
+        if (visibleAdminModules(user) case final modules
+            when modules.isNotEmpty) ...[
           PageBox(
             top: 12,
             child: SectionHeader(title: l10n.sectionAdministration),
           ),
           PageBox(
             top: 0,
-            child: CardGrid(
+            child: ListCard(
               children: [
-                TileCard(
-                  icon: const IconBadge.strong(icon: Icons.group_outlined),
-                  title: l10n.usersTitle,
-                  subtitle: l10n.openSection,
-                  onTap: () => context.push(UsersScreen.path),
-                ),
-                TileCard(
-                  icon: const IconBadge(
-                    icon: Icons.admin_panel_settings_outlined,
+                for (final module in modules)
+                  ListRow(
+                    leading: IconBadge.strong(icon: module.icon),
+                    title: module.label(l10n),
+                    subtitle: module.description(l10n),
+                    onTap: () => context.push(module.path),
                   ),
-                  title: l10n.rolesTitle,
-                  subtitle: l10n.openSection,
-                  onTap: () => context.push(RolesScreen.path),
-                ),
               ],
             ),
           ),

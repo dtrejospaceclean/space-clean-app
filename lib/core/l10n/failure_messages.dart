@@ -18,6 +18,7 @@ extension FailureMessages on AppLocalizations {
     UnavailableFailure.key => errorsFeatureUnavailable,
     'users.email_taken' => usersEmailTaken,
     'users.not_found' => usersNotFound,
+    'users.cannot_deactivate_self' => usersCannotDeactivateSelf,
     'roles.still_assigned' => rolesStillAssigned,
     'roles.system_role_not_renamable' ||
     'roles.system_role_not_deletable' => rolesSystemRole,

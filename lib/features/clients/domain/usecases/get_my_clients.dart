@@ -9,11 +9,24 @@ class GetMyClients implements UseCase<List<Client>, NoParams> {
   final ClientsRepository _repository;
 
   @override
-  Future<List<Client>> call(NoParams params) async {
-    final clients = await _repository.getMyClients();
-    return [...clients]..sort(
-      (a, b) =>
-          a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
-    );
-  }
+  Future<List<Client>> call(NoParams params) async =>
+      _byName(await _repository.getMyClients());
 }
+
+/// The user's accounts whose legal name, trade name or tax ID contains the
+/// text (the server matches). Alphabetical, like [GetMyClients].
+class SearchMyClients implements UseCase<List<Client>, String> {
+  const SearchMyClients(this._repository);
+
+  final ClientsRepository _repository;
+
+  @override
+  Future<List<Client>> call(String search) async =>
+      _byName(await _repository.getMyClients(search: search.trim()));
+}
+
+List<Client> _byName(List<Client> clients) => [...clients]
+  ..sort(
+    (a, b) =>
+        a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
+  );

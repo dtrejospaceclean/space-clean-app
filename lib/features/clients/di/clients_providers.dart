@@ -16,6 +16,9 @@ final clientsRepositoryProvider = Provider<ClientsRepository>(
 final getMyClientsProvider = Provider<GetMyClients>(
   (ref) => GetMyClients(ref.watch(clientsRepositoryProvider)),
 );
+final searchMyClientsProvider = Provider(
+  (ref) => SearchMyClients(ref.watch(clientsRepositoryProvider)),
+);
 final getClientProvider = Provider(
   (ref) => GetClient(ref.watch(clientsRepositoryProvider)),
 );

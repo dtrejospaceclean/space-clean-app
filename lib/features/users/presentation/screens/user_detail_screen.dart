@@ -9,6 +9,7 @@ import '../../../../core/l10n/formatting.dart';
 import '../../../../core/l10n/role_names.dart';
 import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../di/users_providers.dart';
 import '../../domain/entities/managed_user.dart';
 import '../../domain/usecases/user_usecases.dart';
@@ -50,9 +51,15 @@ class UserDetailScreen extends ConsumerWidget {
       );
       if (confirmed != true) return;
     }
+    final auth = ref.read(authControllerProvider).value;
+    if (auth is! Authenticated) return;
     try {
       await ref.read(setUserActiveProvider)(
-        SetUserActiveParams(id: user.id, active: !user.isActive),
+        SetUserActiveParams(
+          id: user.id,
+          active: !user.isActive,
+          actor: auth.user,
+        ),
       );
       ref
         ..invalidate(userProvider(user.id))
@@ -82,6 +89,12 @@ class UserDetailScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final user = ref.watch(userProvider(userId));
     final canEdit = ref.watch(canEditUsersProvider);
+    final me = switch (ref.watch(authControllerProvider).value) {
+      Authenticated(:final user) => user,
+      _ => null,
+    };
+    // Your own account can't be deactivated from here.
+    final isMe = me != null && !UserAdminPolicy.canDeactivate(me, userId);
     Future<void> refresh() => ref.refresh(userProvider(userId).future);
 
     String? orNull(String? v) => v == null || v.isEmpty ? null : v;
@@ -230,7 +243,15 @@ class UserDetailScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (canEdit)
+              if (canEdit && isMe)
+                PageBox(
+                  top: 24,
+                  child: Notice(
+                    tone: NoticeTone.info,
+                    message: l10n.ownAccountNotice,
+                  ),
+                )
+              else if (canEdit)
                 PageBox(
                   top: 24,
                   child: SecondaryButton(

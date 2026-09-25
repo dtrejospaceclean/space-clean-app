@@ -1,3 +1,4 @@
+import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../entities/managed_user.dart';
@@ -10,6 +11,10 @@ abstract final class UserAdminPolicy {
       user.hasAnyRole(const [GlobalRole.owner, GlobalRole.accountManager]);
 
   static bool canEdit(User user) => user.hasRole(GlobalRole.owner);
+
+  /// Nobody can deactivate their own account: they'd lock themselves out,
+  /// possibly leaving no one able to undo it.
+  static bool canDeactivate(User actor, String userId) => actor.id != userId;
 }
 
 class GetUsers implements UseCase<List<ManagedUser>, UserQuery> {
@@ -78,20 +83,36 @@ class UpdateUser implements UseCase<ManagedUser, UpdateUserParams> {
 }
 
 class SetUserActiveParams {
-  const SetUserActiveParams({required this.id, required this.active});
+  const SetUserActiveParams({
+    required this.id,
+    required this.active,
+    required this.actor,
+  });
 
   final String id;
   final bool active;
+
+  /// The signed-in user making the change.
+  final User actor;
 }
 
+/// Deactivates or reactivates a user. Throws a [RuleFailure]
+/// (`users.cannot_deactivate_self`) when someone deactivates themselves.
 class SetUserActive implements UseCase<ManagedUser, SetUserActiveParams> {
   const SetUserActive(this._repository);
 
   final UsersRepository _repository;
 
+  static const cannotDeactivateSelf = 'users.cannot_deactivate_self';
+
   @override
-  Future<ManagedUser> call(SetUserActiveParams params) =>
-      _repository.setActive(params.id, active: params.active);
+  Future<ManagedUser> call(SetUserActiveParams params) async {
+    if (!params.active &&
+        !UserAdminPolicy.canDeactivate(params.actor, params.id)) {
+      throw const RuleFailure(cannotDeactivateSelf);
+    }
+    return _repository.setActive(params.id, active: params.active);
+  }
 }
 
 /// Roles for pickers and the roles screen: base roles first, then custom.

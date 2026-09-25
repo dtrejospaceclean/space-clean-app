@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/usecase/usecase.dart';
 import 'package:sp_cln_app/features/users/domain/entities/managed_user.dart';
 import 'package:sp_cln_app/features/users/domain/entities/role_info.dart';
@@ -81,5 +82,35 @@ void main() {
       isFalse,
     );
     expect(const RoleInfo(id: '3', name: 'floor_lead').isDeletable, isTrue);
+  });
+
+  group('SetUserActive', () {
+    test('refuses to deactivate the signed-in user', () async {
+      final repo = FakeUsersRepository();
+
+      await expectLater(
+        SetUserActive(repo)(
+          const SetUserActiveParams(id: 'o1', active: false, actor: owner),
+        ),
+        throwsA(
+          isA<RuleFailure>().having(
+            (f) => f.messageKey,
+            'messageKey',
+            'users.cannot_deactivate_self',
+          ),
+        ),
+      );
+      expect(repo.writes, isEmpty);
+    });
+
+    test('deactivates someone else', () async {
+      final repo = FakeUsersRepository();
+
+      await SetUserActive(repo)(
+        const SetUserActiveParams(id: 'u1', active: false, actor: owner),
+      );
+
+      expect(repo.writes, ['active:u1:false']);
+    });
   });
 }

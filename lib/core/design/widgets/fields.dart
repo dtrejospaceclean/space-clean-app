@@ -273,3 +273,60 @@ class _Pill extends StatelessWidget {
     ),
   );
 }
+
+/// A white pill search box with a magnifier, for the top of a list. Pair
+/// [onChanged] with a debounce when it hits the server, and set [busy] from
+/// the first keystroke until the results are in.
+class SearchField extends StatelessWidget {
+  const SearchField({
+    super.key,
+    required this.controller,
+    required this.hint,
+    required this.onChanged,
+    this.busy = false,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final ValueChanged<String> onChanged;
+
+  /// Shows a spinner at the end of the box, announced to screen readers.
+  final bool busy;
+
+  @override
+  Widget build(BuildContext context) {
+    OutlineInputBorder border(BorderSide side) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(SpaceRadius.pill),
+      borderSide: side,
+    );
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        hintText: hint,
+        fillColor: SpaceColors.surface,
+        prefixIcon: const Icon(Icons.search_rounded),
+        suffixIcon: busy
+            ? Semantics(
+                liveRegion: true,
+                label: AppLocalizations.of(context).searchingLabel,
+                child: const Padding(
+                  padding: EdgeInsets.all(14),
+                  child: SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 2.5),
+                  ),
+                ),
+              )
+            : null,
+        border: border(BorderSide.none),
+        // Same 1px outline as every other input.
+        enabledBorder: border(const BorderSide(color: SpaceColors.inkSoft)),
+        focusedBorder: border(
+          const BorderSide(color: SpaceColors.primary, width: 2),
+        ),
+      ),
+    );
+  }
+}

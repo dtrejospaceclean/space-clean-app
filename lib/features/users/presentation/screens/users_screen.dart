@@ -27,6 +27,9 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
   );
   Timer? _debounce;
 
+  /// Typed text waiting out the debounce, not yet searched.
+  bool _pending = false;
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -36,10 +39,11 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
 
   void _onSearch(String text) {
     _debounce?.cancel();
-    _debounce = Timer(
-      const Duration(milliseconds: 300),
-      () => ref.read(userQueryProvider.notifier).search(text),
-    );
+    setState(() => _pending = true);
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      ref.read(userQueryProvider.notifier).search(text);
+      setState(() => _pending = false);
+    });
   }
 
   @override
@@ -67,31 +71,12 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
+              SearchField(
                 controller: _search,
+                hint: l10n.searchUsersHint,
                 onChanged: _onSearch,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: l10n.searchUsersHint,
-                  fillColor: SpaceColors.surface,
-                  prefixIcon: const Icon(Icons.search_rounded),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(SpaceRadius.pill),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(SpaceRadius.pill),
-                    // Same 1px outline as every other input.
-                    borderSide: const BorderSide(color: SpaceColors.inkSoft),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(SpaceRadius.pill),
-                    borderSide: const BorderSide(
-                      color: SpaceColors.primary,
-                      width: 2,
-                    ),
-                  ),
-                ),
+                // From the first keystroke until the results are in.
+                busy: _pending || users.isLoading,
               ),
               const SizedBox(height: 12),
               PillToggle<bool?>(

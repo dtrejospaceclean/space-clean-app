@@ -93,10 +93,16 @@ class FakeUsersRepository implements UsersRepository {
   Failure? createError;
 
   @override
-  Future<List<ManagedUser>> getUsers(UserQuery query) async => users
-      .where((u) => query.isActive == null || u.isActive == query.isActive)
-      .where((u) => u.name.toLowerCase().contains(query.search.toLowerCase()))
-      .toList();
+  Future<List<ManagedUser>> getUsers(UserQuery query) async {
+    if (query.search.isNotEmpty) await searchGate?.future;
+    return users
+        .where((u) => query.isActive == null || u.isActive == query.isActive)
+        .where((u) => u.name.toLowerCase().contains(query.search.toLowerCase()))
+        .toList();
+  }
+
+  /// When set, searches wait for it (a slow server).
+  Completer<void>? searchGate;
 
   @override
   Future<ManagedUser> getUser(String id) async =>
@@ -262,12 +268,30 @@ class FakeClientsRepository implements ClientsRepository {
   Failure? error;
   Failure? deleteError;
   final writes = <String>[];
+
+  /// Every non-empty search the server received.
+  final searches = <String>[];
+
+  /// When set, searches wait for it (a slow server).
+  Completer<void>? searchGate;
   final drafts = <ClientDraft>[];
 
   @override
-  Future<List<Client>> getMyClients() async {
+  Future<List<Client>> getMyClients({String search = ''}) async {
     if (error case final error?) throw error;
-    return clients;
+    if (search.isEmpty) return clients;
+    searches.add(search);
+    await searchGate?.future;
+    final text = search.toLowerCase();
+    return clients
+        .where(
+          (c) => [
+            c.legalName,
+            ?c.dba,
+            ?c.taxId,
+          ].any((v) => v.toLowerCase().contains(text)),
+        )
+        .toList();
   }
 
   @override

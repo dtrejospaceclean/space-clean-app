@@ -718,4 +718,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientsNotFound => 'This account no longer exists.';
+
+  @override
+  String get searchAccountsHint => 'Search name or tax ID';
+
+  @override
+  String get noAccountsFound => 'No accounts match';
+
+  @override
+  String get noAccountsFoundHint => 'Try another name or tax ID.';
+
+  @override
+  String get searchingLabel => 'Searching…';
+
+  @override
+  String get moduleJobsHint => 'Schedule, crew and progress';
+
+  @override
+  String get moduleInfoHint => 'Billing and people in charge';
+
+  @override
+  String get adminUsersHint => 'Staff and client sign-ins';
+
+  @override
+  String get adminRolesHint => 'Staff roles and who has them';
+
+  @override
+  String get usersCannotDeactivateSelf =>
+      'You can\'t deactivate your own account.';
+
+  @override
+  String get ownAccountNotice =>
+      'This is your account. You can\'t deactivate yourself; another owner can.';
 }
