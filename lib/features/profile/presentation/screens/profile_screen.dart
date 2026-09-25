@@ -156,7 +156,9 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       IconBadge(icon: icon, size: 36),
                       const SizedBox(width: 12),
-                      Text(label, style: theme.textTheme.titleMedium),
+                      Expanded(
+                        child: Text(label, style: theme.textTheme.titleMedium),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 14),

@@ -159,4 +159,20 @@ void main() {
     expect(find.byType(SpaceBottomBar), findsOneWidget);
     expect(find.text('Hoy'), findsOneWidget);
   });
+
+  testWidgets('the tab dock survives 200% text in Spanish', (tester) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await pumpApp(
+      tester,
+      auth: FakeAuthRepository(sessionUser: ana),
+      preferences: {'settings.language': 'es'},
+    );
+
+    for (final tab in ['Cuentas', 'Yo', 'Hoy']) {
+      await tester.tap(find.text(tab).last);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+  });
 }
