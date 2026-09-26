@@ -66,14 +66,6 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
     return SpacePage(
       title: l10n.accountsTitle,
       onRefresh: refresh,
-      actions: [
-        if (ref.watch(canCreateAccountsProvider))
-          CircleButton.dark(
-            icon: Icons.add_rounded,
-            tooltip: l10n.addAccount,
-            onPressed: () => context.push('${AccountsScreen.path}/new'),
-          ),
-      ],
       slivers: [
         if (hasAccounts)
           PageBox(

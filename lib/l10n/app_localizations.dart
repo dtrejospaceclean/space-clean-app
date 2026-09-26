@@ -818,12 +818,6 @@ abstract class AppLocalizations {
   /// **'Client'**
   String get clientUserTag;
 
-  /// No description provided for @addUser.
-  ///
-  /// In en, this message translates to:
-  /// **'Add user'**
-  String get addUser;
-
   /// No description provided for @editUser.
   ///
   /// In en, this message translates to:
@@ -1196,12 +1190,6 @@ abstract class AppLocalizations {
   /// **'Active'**
   String get clientStatusActive;
 
-  /// No description provided for @addAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Add account'**
-  String get addAccount;
-
   /// No description provided for @newAccountTitle.
   ///
   /// In en, this message translates to:
@@ -1514,12 +1502,6 @@ abstract class AppLocalizations {
   /// **'Services, categories and units'**
   String get adminServicesHint;
 
-  /// No description provided for @addService.
-  ///
-  /// In en, this message translates to:
-  /// **'Add service'**
-  String get addService;
-
   /// No description provided for @newServiceTitle.
   ///
   /// In en, this message translates to:
@@ -1634,36 +1616,6 @@ abstract class AppLocalizations {
   /// **'One of the services is unknown or inactive. Refresh and try again.'**
   String get serviceCatalogSomeNotFound;
 
-  /// No description provided for @catalogTabServices.
-  ///
-  /// In en, this message translates to:
-  /// **'Services'**
-  String get catalogTabServices;
-
-  /// No description provided for @catalogTabCategories.
-  ///
-  /// In en, this message translates to:
-  /// **'Categories'**
-  String get catalogTabCategories;
-
-  /// No description provided for @catalogTabUnits.
-  ///
-  /// In en, this message translates to:
-  /// **'Units'**
-  String get catalogTabUnits;
-
-  /// No description provided for @addCategory.
-  ///
-  /// In en, this message translates to:
-  /// **'Add category'**
-  String get addCategory;
-
-  /// No description provided for @addUnit.
-  ///
-  /// In en, this message translates to:
-  /// **'Add unit'**
-  String get addUnit;
-
   /// No description provided for @searchCategoriesHint.
   ///
   /// In en, this message translates to:
@@ -1675,12 +1627,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search name or abbreviation'**
   String get searchUnitsHint;
-
-  /// No description provided for @allCategories.
-  ///
-  /// In en, this message translates to:
-  /// **'All categories'**
-  String get allCategories;
 
   /// No description provided for @noMatchesFound.
   ///
@@ -1835,7 +1781,7 @@ abstract class AppLocalizations {
   /// No description provided for @noUnitsToPick.
   ///
   /// In en, this message translates to:
-  /// **'Add a unit under Service catalog → Units first.'**
+  /// **'Add a unit first: Service catalog → + → Manage units.'**
   String get noUnitsToPick;
 
   /// No description provided for @serviceCatalogCategoryNotFound.
@@ -1892,17 +1838,35 @@ abstract class AppLocalizations {
   /// **'Shown as {abbreviation}'**
   String shownAs(String abbreviation);
 
-  /// No description provided for @clearFilter.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear filter'**
-  String get clearFilter;
-
   /// No description provided for @createTitle.
   ///
   /// In en, this message translates to:
   /// **'Create'**
   String get createTitle;
+
+  /// No description provided for @manageCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage categories'**
+  String get manageCategories;
+
+  /// No description provided for @manageUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage units'**
+  String get manageUnits;
+
+  /// No description provided for @categoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoriesTitle;
+
+  /// No description provided for @unitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Units of measure'**
+  String get unitsTitle;
 }
 
 class _AppLocalizationsDelegate

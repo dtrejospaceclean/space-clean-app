@@ -11,30 +11,19 @@ final canManageServicesProvider = Provider<bool>((ref) {
   return auth is Authenticated && ServiceCatalogPolicy.canManage(auth.user);
 });
 
-/// The catalog screen's tabs.
-enum CatalogTab { services, categories, units }
+/// The catalog's three lists (services, categories, units).
+enum CatalogList { services, categories, units }
 
-final catalogTabProvider = NotifierProvider<CatalogTabController, CatalogTab>(
-  CatalogTabController.new,
-);
-
-class CatalogTabController extends Notifier<CatalogTab> {
-  @override
-  CatalogTab build() => CatalogTab.services;
-
-  void select(CatalogTab tab) => state = tab;
-}
-
-/// Each tab's search and filters, kept while switching tabs.
+/// Each list's search and status filter, kept while moving between them.
 final catalogQueryProvider =
-    NotifierProvider.family<CatalogQueryController, CatalogQuery, CatalogTab>(
+    NotifierProvider.family<CatalogQueryController, CatalogQuery, CatalogList>(
       CatalogQueryController.new,
     );
 
 class CatalogQueryController extends Notifier<CatalogQuery> {
-  CatalogQueryController(this.tab);
+  CatalogQueryController(this.list);
 
-  final CatalogTab tab;
+  final CatalogList list;
 
   @override
   CatalogQuery build() => const CatalogQuery();
@@ -43,13 +32,11 @@ class CatalogQueryController extends Notifier<CatalogQuery> {
 
   void status(bool? isActive) =>
       state = state.copyWith(isActive: () => isActive);
-
-  void category(String? id) => state = state.copyWith(categoryId: () => id);
 }
 
 final servicesProvider = FutureProvider<List<ServiceItem>>(
   (ref) => ref.watch(getServicesProvider)(
-    ref.watch(catalogQueryProvider(CatalogTab.services)),
+    ref.watch(catalogQueryProvider(CatalogList.services)),
   ),
 );
 
@@ -59,7 +46,7 @@ final serviceProvider = FutureProvider.family<ServiceItem, String>(
 
 final categoriesProvider = FutureProvider<List<ServiceCategory>>(
   (ref) => ref.watch(getCategoriesProvider)(
-    ref.watch(catalogQueryProvider(CatalogTab.categories)),
+    ref.watch(catalogQueryProvider(CatalogList.categories)),
   ),
 );
 
@@ -69,7 +56,7 @@ final categoryProvider = FutureProvider.family<ServiceCategory, String>(
 
 final unitsProvider = FutureProvider<List<UnitOfMeasure>>(
   (ref) => ref.watch(getUnitsProvider)(
-    ref.watch(catalogQueryProvider(CatalogTab.units)),
+    ref.watch(catalogQueryProvider(CatalogList.units)),
   ),
 );
 

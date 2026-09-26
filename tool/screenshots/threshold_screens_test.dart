@@ -475,26 +475,16 @@ void main() {
     ]);
   });
 
-  // Service catalog: the three tabs, its forms, dark, and Spanish at 200%.
-  Future<void> tab(WidgetTester tester, Finder phone, String label) async {
-    await tester.tap(_in(phone, find.text(label)));
-  }
-
+  // Service catalog: its three lists, its forms, dark, and Spanish at 200%.
   testWidgets('catalog', (tester) async {
     await _sheet(tester, 'catalog', TargetPlatform.iOS, [
       Phone('1 · Services', asOwner: true, location: '/me/services'),
       Phone(
         '2 · Categories',
         asOwner: true,
-        location: '/me/services',
-        act: (tester, phone) => tab(tester, phone, 'Categories'),
+        location: '/me/services/categories',
       ),
-      Phone(
-        '3 · Units',
-        asOwner: true,
-        location: '/me/services',
-        act: (tester, phone) => tab(tester, phone, 'Units'),
-      ),
+      Phone('3 · Units', asOwner: true, location: '/me/services/units'),
       Phone('4 · Edit service', asOwner: true, location: '/me/services/s1'),
       Phone(
         '5 · Category in use',

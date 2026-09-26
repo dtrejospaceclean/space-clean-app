@@ -409,9 +409,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientUserTag => 'Cliente';
 
   @override
-  String get addUser => 'Agregar usuario';
-
-  @override
   String get editUser => 'Editar usuario';
 
   @override
@@ -639,9 +636,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clientStatusActive => 'Activa';
 
   @override
-  String get addAccount => 'Añadir cuenta';
-
-  @override
   String get newAccountTitle => 'Nueva cuenta';
 
   @override
@@ -813,9 +807,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminServicesHint => 'Servicios, categorías y unidades';
 
   @override
-  String get addService => 'Agregar servicio';
-
-  @override
   String get newServiceTitle => 'Nuevo servicio';
 
   @override
@@ -880,28 +871,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Uno de los servicios no existe o está inactivo. Actualiza e inténtalo de nuevo.';
 
   @override
-  String get catalogTabServices => 'Servicios';
-
-  @override
-  String get catalogTabCategories => 'Categorías';
-
-  @override
-  String get catalogTabUnits => 'Unidades';
-
-  @override
-  String get addCategory => 'Agregar categoría';
-
-  @override
-  String get addUnit => 'Agregar unidad';
-
-  @override
   String get searchCategoriesHint => 'Buscar categorías';
 
   @override
   String get searchUnitsHint => 'Buscar por nombre o abreviatura';
-
-  @override
-  String get allCategories => 'Todas las categorías';
 
   @override
   String get noMatchesFound => 'Nada coincide';
@@ -1003,7 +976,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noUnitsToPick =>
-      'Primero agrega una unidad en Catálogo de servicios → Unidades.';
+      'Primero agrega una unidad: Catálogo de servicios → + → Gestionar unidades.';
 
   @override
   String get serviceCatalogCategoryNotFound =>
@@ -1039,8 +1012,17 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get clearFilter => 'Quitar filtro';
+  String get createTitle => 'Crear';
 
   @override
-  String get createTitle => 'Crear';
+  String get manageCategories => 'Gestionar categorías';
+
+  @override
+  String get manageUnits => 'Gestionar unidades';
+
+  @override
+  String get categoriesTitle => 'Categorías';
+
+  @override
+  String get unitsTitle => 'Unidades de medida';
 }

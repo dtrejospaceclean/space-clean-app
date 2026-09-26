@@ -200,7 +200,6 @@
   "noUsersFoundHint": "Try another name or filter.",
   "inactiveTag": "Inactive",
   "clientUserTag": "Client",
-  "addUser": "Add user",
   "editUser": "Edit user",
   "newUserTitle": "New user",
   "saveButton": "Save",
@@ -298,7 +297,6 @@
   "comingSoonLong": "Coming soon",
   "openSection": "Open",
   "clientStatusActive": "Active",
-  "addAccount": "Add account",
   "newAccountTitle": "New account",
   "editAccount": "Edit account",
   "sectionGeneral": "General",
@@ -358,7 +356,6 @@
   },
   "servicesTitle": "Service catalog",
   "adminServicesHint": "Services, categories and units",
-  "addService": "Add service",
   "newServiceTitle": "New service",
   "editServiceTitle": "Edit service",
   "searchServicesHint": "Search name or category",
@@ -385,14 +382,8 @@
   "serviceInactiveHelp": "Inactive services stay on existing proposals and scopes, but can't be picked for new ones.",
   "serviceCatalogNotFound": "This service no longer exists.",
   "serviceCatalogSomeNotFound": "One of the services is unknown or inactive. Refresh and try again.",
-  "catalogTabServices": "Services",
-  "catalogTabCategories": "Categories",
-  "catalogTabUnits": "Units",
-  "addCategory": "Add category",
-  "addUnit": "Add unit",
   "searchCategoriesHint": "Search categories",
   "searchUnitsHint": "Search name or abbreviation",
-  "allCategories": "All categories",
   "noMatchesFound": "Nothing matches",
   "noMatchesHint": "Try another search or filter.",
   "noCategoriesYet": "No categories yet",
@@ -432,7 +423,7 @@
     }
   },
   "lookupNameTaken": "Another one already has this name.",
-  "noUnitsToPick": "Add a unit under Service catalog → Units first.",
+  "noUnitsToPick": "Add a unit first: Service catalog → + → Manage units.",
   "serviceCatalogCategoryNotFound": "This category was removed or set to inactive. Pick another.",
   "serviceCatalogUnitNotFound": "This unit was removed or set to inactive. Pick another.",
   "serviceCategoriesNotFound": "This category no longer exists.",
@@ -449,6 +440,9 @@
       }
     }
   },
-  "clearFilter": "Clear filter",
-  "createTitle": "Create"
+  "createTitle": "Create",
+  "manageCategories": "Manage categories",
+  "manageUnits": "Manage units",
+  "categoriesTitle": "Categories",
+  "unitsTitle": "Units of measure"
 }

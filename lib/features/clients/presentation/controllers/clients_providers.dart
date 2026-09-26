@@ -66,12 +66,6 @@ User? _signedIn(Ref ref) => switch (ref.watch(authControllerProvider).value) {
   _ => null,
 };
 
-/// Whether the signed-in user may add accounts (owners, account managers).
-final canCreateAccountsProvider = Provider<bool>((ref) {
-  final user = _signedIn(ref);
-  return user != null && AccountAdminPolicy.canCreate(user);
-});
-
 /// Whether they may delete accounts (owners).
 final canDeleteAccountsProvider = Provider<bool>((ref) {
   final user = _signedIn(ref);

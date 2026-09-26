@@ -51,20 +51,11 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
     final l10n = AppLocalizations.of(context);
     final users = ref.watch(usersProvider);
     final query = ref.watch(userQueryProvider);
-    final canEdit = ref.watch(canEditUsersProvider);
     Future<void> refresh() => ref.refresh(usersProvider.future);
 
     return SpacePage(
       title: l10n.usersTitle,
       onRefresh: refresh,
-      actions: [
-        if (canEdit)
-          CircleButton.dark(
-            icon: Icons.add_rounded,
-            tooltip: l10n.addUser,
-            onPressed: () => context.push('${UsersScreen.path}/new'),
-          ),
-      ],
       slivers: [
         PageBox(
           top: 4,

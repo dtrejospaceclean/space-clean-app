@@ -326,7 +326,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 - **Circle buttons:** 44px circles inside a 48px target, with 22px rounded icons. Primary Orange with a white icon (4.55:1) is for the screen's main add or edit action (the class is still `CircleButton.dark`). Its fill measures 4.05:1 against the ground. White with an ink icon is for back and secondary actions. Every one has a tooltip and a semantic label.
 
 ### Chips / Pills
-- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a Primary Orange pill with white 14px/700 text (4.55:1), and idle options are transparent with Muted Ink text. Used for the language toggle, section tabs (the service catalog's Services / Categories / Units), and list status filters (Active / Inactive / All). A status filter under full-width tabs is compact (`expand: false`) so the two don't read as equals, and goes full width at large text sizes. When text is too large for a pill, its label scales down to show the whole word instead of cutting it off.
+- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a Primary Orange pill with white 14px/700 text (4.55:1), and idle options are transparent with Muted Ink text. Used for the language and appearance toggles and for list status filters (Active / Inactive / All). When text is too large for a pill, its label scales down to show the whole word instead of cutting it off.
 - **Choice pills** (multi-select): pills at least 44px tall, sunken with ink text when idle, and Primary Orange with a white check when selected. Used to pick roles.
 - **Status pill:** a wash fill with a matching icon and 12.5px/700 label in that hue's ink tone. The pairs are Logo Navy on Navy Wash for Scheduled (7.82:1), Orange Ink on Orange Wash for In progress (5.64:1), Success Ink on Success Wash for Completed (6.12:1), and Muted Ink on Sunken for Cancelled (5.39:1). The icon is always present, so status never depends on color alone.
 
@@ -345,9 +345,16 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 
 ### Navigation
 - **Bottom bar (tab dock):** modeled on `docs/new_screen.png`. A floating white pill (60px tall, 6px inner padding) rests on the ground, inset 20px from the sides and tucked 8px into the home-indicator inset (16px from the edge when there is none). It is flat, per the No-Shadow Rule, and page content stops above it. The tabs share the width equally and are **icons only** (26px): an owner decision for this reference, made on 2026-09-26, that overrides the "icons paired with labels" guidance for the dock. Each tab still has a tooltip on long press and a screen-reader label. The current tab sits in a 48px Orange Wash pill with a filled Orange Ink icon (Wash Ink Rule). Idle tabs use outlined Muted Ink icons. The pill fades between tabs over 200ms, instantly when the OS asks for reduced motion. Tabs are Today, Accounts, and Me.
-- **Create button:** a 60px Primary Orange circle with a white "+" beside the dock, 10px away. It opens a native choice sheet ("Create") listing only what the user may create (New account, New service, New user). With a single option, it opens that form directly. It is hidden for people who can create nothing (crew, supervisors, clients). The screens' own header "+" buttons stay.
+- **Plus button:** a 60px Primary Orange circle with a white "+", 10px beside the dock. It is the only "+" in the app; screens have no header "+". What it offers follows the page on top, limited to what the user may do:
+  - Accounts: New account.
+  - Users: New user.
+  - Service catalog: New service, Manage categories, Manage units.
+  - Categories: New category. Units: New unit.
+  - Forms and editors: hidden.
+  - Any other page: everything the user may create (New account, New service, New user).
+
+  With one option it opens that form directly; with several it opens a native choice sheet titled "Create". It hides when nothing is allowed (crew, supervisors and clients on most pages).
 - **Search field** (users list): a white pill on the ground with a 1px Soft Ink outline (3.64:1 against the ground), a Muted Ink search icon and hint, and a 2px Primary Orange border on focus.
-- **Filter pill** (`FilterPill`, service catalog): a 48px white pill under a search field with the same 1px Soft Ink outline, a Muted Ink leading icon, and the current choice. With no filter applied, it reads "All categories" in 500 Muted Ink with a chevron. Once a choice is applied, the value turns 700 ink and a clear button replaces the chevron. It is not a form field, so it has no label above it.
 - **Header:** the page title plus round action buttons. Pushed screens start with a white back circle, and the native back gesture still works.
 
 ### Signature: Two-Tone Hero

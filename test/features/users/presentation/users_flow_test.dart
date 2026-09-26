@@ -43,7 +43,7 @@ void main() {
 
     expect(find.text('Ana Pérez'), findsOneWidget);
     expect(find.text('Luis Gómez'), findsNothing);
-    expect(find.byTooltip('Add user'), findsOneWidget);
+    expect(find.byTooltip('Create'), findsOneWidget);
 
     await tester.tap(find.text('Inactive'));
     await tester.pumpAndSettle();
@@ -104,7 +104,7 @@ void main() {
   testWidgets('account managers can look but not change', (tester) async {
     await openUsers(tester, accountManager);
 
-    expect(find.byTooltip('Add user'), findsNothing);
+    expect(find.byTooltip('Create'), findsNothing);
     await tester.tap(find.text('Ana Pérez'));
     await tester.pumpAndSettle();
 
@@ -122,7 +122,7 @@ void main() {
     final users = FakeUsersRepository();
     await openUsers(tester, owner, users: users);
 
-    await tester.tap(find.byTooltip('Add user'));
+    await tester.tap(find.byTooltip('Create'));
     await tester.pumpAndSettle();
     await tester.enterText(field('Full name'), 'Rosa Vega');
     await tester.enterText(field('Email'), 'rosa@example.com');
@@ -153,7 +153,7 @@ void main() {
       ..createError = const ServerFailure('users.email_taken', statusCode: 409);
     await openUsers(tester, owner, users: users);
 
-    await tester.tap(find.byTooltip('Add user'));
+    await tester.tap(find.byTooltip('Create'));
     await tester.pumpAndSettle();
     await tester.enterText(field('Full name'), 'Rosa Vega');
     await tester.enterText(field('Email'), 'ana@example.com');

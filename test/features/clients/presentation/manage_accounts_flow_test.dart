@@ -46,13 +46,13 @@ void main() {
   ) async {
     await openAccounts(tester, ana);
 
-    expect(find.byTooltip('Add account'), findsNothing);
+    expect(find.byTooltip('Create'), findsNothing);
   });
 
   testWidgets('an owner creates an account and lands on it', (tester) async {
     final clients = await openAccounts(tester, owner);
 
-    await tester.tap(find.byTooltip('Add account'));
+    await tester.tap(find.byTooltip('Create'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
@@ -81,7 +81,7 @@ void main() {
   ) async {
     final clients = await openAccounts(tester, accountManager);
 
-    await tester.tap(find.byTooltip('Add account'));
+    await tester.tap(find.byTooltip('Create'));
     await tester.pumpAndSettle();
     await tester.enterText(field('Legal name'), 'Clínica Sur S.C.');
     await tester.tap(find.text('Save'));
@@ -92,7 +92,7 @@ void main() {
 
     await tester.tap(find.text('Done'));
     await tester.pumpAndSettle();
-    expect(find.byTooltip('Add account'), findsOneWidget);
+    expect(find.byTooltip('Create'), findsOneWidget);
   });
 
   testWidgets('an owner edits an account\'s details', (tester) async {

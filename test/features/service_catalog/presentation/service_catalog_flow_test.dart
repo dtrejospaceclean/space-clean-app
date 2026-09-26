@@ -25,15 +25,21 @@ Future<FakeServiceCatalogRepository> openCatalog(
   return services;
 }
 
-/// Opens the picker field showing [text] (its label or value) and chooses
-/// [option] in the sheet.
-Future<void> pick(WidgetTester tester, String text, String option) async {
-  // A form's PickerField, or a list's FilterPill.
+/// Taps "+" beside the tab dock and, when it offers several, [option].
+Future<void> plus(WidgetTester tester, [String? option]) async {
+  await tester.tap(find.byTooltip('Create'));
+  await tester.pumpAndSettle();
+  if (option != null) {
+    await tester.tap(find.text(option).last);
+    await tester.pumpAndSettle();
+  }
+}
+
+/// Opens the form picker field labeled [label] and chooses [option].
+Future<void> pick(WidgetTester tester, String label, String option) async {
   final picker = find.ancestor(
-    of: find.text(text).last,
-    matching: find.byWidgetPredicate(
-      (w) => w is PickerField || w is FilterPill,
-    ),
+    of: find.text(label).last,
+    matching: find.byType(PickerField),
   );
   await tester.ensureVisible(picker);
   await tester.pumpAndSettle();
@@ -80,27 +86,29 @@ void main() {
       expect(find.text('per Visit'), findsOneWidget);
     });
 
-    testWidgets('filters by category', (tester) async {
+    testWidgets('the list has no tabs or category filter', (tester) async {
       await openCatalog(tester, owner);
 
-      await pick(tester, 'All categories', 'Floor care');
-      expect(find.text('Office cleaning'), findsNothing);
-      expect(find.text('Nothing matches'), findsOneWidget);
+      expect(find.text('Categories'), findsNothing);
+      expect(find.text('All categories'), findsNothing);
+      expect(find.byType(PickerField), findsNothing);
+    });
 
-      await pick(tester, 'Floor care', 'Janitorial');
-      expect(find.text('Office cleaning'), findsOneWidget);
+    testWidgets('+ offers a new service, categories and units', (tester) async {
+      await openCatalog(tester, accountManager);
+      await plus(tester);
 
-      // Clearing shows every category again.
-      await tester.tap(find.byTooltip('Clear filter'));
-      await tester.pumpAndSettle();
-      expect(find.text('All categories'), findsOneWidget);
+      expect(find.text('New service'), findsOneWidget);
+      expect(find.text('Manage categories'), findsOneWidget);
+      expect(find.text('Manage units'), findsOneWidget);
+      // Only this page's options, not the general ones.
+      expect(find.text('New account'), findsNothing);
     });
 
     testWidgets('adds a service with a category and a unit', (tester) async {
       final services = await openCatalog(tester, accountManager);
 
-      await tester.tap(find.byTooltip('Add service'));
-      await tester.pumpAndSettle();
+      await plus(tester, 'New service');
       // A new service starts active; there's no status to pick.
       expect(find.text('Status'), findsNothing);
 
@@ -122,8 +130,7 @@ void main() {
       tester,
     ) async {
       final services = await openCatalog(tester, owner);
-      await tester.tap(find.byTooltip('Add service'));
-      await tester.pumpAndSettle();
+      await plus(tester, 'New service');
 
       await tester.enterText(field('Default price per unit'), '1.234');
       await tester.tap(find.text('Save'));
@@ -140,15 +147,14 @@ void main() {
         owner,
         services: FakeServiceCatalogRepository(services: [], units: []),
       );
-      await tester.tap(find.byTooltip('Add service'));
-      await tester.pumpAndSettle();
+      await plus(tester, 'New service');
 
       await tester.enterText(field('Name'), 'Carpet shampoo');
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
       expect(
-        find.text('Add a unit under Service catalog → Units first.'),
+        find.text('Add a unit first: Service catalog → + → Manage units.'),
         findsOneWidget,
       );
     });
@@ -182,8 +188,8 @@ void main() {
       WidgetTester tester,
     ) async {
       final services = await openCatalog(tester, accountManager);
-      await tester.tap(find.text('Categories'));
-      await tester.pumpAndSettle();
+      await plus(tester, 'Manage categories');
+      expect(find.text('Categories'), findsOneWidget);
       return services;
     }
 
@@ -201,8 +207,8 @@ void main() {
     testWidgets('adds one', (tester) async {
       final services = await openCategories(tester);
 
-      await tester.tap(find.byTooltip('Add category'));
-      await tester.pumpAndSettle();
+      // One option here, so + opens the form directly.
+      await plus(tester);
       await tester.enterText(field('Name'), 'Windows');
       await tester.enterText(field('Description'), 'Inside and out');
       await tester.tap(find.text('Save'));
@@ -249,8 +255,7 @@ void main() {
   group('units', () {
     testWidgets('list with abbreviation, and edit one', (tester) async {
       final services = await openCatalog(tester, owner);
-      await tester.tap(find.text('Units'));
-      await tester.pumpAndSettle();
+      await plus(tester, 'Manage units');
 
       expect(find.text('Shown as sq ft'), findsOneWidget);
       expect(find.text('Shown as hr'), findsOneWidget);
@@ -270,11 +275,9 @@ void main() {
     testWidgets('a duplicate name shows on the name field', (tester) async {
       final services = _DuplicateNames();
       await openCatalog(tester, owner, services: services);
-      await tester.tap(find.text('Units'));
-      await tester.pumpAndSettle();
+      await plus(tester, 'Manage units');
 
-      await tester.tap(find.byTooltip('Add unit'));
-      await tester.pumpAndSettle();
+      await plus(tester);
       await tester.enterText(field('Name'), 'Hour');
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();

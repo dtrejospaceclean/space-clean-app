@@ -406,9 +406,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientUserTag => 'Client';
 
   @override
-  String get addUser => 'Add user';
-
-  @override
   String get editUser => 'Edit user';
 
   @override
@@ -633,9 +630,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clientStatusActive => 'Active';
 
   @override
-  String get addAccount => 'Add account';
-
-  @override
   String get newAccountTitle => 'New account';
 
   @override
@@ -804,9 +798,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminServicesHint => 'Services, categories and units';
 
   @override
-  String get addService => 'Add service';
-
-  @override
   String get newServiceTitle => 'New service';
 
   @override
@@ -870,28 +861,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'One of the services is unknown or inactive. Refresh and try again.';
 
   @override
-  String get catalogTabServices => 'Services';
-
-  @override
-  String get catalogTabCategories => 'Categories';
-
-  @override
-  String get catalogTabUnits => 'Units';
-
-  @override
-  String get addCategory => 'Add category';
-
-  @override
-  String get addUnit => 'Add unit';
-
-  @override
   String get searchCategoriesHint => 'Search categories';
 
   @override
   String get searchUnitsHint => 'Search name or abbreviation';
-
-  @override
-  String get allCategories => 'All categories';
 
   @override
   String get noMatchesFound => 'Nothing matches';
@@ -992,7 +965,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lookupNameTaken => 'Another one already has this name.';
 
   @override
-  String get noUnitsToPick => 'Add a unit under Service catalog → Units first.';
+  String get noUnitsToPick =>
+      'Add a unit first: Service catalog → + → Manage units.';
 
   @override
   String get serviceCatalogCategoryNotFound =>
@@ -1028,8 +1002,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get clearFilter => 'Clear filter';
+  String get createTitle => 'Create';
 
   @override
-  String get createTitle => 'Create';
+  String get manageCategories => 'Manage categories';
+
+  @override
+  String get manageUnits => 'Manage units';
+
+  @override
+  String get categoriesTitle => 'Categories';
+
+  @override
+  String get unitsTitle => 'Units of measure';
 }

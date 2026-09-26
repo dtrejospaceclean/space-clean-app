@@ -216,28 +216,41 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                         builder: (_, _) => const ServiceFormScreen(),
                       ),
                       GoRoute(
-                        path: 'categories/new',
-                        builder: (_, _) =>
-                            const LookupFormScreen(kind: LookupKind.category),
+                        path: 'categories',
+                        builder: (_, _) => const CategoriesScreen(),
+                        routes: [
+                          GoRoute(
+                            path: 'new',
+                            builder: (_, _) => const LookupFormScreen(
+                              kind: LookupKind.category,
+                            ),
+                          ),
+                          GoRoute(
+                            path: ':id',
+                            builder: (_, state) => LookupFormScreen(
+                              kind: LookupKind.category,
+                              id: state.pathParameters['id'],
+                            ),
+                          ),
+                        ],
                       ),
                       GoRoute(
-                        path: 'categories/:id',
-                        builder: (_, state) => LookupFormScreen(
-                          kind: LookupKind.category,
-                          id: state.pathParameters['id'],
-                        ),
-                      ),
-                      GoRoute(
-                        path: 'units/new',
-                        builder: (_, _) =>
-                            const LookupFormScreen(kind: LookupKind.unit),
-                      ),
-                      GoRoute(
-                        path: 'units/:id',
-                        builder: (_, state) => LookupFormScreen(
-                          kind: LookupKind.unit,
-                          id: state.pathParameters['id'],
-                        ),
+                        path: 'units',
+                        builder: (_, _) => const UnitsScreen(),
+                        routes: [
+                          GoRoute(
+                            path: 'new',
+                            builder: (_, _) =>
+                                const LookupFormScreen(kind: LookupKind.unit),
+                          ),
+                          GoRoute(
+                            path: ':id',
+                            builder: (_, state) => LookupFormScreen(
+                              kind: LookupKind.unit,
+                              id: state.pathParameters['id'],
+                            ),
+                          ),
+                        ],
                       ),
                       GoRoute(
                         path: ':serviceId',

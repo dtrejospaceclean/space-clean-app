@@ -10,55 +10,60 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/service_item.dart';
 import '../controllers/service_catalog_providers.dart';
 
-/// The company-wide catalog in three tabs: services, the categories that
-/// group them, and the units they're priced in. Each tab has its own search
-/// and status filter; services also filter by category.
-class ServicesScreen extends ConsumerWidget {
+/// The company-wide service catalog, grouped by category. Adding a service
+/// and managing categories and units live in the tab dock's "+".
+class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
   static const path = '/me/services';
-  static const categoriesPath = '$path/categories';
-  static const unitsPath = '$path/units';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final tab = ref.watch(catalogTabProvider);
-    final canManage = ref.watch(canManageServicesProvider);
-    final (addLabel, addPath) = switch (tab) {
-      CatalogTab.services => (l10n.addService, path),
-      CatalogTab.categories => (l10n.addCategory, categoriesPath),
-      CatalogTab.units => (l10n.addUnit, unitsPath),
-    };
-
-    return _CatalogTab(
-      key: ValueKey(tab),
-      tab: tab,
-      actions: [
-        if (canManage)
-          CircleButton.dark(
-            icon: Icons.add_rounded,
-            tooltip: addLabel,
-            onPressed: () => context.push('$addPath/new'),
-          ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => _CatalogPage(
+    list: CatalogList.services,
+    title: AppLocalizations.of(context).servicesTitle,
+  );
 }
 
-class _CatalogTab extends ConsumerStatefulWidget {
-  const _CatalogTab({super.key, required this.tab, required this.actions});
+/// The categories that group the catalog; "+" in the tab dock adds one.
+class CategoriesScreen extends StatelessWidget {
+  const CategoriesScreen({super.key});
 
-  final CatalogTab tab;
-  final List<Widget> actions;
+  static const path = '${ServicesScreen.path}/categories';
 
   @override
-  ConsumerState<_CatalogTab> createState() => _CatalogTabState();
+  Widget build(BuildContext context) => _CatalogPage(
+    list: CatalogList.categories,
+    title: AppLocalizations.of(context).categoriesTitle,
+  );
 }
 
-class _CatalogTabState extends ConsumerState<_CatalogTab> {
+/// The units services are priced in; "+" in the tab dock adds one.
+class UnitsScreen extends StatelessWidget {
+  const UnitsScreen({super.key});
+
+  static const path = '${ServicesScreen.path}/units';
+
+  @override
+  Widget build(BuildContext context) => _CatalogPage(
+    list: CatalogList.units,
+    title: AppLocalizations.of(context).unitsTitle,
+  );
+}
+
+/// One catalog list: a search, an Active / Inactive / All filter, the rows.
+class _CatalogPage extends ConsumerStatefulWidget {
+  const _CatalogPage({required this.list, required this.title});
+
+  final CatalogList list;
+  final String title;
+
+  @override
+  ConsumerState<_CatalogPage> createState() => _CatalogPageState();
+}
+
+class _CatalogPageState extends ConsumerState<_CatalogPage> {
   late final _search = TextEditingController(
-    text: ref.read(catalogQueryProvider(widget.tab)).search,
+    text: ref.read(catalogQueryProvider(widget.list)).search,
   );
   Timer? _debounce;
 
@@ -66,7 +71,7 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
   bool _pending = false;
 
   CatalogQueryController get _query =>
-      ref.read(catalogQueryProvider(widget.tab).notifier);
+      ref.read(catalogQueryProvider(widget.list).notifier);
 
   @override
   void dispose() {
@@ -84,123 +89,69 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
     });
   }
 
-  Future<void> _pickCategory() async {
-    final l10n = AppLocalizations.of(context);
-    final categories = await ref.read(activeCategoriesProvider.future);
-    if (!mounted) return;
-    final current = ref.read(catalogQueryProvider(widget.tab)).categoryId;
-    final picked = await showAppChoice(
-      context,
-      title: l10n.serviceCategoryLabel,
-      allowClear: current != null,
-      options: {for (final c in categories) c.id: c.name},
-    );
-    if (picked != null) _query.category(picked.isEmpty ? null : picked);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final tab = widget.tab;
-    final query = ref.watch(catalogQueryProvider(tab));
+    final list = widget.list;
+    final query = ref.watch(catalogQueryProvider(list));
     final canManage = ref.watch(canManageServicesProvider);
-    final loading = switch (tab) {
-      CatalogTab.services => ref.watch(servicesProvider).isLoading,
-      CatalogTab.categories => ref.watch(categoriesProvider).isLoading,
-      CatalogTab.units => ref.watch(unitsProvider).isLoading,
+    final loading = switch (list) {
+      CatalogList.services => ref.watch(servicesProvider).isLoading,
+      CatalogList.categories => ref.watch(categoriesProvider).isLoading,
+      CatalogList.units => ref.watch(unitsProvider).isLoading,
     };
-    Future<void> refresh() => switch (tab) {
-      CatalogTab.services => ref.refresh(servicesProvider.future),
-      CatalogTab.categories => ref.refresh(categoriesProvider.future),
-      CatalogTab.units => ref.refresh(unitsProvider.future),
-    };
-    // The applied category's name: from the pickable (active) ones, or from
-    // the services it matched if it was retired since.
-    final categoryName = switch (query.categoryId) {
-      final id? => [
-        ...?ref.watch(activeCategoriesProvider).value,
-        ...?ref.watch(servicesProvider).value?.map((s) => s.category).nonNulls,
-      ].where((c) => c.id == id).firstOrNull?.name,
-      null => null,
+    Future<void> refresh() => switch (list) {
+      CatalogList.services => ref.refresh(servicesProvider.future),
+      CatalogList.categories => ref.refresh(categoriesProvider.future),
+      CatalogList.units => ref.refresh(unitsProvider.future),
     };
 
     return SpacePage(
-      title: l10n.servicesTitle,
+      title: widget.title,
       onRefresh: refresh,
-      actions: widget.actions,
       slivers: [
         PageBox(
           top: 4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PillToggle<CatalogTab>(
-                options: {
-                  CatalogTab.services: l10n.catalogTabServices,
-                  CatalogTab.categories: l10n.catalogTabCategories,
-                  CatalogTab.units: l10n.catalogTabUnits,
-                },
-                selected: tab,
-                onChanged: ref.read(catalogTabProvider.notifier).select,
-              ),
-              const SizedBox(height: 20),
               SearchField(
                 controller: _search,
-                hint: switch (tab) {
-                  CatalogTab.services => l10n.searchServicesHint,
-                  CatalogTab.categories => l10n.searchCategoriesHint,
-                  CatalogTab.units => l10n.searchUnitsHint,
+                hint: switch (list) {
+                  CatalogList.services => l10n.searchServicesHint,
+                  CatalogList.categories => l10n.searchCategoriesHint,
+                  CatalogList.units => l10n.searchUnitsHint,
                 },
                 onChanged: _onSearch,
                 // From the first keystroke until the results are in.
                 busy: _pending || loading,
               ),
-              if (tab == CatalogTab.services) ...[
-                const SizedBox(height: 10),
-                FilterPill(
-                  icon: Icons.category_outlined,
-                  label: l10n.serviceCategoryLabel,
-                  value: query.categoryId == null
-                      ? l10n.allCategories
-                      : categoryName ?? l10n.serviceCategoryLabel,
-                  onTap: _pickCategory,
-                  onClear: query.categoryId == null
-                      ? null
-                      : () => _query.category(null),
-                ),
-              ],
               const SizedBox(height: 12),
-              // Compact, so it reads as a filter under the full-width tabs;
-              // full width once large text wouldn't fit compact.
-              Align(
-                alignment: Alignment.centerLeft,
-                child: PillToggle<bool?>(
-                  expand: MediaQuery.textScalerOf(context).scale(10) > 13,
-                  semanticLabel: l10n.accountStatusLabel,
-                  options: {
-                    true: l10n.filterActive,
-                    false: l10n.filterInactive,
-                    null: l10n.filterAll,
-                  },
-                  selected: query.isActive,
-                  onChanged: _query.status,
-                ),
+              PillToggle<bool?>(
+                semanticLabel: l10n.accountStatusLabel,
+                options: {
+                  true: l10n.filterActive,
+                  false: l10n.filterInactive,
+                  null: l10n.filterAll,
+                },
+                selected: query.isActive,
+                onChanged: _query.status,
               ),
             ],
           ),
         ),
-        switch (tab) {
-          CatalogTab.services => _ServicesList(
+        switch (list) {
+          CatalogList.services => _ServicesList(
             query: query,
             canManage: canManage,
             onRetry: refresh,
           ),
-          CatalogTab.categories => _CategoriesList(
+          CatalogList.categories => _CategoriesList(
             query: query,
             canManage: canManage,
             onRetry: refresh,
           ),
-          CatalogTab.units => _UnitsList(
+          CatalogList.units => _UnitsList(
             query: query,
             canManage: canManage,
             onRetry: refresh,
@@ -213,7 +164,7 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
 
 /// No search and the default filters: the list itself is empty.
 bool _unfiltered(CatalogQuery q) =>
-    q.search.trim().isEmpty && q.isActive == true && q.categoryId == null;
+    q.search.trim().isEmpty && q.isActive == true;
 
 /// What an empty list says: "nothing yet" (with how to start, for those who
 /// can add) or "nothing matches".
@@ -392,7 +343,7 @@ class _CategoriesList extends ConsumerWidget {
                   ),
                   onTap: canManage
                       ? () => context.push(
-                          '${ServicesScreen.categoriesPath}/${category.id}',
+                          '${CategoriesScreen.path}/${category.id}',
                         )
                       : null,
                 ),
@@ -447,9 +398,7 @@ class _UnitsList extends ConsumerWidget {
                     isActive: unit.isActive,
                   ),
                   onTap: canManage
-                      ? () => context.push(
-                          '${ServicesScreen.unitsPath}/${unit.id}',
-                        )
+                      ? () => context.push('${UnitsScreen.path}/${unit.id}')
                       : null,
                 ),
             ],
