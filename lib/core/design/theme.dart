@@ -9,6 +9,10 @@ import 'tokens.dart';
 abstract final class SpaceTheme {
   static const font = 'Manrope';
 
+  /// App-wide text size, applied on top of the user's system text scale so
+  /// accessibility sizing still works.
+  static const textScale = 0.88;
+
   static ThemeData light() => _build(SpaceColors.light, Brightness.light);
 
   static ThemeData dark() => _build(SpaceColors.dark, Brightness.dark);

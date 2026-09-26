@@ -19,10 +19,12 @@ import '../../features/password_reset/presentation/screens/reset_done_screen.dar
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/shell/presentation/app_shell.dart';
+import '../../features/shell/presentation/branch_container.dart';
 import '../../features/users/presentation/screens/roles_screen.dart';
 import '../../features/users/presentation/screens/user_detail_screen.dart';
 import '../../features/users/presentation/screens/user_form_screen.dart';
 import '../../features/users/presentation/screens/users_screen.dart';
+import 'transitions.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Bridges auth state into go_router so redirects re-run on login/logout.
@@ -52,11 +54,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       };
     },
     routes: [
-      GoRoute(path: SplashScreen.path, builder: (_, _) => const SplashScreen()),
+      GoRoute(
+        path: SplashScreen.path,
+        pageBuilder: (_, state) => fadePage(state, const SplashScreen()),
+      ),
       GoRoute(
         path: LoginScreen.path,
-        builder: (_, state) =>
-            LoginScreen(prefillEmail: state.uri.queryParameters['email']),
+        pageBuilder: (_, state) => fadePage(
+          state,
+          LoginScreen(prefillEmail: state.uri.queryParameters['email']),
+        ),
         routes: [
           GoRoute(
             path: 'forgot',
@@ -75,8 +82,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
       // Signed-in app: one navigation stack per tab.
-      StatefulShellRoute.indexedStack(
-        builder: (_, _, shell) => AppShell(navigationShell: shell),
+      StatefulShellRoute(
+        pageBuilder: (_, state, shell) =>
+            fadePage(state, AppShell(navigationShell: shell)),
+        navigatorContainerBuilder: (_, shell, children) => FadeBranchContainer(
+          currentIndex: shell.currentIndex,
+          children: children,
+        ),
         branches: [
           StatefulShellBranch(
             routes: [
