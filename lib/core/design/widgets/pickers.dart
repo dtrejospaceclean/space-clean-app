@@ -9,9 +9,10 @@ import '../../widgets/adaptive.dart';
 
 /// Lets the user pick one of [options]; returns the chosen value, or `null`
 /// when dismissed. [allowClear] adds a "Not set" choice returning `''`.
+/// [title] is optional: a menu whose options name themselves needs none.
 Future<String?> showAppChoice(
   BuildContext context, {
-  required String title,
+  String? title,
   required Map<String, String> options,
   bool allowClear = true,
 }) {
@@ -20,7 +21,7 @@ Future<String?> showAppChoice(
     return showCupertinoModalPopup<String>(
       context: context,
       builder: (context) => CupertinoActionSheet(
-        title: Text(title),
+        title: title == null ? null : Text(title),
         actions: [
           for (final MapEntry(:key, :value) in options.entries)
             CupertinoActionSheetAction(
@@ -47,10 +48,14 @@ Future<String?> showAppChoice(
       child: ListView(
         shrinkWrap: true,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
-            child: Text(title, style: Theme.of(context).textTheme.titleMedium),
-          ),
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
           for (final MapEntry(:key, :value) in options.entries)
             ListTile(
               title: Text(value),

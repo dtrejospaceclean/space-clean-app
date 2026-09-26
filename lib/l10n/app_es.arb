@@ -287,12 +287,12 @@
   "serviceCategoriesInUse": "Hay servicios que usan esta categoría, así que no se puede eliminar. Márcala como inactiva.",
   "unitsOfMeasureNotFound": "Esta unidad ya no existe.",
   "unitsOfMeasureInUse": "Hay servicios que usan esta unidad, así que no se puede eliminar. Márcala como inactiva.",
-  "noCategoryGroup": "Sin categoría",
   "noDefaultPrice": "Sin precio",
   "shownAs": "Se muestra como {abbreviation}",
   "createTitle": "Crear",
   "manageCategories": "Gestionar categorías",
   "manageUnits": "Gestionar unidades",
   "categoriesTitle": "Categorías",
-  "unitsTitle": "Unidades de medida"
+  "unitsTitle": "Unidades de medida",
+  "activeTag": "Activo"
 }

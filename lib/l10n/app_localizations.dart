@@ -1820,12 +1820,6 @@ abstract class AppLocalizations {
   /// **'Services still use this unit, so it can\'t be deleted. Set it to Inactive instead.'**
   String get unitsOfMeasureInUse;
 
-  /// No description provided for @noCategoryGroup.
-  ///
-  /// In en, this message translates to:
-  /// **'No category'**
-  String get noCategoryGroup;
-
   /// No description provided for @noDefaultPrice.
   ///
   /// In en, this message translates to:
@@ -1867,6 +1861,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Units of measure'**
   String get unitsTitle;
+
+  /// No description provided for @activeTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get activeTag;
 }
 
 class _AppLocalizationsDelegate

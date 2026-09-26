@@ -9,15 +9,18 @@ abstract final class ServiceCatalogPolicy {
       user.hasAnyRole(const [GlobalRole.owner, GlobalRole.accountManager]);
 }
 
-/// In the API's order: by category, then name.
+/// By name (the API orders by category first).
 class GetServices implements UseCase<List<ServiceItem>, CatalogQuery> {
   const GetServices(this._repository);
 
   final ServiceCatalogRepository _repository;
 
   @override
-  Future<List<ServiceItem>> call(CatalogQuery query) =>
-      _repository.getServices(query);
+  Future<List<ServiceItem>> call(CatalogQuery query) async {
+    final services = await _repository.getServices(query);
+    return [...services]
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  }
 }
 
 class GetService implements UseCase<ServiceItem, String> {

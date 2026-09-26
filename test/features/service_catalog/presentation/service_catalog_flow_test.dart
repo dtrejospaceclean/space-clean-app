@@ -63,27 +63,31 @@ void main() {
   });
 
   group('services', () {
-    testWidgets('lists active services with category and price per unit', (
+    testWidgets('lists every service by name, each marked active or not', (
       tester,
     ) async {
       await openCatalog(tester, accountManager);
 
-      // Grouped under their category, priced per unit.
-      expect(find.text('Janitorial'), findsOneWidget);
+      // One list, active and inactive together: no status filter.
+      expect(find.text('All'), findsNothing);
       expect(find.text('Office cleaning'), findsOneWidget);
-      expect(find.text(r'$0.12'), findsOneWidget);
-      expect(find.text('per sq ft'), findsOneWidget);
-      // Retired ones only under Inactive.
-      expect(find.text('Window washing'), findsNothing);
-
-      await tester.tap(find.text('Inactive'));
-      await tester.pumpAndSettle();
       expect(find.text('Window washing'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Office cleaning')).dy,
+        lessThan(tester.getTopLeft(find.text('Window washing')).dy),
+      );
+
+      expect(find.text('Janitorial · per sq ft'), findsOneWidget);
+      expect(find.text(r'$0.12'), findsOneWidget);
+      expect(find.byTooltip('Active'), findsOneWidget);
       // Uncategorized and unpriced; a unit without an abbreviation shows
       // its name.
-      expect(find.text('No category'), findsOneWidget);
-      expect(find.text('No price'), findsOneWidget);
       expect(find.text('per Visit'), findsOneWidget);
+      expect(find.text('No price'), findsOneWidget);
+      expect(find.byTooltip('Inactive'), findsOneWidget);
+      // Icons, not words.
+      expect(find.text('Active'), findsNothing);
+      expect(find.text('Inactive'), findsNothing);
     });
 
     testWidgets('the list has no tabs or category filter', (tester) async {
@@ -101,6 +105,8 @@ void main() {
       expect(find.text('New service'), findsOneWidget);
       expect(find.text('Manage categories'), findsOneWidget);
       expect(find.text('Manage units'), findsOneWidget);
+      // Just the options, no "Create" heading.
+      expect(find.text('Create'), findsNothing);
       // Only this page's options, not the general ones.
       expect(find.text('New account'), findsNothing);
     });
@@ -122,7 +128,7 @@ void main() {
       expect(services.writes, ['create']);
       expect(services.services.last.category?.id, 'c2');
       expect(find.text('Carpet shampoo'), findsOneWidget);
-      expect(find.text('Floor care'), findsOneWidget);
+      expect(find.text('Floor care · per sq ft'), findsOneWidget);
       expect(find.text(r'$0.30'), findsOneWidget);
     });
 
@@ -178,8 +184,10 @@ void main() {
 
       expect(services.writes, ['update:s1']);
       expect(services.services.first.isActive, isFalse);
-      // Gone from the active list.
-      expect(find.text('Office cleaning'), findsNothing);
+      // Still listed, now marked inactive like Window washing.
+      expect(find.text('Office cleaning'), findsOneWidget);
+      expect(find.byTooltip('Inactive'), findsNWidgets(2));
+      expect(find.byTooltip('Active'), findsNothing);
     });
   });
 

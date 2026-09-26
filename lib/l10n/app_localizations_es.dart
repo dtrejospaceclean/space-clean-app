@@ -1001,9 +1001,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Hay servicios que usan esta unidad, así que no se puede eliminar. Márcala como inactiva.';
 
   @override
-  String get noCategoryGroup => 'Sin categoría';
-
-  @override
   String get noDefaultPrice => 'Sin precio';
 
   @override
@@ -1025,4 +1022,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get unitsTitle => 'Unidades de medida';
+
+  @override
+  String get activeTag => 'Activo';
 }

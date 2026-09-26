@@ -738,6 +738,14 @@ FakeServiceCatalogRepository _demoCatalog() {
         defaultPrice: '6',
       ),
       ServiceItem(id: 's7', name: 'Supply restock', unit: visit),
+      ServiceItem(
+        id: 's8',
+        name: 'Construction dust cleanup',
+        category: special,
+        unit: sqft,
+        defaultPrice: '0.45',
+        isActive: false,
+      ),
     ],
   );
 }

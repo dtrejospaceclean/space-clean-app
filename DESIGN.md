@@ -353,7 +353,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
   - Forms and editors: hidden.
   - Any other page: everything the user may create (New account, New service, New user).
 
-  With one option it opens that form directly; with several it opens a native choice sheet titled "Create". It hides when nothing is allowed (crew, supervisors and clients on most pages).
+  With one option it opens that form directly; with several it opens a native choice sheet with just the options, no heading. It hides when nothing is allowed (crew, supervisors and clients on most pages).
 - **Search field** (users list): a white pill on the ground with a 1px Soft Ink outline (3.64:1 against the ground), a Muted Ink search icon and hint, and a 2px Primary Orange border on focus.
 - **Header:** one row with the page title (or a hero headline) and round action buttons. Pushed screens start the row with a white back circle, and the native back gesture still works.
 

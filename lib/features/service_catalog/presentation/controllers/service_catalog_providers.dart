@@ -25,8 +25,11 @@ class CatalogQueryController extends Notifier<CatalogQuery> {
 
   final CatalogList list;
 
+  /// Services list active and inactive together; the others start on active.
   @override
-  CatalogQuery build() => const CatalogQuery();
+  CatalogQuery build() => list == CatalogList.services
+      ? const CatalogQuery(isActive: null)
+      : const CatalogQuery();
 
   void search(String text) => state = state.copyWith(search: text);
 

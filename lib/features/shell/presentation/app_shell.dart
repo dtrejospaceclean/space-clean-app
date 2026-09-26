@@ -118,7 +118,7 @@ class AppShell extends ConsumerWidget {
         ? options.single.path
         : await showAppChoice(
             context,
-            title: l10n.createTitle,
+            // The options name themselves ("New service", "Manage units").
             allowClear: false,
             options: {for (final o in options) o.path: o.label(l10n)},
           );

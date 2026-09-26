@@ -430,7 +430,6 @@
   "serviceCategoriesInUse": "Services still use this category, so it can't be deleted. Set it to Inactive instead.",
   "unitsOfMeasureNotFound": "This unit no longer exists.",
   "unitsOfMeasureInUse": "Services still use this unit, so it can't be deleted. Set it to Inactive instead.",
-  "noCategoryGroup": "No category",
   "noDefaultPrice": "No price",
   "shownAs": "Shown as {abbreviation}",
   "@shownAs": {
@@ -444,5 +443,6 @@
   "manageCategories": "Manage categories",
   "manageUnits": "Manage units",
   "categoriesTitle": "Categories",
-  "unitsTitle": "Units of measure"
+  "unitsTitle": "Units of measure",
+  "activeTag": "Active"
 }

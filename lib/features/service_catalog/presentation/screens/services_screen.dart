@@ -10,8 +10,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/service_item.dart';
 import '../controllers/service_catalog_providers.dart';
 
-/// The company-wide service catalog, grouped by category. Adding a service
-/// and managing categories and units live in the tab dock's "+".
+/// The company-wide service catalog: every service, active and inactive, in
+/// one list by name. Adding a service and managing categories and units live
+/// in the tab dock's "+".
 class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
@@ -50,7 +51,8 @@ class UnitsScreen extends StatelessWidget {
   );
 }
 
-/// One catalog list: a search, an Active / Inactive / All filter, the rows.
+/// One catalog list: a search, an Active / Inactive / All filter (not on
+/// services), the rows.
 class _CatalogPage extends ConsumerStatefulWidget {
   const _CatalogPage({required this.list, required this.title});
 
@@ -126,17 +128,21 @@ class _CatalogPageState extends ConsumerState<_CatalogPage> {
                 // From the first keystroke until the results are in.
                 busy: _pending || loading,
               ),
-              const SizedBox(height: 12),
-              PillToggle<bool?>(
-                semanticLabel: l10n.accountStatusLabel,
-                options: {
-                  true: l10n.filterActive,
-                  false: l10n.filterInactive,
-                  null: l10n.filterAll,
-                },
-                selected: query.isActive,
-                onChanged: _query.status,
-              ),
+              // Services show active and inactive together, each marked;
+              // categories and units filter by status.
+              if (list != CatalogList.services) ...[
+                const SizedBox(height: 12),
+                PillToggle<bool?>(
+                  semanticLabel: l10n.accountStatusLabel,
+                  options: {
+                    true: l10n.filterActive,
+                    false: l10n.filterInactive,
+                    null: l10n.filterAll,
+                  },
+                  selected: query.isActive,
+                  onChanged: _query.status,
+                ),
+              ],
             ],
           ),
         ),
@@ -162,9 +168,9 @@ class _CatalogPageState extends ConsumerState<_CatalogPage> {
   }
 }
 
-/// No search and the default filters: the list itself is empty.
+/// No search, and not narrowed to inactive: the list itself is empty.
 bool _unfiltered(CatalogQuery q) =>
-    q.search.trim().isEmpty && q.isActive == true;
+    q.search.trim().isEmpty && q.isActive != false;
 
 /// What an empty list says: "nothing yet" (with how to start, for those who
 /// can add) or "nothing matches".
@@ -184,12 +190,21 @@ Widget _empty(
       );
 
 /// The right-hand column of a row: a figure (price, count) in tabular digits,
-/// with an "Inactive" pill under it for retired entries.
+/// with a status icon under it for retired entries (and active ones too with
+/// [showActive]).
 class _Trailing extends StatelessWidget {
-  const _Trailing({required this.value, required this.isActive, this.strong});
+  const _Trailing({
+    required this.value,
+    required this.isActive,
+    this.strong,
+    this.showActive = false,
+  });
 
   final String value;
   final bool isActive;
+
+  /// Also label active entries, where active and retired share one list.
+  final bool showActive;
 
   /// A real figure reads in ink and bold; a placeholder stays muted.
   final bool? strong;
@@ -214,15 +229,40 @@ class _Trailing extends StatelessWidget {
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
         ),
-        if (!isActive) ...[
+        if (!isActive || showActive) ...[
           const SizedBox(height: 4),
-          StatusPill(
-            label: AppLocalizations.of(context).inactiveTag,
-            color: context.colors.inkMuted,
-            background: context.colors.sunken,
-          ),
+          _StatusIcon(isActive: isActive),
         ],
       ],
+    );
+  }
+}
+
+/// Active or inactive as an icon: a filled green check or a muted outlined
+/// minus. The shapes differ, so color isn't the only cue; screen readers
+/// and a long press give the word.
+class _StatusIcon extends StatelessWidget {
+  const _StatusIcon({required this.isActive});
+
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final label = isActive ? l10n.activeTag : l10n.inactiveTag;
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        label: label,
+        excludeSemantics: true,
+        child: Icon(
+          isActive
+              ? Icons.check_circle_rounded
+              : Icons.remove_circle_outline_rounded,
+          size: 20,
+          color: isActive ? context.colors.success : context.colors.inkMuted,
+        ),
+      ),
     );
   }
 }
@@ -255,47 +295,34 @@ class _ServicesList extends ConsumerWidget {
             noneHint: l10n.noServicesYetHint,
           );
         }
-        // Grouped under their category, in the API's order (by category,
-        // then name); uncategorized services come last.
-        final groups = <String?, List<ServiceItem>>{};
-        for (final service in list) {
-          (groups[service.category?.name] ??= []).add(service);
-        }
-        final uncategorized = groups.remove(null);
-        return SliverMainAxisGroup(
-          slivers: [
-            for (final (name, services) in [
-              ...groups.entries.map((e) => (e.key!, e.value)),
-              if (uncategorized != null) (l10n.noCategoryGroup, uncategorized),
-            ]) ...[
-              PageBox(top: 12, child: SectionHeader(title: name)),
-              PageBox(
-                top: 0,
-                child: ListCard(
-                  children: [
-                    for (final service in services)
-                      ListRow(
-                        title: service.name,
-                        subtitle: l10n.perUnit(service.unit.short),
-                        trailing: _Trailing(
-                          value: switch (service.defaultPrice) {
-                            final price? => context.formatMoney(price),
-                            null => l10n.noDefaultPrice,
-                          },
-                          strong: service.defaultPrice != null,
-                          isActive: service.isActive,
-                        ),
-                        onTap: canManage
-                            ? () => context.push(
-                                '${ServicesScreen.path}/${service.id}',
-                              )
-                            : null,
-                      ),
-                  ],
+        return PageBox(
+          child: ListCard(
+            children: [
+              for (final service in list)
+                ListRow(
+                  title: service.name,
+                  // Retired services recede; the icon says which is which.
+                  muted: !service.isActive,
+                  subtitle: [
+                    ?service.category?.name,
+                    l10n.perUnit(service.unit.short),
+                  ].join(' · '),
+                  trailing: _Trailing(
+                    value: switch (service.defaultPrice) {
+                      final price? => context.formatMoney(price),
+                      null => l10n.noDefaultPrice,
+                    },
+                    strong: service.defaultPrice != null,
+                    isActive: service.isActive,
+                    showActive: true,
+                  ),
+                  onTap: canManage
+                      ? () =>
+                            context.push('${ServicesScreen.path}/${service.id}')
+                      : null,
                 ),
-              ),
             ],
-          ],
+          ),
         );
       },
     );
