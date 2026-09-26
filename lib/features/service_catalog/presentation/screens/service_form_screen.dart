@@ -57,66 +57,137 @@ class _ServiceForm extends ConsumerStatefulWidget {
 }
 
 class _ServiceFormState extends ConsumerState<_ServiceForm> {
+  static const _categoryGone = 'service_catalog.category_not_found';
+  static const _unitGone = 'service_catalog.unit_not_found';
+
   final _formKey = GlobalKey<FormState>();
   late final _name = TextEditingController(text: widget.initial?.name);
-  late final _category = TextEditingController(text: widget.initial?.category);
-  late final _unit = TextEditingController(text: widget.initial?.unitOfMeasure);
   late final _price = TextEditingController(text: widget.initial?.defaultPrice);
+  late ServiceCategory? _category = widget.initial?.category;
+  late UnitOfMeasure? _unit = widget.initial?.unit;
   late bool _active = widget.initial?.isActive ?? true;
 
   bool _saving = false;
   Failure? _failure;
 
+  /// Set when Save is tapped without a unit.
+  bool _unitMissing = false;
+
   static final _moneyPattern = RegExp(r'^\d+(\.\d{1,2})?$');
 
   @override
   void dispose() {
-    for (final c in [_name, _category, _unit, _price]) {
-      c.dispose();
-    }
+    _name.dispose();
+    _price.dispose();
     super.dispose();
+  }
+
+  /// A server-side error for [field] (a body path), if any.
+  String? _serverError(String field) {
+    final l10n = AppLocalizations.of(context);
+    return switch (_failure) {
+      ValidationFailure(:final fieldErrors) => switch (fieldErrors[field]) {
+        final errors? when errors.isNotEmpty => l10n.fieldError(errors.first),
+        _ => null,
+      },
+      ServerFailure(messageKey: _categoryGone) when field == 'categoryId' =>
+        l10n.serviceCatalogCategoryNotFound,
+      ServerFailure(messageKey: _unitGone) when field == 'unitOfMeasureId' =>
+        l10n.serviceCatalogUnitNotFound,
+      _ => null,
+    };
   }
 
   /// Shows a server-side error for [field] first, then the [local] rule.
   FormFieldValidator<String> _validator(
     String field, [
     String? Function(String value)? local,
-  ]) => (value) {
-    if (_failure case ValidationFailure(:final fieldErrors)) {
-      if (fieldErrors[field] case final errors? when errors.isNotEmpty) {
-        return AppLocalizations.of(context).fieldError(errors.first);
-      }
+  ]) =>
+      (value) => _serverError(field) ?? local?.call(value ?? '');
+
+  Future<void> _pickCategory() async {
+    final l10n = AppLocalizations.of(context);
+    final active = await ref.read(activeCategoriesProvider.future);
+    if (!mounted) return;
+    final current = _category;
+    final options = {
+      // A retired current category stays listed so it can be kept.
+      if (current != null && active.every((c) => c.id != current.id))
+        current.id: current,
+      for (final c in active) c.id: c,
+    };
+    final picked = await showAppChoice(
+      context,
+      title: l10n.serviceCategoryLabel,
+      allowClear: current != null,
+      options: {for (final c in options.values) c.id: c.name},
+    );
+    if (picked != null) {
+      setState(() => _category = picked.isEmpty ? null : options[picked]);
     }
-    return local?.call(value ?? '');
+  }
+
+  Future<void> _pickUnit() async {
+    final l10n = AppLocalizations.of(context);
+    final active = await ref.read(activeUnitsProvider.future);
+    if (!mounted) return;
+    final current = _unit;
+    final options = {
+      if (current != null && active.every((u) => u.id != current.id))
+        current.id: current,
+      for (final u in active) u.id: u,
+    };
+    if (options.isEmpty) {
+      setState(() => _unitMissing = true);
+      return;
+    }
+    final picked = await showAppChoice(
+      context,
+      title: l10n.unitOfMeasureLabel,
+      // The API can change a unit but not clear it.
+      allowClear: false,
+      options: {for (final u in options.values) u.id: _unitLabel(u)},
+    );
+    if (picked != null && picked.isNotEmpty) {
+      setState(() {
+        _unit = options[picked];
+        _unitMissing = false;
+      });
+    }
+  }
+
+  /// "Square foot (sq ft)".
+  static String _unitLabel(UnitOfMeasure u) => switch (u.abbreviation) {
+    final short? when short != u.name => '${u.name} ($short)',
+    _ => u.name,
   };
 
-  String? _required(String value) => value.trim().isEmpty
-      ? AppLocalizations.of(context).validationRequired
-      : null;
-
   Future<void> _save() async {
-    setState(() => _failure = null);
-    if (!_formKey.currentState!.validate()) {
+    setState(() {
+      _failure = null;
+      _unitMissing = _unit == null;
+    });
+    final fieldsValid = _formKey.currentState!.validate();
+    final unit = _unit;
+    if (!fieldsValid || unit == null) {
       HapticFeedback.mediumImpact();
       return;
     }
     setState(() => _saving = true);
     try {
-      final saved = await ref.read(saveServiceProvider)(
-        SaveServiceParams(
+      await ref.read(saveServiceProvider)(
+        SaveParams(
           id: widget.initial?.id,
           draft: ServiceDraft(
             name: _name.text,
-            unitOfMeasure: _unit.text,
-            category: _category.text,
+            unitOfMeasureId: unit.id,
+            categoryId: _category?.id,
             defaultPrice: _price.text,
             isActive: _active,
           ),
         ),
       );
-      ref
-        ..invalidate(servicesProvider)
-        ..invalidate(serviceProvider(saved.id));
+      invalidateCatalog(ref);
       if (mounted) context.pop();
     } on Failure catch (f) {
       HapticFeedback.mediumImpact();
@@ -133,6 +204,13 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final failure = _failure;
+    // Field-level failures show on their fields; everything else on top.
+    final showBanner =
+        failure != null &&
+        failure is! ValidationFailure &&
+        failure.messageKey != _categoryGone &&
+        failure.messageKey != _unitGone;
+    final noUnits = ref.watch(activeUnitsProvider).value?.isEmpty ?? false;
 
     return SpacePage(
       title: widget.title,
@@ -159,7 +237,7 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (failure != null && failure is! ValidationFailure)
+                if (showBanner)
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                       pageSide(context),
@@ -175,24 +253,33 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
                     controller: _name,
                     enabled: !_saving,
                     textCapitalization: TextCapitalization.sentences,
-                    validator: _validator('name', _required),
+                    validator: _validator(
+                      'name',
+                      (v) => v.trim().isEmpty ? l10n.validationRequired : null,
+                    ),
                   ),
-                  SpaceTextField(
+                  PickerField(
                     label: l10n.serviceCategoryLabel,
-                    controller: _category,
-                    enabled: !_saving,
-                    hint: l10n.serviceCategoryHint,
-                    textCapitalization: TextCapitalization.sentences,
-                    validator: _validator('category'),
+                    value: _category?.name,
+                    onTap: _saving ? null : _pickCategory,
+                    errorText: _serverError('categoryId'),
                   ),
                 ]),
                 FormSection(l10n.sectionPricing, [
-                  SpaceTextField(
+                  PickerField(
                     label: l10n.unitOfMeasureLabel,
-                    controller: _unit,
-                    enabled: !_saving,
-                    hint: l10n.unitOfMeasureHint,
-                    validator: _validator('unitOfMeasure', _required),
+                    value: switch (_unit) {
+                      final unit? => _unitLabel(unit),
+                      null => null,
+                    },
+                    onTap: _saving ? null : _pickUnit,
+                    errorText:
+                        _serverError('unitOfMeasureId') ??
+                        (_unitMissing
+                            ? (noUnits
+                                  ? l10n.noUnitsToPick
+                                  : l10n.validationRequired)
+                            : null),
                   ),
                   SpaceTextField(
                     label: l10n.defaultPriceLabel,

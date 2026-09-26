@@ -357,7 +357,7 @@
     }
   },
   "servicesTitle": "Service catalog",
-  "adminServicesHint": "Services, units and default prices",
+  "adminServicesHint": "Services, categories and units",
   "addService": "Add service",
   "newServiceTitle": "New service",
   "editServiceTitle": "Edit service",
@@ -389,13 +389,65 @@
   "sectionPricing": "Pricing",
   "serviceNameLabel": "Name",
   "serviceCategoryLabel": "Category",
-  "serviceCategoryHint": "e.g. Janitorial",
   "unitOfMeasureLabel": "Unit of measure",
-  "unitOfMeasureHint": "e.g. sq ft, hour or visit",
   "defaultPriceLabel": "Default price per unit",
   "defaultPriceHelp": "Pre-fills the unit price on new proposals. Leave empty to price each time.",
   "invalidPrice": "Enter an amount like 0.12 or 25.",
   "serviceInactiveHelp": "Inactive services stay on existing proposals and scopes, but can't be picked for new ones.",
   "serviceCatalogNotFound": "This service no longer exists.",
-  "serviceCatalogSomeNotFound": "One of the services is unknown or inactive. Refresh and try again."
+  "serviceCatalogSomeNotFound": "One of the services is unknown or inactive. Refresh and try again.",
+  "catalogTabServices": "Services",
+  "catalogTabCategories": "Categories",
+  "catalogTabUnits": "Units",
+  "addCategory": "Add category",
+  "addUnit": "Add unit",
+  "searchCategoriesHint": "Search categories",
+  "searchUnitsHint": "Search name or abbreviation",
+  "allCategories": "All categories",
+  "noMatchesFound": "Nothing matches",
+  "noMatchesHint": "Try another search or filter.",
+  "noCategoriesYet": "No categories yet",
+  "noCategoriesYetHint": "Categories group your services, like Janitorial or Floor care.",
+  "noUnitsYet": "No units yet",
+  "noUnitsYetHint": "Add how you price services, like Square foot, Hour or Visit.",
+  "serviceCount": "{count, plural, =0{No services} =1{1 service} other{{count} services}}",
+  "@serviceCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newCategoryTitle": "New category",
+  "editCategoryTitle": "Edit category",
+  "newUnitTitle": "New unit",
+  "editUnitTitle": "Edit unit",
+  "catalogCategoryLabel": "Category",
+  "catalogUnitLabel": "Unit of measure",
+  "categoryNameHint": "e.g. Janitorial",
+  "unitNameHint": "e.g. Square foot",
+  "categoryDescriptionLabel": "Description",
+  "abbreviationLabel": "Abbreviation",
+  "abbreviationHint": "e.g. sq ft",
+  "abbreviationHelp": "Shown next to prices: $0.12 / sq ft. Leave empty to use the name.",
+  "categoryInactiveHelp": "Inactive categories stay on existing services, but can't be picked for new ones.",
+  "unitInactiveHelp": "Inactive units stay on existing services, but can't be picked for new ones.",
+  "deleteCategory": "Delete category",
+  "deleteUnit": "Delete unit",
+  "lookupInUse": "{count, plural, =1{1 service uses this, so it can't be deleted. Set it to Inactive instead.} other{{count} services use this, so it can't be deleted. Set it to Inactive instead.}}",
+  "@lookupInUse": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lookupNameTaken": "Another one already has this name.",
+  "noUnitsToPick": "Add a unit under Service catalog → Units first.",
+  "serviceCatalogCategoryNotFound": "This category was removed or set to inactive. Pick another.",
+  "serviceCatalogUnitNotFound": "This unit was removed or set to inactive. Pick another.",
+  "serviceCategoriesNotFound": "This category no longer exists.",
+  "serviceCategoriesInUse": "Services still use this category, so it can't be deleted. Set it to Inactive instead.",
+  "unitsOfMeasureNotFound": "This unit no longer exists.",
+  "unitsOfMeasureInUse": "Services still use this unit, so it can't be deleted. Set it to Inactive instead."
 }

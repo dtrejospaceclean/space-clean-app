@@ -418,42 +418,63 @@ class FakeProfileRepository implements ProfileRepository {
   }
 }
 
-/// An in-memory catalog, filtered like the API.
+/// An in-memory catalog, filtered like the API. Categories and units carry
+/// live service counts, and deleting a used one fails like the API does.
 class FakeServiceCatalogRepository implements ServiceCatalogRepository {
-  FakeServiceCatalogRepository([List<ServiceItem>? services])
-    : services = [...services ?? _seed];
+  FakeServiceCatalogRepository({
+    List<ServiceItem>? services,
+    List<ServiceCategory>? categories,
+    List<UnitOfMeasure>? units,
+  }) : services = [...services ?? _services],
+       categories = [...categories ?? _categories],
+       units = [...units ?? _units];
 
-  static const _seed = [
+  static const janitorial = ServiceCategory(id: 'c1', name: 'Janitorial');
+  static const floorCare = ServiceCategory(
+    id: 'c2',
+    name: 'Floor care',
+    description: 'Carpets and hard floors',
+  );
+  static const sqft = UnitOfMeasure(
+    id: 'm1',
+    name: 'Square foot',
+    abbreviation: 'sq ft',
+  );
+  static const visit = UnitOfMeasure(id: 'm2', name: 'Visit');
+  static const hour = UnitOfMeasure(id: 'm3', name: 'Hour', abbreviation: 'hr');
+
+  static const _categories = [janitorial, floorCare];
+  static const _units = [sqft, visit, hour];
+  static const _services = [
     ServiceItem(
       id: 's1',
       name: 'Office cleaning',
-      category: 'Janitorial',
-      unitOfMeasure: 'sq ft',
+      category: janitorial,
+      unit: sqft,
       defaultPrice: '0.12',
     ),
-    ServiceItem(
-      id: 's2',
-      name: 'Window washing',
-      unitOfMeasure: 'visit',
-      isActive: false,
-    ),
+    ServiceItem(id: 's2', name: 'Window washing', unit: visit, isActive: false),
   ];
 
   final List<ServiceItem> services;
+  final List<ServiceCategory> categories;
+  final List<UnitOfMeasure> units;
   final writes = <String>[];
 
+  bool _matches(String text, CatalogQuery q) =>
+      text.toLowerCase().contains(q.search.trim().toLowerCase());
+
   @override
-  Future<List<ServiceItem>> getServices(ServiceQuery query) async {
-    final search = query.search.trim().toLowerCase();
-    return services
-        .where((s) => query.isActive == null || s.isActive == query.isActive)
-        .where(
-          (s) =>
-              s.name.toLowerCase().contains(search) ||
-              (s.category ?? '').toLowerCase().contains(search),
-        )
-        .toList();
-  }
+  Future<List<ServiceItem>> getServices(CatalogQuery query) async => services
+      .where((s) => query.isActive == null || s.isActive == query.isActive)
+      .where(
+        (s) => query.categoryId == null || s.category?.id == query.categoryId,
+      )
+      .where(
+        (s) =>
+            _matches(s.name, query) || _matches(s.category?.name ?? '', query),
+      )
+      .toList();
 
   @override
   Future<ServiceItem> getService(String id) async =>
@@ -475,16 +496,108 @@ class FakeServiceCatalogRepository implements ServiceCatalogRepository {
     return service;
   }
 
-  static ServiceItem _fromDraft(String id, ServiceDraft d) {
+  ServiceItem _fromDraft(String id, ServiceDraft d) {
     String? text(String? v) => (v ?? '').trim().isEmpty ? null : v!.trim();
     return ServiceItem(
       id: id,
       name: d.name.trim(),
-      unitOfMeasure: d.unitOfMeasure.trim(),
-      category: text(d.category),
+      unit: units.firstWhere((u) => u.id == d.unitOfMeasureId),
+      category: categories.where((c) => c.id == d.categoryId).firstOrNull,
       defaultPrice: text(d.defaultPrice),
       isActive: d.isActive,
     );
+  }
+
+  int _usingCategory(String id) =>
+      services.where((s) => s.category?.id == id).length;
+
+  int _usingUnit(String id) => services.where((s) => s.unit.id == id).length;
+
+  ServiceCategory _countedCategory(ServiceCategory c) => ServiceCategory(
+    id: c.id,
+    name: c.name,
+    description: c.description,
+    isActive: c.isActive,
+    serviceCount: _usingCategory(c.id),
+  );
+
+  UnitOfMeasure _countedUnit(UnitOfMeasure u) => UnitOfMeasure(
+    id: u.id,
+    name: u.name,
+    abbreviation: u.abbreviation,
+    isActive: u.isActive,
+    serviceCount: _usingUnit(u.id),
+  );
+
+  @override
+  Future<List<ServiceCategory>> getCategories(CatalogQuery query) async =>
+      categories
+          .where((c) => query.isActive == null || c.isActive == query.isActive)
+          .where((c) => _matches(c.name, query))
+          .map(_countedCategory)
+          .toList();
+
+  @override
+  Future<ServiceCategory> getCategory(String id) async =>
+      _countedCategory(categories.firstWhere((c) => c.id == id));
+
+  @override
+  Future<ServiceCategory> saveCategory(String? id, LookupDraft draft) async {
+    writes.add(id == null ? 'create category' : 'update category:$id');
+    final detail = (draft.detail ?? '').trim();
+    final category = ServiceCategory(
+      id: id ?? 'c${categories.length + 1}',
+      name: draft.name.trim(),
+      description: detail.isEmpty ? null : detail,
+      isActive: draft.isActive,
+    );
+    final index = categories.indexWhere((c) => c.id == id);
+    index < 0 ? categories.add(category) : categories[index] = category;
+    return _countedCategory(category);
+  }
+
+  @override
+  Future<void> deleteCategory(String id) async {
+    if (_usingCategory(id) > 0) {
+      throw const ServerFailure('service_categories.in_use', statusCode: 409);
+    }
+    writes.add('delete category:$id');
+    categories.removeWhere((c) => c.id == id);
+  }
+
+  @override
+  Future<List<UnitOfMeasure>> getUnits(CatalogQuery query) async => units
+      .where((u) => query.isActive == null || u.isActive == query.isActive)
+      .where((u) => _matches(u.name, query) || _matches(u.short, query))
+      .map(_countedUnit)
+      .toList();
+
+  @override
+  Future<UnitOfMeasure> getUnit(String id) async =>
+      _countedUnit(units.firstWhere((u) => u.id == id));
+
+  @override
+  Future<UnitOfMeasure> saveUnit(String? id, LookupDraft draft) async {
+    writes.add(id == null ? 'create unit' : 'update unit:$id');
+    final detail = (draft.detail ?? '').trim();
+    final unit = UnitOfMeasure(
+      id: id ?? 'm${units.length + 1}',
+      name: draft.name.trim(),
+      abbreviation: detail.isEmpty ? null : detail,
+      isActive: draft.isActive,
+    );
+    final index = units.indexWhere((u) => u.id == id);
+    index < 0 ? units.add(unit) : units[index] = unit;
+    return _countedUnit(unit);
+  }
+
+  @override
+  Future<void> deleteUnit(String id) async {
+    if (_usingUnit(id) > 0) {
+      throw const ServerFailure('units_of_measure.in_use', statusCode: 409);
+    }
+    writes.add('delete unit:$id');
+    units.removeWhere((u) => u.id == id);
   }
 }
 

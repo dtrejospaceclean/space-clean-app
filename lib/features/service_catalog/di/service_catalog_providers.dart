@@ -18,3 +18,27 @@ final getServiceProvider = Provider(
 final saveServiceProvider = Provider(
   (ref) => SaveService(ref.watch(serviceCatalogRepositoryProvider)),
 );
+final getCategoriesProvider = Provider(
+  (ref) => GetCategories(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final getCategoryProvider = Provider(
+  (ref) => GetCategory(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final saveCategoryProvider = Provider(
+  (ref) => SaveCategory(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final deleteCategoryProvider = Provider(
+  (ref) => DeleteCategory(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final getUnitsProvider = Provider(
+  (ref) => GetUnits(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final getUnitProvider = Provider(
+  (ref) => GetUnit(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final saveUnitProvider = Provider(
+  (ref) => SaveUnit(ref.watch(serviceCatalogRepositoryProvider)),
+);
+final deleteUnitProvider = Provider(
+  (ref) => DeleteUnit(ref.watch(serviceCatalogRepositoryProvider)),
+);

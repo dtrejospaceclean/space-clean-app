@@ -810,7 +810,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get servicesTitle => 'Catálogo de servicios';
 
   @override
-  String get adminServicesHint => 'Servicios, unidades y precios base';
+  String get adminServicesHint => 'Servicios, categorías y unidades';
 
   @override
   String get addService => 'Agregar servicio';
@@ -861,13 +861,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get serviceCategoryLabel => 'Categoría';
 
   @override
-  String get serviceCategoryHint => 'p. ej., Limpieza general';
-
-  @override
   String get unitOfMeasureLabel => 'Unidad de medida';
-
-  @override
-  String get unitOfMeasureHint => 'p. ej., pie², hora o visita';
 
   @override
   String get defaultPriceLabel => 'Precio base por unidad';
@@ -889,4 +883,152 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get serviceCatalogSomeNotFound =>
       'Uno de los servicios no existe o está inactivo. Actualiza e inténtalo de nuevo.';
+
+  @override
+  String get catalogTabServices => 'Servicios';
+
+  @override
+  String get catalogTabCategories => 'Categorías';
+
+  @override
+  String get catalogTabUnits => 'Unidades';
+
+  @override
+  String get addCategory => 'Agregar categoría';
+
+  @override
+  String get addUnit => 'Agregar unidad';
+
+  @override
+  String get searchCategoriesHint => 'Buscar categorías';
+
+  @override
+  String get searchUnitsHint => 'Buscar por nombre o abreviatura';
+
+  @override
+  String get allCategories => 'Todas las categorías';
+
+  @override
+  String get noMatchesFound => 'Nada coincide';
+
+  @override
+  String get noMatchesHint => 'Prueba con otra búsqueda o filtro.';
+
+  @override
+  String get noCategoriesYet => 'Aún no hay categorías';
+
+  @override
+  String get noCategoriesYetHint =>
+      'Las categorías agrupan tus servicios, como Limpieza general o Cuidado de pisos.';
+
+  @override
+  String get noUnitsYet => 'Aún no hay unidades';
+
+  @override
+  String get noUnitsYetHint =>
+      'Agrega cómo cobras los servicios, como Pie cuadrado, Hora o Visita.';
+
+  @override
+  String serviceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count servicios',
+      one: '1 servicio',
+      zero: 'Sin servicios',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newCategoryTitle => 'Nueva categoría';
+
+  @override
+  String get editCategoryTitle => 'Editar categoría';
+
+  @override
+  String get newUnitTitle => 'Nueva unidad';
+
+  @override
+  String get editUnitTitle => 'Editar unidad';
+
+  @override
+  String get catalogCategoryLabel => 'Categoría';
+
+  @override
+  String get catalogUnitLabel => 'Unidad de medida';
+
+  @override
+  String get categoryNameHint => 'p. ej., Limpieza general';
+
+  @override
+  String get unitNameHint => 'p. ej., Pie cuadrado';
+
+  @override
+  String get categoryDescriptionLabel => 'Descripción';
+
+  @override
+  String get abbreviationLabel => 'Abreviatura';
+
+  @override
+  String get abbreviationHint => 'p. ej., pie²';
+
+  @override
+  String get abbreviationHelp =>
+      'Se muestra junto a los precios: \$0.12 / pie². Déjala vacía para usar el nombre.';
+
+  @override
+  String get categoryInactiveHelp =>
+      'Las categorías inactivas siguen en los servicios existentes, pero no se pueden elegir para nuevos.';
+
+  @override
+  String get unitInactiveHelp =>
+      'Las unidades inactivas siguen en los servicios existentes, pero no se pueden elegir para nuevos.';
+
+  @override
+  String get deleteCategory => 'Eliminar categoría';
+
+  @override
+  String get deleteUnit => 'Eliminar unidad';
+
+  @override
+  String lookupInUse(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count servicios la usan, así que no se puede eliminar. Márcala como inactiva.',
+      one: '1 servicio la usa, así que no se puede eliminar. Márcala como inactiva.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get lookupNameTaken => 'Ya existe otra con este nombre.';
+
+  @override
+  String get noUnitsToPick =>
+      'Primero agrega una unidad en Catálogo de servicios → Unidades.';
+
+  @override
+  String get serviceCatalogCategoryNotFound =>
+      'Esta categoría se eliminó o está inactiva. Elige otra.';
+
+  @override
+  String get serviceCatalogUnitNotFound =>
+      'Esta unidad se eliminó o está inactiva. Elige otra.';
+
+  @override
+  String get serviceCategoriesNotFound => 'Esta categoría ya no existe.';
+
+  @override
+  String get serviceCategoriesInUse =>
+      'Hay servicios que usan esta categoría, así que no se puede eliminar. Márcala como inactiva.';
+
+  @override
+  String get unitsOfMeasureNotFound => 'Esta unidad ya no existe.';
+
+  @override
+  String get unitsOfMeasureInUse =>
+      'Hay servicios que usan esta unidad, así que no se puede eliminar. Márcala como inactiva.';
 }

@@ -19,6 +19,7 @@ import '../../features/password_reset/presentation/screens/reset_done_screen.dar
 import '../../features/profile/presentation/screens/change_password_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/service_catalog/presentation/screens/lookup_form_screen.dart';
 import '../../features/service_catalog/presentation/screens/service_form_screen.dart';
 import '../../features/service_catalog/presentation/screens/services_screen.dart';
 import '../../features/shell/presentation/app_shell.dart';
@@ -209,10 +210,34 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     path: 'services',
                     builder: (_, _) => const ServicesScreen(),
                     routes: [
-                      // Before ':serviceId' so "new" isn't read as an id.
+                      // Before ':serviceId' so these aren't read as an id.
                       GoRoute(
                         path: 'new',
                         builder: (_, _) => const ServiceFormScreen(),
+                      ),
+                      GoRoute(
+                        path: 'categories/new',
+                        builder: (_, _) =>
+                            const LookupFormScreen(kind: LookupKind.category),
+                      ),
+                      GoRoute(
+                        path: 'categories/:id',
+                        builder: (_, state) => LookupFormScreen(
+                          kind: LookupKind.category,
+                          id: state.pathParameters['id'],
+                        ),
+                      ),
+                      GoRoute(
+                        path: 'units/new',
+                        builder: (_, _) =>
+                            const LookupFormScreen(kind: LookupKind.unit),
+                      ),
+                      GoRoute(
+                        path: 'units/:id',
+                        builder: (_, state) => LookupFormScreen(
+                          kind: LookupKind.unit,
+                          id: state.pathParameters['id'],
+                        ),
                       ),
                       GoRoute(
                         path: ':serviceId',

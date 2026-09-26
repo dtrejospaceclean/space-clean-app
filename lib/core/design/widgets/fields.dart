@@ -129,6 +129,7 @@ class PickerField extends StatelessWidget {
     required this.value,
     required this.onTap,
     this.icon = Icons.expand_more_rounded,
+    this.errorText,
   });
 
   final String label;
@@ -137,6 +138,9 @@ class PickerField extends StatelessWidget {
   final String? value;
   final VoidCallback? onTap;
   final IconData icon;
+
+  /// Shown in red below, like a text field's validator error.
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -154,13 +158,15 @@ class PickerField extends StatelessWidget {
         ),
         Semantics(
           button: true,
-          label: '$label: ${value ?? l10n.notSet}',
+          label: ['$label: ${value ?? l10n.notSet}', ?errorText].join('. '),
           excludeSemantics: true,
           child: Material(
             color: context.colors.sunken,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(SpaceRadius.inner),
-              side: BorderSide(color: context.colors.inkSoft),
+              side: errorText == null
+                  ? BorderSide(color: context.colors.inkSoft)
+                  : BorderSide(color: context.colors.danger, width: 2),
             ),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
@@ -192,6 +198,11 @@ class PickerField extends StatelessWidget {
             ),
           ),
         ),
+        if (errorText case final error?)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            child: Text(error, style: theme.inputDecorationTheme.errorStyle),
+          ),
       ],
     );
   }

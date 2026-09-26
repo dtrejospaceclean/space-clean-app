@@ -801,7 +801,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get servicesTitle => 'Service catalog';
 
   @override
-  String get adminServicesHint => 'Services, units and default prices';
+  String get adminServicesHint => 'Services, categories and units';
 
   @override
   String get addService => 'Add service';
@@ -851,13 +851,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceCategoryLabel => 'Category';
 
   @override
-  String get serviceCategoryHint => 'e.g. Janitorial';
-
-  @override
   String get unitOfMeasureLabel => 'Unit of measure';
-
-  @override
-  String get unitOfMeasureHint => 'e.g. sq ft, hour or visit';
 
   @override
   String get defaultPriceLabel => 'Default price per unit';
@@ -879,4 +873,151 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get serviceCatalogSomeNotFound =>
       'One of the services is unknown or inactive. Refresh and try again.';
+
+  @override
+  String get catalogTabServices => 'Services';
+
+  @override
+  String get catalogTabCategories => 'Categories';
+
+  @override
+  String get catalogTabUnits => 'Units';
+
+  @override
+  String get addCategory => 'Add category';
+
+  @override
+  String get addUnit => 'Add unit';
+
+  @override
+  String get searchCategoriesHint => 'Search categories';
+
+  @override
+  String get searchUnitsHint => 'Search name or abbreviation';
+
+  @override
+  String get allCategories => 'All categories';
+
+  @override
+  String get noMatchesFound => 'Nothing matches';
+
+  @override
+  String get noMatchesHint => 'Try another search or filter.';
+
+  @override
+  String get noCategoriesYet => 'No categories yet';
+
+  @override
+  String get noCategoriesYetHint =>
+      'Categories group your services, like Janitorial or Floor care.';
+
+  @override
+  String get noUnitsYet => 'No units yet';
+
+  @override
+  String get noUnitsYetHint =>
+      'Add how you price services, like Square foot, Hour or Visit.';
+
+  @override
+  String serviceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count services',
+      one: '1 service',
+      zero: 'No services',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newCategoryTitle => 'New category';
+
+  @override
+  String get editCategoryTitle => 'Edit category';
+
+  @override
+  String get newUnitTitle => 'New unit';
+
+  @override
+  String get editUnitTitle => 'Edit unit';
+
+  @override
+  String get catalogCategoryLabel => 'Category';
+
+  @override
+  String get catalogUnitLabel => 'Unit of measure';
+
+  @override
+  String get categoryNameHint => 'e.g. Janitorial';
+
+  @override
+  String get unitNameHint => 'e.g. Square foot';
+
+  @override
+  String get categoryDescriptionLabel => 'Description';
+
+  @override
+  String get abbreviationLabel => 'Abbreviation';
+
+  @override
+  String get abbreviationHint => 'e.g. sq ft';
+
+  @override
+  String get abbreviationHelp =>
+      'Shown next to prices: \$0.12 / sq ft. Leave empty to use the name.';
+
+  @override
+  String get categoryInactiveHelp =>
+      'Inactive categories stay on existing services, but can\'t be picked for new ones.';
+
+  @override
+  String get unitInactiveHelp =>
+      'Inactive units stay on existing services, but can\'t be picked for new ones.';
+
+  @override
+  String get deleteCategory => 'Delete category';
+
+  @override
+  String get deleteUnit => 'Delete unit';
+
+  @override
+  String lookupInUse(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count services use this, so it can\'t be deleted. Set it to Inactive instead.',
+      one: '1 service uses this, so it can\'t be deleted. Set it to Inactive instead.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get lookupNameTaken => 'Another one already has this name.';
+
+  @override
+  String get noUnitsToPick => 'Add a unit under Service catalog → Units first.';
+
+  @override
+  String get serviceCatalogCategoryNotFound =>
+      'This category was removed or set to inactive. Pick another.';
+
+  @override
+  String get serviceCatalogUnitNotFound =>
+      'This unit was removed or set to inactive. Pick another.';
+
+  @override
+  String get serviceCategoriesNotFound => 'This category no longer exists.';
+
+  @override
+  String get serviceCategoriesInUse =>
+      'Services still use this category, so it can\'t be deleted. Set it to Inactive instead.';
+
+  @override
+  String get unitsOfMeasureNotFound => 'This unit no longer exists.';
+
+  @override
+  String get unitsOfMeasureInUse =>
+      'Services still use this unit, so it can\'t be deleted. Set it to Inactive instead.';
 }

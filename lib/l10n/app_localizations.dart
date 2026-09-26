@@ -1511,7 +1511,7 @@ abstract class AppLocalizations {
   /// No description provided for @adminServicesHint.
   ///
   /// In en, this message translates to:
-  /// **'Services, units and default prices'**
+  /// **'Services, categories and units'**
   String get adminServicesHint;
 
   /// No description provided for @addService.
@@ -1598,23 +1598,11 @@ abstract class AppLocalizations {
   /// **'Category'**
   String get serviceCategoryLabel;
 
-  /// No description provided for @serviceCategoryHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. Janitorial'**
-  String get serviceCategoryHint;
-
   /// No description provided for @unitOfMeasureLabel.
   ///
   /// In en, this message translates to:
   /// **'Unit of measure'**
   String get unitOfMeasureLabel;
-
-  /// No description provided for @unitOfMeasureHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. sq ft, hour or visit'**
-  String get unitOfMeasureHint;
 
   /// No description provided for @defaultPriceLabel.
   ///
@@ -1651,6 +1639,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'One of the services is unknown or inactive. Refresh and try again.'**
   String get serviceCatalogSomeNotFound;
+
+  /// No description provided for @catalogTabServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get catalogTabServices;
+
+  /// No description provided for @catalogTabCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get catalogTabCategories;
+
+  /// No description provided for @catalogTabUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Units'**
+  String get catalogTabUnits;
+
+  /// No description provided for @addCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get addCategory;
+
+  /// No description provided for @addUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Add unit'**
+  String get addUnit;
+
+  /// No description provided for @searchCategoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories'**
+  String get searchCategoriesHint;
+
+  /// No description provided for @searchUnitsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name or abbreviation'**
+  String get searchUnitsHint;
+
+  /// No description provided for @allCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get allCategories;
+
+  /// No description provided for @noMatchesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches'**
+  String get noMatchesFound;
+
+  /// No description provided for @noMatchesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another search or filter.'**
+  String get noMatchesHint;
+
+  /// No description provided for @noCategoriesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet'**
+  String get noCategoriesYet;
+
+  /// No description provided for @noCategoriesYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories group your services, like Janitorial or Floor care.'**
+  String get noCategoriesYetHint;
+
+  /// No description provided for @noUnitsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No units yet'**
+  String get noUnitsYet;
+
+  /// No description provided for @noUnitsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add how you price services, like Square foot, Hour or Visit.'**
+  String get noUnitsYetHint;
+
+  /// No description provided for @serviceCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No services} =1{1 service} other{{count} services}}'**
+  String serviceCount(int count);
+
+  /// No description provided for @newCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New category'**
+  String get newCategoryTitle;
+
+  /// No description provided for @editCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit category'**
+  String get editCategoryTitle;
+
+  /// No description provided for @newUnitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New unit'**
+  String get newUnitTitle;
+
+  /// No description provided for @editUnitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit unit'**
+  String get editUnitTitle;
+
+  /// No description provided for @catalogCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get catalogCategoryLabel;
+
+  /// No description provided for @catalogUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit of measure'**
+  String get catalogUnitLabel;
+
+  /// No description provided for @categoryNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Janitorial'**
+  String get categoryNameHint;
+
+  /// No description provided for @unitNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Square foot'**
+  String get unitNameHint;
+
+  /// No description provided for @categoryDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get categoryDescriptionLabel;
+
+  /// No description provided for @abbreviationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Abbreviation'**
+  String get abbreviationLabel;
+
+  /// No description provided for @abbreviationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. sq ft'**
+  String get abbreviationHint;
+
+  /// No description provided for @abbreviationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown next to prices: \$0.12 / sq ft. Leave empty to use the name.'**
+  String get abbreviationHelp;
+
+  /// No description provided for @categoryInactiveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive categories stay on existing services, but can\'t be picked for new ones.'**
+  String get categoryInactiveHelp;
+
+  /// No description provided for @unitInactiveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive units stay on existing services, but can\'t be picked for new ones.'**
+  String get unitInactiveHelp;
+
+  /// No description provided for @deleteCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete category'**
+  String get deleteCategory;
+
+  /// No description provided for @deleteUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete unit'**
+  String get deleteUnit;
+
+  /// No description provided for @lookupInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 service uses this, so it can\'t be deleted. Set it to Inactive instead.} other{{count} services use this, so it can\'t be deleted. Set it to Inactive instead.}}'**
+  String lookupInUse(int count);
+
+  /// No description provided for @lookupNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another one already has this name.'**
+  String get lookupNameTaken;
+
+  /// No description provided for @noUnitsToPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a unit under Service catalog → Units first.'**
+  String get noUnitsToPick;
+
+  /// No description provided for @serviceCatalogCategoryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This category was removed or set to inactive. Pick another.'**
+  String get serviceCatalogCategoryNotFound;
+
+  /// No description provided for @serviceCatalogUnitNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This unit was removed or set to inactive. Pick another.'**
+  String get serviceCatalogUnitNotFound;
+
+  /// No description provided for @serviceCategoriesNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This category no longer exists.'**
+  String get serviceCategoriesNotFound;
+
+  /// No description provided for @serviceCategoriesInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Services still use this category, so it can\'t be deleted. Set it to Inactive instead.'**
+  String get serviceCategoriesInUse;
+
+  /// No description provided for @unitsOfMeasureNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This unit no longer exists.'**
+  String get unitsOfMeasureNotFound;
+
+  /// No description provided for @unitsOfMeasureInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Services still use this unit, so it can\'t be deleted. Set it to Inactive instead.'**
+  String get unitsOfMeasureInUse;
 }
 
 class _AppLocalizationsDelegate
