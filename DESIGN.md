@@ -291,7 +291,7 @@ Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/
 
 ## Layout
 
-Single column with a 20px side margin (`page`). Content is capped at 640px (`maxContentWidth`) and centered on wider screens, so on tablets the side margin grows to `(width − 640) / 2`. Every page sliver and pinned bottom action uses the same `pageSide()` margin. The header sits 12px below the safe area. Top-level screens put the title and round action buttons on one row at least 56px tall. Pushed screens get a white round back button first, then the title 16px below it. Content blocks start 16px apart by default, and cards stack with a 12px gap (`gap`). Sibling cards pair up in two-column grids (CardGrid) or equal-width rows (CardRow, e.g. three compact stats) with equal heights. Inside cards, padding is 20px and fields stack 12px apart, with 24px before the primary button. Every scroll view ends with safe-area bottom padding plus 24px. Pinned bottom actions (Save) sit in the Scaffold's bottom slot above the keyboard.
+Single column with a 20px side margin (`page`). Content is capped at 640px (`maxContentWidth`) and centered on wider screens, so on tablets the side margin grows to `(width − 640) / 2`. Every page sliver and pinned bottom action uses the same `pageSide()` margin. The header sits 12px below the safe area. Every screen puts its header on one row at least 56px tall: on pushed screens a white round back button, 10px, then the title, then the round action buttons on the right. The title takes the remaining width and wraps rather than clipping at large text sizes. Screens led by a two-tone hero headline (Account, Job) put it in the title's place, beside the back button. Content blocks start 16px apart by default, and cards stack with a 12px gap (`gap`). Sibling cards pair up in two-column grids (CardGrid) or equal-width rows (CardRow, e.g. three compact stats) with equal heights. Inside cards, padding is 20px and fields stack 12px apart, with 24px before the primary button. Every scroll view ends with safe-area bottom padding plus 24px. Pinned bottom actions (Save) sit in the Scaffold's bottom slot above the keyboard.
 
 **The 640 Column Rule.** No content column is wider than 640px. Wider screens center it on the ground rather than stretching cards or fields.
 
@@ -355,7 +355,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 
   With one option it opens that form directly; with several it opens a native choice sheet titled "Create". It hides when nothing is allowed (crew, supervisors and clients on most pages).
 - **Search field** (users list): a white pill on the ground with a 1px Soft Ink outline (3.64:1 against the ground), a Muted Ink search icon and hint, and a 2px Primary Orange border on focus.
-- **Header:** the page title plus round action buttons. Pushed screens start with a white back circle, and the native back gesture still works.
+- **Header:** one row with the page title (or a hero headline) and round action buttons. Pushed screens start the row with a white back circle, and the native back gesture still works.
 
 ### Signature: Two-Tone Hero
 The HeroHeadline is a 28px/700 headline whose second line drops to Soft Ink (3.64:1 on the ground, as large text). It opens sign-in, Today, account, and job detail screens, and it may replace the page title when the hero says it all.

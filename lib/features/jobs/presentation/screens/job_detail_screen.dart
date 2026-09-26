@@ -28,6 +28,13 @@ class JobDetailScreen extends ConsumerWidget {
     Future<void> refresh() => ref.refresh(jobProvider(key).future);
 
     return SpacePage(
+      heading: switch (job.value) {
+        final job? => HeroHeadline(
+          primary: job.title,
+          secondary: job.location?.name,
+        ),
+        null => null,
+      },
       onRefresh: refresh,
       slivers: [
         AsyncSlivers(
@@ -35,14 +42,7 @@ class JobDetailScreen extends ConsumerWidget {
           onRetry: refresh,
           builder: (job) => SliverMainAxisGroup(
             slivers: [
-              PageBox(
-                top: 16,
-                child: HeroHeadline(
-                  primary: job.title,
-                  secondary: job.location?.name,
-                ),
-              ),
-              PageBox(top: 20, child: _WhenCard(job: job)),
+              PageBox(top: 8, child: _WhenCard(job: job)),
               if (job.checklistTotal > 0)
                 PageBox(
                   top: SpaceSpace.gap,

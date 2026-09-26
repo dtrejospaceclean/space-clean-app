@@ -26,6 +26,13 @@ class AccountScreen extends ConsumerWidget {
         ref.refresh(accountAccessProvider(clientId).future);
 
     return SpacePage(
+      heading: HeroHeadline(
+        primary: client?.displayName ?? l10n.accountsTitle,
+        secondary: switch (access.value?.baseRole) {
+          final role? => l10n.yourRole(l10n.roleName(role)),
+          null => null,
+        },
+      ),
       onRefresh: refresh,
       slivers: [
         AsyncSlivers(
@@ -35,16 +42,6 @@ class AccountScreen extends ConsumerWidget {
             final sections = visibleModules(access);
             return SliverMainAxisGroup(
               slivers: [
-                PageBox(
-                  top: 16,
-                  child: HeroHeadline(
-                    primary: client?.displayName ?? l10n.accountsTitle,
-                    secondary: switch (access.baseRole) {
-                      final role? => l10n.yourRole(l10n.roleName(role)),
-                      null => null,
-                    },
-                  ),
-                ),
                 if (sections.isEmpty)
                   MessageSliver(
                     icon: Icons.lock_outline_rounded,

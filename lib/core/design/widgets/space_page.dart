@@ -8,13 +8,14 @@ import 'circle_button.dart';
 /// Every screen's frame: gray ground, a header with a big bold title and
 /// round action buttons, then scrolling content.
 ///
-/// Top-level screens put the title and buttons on one row. Pushed screens get
-/// a white round back button with the title under it; the platform's back
-/// gesture keeps working (go_router pages).
+/// The title and buttons share one row. Pushed screens start it with a white
+/// round back button; the platform's back gesture keeps working (go_router
+/// pages).
 class SpacePage extends StatelessWidget {
   const SpacePage({
     super.key,
     this.title,
+    this.heading,
     required this.slivers,
     this.actions = const [],
     this.onRefresh,
@@ -22,8 +23,12 @@ class SpacePage extends StatelessWidget {
     this.showBack,
   });
 
-  /// Big title; omitted on screens whose hero headline says it all.
+  /// The page title.
   final String? title;
+
+  /// In place of [title]: a richer heading for the same spot, such as a
+  /// two-tone [HeroHeadline] ("Post Oak Tower / Your role: Supervisor").
+  final Widget? heading;
   final List<Widget> slivers;
 
   /// Round buttons on the right of the header.
@@ -40,42 +45,32 @@ class SpacePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final canPop = showBack ?? (GoRouter.maybeOf(context)?.canPop() ?? false);
 
-    final header = canPop
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleButton.light(
-                    icon: Icons.arrow_back_rounded,
-                    tooltip: MaterialLocalizations.of(context)
-                        .backButtonTooltip,
-                    onPressed: () => Navigator.of(context).maybePop(),
-                  ),
-                  const Spacer(),
-                  ..._spaced(actions),
-                ],
-              ),
-              if (title != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 8),
-                  child: _Title(title!),
-                ),
-            ],
-          )
-        : ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 56),
-            child: Row(
-              children: [
-                Expanded(
-                  child: title == null
-                      ? const SizedBox.shrink()
-                      : _Title(title!),
-                ),
-                ..._spaced(actions),
-              ],
+    // One row: back button (pushed screens), title, then actions. The title
+    // wraps rather than clips at large text sizes.
+    final header = ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
+      child: Row(
+        children: [
+          if (canPop) ...[
+            CircleButton.light(
+              icon: Icons.arrow_back_rounded,
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              onPressed: () => Navigator.of(context).maybePop(),
             ),
-          );
+            const SizedBox(width: 10),
+          ],
+          Expanded(
+            child:
+                heading ??
+                (title == null ? const SizedBox.shrink() : _Title(title!)),
+          ),
+          if (actions.isNotEmpty) ...[
+            const SizedBox(width: 10),
+            ..._spaced(actions),
+          ],
+        ],
+      ),
+    );
 
     final scroll = CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
