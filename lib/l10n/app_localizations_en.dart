@@ -829,11 +829,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noServicesFoundHint => 'Try another name, category or filter.';
 
   @override
-  String pricePerUnit(String price, String unit) {
-    return '$price / $unit';
-  }
-
-  @override
   String perUnit(String unit) {
     return 'per $unit';
   }
@@ -1020,4 +1015,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get unitsOfMeasureInUse =>
       'Services still use this unit, so it can\'t be deleted. Set it to Inactive instead.';
+
+  @override
+  String get noCategoryGroup => 'No category';
+
+  @override
+  String get noDefaultPrice => 'No price';
+
+  @override
+  String shownAs(String abbreviation) {
+    return 'Shown as $abbreviation';
+  }
+
+  @override
+  String get clearFilter => 'Clear filter';
+
+  @override
+  String get createTitle => 'Create';
 }

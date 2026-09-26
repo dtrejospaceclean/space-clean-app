@@ -244,7 +244,6 @@
   "noServicesYetHint": "Agrega los servicios que ofreces para usarlos en propuestas y alcances.",
   "noServicesFound": "Ningún servicio coincide",
   "noServicesFoundHint": "Prueba con otro nombre, categoría o filtro.",
-  "pricePerUnit": "{price} / {unit}",
   "perUnit": "por {unit}",
   "sectionService": "Servicio",
   "sectionPricing": "Precio",
@@ -296,5 +295,10 @@
   "serviceCategoriesNotFound": "Esta categoría ya no existe.",
   "serviceCategoriesInUse": "Hay servicios que usan esta categoría, así que no se puede eliminar. Márcala como inactiva.",
   "unitsOfMeasureNotFound": "Esta unidad ya no existe.",
-  "unitsOfMeasureInUse": "Hay servicios que usan esta unidad, así que no se puede eliminar. Márcala como inactiva."
+  "unitsOfMeasureInUse": "Hay servicios que usan esta unidad, así que no se puede eliminar. Márcala como inactiva.",
+  "noCategoryGroup": "Sin categoría",
+  "noDefaultPrice": "Sin precio",
+  "shownAs": "Se muestra como {abbreviation}",
+  "clearFilter": "Quitar filtro",
+  "createTitle": "Crear"
 }

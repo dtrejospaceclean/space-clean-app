@@ -49,17 +49,21 @@ class PillToggle<T> extends StatelessWidget {
                 ),
                 child: Center(
                   widthFactor: 1,
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: 'Manrope',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                      color: isSelected
-                          ? context.colors.onPrimary
-                          : context.colors.inkMuted,
+                  // At large text sizes a label shrinks just enough to show
+                  // the whole word; a clipped "Categ…" reads as nothing.
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color: isSelected
+                            ? context.colors.onPrimary
+                            : context.colors.inkMuted,
+                      ),
                     ),
                   ),
                 ),

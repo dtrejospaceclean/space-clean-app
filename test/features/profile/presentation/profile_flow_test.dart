@@ -8,7 +8,7 @@ Future<FakeProfileRepository> openMe(
 ) async {
   final profile = FakeProfileRepository(auth);
   await pumpApp(tester, auth: auth, profile: profile);
-  await tester.tap(find.text('Me'));
+  await tester.tap(find.byTooltip('Me'));
   await tester.pumpAndSettle();
   return profile;
 }

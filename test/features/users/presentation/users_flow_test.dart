@@ -18,7 +18,7 @@ Future<void> openUsers(
     auth: FakeAuthRepository(sessionUser: user),
     users: users,
   );
-  await tester.tap(find.text('Me'));
+  await tester.tap(find.byTooltip('Me'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Users'));
   await tester.pumpAndSettle();
@@ -29,7 +29,7 @@ void main() {
     tester,
   ) async {
     await pumpApp(tester, auth: FakeAuthRepository(sessionUser: ana));
-    await tester.tap(find.text('Me'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
 
     expect(find.text('Administration'), findsNothing);
@@ -192,7 +192,7 @@ void main() {
       auth: FakeAuthRepository(sessionUser: owner),
       roles: roles,
     );
-    await tester.tap(find.text('Me'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Roles'));
     await tester.pumpAndSettle();
@@ -232,7 +232,7 @@ void main() {
     tester.view.padding = const FakeViewPadding(bottom: 48 * 3);
     tester.view.viewPadding = const FakeViewPadding(bottom: 48 * 3);
     await pumpApp(tester, auth: FakeAuthRepository(sessionUser: owner));
-    await tester.tap(find.text('Me'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Roles'));
     await tester.pumpAndSettle();

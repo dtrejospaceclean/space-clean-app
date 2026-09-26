@@ -18,7 +18,7 @@ Future<FakeServiceCatalogRepository> openCatalog(
     auth: FakeAuthRepository(sessionUser: user),
     services: services,
   );
-  await tester.tap(find.text('Me'));
+  await tester.tap(find.byTooltip('Me'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Service catalog'));
   await tester.pumpAndSettle();
@@ -28,13 +28,18 @@ Future<FakeServiceCatalogRepository> openCatalog(
 /// Opens the picker field showing [text] (its label or value) and chooses
 /// [option] in the sheet.
 Future<void> pick(WidgetTester tester, String text, String option) async {
+  // A form's PickerField, or a list's FilterPill.
   final picker = find.ancestor(
     of: find.text(text).last,
-    matching: find.byType(PickerField),
+    matching: find.byWidgetPredicate(
+      (w) => w is PickerField || w is FilterPill,
+    ),
   );
   await tester.ensureVisible(picker);
   await tester.pumpAndSettle();
-  await tester.tap(find.descendant(of: picker, matching: find.byType(InkWell)));
+  await tester.tap(
+    find.descendant(of: picker, matching: find.byType(InkWell)).first,
+  );
   await tester.pumpAndSettle();
   await tester.tap(find.text(option).last);
   await tester.pumpAndSettle();
@@ -45,7 +50,7 @@ void main() {
     tester,
   ) async {
     await pumpApp(tester, auth: FakeAuthRepository(sessionUser: ana));
-    await tester.tap(find.text('Me'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
 
     expect(find.text('Service catalog'), findsNothing);
@@ -57,15 +62,21 @@ void main() {
     ) async {
       await openCatalog(tester, accountManager);
 
+      // Grouped under their category, priced per unit.
+      expect(find.text('Janitorial'), findsOneWidget);
       expect(find.text('Office cleaning'), findsOneWidget);
-      expect(find.text(r'Janitorial · $0.12 / sq ft'), findsOneWidget);
+      expect(find.text(r'$0.12'), findsOneWidget);
+      expect(find.text('per sq ft'), findsOneWidget);
       // Retired ones only under Inactive.
       expect(find.text('Window washing'), findsNothing);
 
       await tester.tap(find.text('Inactive'));
       await tester.pumpAndSettle();
       expect(find.text('Window washing'), findsOneWidget);
-      // A unit without an abbreviation shows its name.
+      // Uncategorized and unpriced; a unit without an abbreviation shows
+      // its name.
+      expect(find.text('No category'), findsOneWidget);
+      expect(find.text('No price'), findsOneWidget);
       expect(find.text('per Visit'), findsOneWidget);
     });
 
@@ -78,6 +89,11 @@ void main() {
 
       await pick(tester, 'Floor care', 'Janitorial');
       expect(find.text('Office cleaning'), findsOneWidget);
+
+      // Clearing shows every category again.
+      await tester.tap(find.byTooltip('Clear filter'));
+      await tester.pumpAndSettle();
+      expect(find.text('All categories'), findsOneWidget);
     });
 
     testWidgets('adds a service with a category and a unit', (tester) async {
@@ -98,7 +114,8 @@ void main() {
       expect(services.writes, ['create']);
       expect(services.services.last.category?.id, 'c2');
       expect(find.text('Carpet shampoo'), findsOneWidget);
-      expect(find.text(r'Floor care · $0.30 / sq ft'), findsOneWidget);
+      expect(find.text('Floor care'), findsOneWidget);
+      expect(find.text(r'$0.30'), findsOneWidget);
     });
 
     testWidgets('requires a name and a unit, and a valid price', (
@@ -177,10 +194,8 @@ void main() {
 
       expect(find.text('Janitorial'), findsOneWidget);
       expect(find.text('1 service'), findsOneWidget);
-      expect(
-        find.text('Carpets and hard floors · No services'),
-        findsOneWidget,
-      );
+      expect(find.text('Carpets and hard floors'), findsOneWidget);
+      expect(find.text('No services'), findsOneWidget);
     });
 
     testWidgets('adds one', (tester) async {
@@ -194,7 +209,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(services.writes, ['create category']);
-      expect(find.text('Inside and out · No services'), findsOneWidget);
+      expect(find.text('Inside and out'), findsOneWidget);
     });
 
     testWidgets('an unused one can be deleted', (tester) async {
@@ -237,8 +252,9 @@ void main() {
       await tester.tap(find.text('Units'));
       await tester.pumpAndSettle();
 
-      expect(find.text('sq ft · 1 service'), findsOneWidget);
-      expect(find.text('hr · No services'), findsOneWidget);
+      expect(find.text('Shown as sq ft'), findsOneWidget);
+      expect(find.text('Shown as hr'), findsOneWidget);
+      expect(find.text('No services'), findsOneWidget);
 
       await tester.tap(find.text('Hour'));
       await tester.pumpAndSettle();
@@ -248,7 +264,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(services.writes, ['update unit:m3']);
-      expect(find.text('h · No services'), findsOneWidget);
+      expect(find.text('Shown as h'), findsOneWidget);
     });
 
     testWidgets('a duplicate name shows on the name field', (tester) async {

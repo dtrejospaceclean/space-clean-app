@@ -43,7 +43,7 @@ class JobCard extends StatelessWidget {
             Text(
               context.formatTimeRange(job.scheduledStart, job.scheduledEnd),
               style: theme.textTheme.headlineSmall?.copyWith(
-                fontSize: 22,
+                fontSize: 20,
                 color: done ? context.colors.inkSoft : context.colors.ink,
                 fontFeatures: const [FontFeature.tabularFigures()],
               ),

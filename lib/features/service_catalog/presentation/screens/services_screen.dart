@@ -114,14 +114,13 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
       CatalogTab.categories => ref.refresh(categoriesProvider.future),
       CatalogTab.units => ref.refresh(unitsProvider.future),
     };
+    // The applied category's name: from the pickable (active) ones, or from
+    // the services it matched if it was retired since.
     final categoryName = switch (query.categoryId) {
-      final id? =>
-        ref
-            .watch(activeCategoriesProvider)
-            .value
-            ?.where((c) => c.id == id)
-            .firstOrNull
-            ?.name,
+      final id? => [
+        ...?ref.watch(activeCategoriesProvider).value,
+        ...?ref.watch(servicesProvider).value?.map((s) => s.category).nonNulls,
+      ].where((c) => c.id == id).firstOrNull?.name,
       null => null,
     };
 
@@ -144,7 +143,7 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
                 selected: tab,
                 onChanged: ref.read(catalogTabProvider.notifier).select,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               SearchField(
                 controller: _search,
                 hint: switch (tab) {
@@ -157,24 +156,35 @@ class _CatalogTabState extends ConsumerState<_CatalogTab> {
                 busy: _pending || loading,
               ),
               if (tab == CatalogTab.services) ...[
-                const SizedBox(height: 12),
-                PickerField(
+                const SizedBox(height: 10),
+                FilterPill(
+                  icon: Icons.category_outlined,
                   label: l10n.serviceCategoryLabel,
                   value: query.categoryId == null
                       ? l10n.allCategories
-                      : categoryName ?? '…',
+                      : categoryName ?? l10n.serviceCategoryLabel,
                   onTap: _pickCategory,
+                  onClear: query.categoryId == null
+                      ? null
+                      : () => _query.category(null),
                 ),
               ],
               const SizedBox(height: 12),
-              PillToggle<bool?>(
-                options: {
-                  true: l10n.filterActive,
-                  false: l10n.filterInactive,
-                  null: l10n.filterAll,
-                },
-                selected: query.isActive,
-                onChanged: _query.status,
+              // Compact, so it reads as a filter under the full-width tabs;
+              // full width once large text wouldn't fit compact.
+              Align(
+                alignment: Alignment.centerLeft,
+                child: PillToggle<bool?>(
+                  expand: MediaQuery.textScalerOf(context).scale(10) > 13,
+                  semanticLabel: l10n.accountStatusLabel,
+                  options: {
+                    true: l10n.filterActive,
+                    false: l10n.filterInactive,
+                    null: l10n.filterAll,
+                  },
+                  selected: query.isActive,
+                  onChanged: _query.status,
+                ),
               ),
             ],
           ),
@@ -222,13 +232,49 @@ Widget _empty(
         hint: l10n.noMatchesHint,
       );
 
-Widget? _inactivePill(BuildContext context, bool isActive) => isActive
-    ? null
-    : StatusPill(
-        label: AppLocalizations.of(context).inactiveTag,
-        color: context.colors.inkMuted,
-        background: context.colors.sunken,
-      );
+/// The right-hand column of a row: a figure (price, count) in tabular digits,
+/// with an "Inactive" pill under it for retired entries.
+class _Trailing extends StatelessWidget {
+  const _Trailing({required this.value, required this.isActive, this.strong});
+
+  final String value;
+  final bool isActive;
+
+  /// A real figure reads in ink and bold; a placeholder stays muted.
+  final bool? strong;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final strong = this.strong ?? false;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          textAlign: TextAlign.end,
+          style:
+              (strong
+                      ? theme.textTheme.titleMedium
+                      : theme.textTheme.bodyMedium)
+                  ?.copyWith(
+                    fontWeight: strong ? FontWeight.w700 : null,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+        ),
+        if (!isActive) ...[
+          const SizedBox(height: 4),
+          StatusPill(
+            label: AppLocalizations.of(context).inactiveTag,
+            color: context.colors.inkMuted,
+            background: context.colors.sunken,
+          ),
+        ],
+      ],
+    );
+  }
+}
 
 class _ServicesList extends ConsumerWidget {
   const _ServicesList({
@@ -258,43 +304,51 @@ class _ServicesList extends ConsumerWidget {
             noneHint: l10n.noServicesYetHint,
           );
         }
-        return PageBox(
-          child: ListCard(
-            children: [
-              for (final service in list)
-                ListRow(
-                  leading: const IconBadge(
-                    icon: Icons.cleaning_services_outlined,
-                  ),
-                  title: service.name,
-                  subtitle: [
-                    ?service.category?.name,
-                    servicePrice(context, service),
-                  ].join(' · '),
-                  trailing: _inactivePill(context, service.isActive),
-                  onTap: canManage
-                      ? () =>
-                            context.push('${ServicesScreen.path}/${service.id}')
-                      : null,
+        // Grouped under their category, in the API's order (by category,
+        // then name); uncategorized services come last.
+        final groups = <String?, List<ServiceItem>>{};
+        for (final service in list) {
+          (groups[service.category?.name] ??= []).add(service);
+        }
+        final uncategorized = groups.remove(null);
+        return SliverMainAxisGroup(
+          slivers: [
+            for (final (name, services) in [
+              ...groups.entries.map((e) => (e.key!, e.value)),
+              if (uncategorized != null) (l10n.noCategoryGroup, uncategorized),
+            ]) ...[
+              PageBox(top: 12, child: SectionHeader(title: name)),
+              PageBox(
+                top: 0,
+                child: ListCard(
+                  children: [
+                    for (final service in services)
+                      ListRow(
+                        title: service.name,
+                        subtitle: l10n.perUnit(service.unit.short),
+                        trailing: _Trailing(
+                          value: switch (service.defaultPrice) {
+                            final price? => context.formatMoney(price),
+                            null => l10n.noDefaultPrice,
+                          },
+                          strong: service.defaultPrice != null,
+                          isActive: service.isActive,
+                        ),
+                        onTap: canManage
+                            ? () => context.push(
+                                '${ServicesScreen.path}/${service.id}',
+                              )
+                            : null,
+                      ),
+                  ],
                 ),
+              ),
             ],
-          ),
+          ],
         );
       },
     );
   }
-}
-
-/// "$0.12 / sq ft", or "per sq ft" without a default price.
-String servicePrice(BuildContext context, ServiceItem service) {
-  final l10n = AppLocalizations.of(context);
-  return switch (service.defaultPrice) {
-    final price? => l10n.pricePerUnit(
-      context.formatMoney(price),
-      service.unit.short,
-    ),
-    null => l10n.perUnit(service.unit.short),
-  };
 }
 
 class _CategoriesList extends ConsumerWidget {
@@ -330,13 +384,12 @@ class _CategoriesList extends ConsumerWidget {
             children: [
               for (final category in list)
                 ListRow(
-                  leading: const IconBadge(icon: Icons.category_outlined),
                   title: category.name,
-                  subtitle: [
-                    ?category.description,
-                    l10n.serviceCount(category.serviceCount),
-                  ].join(' · '),
-                  trailing: _inactivePill(context, category.isActive),
+                  subtitle: category.description,
+                  trailing: _Trailing(
+                    value: l10n.serviceCount(category.serviceCount),
+                    isActive: category.isActive,
+                  ),
                   onTap: canManage
                       ? () => context.push(
                           '${ServicesScreen.categoriesPath}/${category.id}',
@@ -384,13 +437,15 @@ class _UnitsList extends ConsumerWidget {
             children: [
               for (final unit in list)
                 ListRow(
-                  leading: const IconBadge(icon: Icons.straighten_rounded),
                   title: unit.name,
-                  subtitle: [
-                    ?unit.abbreviation,
-                    l10n.serviceCount(unit.serviceCount),
-                  ].join(' · '),
-                  trailing: _inactivePill(context, unit.isActive),
+                  // How prices show it; nothing when that's just the name.
+                  subtitle: unit.abbreviation == null
+                      ? null
+                      : l10n.shownAs(unit.abbreviation!),
+                  trailing: _Trailing(
+                    value: l10n.serviceCount(unit.serviceCount),
+                    isActive: unit.isActive,
+                  ),
                   onTap: canManage
                       ? () => context.push(
                           '${ServicesScreen.unitsPath}/${unit.id}',

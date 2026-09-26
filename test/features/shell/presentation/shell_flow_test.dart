@@ -83,7 +83,7 @@ void main() {
       },
     );
 
-    await tester.tap(find.text('Accounts'));
+    await tester.tap(find.byTooltip('Accounts'));
     await tester.pumpAndSettle();
     expect(find.text('Bayou Clinic'), findsOneWidget);
 
@@ -107,7 +107,7 @@ void main() {
   ) async {
     await signedIn(tester);
 
-    await tester.tap(find.text('Accounts'));
+    await tester.tap(find.byTooltip('Accounts'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Bayou Clinic'));
     await tester.pumpAndSettle();
@@ -133,7 +133,7 @@ void main() {
       },
     );
 
-    await tester.tap(find.text('Accounts'));
+    await tester.tap(find.byTooltip('Accounts'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Tower'));
     await tester.pumpAndSettle();
@@ -148,7 +148,7 @@ void main() {
   testWidgets('Me shows the user and switches language', (tester) async {
     await signedIn(tester);
 
-    await tester.tap(find.text('Me'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
     expect(find.text('Ana Pérez'), findsOneWidget);
     expect(find.text('Supervisor'), findsOneWidget);
@@ -158,7 +158,7 @@ void main() {
     await revealBelow(tester, find.text('Cerrar sesión'));
     expect(find.text('Cerrar sesión'), findsOneWidget);
     expect(find.byType(SpaceBottomBar), findsOneWidget);
-    expect(find.text('Hoy'), findsOneWidget);
+    expect(find.byTooltip('Hoy'), findsOneWidget);
   });
 
   testWidgets('the tab dock survives 200% text in Spanish', (tester) async {
@@ -171,9 +171,50 @@ void main() {
     );
 
     for (final tab in ['Cuentas', 'Yo', 'Hoy']) {
-      await tester.tap(find.text(tab).last);
+      await tester.tap(find.byTooltip(tab));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     }
+  });
+
+  group('the + beside the tab dock', () {
+    testWidgets('is hidden for people who can create nothing', (tester) async {
+      await signedIn(tester);
+
+      expect(find.byTooltip('Create'), findsNothing);
+    });
+
+    testWidgets('offers only what the user may create', (tester) async {
+      await pumpApp(
+        tester,
+        auth: FakeAuthRepository(sessionUser: accountManager),
+      );
+
+      await tester.tap(find.byTooltip('Create'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('New account'), findsOneWidget);
+      expect(find.text('New service'), findsOneWidget);
+      // Adding users is for owners.
+      expect(find.text('New user'), findsNothing);
+    });
+
+    testWidgets('opens the chosen form in the tab that owns it', (
+      tester,
+    ) async {
+      await pumpApp(tester, auth: FakeAuthRepository(sessionUser: owner));
+
+      await tester.tap(find.byTooltip('Create'));
+      await tester.pumpAndSettle();
+      expect(find.text('New user'), findsOneWidget);
+      await tester.tap(find.text('New service'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('New service'), findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+      // On the Me tab, where the catalog lives; back returns to it.
+      final bar = tester.widget<SpaceBottomBar>(find.byType(SpaceBottomBar));
+      expect(bar.currentIndex, 2);
+    });
   });
 }

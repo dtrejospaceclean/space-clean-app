@@ -99,7 +99,7 @@ class SpaceTextField extends StatelessWidget {
             cursorColor: context.colors.primary,
             style: TextStyle(
               fontFamily: 'Manrope',
-              fontSize: 17,
+              fontSize: 15.5,
               fontWeight: FontWeight.w500,
               color: context.colors.ink,
             ),
@@ -183,7 +183,7 @@ class PickerField extends StatelessWidget {
                         value ?? l10n.notSet,
                         style: TextStyle(
                           fontFamily: 'Manrope',
-                          fontSize: 17,
+                          fontSize: 15.5,
                           fontWeight: FontWeight.w500,
                           color: value == null
                               ? context.colors.inkMuted
@@ -275,7 +275,7 @@ class _Pill extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Manrope',
                     fontWeight: FontWeight.w600,
-                    fontSize: 14.5,
+                    fontSize: 13.5,
                     color: selected
                         ? context.colors.onPrimary
                         : context.colors.ink,
@@ -288,6 +288,87 @@ class _Pill extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// A white pill under a [SearchField] that narrows a list by one choice
+/// ("All categories" → "Janitorial"). Opens a picker on tap; once a value is
+/// applied it shows a clear button instead of the chevron.
+class FilterPill extends StatelessWidget {
+  const FilterPill({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onTap,
+    this.onClear,
+  });
+
+  final IconData icon;
+
+  /// What it filters by, for screen readers ("Category").
+  final String label;
+
+  /// The applied choice, or its "All …" wording when none is.
+  final String value;
+  final VoidCallback onTap;
+
+  /// Shown when a value is applied; resets the filter.
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final applied = onClear != null;
+    return Material(
+      color: context.colors.surface,
+      shape: StadiumBorder(side: BorderSide(color: context.colors.inkSoft)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Row(
+            children: [
+              const SizedBox(width: 16),
+              Icon(icon, size: 20, color: context.colors.inkMuted),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Semantics(
+                  button: true,
+                  label: '$label: $value',
+                  excludeSemantics: true,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      value,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 14,
+                        fontWeight: applied ? FontWeight.w700 : FontWeight.w500,
+                        color: applied
+                            ? context.colors.ink
+                            : context.colors.inkMuted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (applied)
+                IconButton(
+                  tooltip: AppLocalizations.of(context).clearFilter,
+                  icon: const Icon(Icons.close_rounded, size: 20),
+                  color: context.colors.inkMuted,
+                  onPressed: onClear,
+                )
+              else ...[
+                Icon(Icons.expand_more_rounded, color: context.colors.inkMuted),
+                const SizedBox(width: 14),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// A white pill search box with a magnifier, for the top of a list. Pair

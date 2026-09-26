@@ -55,7 +55,7 @@ class Notice extends StatelessWidget {
                   fontFamily: 'Manrope',
                   color: context.colors.ink,
                   fontWeight: FontWeight.w500,
-                  fontSize: 15,
+                  fontSize: 14,
                   height: 1.4,
                 ),
               ),

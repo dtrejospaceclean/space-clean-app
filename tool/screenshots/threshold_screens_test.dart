@@ -29,6 +29,8 @@ import 'package:sp_cln_app/features/settings/domain/repositories/language_reposi
 import 'package:sp_cln_app/features/settings/domain/repositories/theme_mode_repository.dart';
 import 'package:sp_cln_app/features/settings/domain/entities/app_theme_mode.dart';
 import 'package:sp_cln_app/features/settings/presentation/widgets/language_toggle.dart';
+import 'package:sp_cln_app/features/service_catalog/di/service_catalog_providers.dart';
+import 'package:sp_cln_app/features/service_catalog/domain/entities/service_item.dart';
 import 'package:sp_cln_app/features/users/di/users_providers.dart';
 
 import '../../test/helpers/test_app.dart';
@@ -128,6 +130,7 @@ Future<void> _sheet(
         ),
         usersRepositoryProvider.overrideWithValue(FakeUsersRepository()),
         rolesRepositoryProvider.overrideWithValue(FakeRolesRepository()),
+        serviceCatalogRepositoryProvider.overrideWithValue(_demoCatalog()),
         clockProvider.overrideWithValue(() => testNow),
         if (phone.resetAvailable)
           passwordResetRepositoryProvider.overrideWithValue(
@@ -472,6 +475,44 @@ void main() {
     ]);
   });
 
+  // Service catalog: the three tabs, its forms, dark, and Spanish at 200%.
+  Future<void> tab(WidgetTester tester, Finder phone, String label) async {
+    await tester.tap(_in(phone, find.text(label)));
+  }
+
+  testWidgets('catalog', (tester) async {
+    await _sheet(tester, 'catalog', TargetPlatform.iOS, [
+      Phone('1 · Services', asOwner: true, location: '/me/services'),
+      Phone(
+        '2 · Categories',
+        asOwner: true,
+        location: '/me/services',
+        act: (tester, phone) => tab(tester, phone, 'Categories'),
+      ),
+      Phone(
+        '3 · Units',
+        asOwner: true,
+        location: '/me/services',
+        act: (tester, phone) => tab(tester, phone, 'Units'),
+      ),
+      Phone('4 · Edit service', asOwner: true, location: '/me/services/s1'),
+      Phone(
+        '5 · Category in use',
+        asOwner: true,
+        location: '/me/services/categories/c1',
+      ),
+      Phone('6 · New unit', asOwner: true, location: '/me/services/units/new'),
+      Phone('7 · Dark', asOwner: true, dark: true, location: '/me/services'),
+      Phone(
+        '8 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '/me/services',
+      ),
+    ]);
+  });
+
   testWidgets('admin dark', (tester) async {
     await _sheet(
       tester,
@@ -630,4 +671,83 @@ class _MemoryThemeMode implements ThemeModeRepository {
 
   @override
   Future<void> saveThemeMode(AppThemeMode mode) async => savedThemeMode = mode;
+}
+
+FakeServiceCatalogRepository _demoCatalog() {
+  const janitorial = ServiceCategory(
+    id: 'c1',
+    name: 'Janitorial',
+    description: 'Nightly office cleaning',
+  );
+  const floors = ServiceCategory(
+    id: 'c2',
+    name: 'Floor care',
+    description: 'Carpets, strip and wax, hard floors',
+  );
+  const windows = ServiceCategory(id: 'c3', name: 'Windows');
+  const special = ServiceCategory(
+    id: 'c4',
+    name: 'Post-construction',
+    isActive: false,
+  );
+  const sqft = UnitOfMeasure(
+    id: 'm1',
+    name: 'Square foot',
+    abbreviation: 'sq ft',
+  );
+  const hour = UnitOfMeasure(id: 'm2', name: 'Hour', abbreviation: 'hr');
+  const visit = UnitOfMeasure(id: 'm3', name: 'Visit');
+  const pane = UnitOfMeasure(
+    id: 'm4',
+    name: 'Window pane',
+    abbreviation: 'pane',
+  );
+  return FakeServiceCatalogRepository(
+    categories: [janitorial, floors, windows, special],
+    units: [sqft, hour, visit, pane],
+    services: [
+      ServiceItem(
+        id: 's1',
+        name: 'Office cleaning',
+        category: janitorial,
+        unit: sqft,
+        defaultPrice: '0.12',
+      ),
+      ServiceItem(
+        id: 's2',
+        name: 'Restroom sanitation',
+        category: janitorial,
+        unit: visit,
+        defaultPrice: '45',
+      ),
+      ServiceItem(
+        id: 's3',
+        name: 'Day porter',
+        category: janitorial,
+        unit: hour,
+        defaultPrice: '28.5',
+      ),
+      ServiceItem(
+        id: 's4',
+        name: 'Carpet extraction',
+        category: floors,
+        unit: sqft,
+        defaultPrice: '0.3',
+      ),
+      ServiceItem(
+        id: 's5',
+        name: 'Strip and wax VCT floors',
+        category: floors,
+        unit: sqft,
+      ),
+      ServiceItem(
+        id: 's6',
+        name: 'Exterior windows, ground floor',
+        category: windows,
+        unit: pane,
+        defaultPrice: '6',
+      ),
+      ServiceItem(id: 's7', name: 'Supply restock', unit: visit),
+    ],
+  );
 }

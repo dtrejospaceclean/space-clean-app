@@ -102,7 +102,7 @@ class StatCard extends StatelessWidget {
           Text(
             value,
             style: theme.textTheme.headlineSmall?.copyWith(
-              fontSize: compact ? 26 : null,
+              fontSize: compact ? 23 : null,
               fontWeight: FontWeight.w800,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
@@ -248,7 +248,7 @@ class AccentBanner extends StatelessWidget {
               style: TextStyle(
                 color: context.colors.onAccent,
                 fontWeight: FontWeight.w600,
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
           ),

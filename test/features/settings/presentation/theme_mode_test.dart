@@ -8,7 +8,7 @@ Color ground(WidgetTester tester) =>
     tester.widget<Scaffold>(find.byType(Scaffold).last).backgroundColor!;
 
 Future<void> openMe(WidgetTester tester) async {
-  await tester.tap(find.text('Me').last);
+  await tester.tap(find.byTooltip('Me'));
   await tester.pumpAndSettle();
 }
 

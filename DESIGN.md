@@ -26,46 +26,46 @@ colors:
 typography:
   page-title:
     fontFamily: "Manrope"
-    fontSize: "30px"
+    fontSize: "22px"
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: "-0.8px"
   hero:
     fontFamily: "Manrope"
-    fontSize: "28px"
+    fontSize: "24px"
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: "-0.8px"
   figure:
     fontFamily: "Manrope"
-    fontSize: "24px"
+    fontSize: "21px"
     fontWeight: 800
     letterSpacing: "-0.5px"
     fontFeature: "tnum"
   title:
     fontFamily: "Manrope"
-    fontSize: "16px"
+    fontSize: "14.5px"
     fontWeight: 700
   body:
     fontFamily: "Manrope"
-    fontSize: "16px"
+    fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.45
   body-muted:
     fontFamily: "Manrope"
-    fontSize: "14px"
+    fontSize: "13px"
     fontWeight: 400
   field-label:
     fontFamily: "Manrope"
-    fontSize: "14px"
+    fontSize: "13px"
     fontWeight: 600
   field-value:
     fontFamily: "Manrope"
-    fontSize: "17px"
+    fontSize: "15.5px"
     fontWeight: 500
   button:
     fontFamily: "Manrope"
-    fontSize: "16px"
+    fontSize: "15px"
     fontWeight: 700
   pill:
     fontFamily: "Manrope"
@@ -170,11 +170,11 @@ components:
   bottom-bar:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink-muted}"
-    height: "72px"
+    height: "60px"
   bottom-bar-active:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.primary}"
-    height: "72px"
+    height: "60px"
 ---
 
 # Design System: Space Clean
@@ -249,7 +249,7 @@ Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/
 
 **The Wash Ink Rule.** Text on a wash uses that hue's ink tone, not its brand tone: Orange Ink on Orange Wash (5.64:1), Success Ink on Success Wash (6.12:1), Logo Navy on Navy Wash (7.82:1), Danger on Danger Wash (5.51:1). Logo orange on its wash (3.03:1) is for graphics only, and success on its wash (4.30:1) is for icons only.
 
-**The Muted Floor Rule.** Text below large size never goes lighter than Muted Ink (5.80:1 on white, 5.15:1 on ground, 5.39:1 on sunken). That includes hints, placeholders, and idle tab labels. Soft Ink is only for large text (18.66px bold or 24px regular and up) and for UI boundaries and icons, where it clears 3:1 on every ground. Faint Ink is only for disabled controls.
+**The Muted Floor Rule.** Text below large size never goes lighter than Muted Ink (5.80:1 on white, 5.15:1 on ground, 5.39:1 on sunken). That includes hints and placeholders. Soft Ink is only for large text (18.66px bold or 24px regular and up) and for UI boundaries and icons, where it clears 3:1 on every ground. Faint Ink is only for disabled controls.
 
 ## Typography
 
@@ -260,15 +260,18 @@ Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/
 **Character:** A single geometric sans. It is bold and tightly tracked at title sizes, then plain and roomy in body copy, and it respects OS text scaling at every size.
 
 ### Hierarchy
-- **Page title** (700, 30px, 1.15, -0.8 tracking): the big header title on every SpacePage ("Today", "Accounts").
-- **Hero** (700, 28px, 1.15, -0.8): two-tone headlines. The first line is ink and the second is Soft Ink ("Hi, Ana / 3 jobs today", "Sign in / One Partner. Every Facility Solution.").
-- **Figure** (800, 24px, -0.5, tabular figures): big numbers in stat cards (26px compact, three across), 22px job-card time ranges, and 32px on job detail (time and checklist fraction).
-- **Title** (700, 16px): card and tile titles, section headers, and list-row titles (600).
-- **Body** (400, 16px, 1.45): intros and prose. Reset step intros use Muted Ink.
-- **Body muted** (400, 14px, Muted Ink): labels above numbers, subtitles, and captions.
-- **Field label** (600, 14px, ink) over **field value** (500, 17px).
-- **Button** (700, 16px). Text links use 700 at 15px in navy.
-- **Pill** (700, 12.5px): status pills and tab labels.
+- **Page title** (700, 22px, 1.15, -0.5 tracking): the header title on every SpacePage ("Today", "Accounts").
+- **Hero** (700, 24px, 1.15, -0.6): two-tone headlines. The first line is ink and the second is Soft Ink ("Hi, Ana / 3 jobs today", "Sign in / One Partner. Every Facility Solution.").
+- **Figure** (800, 21px, -0.5, tabular figures): big numbers in stat cards (23px compact, three across), 20px job-card time ranges, and 28px on job detail (time and checklist fraction).
+- **Title** (700, 14.5px; card titles 17px): card and tile titles, section headers, and list-row titles (600).
+- **Body** (400, 15px, 1.45): intros and prose. Reset step intros use Muted Ink.
+- **Body muted** (400, 13px, Muted Ink): labels above numbers, subtitles, and captions.
+- **Field label** (600, 13px, ink) over **field value** (500, 15.5px).
+- **Button** (700, 15px). Text links use 700 at 14px in navy.
+- **Pill** (700, 12.5px): status pills.
+- **Footnote** (400, 12.5px): helper text and footnotes. 12.5px is the floor: no text in the app is smaller.
+
+Sizes are set directly on the tokens and widgets, matched to the reference `docs/new_screen.png` (list rows about 14px, compact titles). There is no app-wide text-scale multiplier; the OS text size still scales everything.
 
 ### Dark Palette
 
@@ -323,7 +326,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 - **Circle buttons:** 44px circles inside a 48px target, with 22px rounded icons. Primary Orange with a white icon (4.55:1) is for the screen's main add or edit action (the class is still `CircleButton.dark`). Its fill measures 4.05:1 against the ground. White with an ink icon is for back and secondary actions. Every one has a tooltip and a semantic label.
 
 ### Chips / Pills
-- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a Primary Orange pill with white 14px/700 text (4.55:1), and idle options are transparent with Muted Ink text. Used for the language toggle and the users list filter (Active / Inactive / All).
+- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a Primary Orange pill with white 14px/700 text (4.55:1), and idle options are transparent with Muted Ink text. Used for the language toggle, section tabs (the service catalog's Services / Categories / Units), and list status filters (Active / Inactive / All). A status filter under full-width tabs is compact (`expand: false`) so the two don't read as equals, and goes full width at large text sizes. When text is too large for a pill, its label scales down to show the whole word instead of cutting it off.
 - **Choice pills** (multi-select): pills at least 44px tall, sunken with ink text when idle, and Primary Orange with a white check when selected. Used to pick roles.
 - **Status pill:** a wash fill with a matching icon and 12.5px/700 label in that hue's ink tone. The pairs are Logo Navy on Navy Wash for Scheduled (7.82:1), Orange Ink on Orange Wash for In progress (5.64:1), Success Ink on Success Wash for Completed (6.12:1), and Muted Ink on Sunken for Cancelled (5.39:1). The icon is always present, so status never depends on color alone.
 
@@ -341,8 +344,10 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 - **Notice:** a wash-tinted 16px-corner block (danger, navy info, or success) with a 22px icon in the strong tone and 15px/500 ink text. It is announced as a live region.
 
 ### Navigation
-- **Bottom bar (tab dock):** a white pill resting on the ground, inset 16px from the sides and 16px above the phone's home indicator or navigation bar (16px from the edge when there is none), with 6px inner padding. It is flat, per the No-Shadow Rule: it separates by tone like a card, and page content stops above it. The tabs share the width equally, and every tab stacks a 22px icon over a 12px label. The current tab sits in a solid Primary Orange pill (56px minimum height), with a filled icon and a 700-weight label in white (4.55:1). Idle tabs use outlined icons and 500-weight labels in Muted Ink. The pill fades between tabs over 200ms, instantly when the OS asks for reduced motion. Labels ellipsize rather than overflow at large text sizes. Tabs are Today, Accounts, and Me.
+- **Bottom bar (tab dock):** modeled on `docs/new_screen.png`. A floating white pill (60px tall, 6px inner padding) rests on the ground, inset 20px from the sides and tucked 8px into the home-indicator inset (16px from the edge when there is none). It is flat, per the No-Shadow Rule, and page content stops above it. The tabs share the width equally and are **icons only** (26px): an owner decision for this reference, made on 2026-09-26, that overrides the "icons paired with labels" guidance for the dock. Each tab still has a tooltip on long press and a screen-reader label. The current tab sits in a 48px Orange Wash pill with a filled Orange Ink icon (Wash Ink Rule). Idle tabs use outlined Muted Ink icons. The pill fades between tabs over 200ms, instantly when the OS asks for reduced motion. Tabs are Today, Accounts, and Me.
+- **Create button:** a 60px Primary Orange circle with a white "+" beside the dock, 10px away. It opens a native choice sheet ("Create") listing only what the user may create (New account, New service, New user). With a single option, it opens that form directly. It is hidden for people who can create nothing (crew, supervisors, clients). The screens' own header "+" buttons stay.
 - **Search field** (users list): a white pill on the ground with a 1px Soft Ink outline (3.64:1 against the ground), a Muted Ink search icon and hint, and a 2px Primary Orange border on focus.
+- **Filter pill** (`FilterPill`, service catalog): a 48px white pill under a search field with the same 1px Soft Ink outline, a Muted Ink leading icon, and the current choice. With no filter applied, it reads "All categories" in 500 Muted Ink with a chevron. Once a choice is applied, the value turns 700 ink and a clear button replaces the chevron. It is not a form field, so it has no label above it.
 - **Header:** the page title plus round action buttons. Pushed screens start with a white back circle, and the native back gesture still works.
 
 ### Signature: Two-Tone Hero

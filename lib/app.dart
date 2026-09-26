@@ -22,43 +22,6 @@ class App extends ConsumerWidget {
       theme: SpaceTheme.light(),
       darkTheme: SpaceTheme.dark(),
       themeMode: ref.watch(themeModeControllerProvider).material,
-      builder: (context, child) {
-        final media = MediaQuery.of(context);
-        return MediaQuery(
-          data: media.copyWith(
-            textScaler: _ScaledTextScaler(
-              media.textScaler,
-              SpaceTheme.textScale,
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
   }
-}
-
-/// The system [TextScaler] (possibly nonlinear, e.g. Android 14) scaled by a
-/// constant factor.
-final class _ScaledTextScaler extends TextScaler {
-  const _ScaledTextScaler(this.system, this.factor);
-
-  final TextScaler system;
-  final double factor;
-
-  @override
-  double scale(double fontSize) => system.scale(fontSize) * factor;
-
-  @override
-  // ignore: deprecated_member_use
-  double get textScaleFactor => system.textScaleFactor * factor;
-
-  @override
-  bool operator ==(Object other) =>
-      other is _ScaledTextScaler &&
-      other.system == system &&
-      other.factor == factor;
-
-  @override
-  int get hashCode => Object.hash(system, factor);
 }

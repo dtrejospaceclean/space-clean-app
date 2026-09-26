@@ -82,7 +82,7 @@ void main() {
     await fillAndSubmit(tester);
     expect(find.text('No jobs today'), findsOneWidget);
 
-    await tester.tap(find.text('Me'));
+    await tester.tap(find.byTooltip('Me'));
     await tester.pumpAndSettle();
     await revealBelow(tester, find.text('Sign out'));
     await tester.tap(find.text('Sign out'));

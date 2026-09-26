@@ -126,7 +126,7 @@ class _CodeInputState extends State<CodeInput> {
             style: TextStyle(
               fontFamily: 'Manrope',
               color: context.colors.danger,
-              fontSize: 13,
+              fontSize: 12.5,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -164,7 +164,7 @@ class _Box extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'Manrope',
           color: context.colors.ink,
-          fontSize: 28,
+          fontSize: 26,
           fontWeight: FontWeight.w800,
           fontFeatures: [FontFeature.tabularFigures()],
         ),

@@ -366,17 +366,6 @@
   "noServicesYetHint": "Add the services you offer so proposals and scopes can use them.",
   "noServicesFound": "No services match",
   "noServicesFoundHint": "Try another name, category or filter.",
-  "pricePerUnit": "{price} / {unit}",
-  "@pricePerUnit": {
-    "placeholders": {
-      "price": {
-        "type": "String"
-      },
-      "unit": {
-        "type": "String"
-      }
-    }
-  },
   "perUnit": "per {unit}",
   "@perUnit": {
     "placeholders": {
@@ -449,5 +438,17 @@
   "serviceCategoriesNotFound": "This category no longer exists.",
   "serviceCategoriesInUse": "Services still use this category, so it can't be deleted. Set it to Inactive instead.",
   "unitsOfMeasureNotFound": "This unit no longer exists.",
-  "unitsOfMeasureInUse": "Services still use this unit, so it can't be deleted. Set it to Inactive instead."
+  "unitsOfMeasureInUse": "Services still use this unit, so it can't be deleted. Set it to Inactive instead.",
+  "noCategoryGroup": "No category",
+  "noDefaultPrice": "No price",
+  "shownAs": "Shown as {abbreviation}",
+  "@shownAs": {
+    "placeholders": {
+      "abbreviation": {
+        "type": "String"
+      }
+    }
+  },
+  "clearFilter": "Clear filter",
+  "createTitle": "Create"
 }

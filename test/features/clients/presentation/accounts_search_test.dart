@@ -26,7 +26,7 @@ Future<FakeClientsRepository> openAccounts(
     auth: FakeAuthRepository(sessionUser: owner),
     clients: repo,
   );
-  await tester.tap(find.text('Accounts').last);
+  await tester.tap(find.byTooltip('Accounts'));
   await tester.pumpAndSettle();
   return repo;
 }

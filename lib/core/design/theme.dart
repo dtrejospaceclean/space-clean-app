@@ -9,10 +9,6 @@ import 'tokens.dart';
 abstract final class SpaceTheme {
   static const font = 'Manrope';
 
-  /// App-wide text size, applied on top of the user's system text scale so
-  /// accessibility sizing still works.
-  static const textScale = 0.88;
-
   static ThemeData light() => _build(SpaceColors.light, Brightness.light);
 
   static ThemeData dark() => _build(SpaceColors.dark, Brightness.dark);
@@ -54,41 +50,45 @@ abstract final class SpaceTheme {
       textTheme: text.copyWith(
         // Page titles ("Today").
         headlineLarge: text.headlineLarge?.copyWith(
-          fontSize: 30,
+          fontSize: 22,
           fontWeight: FontWeight.w700,
-          letterSpacing: -0.8,
+          letterSpacing: -0.5,
           height: 1.15,
         ),
         // Hero headlines (two tone).
         headlineMedium: text.headlineMedium?.copyWith(
-          fontSize: 28,
+          fontSize: 24,
           fontWeight: FontWeight.w700,
-          letterSpacing: -0.8,
+          letterSpacing: -0.6,
           height: 1.15,
         ),
         // Big numbers in cards.
         headlineSmall: text.headlineSmall?.copyWith(
-          fontSize: 24,
+          fontSize: 21,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.5,
         ),
         titleLarge: text.titleLarge?.copyWith(
-          fontSize: 18,
+          fontSize: 17,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.2,
         ),
         titleMedium: text.titleMedium?.copyWith(
-          fontSize: 16,
+          fontSize: 14.5,
           fontWeight: FontWeight.w600,
         ),
         titleSmall: text.titleSmall?.copyWith(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
-        bodyLarge: text.bodyLarge?.copyWith(fontSize: 16, height: 1.45),
-        bodyMedium: text.bodyMedium?.copyWith(fontSize: 14, color: c.inkMuted),
+        bodyLarge: text.bodyLarge?.copyWith(fontSize: 15, height: 1.45),
+        bodyMedium: text.bodyMedium?.copyWith(fontSize: 13, color: c.inkMuted),
+        // Footnotes and helper text: the smallest size in the app.
+        bodySmall: text.bodySmall?.copyWith(fontSize: 12.5),
+        labelMedium: text.labelMedium?.copyWith(fontSize: 12.5),
+        labelSmall: text.labelSmall?.copyWith(fontSize: 12.5),
         labelLarge: text.labelLarge?.copyWith(
-          fontSize: 16,
+          fontSize: 15,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -102,7 +102,7 @@ abstract final class SpaceTheme {
           shape: const StadiumBorder(),
           textStyle: const TextStyle(
             fontFamily: font,
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -113,7 +113,7 @@ abstract final class SpaceTheme {
           minimumSize: const Size(48, 48),
           textStyle: const TextStyle(
             fontFamily: font,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -136,7 +136,7 @@ abstract final class SpaceTheme {
         errorStyle: TextStyle(
           color: c.danger,
           fontWeight: FontWeight.w600,
-          fontSize: 13,
+          fontSize: 12.5,
         ),
         errorMaxLines: 3,
       ),
@@ -160,10 +160,10 @@ abstract final class SpaceTheme {
         primaryColor: c.primary,
         scaffoldBackgroundColor: c.ground,
         textTheme: CupertinoTextThemeData(
-          textStyle: TextStyle(fontFamily: font, fontSize: 16, color: c.ink),
+          textStyle: TextStyle(fontFamily: font, fontSize: 15, color: c.ink),
           actionTextStyle: TextStyle(
             fontFamily: font,
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
             color: c.accent,
           ),

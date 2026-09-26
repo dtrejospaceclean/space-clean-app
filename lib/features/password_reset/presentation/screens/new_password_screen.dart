@@ -190,7 +190,7 @@ class _Rule extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontFamily: 'Manrope',
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: met ? FontWeight.w700 : FontWeight.w500,
                   color: met ? context.colors.ink : context.colors.inkMuted,
                 ),

@@ -1562,12 +1562,6 @@ abstract class AppLocalizations {
   /// **'Try another name, category or filter.'**
   String get noServicesFoundHint;
 
-  /// No description provided for @pricePerUnit.
-  ///
-  /// In en, this message translates to:
-  /// **'{price} / {unit}'**
-  String pricePerUnit(String price, String unit);
-
   /// No description provided for @perUnit.
   ///
   /// In en, this message translates to:
@@ -1879,6 +1873,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Services still use this unit, so it can\'t be deleted. Set it to Inactive instead.'**
   String get unitsOfMeasureInUse;
+
+  /// No description provided for @noCategoryGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'No category'**
+  String get noCategoryGroup;
+
+  /// No description provided for @noDefaultPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'No price'**
+  String get noDefaultPrice;
+
+  /// No description provided for @shownAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown as {abbreviation}'**
+  String shownAs(String abbreviation);
+
+  /// No description provided for @clearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filter'**
+  String get clearFilter;
+
+  /// No description provided for @createTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createTitle;
 }
 
 class _AppLocalizationsDelegate

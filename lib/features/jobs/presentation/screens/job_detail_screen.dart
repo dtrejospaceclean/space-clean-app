@@ -129,7 +129,7 @@ class _WhenCard extends StatelessWidget {
           Text(
             context.formatTimeRange(job.scheduledStart, job.scheduledEnd),
             style: theme.textTheme.headlineMedium?.copyWith(
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: FontWeight.w800,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
@@ -172,7 +172,7 @@ class _ChecklistCard extends StatelessWidget {
           Text(
             '${job.checklistDone}/${job.checklistTotal}',
             style: theme.textTheme.headlineMedium?.copyWith(
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: FontWeight.w800,
             ),
           ),
