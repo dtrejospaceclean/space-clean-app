@@ -234,38 +234,6 @@ class _UserFormState extends ConsumerState<_UserForm> {
     }
   }
 
-  /// A titled white card of fields, with page margins.
-  Widget _section(String title, List<Widget> fields, {String? footer}) =>
-      Padding(
-        padding: EdgeInsets.fromLTRB(
-          pageSide(context),
-          12,
-          pageSide(context),
-          0,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SectionHeader(title: title),
-            SpaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final (i, f) in fields.indexed) ...[
-                    if (i > 0) const SizedBox(height: 12),
-                    f,
-                  ],
-                  if (footer != null) ...[
-                    const SizedBox(height: 10),
-                    Text(footer, style: Theme.of(context).textTheme.bodySmall),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -312,7 +280,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                       ),
                       child: Notice(message: l10n.failureMessage(failure)),
                     ),
-                  _section(l10n.sectionContact, [
+                  FormSection(l10n.sectionContact, [
                     SpaceTextField(
                       label: l10n.nameLabel,
                       controller: _name,
@@ -347,7 +315,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                       validator: _validator('phoneNumber'),
                     ),
                   ]),
-                  _section(l10n.sectionSignIn, [
+                  FormSection(l10n.sectionSignIn, [
                     SpaceTextField(
                       label: _creating
                           ? l10n.initialPasswordLabel
@@ -371,7 +339,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                       }),
                     ),
                   ]),
-                  _section(l10n.sectionRoles, [
+                  FormSection(l10n.sectionRoles, [
                     ChoicePills<String>(
                       options: {
                         for (final role in widget.roles)
@@ -387,7 +355,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                             ),
                     ),
                   ], footer: _roleIds.isEmpty ? l10n.noRolesSelected : null),
-                  _section(l10n.sectionEmployment, [
+                  FormSection(l10n.sectionEmployment, [
                     SpaceTextField(
                       label: l10n.employeeIdLabel,
                       controller: _employeeId,
@@ -462,7 +430,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                             },
                     ),
                   ]),
-                  _section(l10n.sectionEmergency, [
+                  FormSection(l10n.sectionEmergency, [
                     SpaceTextField(
                       label: l10n.emergencyNameLabel,
                       controller: _emergencyName,

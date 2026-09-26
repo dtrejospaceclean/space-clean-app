@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../tokens.dart';
+import 'cards.dart';
+import 'space_page.dart';
+import 'text_blocks.dart';
 
 /// Label above a filled, rounded field. Meant to sit inside a white card
 /// (the fill is the card's sunken tone). Errors show in red below.
@@ -331,4 +334,40 @@ class SearchField extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A titled white card of form fields with page margins, as used by every
+/// form screen (fields 12 apart, an optional footnote under them).
+class FormSection extends StatelessWidget {
+  const FormSection(this.title, this.fields, {super.key, this.footer});
+
+  final String title;
+  final List<Widget> fields;
+  final String? footer;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.fromLTRB(pageSide(context), 12, pageSide(context), 0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SectionHeader(title: title),
+        SpaceCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final (i, f) in fields.indexed) ...[
+                if (i > 0) const SizedBox(height: 12),
+                f,
+              ],
+              if (footer case final footer?) ...[
+                const SizedBox(height: 10),
+                Text(footer, style: Theme.of(context).textTheme.bodySmall),
+              ],
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

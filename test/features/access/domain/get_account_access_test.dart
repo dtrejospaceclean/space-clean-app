@@ -47,24 +47,4 @@ void main() {
 
     expect(access.can(Permissions.jobsView), isFalse);
   });
-
-  test('crew who cannot read the team get their role defaults', () async {
-    const crew = User(
-      id: 'u9',
-      email: 'luis@example.com',
-      name: 'Luis',
-      userType: UserType.internal,
-      isActive: true,
-      roles: [Role(id: 'r4', name: GlobalRole.crew)],
-    );
-    final access = await GetAccountAccess(
-      FakeAccessRepository()..forbidden = {'c1'},
-    )(const AccountAccessParams(clientId: 'c1', user: crew));
-
-    expect(access.estimated, isTrue);
-    expect(access.baseRole, 'crew');
-    expect(access.can(Permissions.jobsView), isTrue);
-    expect(access.can(Permissions.teamView), isFalse);
-    expect(access.can(Permissions.infoView), isFalse);
-  });
 }

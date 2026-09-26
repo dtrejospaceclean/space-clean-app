@@ -776,4 +776,117 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get builtInRoleNameHelp =>
       'Los roles integrados conservan su nombre. Puedes cambiar la descripción.';
+
+  @override
+  String get changePasswordTitle => 'Cambiar contraseña';
+
+  @override
+  String get changePasswordHint =>
+      'Actualiza la contraseña con la que inicias sesión';
+
+  @override
+  String get currentPasswordLabel => 'Contraseña actual';
+
+  @override
+  String get changePasswordFootnote =>
+      'Seguirás con la sesión iniciada en este teléfono.';
+
+  @override
+  String get authWrongCurrentPassword => 'Tu contraseña actual no es correcta.';
+
+  @override
+  String get passwordChangedTitle => 'Contraseña cambiada';
+
+  @override
+  String get passwordChangedBody =>
+      'Usa tu nueva contraseña la próxima vez que inicies sesión.';
+
+  @override
+  String profileEmailFootnote(String email) {
+    return 'Inicias sesión con $email. Para cambiarlo, pídeselo a un propietario.';
+  }
+
+  @override
+  String get servicesTitle => 'Catálogo de servicios';
+
+  @override
+  String get adminServicesHint => 'Servicios, unidades y precios base';
+
+  @override
+  String get addService => 'Agregar servicio';
+
+  @override
+  String get newServiceTitle => 'Nuevo servicio';
+
+  @override
+  String get editServiceTitle => 'Editar servicio';
+
+  @override
+  String get searchServicesHint => 'Buscar por nombre o categoría';
+
+  @override
+  String get noServicesYet => 'Aún no hay servicios';
+
+  @override
+  String get noServicesYetHint =>
+      'Agrega los servicios que ofreces para usarlos en propuestas y alcances.';
+
+  @override
+  String get noServicesFound => 'Ningún servicio coincide';
+
+  @override
+  String get noServicesFoundHint =>
+      'Prueba con otro nombre, categoría o filtro.';
+
+  @override
+  String pricePerUnit(String price, String unit) {
+    return '$price / $unit';
+  }
+
+  @override
+  String perUnit(String unit) {
+    return 'por $unit';
+  }
+
+  @override
+  String get sectionService => 'Servicio';
+
+  @override
+  String get sectionPricing => 'Precio';
+
+  @override
+  String get serviceNameLabel => 'Nombre';
+
+  @override
+  String get serviceCategoryLabel => 'Categoría';
+
+  @override
+  String get serviceCategoryHint => 'p. ej., Limpieza general';
+
+  @override
+  String get unitOfMeasureLabel => 'Unidad de medida';
+
+  @override
+  String get unitOfMeasureHint => 'p. ej., pie², hora o visita';
+
+  @override
+  String get defaultPriceLabel => 'Precio base por unidad';
+
+  @override
+  String get defaultPriceHelp =>
+      'Rellena el precio unitario en las propuestas nuevas. Déjalo vacío para fijarlo cada vez.';
+
+  @override
+  String get invalidPrice => 'Escribe un monto como 0.12 o 25.';
+
+  @override
+  String get serviceInactiveHelp =>
+      'Los servicios inactivos siguen en las propuestas y alcances existentes, pero no se pueden elegir para nuevos.';
+
+  @override
+  String get serviceCatalogNotFound => 'Este servicio ya no existe.';
+
+  @override
+  String get serviceCatalogSomeNotFound =>
+      'Uno de los servicios no existe o está inactivo. Actualiza e inténtalo de nuevo.';
 }

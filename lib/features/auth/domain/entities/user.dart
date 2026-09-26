@@ -25,6 +25,9 @@ class User {
     required this.userType,
     required this.isActive,
     required this.roles,
+    this.phoneNumber,
+    this.emergencyContactName,
+    this.emergencyContactPhone,
   });
 
   final String id;
@@ -35,6 +38,11 @@ class User {
   final UserType userType;
   final bool isActive;
   final List<Role> roles;
+
+  // Details the user edits on their own profile.
+  final String? phoneNumber;
+  final String? emergencyContactName;
+  final String? emergencyContactPhone;
 
   bool hasRole(String role) => roles.any((r) => r.name == role);
 

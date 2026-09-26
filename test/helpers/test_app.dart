@@ -22,6 +22,12 @@ import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dar
 import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
 import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.dart';
 import 'package:sp_cln_app/features/password_reset/domain/repositories/password_reset_repository.dart';
+import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
+import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
+import 'package:sp_cln_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:sp_cln_app/features/service_catalog/di/service_catalog_providers.dart';
+import 'package:sp_cln_app/features/service_catalog/domain/entities/service_item.dart';
+import 'package:sp_cln_app/features/service_catalog/domain/repositories/service_catalog_repository.dart';
 import 'package:sp_cln_app/features/users/di/users_providers.dart';
 import 'package:sp_cln_app/features/users/domain/entities/managed_user.dart';
 import 'package:sp_cln_app/features/users/domain/entities/role_info.dart';
@@ -368,21 +374,117 @@ class FakeAccessRepository implements AccessRepository {
 
   Map<String, AccountAccess> byClient;
 
-  /// Accounts where reading the membership is forbidden (no team.view).
-  Set<String> forbidden = {};
+  @override
+  Future<AccountAccess?> getMyMembership(String clientId) async =>
+      byClient[clientId];
+}
+
+/// Saves the profile onto [auth]'s session user, as `PATCH /auth/me` would.
+class FakeProfileRepository implements ProfileRepository {
+  FakeProfileRepository(this.auth);
+
+  final FakeAuthRepository auth;
+  String password = 'correct horse battery';
+  final writes = <String>[];
 
   @override
-  Future<AccountAccess?> getMembership({
-    required String clientId,
-    required String userId,
+  Future<User> updateProfile(ProfileDraft draft) async {
+    writes.add('profile');
+    String? text(String? v) => (v ?? '').trim().isEmpty ? null : v!.trim();
+    final user = auth.sessionUser!;
+    return auth.sessionUser = User(
+      id: user.id,
+      email: user.email,
+      name: draft.name.trim(),
+      userType: user.userType,
+      isActive: user.isActive,
+      roles: user.roles,
+      phoneNumber: text(draft.phoneNumber),
+      emergencyContactName: text(draft.emergencyContactName),
+      emergencyContactPhone: text(draft.emergencyContactPhone),
+    );
+  }
+
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
   }) async {
-    if (forbidden.contains(clientId)) {
-      throw const ServerFailure(
-        'auth.insufficient_permission',
-        statusCode: 403,
-      );
+    if (currentPassword != password) {
+      throw const ServerFailure('auth.wrong_current_password', statusCode: 400);
     }
-    return byClient[clientId];
+    writes.add('password');
+    password = newPassword;
+  }
+}
+
+/// An in-memory catalog, filtered like the API.
+class FakeServiceCatalogRepository implements ServiceCatalogRepository {
+  FakeServiceCatalogRepository([List<ServiceItem>? services])
+    : services = [...services ?? _seed];
+
+  static const _seed = [
+    ServiceItem(
+      id: 's1',
+      name: 'Office cleaning',
+      category: 'Janitorial',
+      unitOfMeasure: 'sq ft',
+      defaultPrice: '0.12',
+    ),
+    ServiceItem(
+      id: 's2',
+      name: 'Window washing',
+      unitOfMeasure: 'visit',
+      isActive: false,
+    ),
+  ];
+
+  final List<ServiceItem> services;
+  final writes = <String>[];
+
+  @override
+  Future<List<ServiceItem>> getServices(ServiceQuery query) async {
+    final search = query.search.trim().toLowerCase();
+    return services
+        .where((s) => query.isActive == null || s.isActive == query.isActive)
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(search) ||
+              (s.category ?? '').toLowerCase().contains(search),
+        )
+        .toList();
+  }
+
+  @override
+  Future<ServiceItem> getService(String id) async =>
+      services.firstWhere((s) => s.id == id);
+
+  @override
+  Future<ServiceItem> createService(ServiceDraft draft) async {
+    writes.add('create');
+    final service = _fromDraft('s${services.length + 1}', draft);
+    services.add(service);
+    return service;
+  }
+
+  @override
+  Future<ServiceItem> updateService(String id, ServiceDraft draft) async {
+    writes.add('update:$id');
+    final service = _fromDraft(id, draft);
+    services[services.indexWhere((s) => s.id == id)] = service;
+    return service;
+  }
+
+  static ServiceItem _fromDraft(String id, ServiceDraft d) {
+    String? text(String? v) => (v ?? '').trim().isEmpty ? null : v!.trim();
+    return ServiceItem(
+      id: id,
+      name: d.name.trim(),
+      unitOfMeasure: d.unitOfMeasure.trim(),
+      category: text(d.category),
+      defaultPrice: text(d.defaultPrice),
+      isActive: d.isActive,
+    );
   }
 }
 
@@ -415,6 +517,8 @@ Future<SharedPreferences> pumpApp(
   AccessRepository? access,
   UsersRepository? users,
   RolesRepository? roles,
+  ProfileRepository? profile,
+  ServiceCatalogRepository? services,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -443,6 +547,12 @@ Future<SharedPreferences> pumpApp(
         rolesRepositoryProvider.overrideWithValue(
           roles ?? FakeRolesRepository(),
         ),
+        profileRepositoryProvider.overrideWithValue(
+          profile ?? FakeProfileRepository(auth),
+        ),
+        serviceCatalogRepositoryProvider.overrideWithValue(
+          services ?? FakeServiceCatalogRepository(),
+        ),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,
@@ -451,6 +561,18 @@ Future<SharedPreferences> pumpApp(
   );
   await tester.pumpAndSettle();
   return prefs;
+}
+
+/// Scrolls the current page until [finder] is built and clear of the
+/// bottom bar.
+Future<void> revealBelow(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    200,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
 }
 
 Finder button(String label) => find.widgetWithText(FilledButton, label);

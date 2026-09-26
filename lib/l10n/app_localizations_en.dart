@@ -769,4 +769,114 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get builtInRoleNameHelp =>
       'Built-in roles keep their name. You can change the description.';
+
+  @override
+  String get changePasswordTitle => 'Change password';
+
+  @override
+  String get changePasswordHint => 'Update the password you sign in with';
+
+  @override
+  String get currentPasswordLabel => 'Current password';
+
+  @override
+  String get changePasswordFootnote => 'You\'ll stay signed in on this phone.';
+
+  @override
+  String get authWrongCurrentPassword => 'Your current password is incorrect.';
+
+  @override
+  String get passwordChangedTitle => 'Password changed';
+
+  @override
+  String get passwordChangedBody =>
+      'Use your new password the next time you sign in.';
+
+  @override
+  String profileEmailFootnote(String email) {
+    return 'You sign in with $email. To change it, ask an owner.';
+  }
+
+  @override
+  String get servicesTitle => 'Service catalog';
+
+  @override
+  String get adminServicesHint => 'Services, units and default prices';
+
+  @override
+  String get addService => 'Add service';
+
+  @override
+  String get newServiceTitle => 'New service';
+
+  @override
+  String get editServiceTitle => 'Edit service';
+
+  @override
+  String get searchServicesHint => 'Search name or category';
+
+  @override
+  String get noServicesYet => 'No services yet';
+
+  @override
+  String get noServicesYetHint =>
+      'Add the services you offer so proposals and scopes can use them.';
+
+  @override
+  String get noServicesFound => 'No services match';
+
+  @override
+  String get noServicesFoundHint => 'Try another name, category or filter.';
+
+  @override
+  String pricePerUnit(String price, String unit) {
+    return '$price / $unit';
+  }
+
+  @override
+  String perUnit(String unit) {
+    return 'per $unit';
+  }
+
+  @override
+  String get sectionService => 'Service';
+
+  @override
+  String get sectionPricing => 'Pricing';
+
+  @override
+  String get serviceNameLabel => 'Name';
+
+  @override
+  String get serviceCategoryLabel => 'Category';
+
+  @override
+  String get serviceCategoryHint => 'e.g. Janitorial';
+
+  @override
+  String get unitOfMeasureLabel => 'Unit of measure';
+
+  @override
+  String get unitOfMeasureHint => 'e.g. sq ft, hour or visit';
+
+  @override
+  String get defaultPriceLabel => 'Default price per unit';
+
+  @override
+  String get defaultPriceHelp =>
+      'Pre-fills the unit price on new proposals. Leave empty to price each time.';
+
+  @override
+  String get invalidPrice => 'Enter an amount like 0.12 or 25.';
+
+  @override
+  String get serviceInactiveHelp =>
+      'Inactive services stay on existing proposals and scopes, but can\'t be picked for new ones.';
+
+  @override
+  String get serviceCatalogNotFound => 'This service no longer exists.';
+
+  @override
+  String get serviceCatalogSomeNotFound =>
+      'One of the services is unknown or inactive. Refresh and try again.';
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/entities/user.dart';
+import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
+import '../../service_catalog/presentation/screens/services_screen.dart';
 import '../../users/domain/usecases/user_usecases.dart';
 import '../../users/presentation/screens/roles_screen.dart';
 import '../../users/presentation/screens/users_screen.dart';
@@ -44,6 +46,13 @@ final adminModules = <AdminModule>[
     description: (l10n) => l10n.adminRolesHint,
     path: RolesScreen.path,
     isVisibleTo: UserAdminPolicy.canView,
+  ),
+  AdminModule(
+    icon: Icons.cleaning_services_outlined,
+    label: (l10n) => l10n.servicesTitle,
+    description: (l10n) => l10n.adminServicesHint,
+    path: ServicesScreen.path,
+    isVisibleTo: ServiceCatalogPolicy.canManage,
   ),
 ];
 

@@ -14,5 +14,8 @@ abstract final class UserModel {
       for (final r in json['roles'] as List? ?? const [])
         Role(id: r['id'] as String, name: r['name'] as String),
     ],
+    phoneNumber: json['phoneNumber'] as String?,
+    emergencyContactName: json['emergencyContactName'] as String?,
+    emergencyContactPhone: json['emergencyContactPhone'] as String?,
   );
 }

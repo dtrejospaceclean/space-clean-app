@@ -16,8 +16,11 @@ import '../../features/password_reset/presentation/screens/forgot_password_scree
 import '../../features/password_reset/presentation/screens/new_password_screen.dart';
 import '../../features/password_reset/presentation/screens/reset_code_screen.dart';
 import '../../features/password_reset/presentation/screens/reset_done_screen.dart';
+import '../../features/profile/presentation/screens/change_password_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/service_catalog/presentation/screens/service_form_screen.dart';
+import '../../features/service_catalog/presentation/screens/services_screen.dart';
 import '../../features/shell/presentation/app_shell.dart';
 import '../../features/shell/presentation/branch_container.dart';
 import '../../features/users/presentation/screens/roles_screen.dart';
@@ -197,6 +200,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'roles',
                     builder: (_, _) => const RolesScreen(),
+                  ),
+                  GoRoute(
+                    path: 'password',
+                    builder: (_, _) => const ChangePasswordScreen(),
+                  ),
+                  GoRoute(
+                    path: 'services',
+                    builder: (_, _) => const ServicesScreen(),
+                    routes: [
+                      // Before ':serviceId' so "new" isn't read as an id.
+                      GoRoute(
+                        path: 'new',
+                        builder: (_, _) => const ServiceFormScreen(),
+                      ),
+                      GoRoute(
+                        path: ':serviceId',
+                        builder: (_, state) => ServiceFormScreen(
+                          serviceId: state.pathParameters['serviceId'],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

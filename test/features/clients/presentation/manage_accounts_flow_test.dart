@@ -40,18 +40,6 @@ Future<void> openDetails(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-/// Scrolls the current page until [finder] is built and clear of the
-/// bottom bar.
-Future<void> revealBelow(WidgetTester tester, Finder finder) async {
-  await tester.scrollUntilVisible(
-    finder,
-    200,
-    scrollable: find.byType(Scrollable).last,
-  );
-  await tester.ensureVisible(finder);
-  await tester.pumpAndSettle();
-}
-
 void main() {
   testWidgets('people without a staff admin role can\'t add accounts', (
     tester,

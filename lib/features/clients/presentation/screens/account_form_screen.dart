@@ -278,38 +278,6 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
     });
   }
 
-  /// A titled white card of fields, with page margins.
-  Widget _section(String title, List<Widget> fields, {String? footer}) =>
-      Padding(
-        padding: EdgeInsets.fromLTRB(
-          pageSide(context),
-          12,
-          pageSide(context),
-          0,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SectionHeader(title: title),
-            SpaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final (i, f) in fields.indexed) ...[
-                    if (i > 0) const SizedBox(height: 12),
-                    f,
-                  ],
-                  if (footer != null) ...[
-                    const SizedBox(height: 10),
-                    Text(footer, style: Theme.of(context).textTheme.bodySmall),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-
   Widget _text(
     String label,
     TextEditingController controller,
@@ -387,7 +355,7 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
                     ),
                     child: Notice(message: l10n.failureMessage(failure)),
                   ),
-                _section(l10n.sectionGeneral, [
+                FormSection(l10n.sectionGeneral, [
                   _text(
                     l10n.legalNameLabel,
                     _legalName,
@@ -437,7 +405,7 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
                     ],
                   ),
                 ]),
-                _section(l10n.sectionBilling, [
+                FormSection(l10n.sectionBilling, [
                   _text(
                     l10n.taxIdLabel,
                     _taxId,
@@ -464,7 +432,7 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
                   ),
                   _text(l10n.billingZipLabel, _zip, 'billingZip'),
                 ]),
-                _section(l10n.sectionPeopleInCharge, [
+                FormSection(l10n.sectionPeopleInCharge, [
                   assignee(_Slot.accountManager, l10n.roleAccountManager),
                   assignee(_Slot.supervisor, l10n.roleSupervisor),
                   assignee(_Slot.salesperson, l10n.salespersonLabel),

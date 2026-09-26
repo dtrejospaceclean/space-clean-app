@@ -76,6 +76,15 @@ class AuthController extends AsyncNotifier<AuthState> {
     }
   }
 
+  /// Takes the record the server just returned for the signed-in user (e.g.
+  /// after they saved their own profile).
+  void replaceUser(User user) {
+    if (state.value case Authenticated(user: User(:final id))
+        when id == user.id) {
+      state = AsyncData(Authenticated(user));
+    }
+  }
+
   Future<void> logout() async {
     await ref.read(logoutProvider)(const NoParams());
     state = const AsyncData(Unauthenticated());

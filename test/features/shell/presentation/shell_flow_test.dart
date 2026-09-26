@@ -155,6 +155,7 @@ void main() {
 
     await tester.tap(find.text('Español'));
     await tester.pumpAndSettle();
+    await revealBelow(tester, find.text('Cerrar sesión'));
     expect(find.text('Cerrar sesión'), findsOneWidget);
     expect(find.byType(SpaceBottomBar), findsOneWidget);
     expect(find.text('Hoy'), findsOneWidget);

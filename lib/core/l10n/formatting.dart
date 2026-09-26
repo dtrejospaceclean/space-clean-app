@@ -20,4 +20,14 @@ extension DateFormatting on BuildContext {
   /// "Wednesday, September 23".
   String formatDayLong(DateTime day) =>
       DateFormat.MMMMEEEEd(_locale).format(day);
+
+  /// A decimal string from the API ("0.12") as dollars in the app's
+  /// language: "$0.12". Unparseable input is shown as is.
+  String formatMoney(String amount) => switch (num.tryParse(amount)) {
+    final value? => NumberFormat.currency(
+      locale: _locale,
+      symbol: r'$',
+    ).format(value),
+    null => amount,
+  };
 }

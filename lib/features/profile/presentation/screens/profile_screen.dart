@@ -9,8 +9,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../settings/presentation/widgets/language_toggle.dart';
 import '../../../settings/presentation/widgets/theme_mode_toggle.dart';
-import '../../../users/domain/usecases/user_usecases.dart';
 import '../admin_modules.dart';
+import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
 
 /// The signed-in user, administration, settings, and sign-out.
@@ -59,12 +59,11 @@ class ProfileScreen extends ConsumerWidget {
     return SpacePage(
       title: l10n.profileTitle,
       actions: [
-        if (UserAdminPolicy.canEdit(user))
-          CircleButton.dark(
-            icon: Icons.edit_outlined,
-            tooltip: l10n.editProfile,
-            onPressed: () => context.push(EditProfileScreen.path),
-          ),
+        CircleButton.dark(
+          icon: Icons.edit_outlined,
+          tooltip: l10n.editProfile,
+          onPressed: () => context.push(EditProfileScreen.path),
+        ),
       ],
       slivers: [
         PageBox(
@@ -105,6 +104,20 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+        ),
+        PageBox(top: 12, child: SectionHeader(title: l10n.sectionSignIn)),
+        PageBox(
+          top: 0,
+          child: ListCard(
+            children: [
+              ListRow(
+                leading: const IconBadge(icon: Icons.lock_outline_rounded),
+                title: l10n.changePasswordTitle,
+                subtitle: l10n.changePasswordHint,
+                onTap: () => context.push(ChangePasswordScreen.path),
+              ),
+            ],
           ),
         ),
         if (visibleAdminModules(user) case final modules

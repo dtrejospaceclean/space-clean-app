@@ -340,5 +340,62 @@
   "themeSystem": "System",
   "themeLight": "Light",
   "themeDark": "Dark",
-  "builtInRoleNameHelp": "Built-in roles keep their name. You can change the description."
+  "builtInRoleNameHelp": "Built-in roles keep their name. You can change the description.",
+  "changePasswordTitle": "Change password",
+  "changePasswordHint": "Update the password you sign in with",
+  "currentPasswordLabel": "Current password",
+  "changePasswordFootnote": "You'll stay signed in on this phone.",
+  "authWrongCurrentPassword": "Your current password is incorrect.",
+  "passwordChangedTitle": "Password changed",
+  "passwordChangedBody": "Use your new password the next time you sign in.",
+  "profileEmailFootnote": "You sign in with {email}. To change it, ask an owner.",
+  "@profileEmailFootnote": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "servicesTitle": "Service catalog",
+  "adminServicesHint": "Services, units and default prices",
+  "addService": "Add service",
+  "newServiceTitle": "New service",
+  "editServiceTitle": "Edit service",
+  "searchServicesHint": "Search name or category",
+  "noServicesYet": "No services yet",
+  "noServicesYetHint": "Add the services you offer so proposals and scopes can use them.",
+  "noServicesFound": "No services match",
+  "noServicesFoundHint": "Try another name, category or filter.",
+  "pricePerUnit": "{price} / {unit}",
+  "@pricePerUnit": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "perUnit": "per {unit}",
+  "@perUnit": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionService": "Service",
+  "sectionPricing": "Pricing",
+  "serviceNameLabel": "Name",
+  "serviceCategoryLabel": "Category",
+  "serviceCategoryHint": "e.g. Janitorial",
+  "unitOfMeasureLabel": "Unit of measure",
+  "unitOfMeasureHint": "e.g. sq ft, hour or visit",
+  "defaultPriceLabel": "Default price per unit",
+  "defaultPriceHelp": "Pre-fills the unit price on new proposals. Leave empty to price each time.",
+  "invalidPrice": "Enter an amount like 0.12 or 25.",
+  "serviceInactiveHelp": "Inactive services stay on existing proposals and scopes, but can't be picked for new ones.",
+  "serviceCatalogNotFound": "This service no longer exists.",
+  "serviceCatalogSomeNotFound": "One of the services is unknown or inactive. Refresh and try again."
 }

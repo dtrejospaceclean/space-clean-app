@@ -1453,6 +1453,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Built-in roles keep their name. You can change the description.'**
   String get builtInRoleNameHelp;
+
+  /// No description provided for @changePasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePasswordTitle;
+
+  /// No description provided for @changePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the password you sign in with'**
+  String get changePasswordHint;
+
+  /// No description provided for @currentPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPasswordLabel;
+
+  /// No description provided for @changePasswordFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll stay signed in on this phone.'**
+  String get changePasswordFootnote;
+
+  /// No description provided for @authWrongCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current password is incorrect.'**
+  String get authWrongCurrentPassword;
+
+  /// No description provided for @passwordChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed'**
+  String get passwordChangedTitle;
+
+  /// No description provided for @passwordChangedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your new password the next time you sign in.'**
+  String get passwordChangedBody;
+
+  /// No description provided for @profileEmailFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'You sign in with {email}. To change it, ask an owner.'**
+  String profileEmailFootnote(String email);
+
+  /// No description provided for @servicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Service catalog'**
+  String get servicesTitle;
+
+  /// No description provided for @adminServicesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Services, units and default prices'**
+  String get adminServicesHint;
+
+  /// No description provided for @addService.
+  ///
+  /// In en, this message translates to:
+  /// **'Add service'**
+  String get addService;
+
+  /// No description provided for @newServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New service'**
+  String get newServiceTitle;
+
+  /// No description provided for @editServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit service'**
+  String get editServiceTitle;
+
+  /// No description provided for @searchServicesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name or category'**
+  String get searchServicesHint;
+
+  /// No description provided for @noServicesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No services yet'**
+  String get noServicesYet;
+
+  /// No description provided for @noServicesYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the services you offer so proposals and scopes can use them.'**
+  String get noServicesYetHint;
+
+  /// No description provided for @noServicesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No services match'**
+  String get noServicesFound;
+
+  /// No description provided for @noServicesFoundHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name, category or filter.'**
+  String get noServicesFoundHint;
+
+  /// No description provided for @pricePerUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} / {unit}'**
+  String pricePerUnit(String price, String unit);
+
+  /// No description provided for @perUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'per {unit}'**
+  String perUnit(String unit);
+
+  /// No description provided for @sectionService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get sectionService;
+
+  /// No description provided for @sectionPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing'**
+  String get sectionPricing;
+
+  /// No description provided for @serviceNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get serviceNameLabel;
+
+  /// No description provided for @serviceCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get serviceCategoryLabel;
+
+  /// No description provided for @serviceCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Janitorial'**
+  String get serviceCategoryHint;
+
+  /// No description provided for @unitOfMeasureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit of measure'**
+  String get unitOfMeasureLabel;
+
+  /// No description provided for @unitOfMeasureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. sq ft, hour or visit'**
+  String get unitOfMeasureHint;
+
+  /// No description provided for @defaultPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default price per unit'**
+  String get defaultPriceLabel;
+
+  /// No description provided for @defaultPriceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-fills the unit price on new proposals. Leave empty to price each time.'**
+  String get defaultPriceHelp;
+
+  /// No description provided for @invalidPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount like 0.12 or 25.'**
+  String get invalidPrice;
+
+  /// No description provided for @serviceInactiveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive services stay on existing proposals and scopes, but can\'t be picked for new ones.'**
+  String get serviceInactiveHelp;
+
+  /// No description provided for @serviceCatalogNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This service no longer exists.'**
+  String get serviceCatalogNotFound;
+
+  /// No description provided for @serviceCatalogSomeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'One of the services is unknown or inactive. Refresh and try again.'**
+  String get serviceCatalogSomeNotFound;
 }
 
 class _AppLocalizationsDelegate

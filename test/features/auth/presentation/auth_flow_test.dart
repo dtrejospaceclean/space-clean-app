@@ -84,6 +84,7 @@ void main() {
 
     await tester.tap(find.text('Me'));
     await tester.pumpAndSettle();
+    await revealBelow(tester, find.text('Sign out'));
     await tester.tap(find.text('Sign out'));
     await tester.pumpAndSettle();
     // Confirm in the dialog.
