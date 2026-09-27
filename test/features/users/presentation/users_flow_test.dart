@@ -50,6 +50,9 @@ void main() {
     expect(find.byTooltip('Active'), findsOneWidget);
     expect(find.byTooltip('Inactive'), findsOneWidget);
     expect(find.byTooltip('Create'), findsOneWidget);
+    // Rows show the email only, not the roles.
+    expect(find.text('ana@example.com'), findsOneWidget);
+    expect(find.textContaining('Supervisor'), findsNothing);
   });
 
   testWidgets('the search shows a spinner until the results are in', (

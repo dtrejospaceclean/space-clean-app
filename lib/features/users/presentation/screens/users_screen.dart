@@ -8,7 +8,6 @@ import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../controllers/users_providers.dart';
-import '../widgets/user_labels.dart';
 
 /// Everyone who can sign in, staff and clients' own people, active and
 /// deactivated together, each marked. Search, open a user; owners add one
@@ -92,11 +91,7 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                       title: user.name,
                       // Deactivated people recede; the icon says which.
                       muted: !user.isActive,
-                      subtitle: [
-                        user.email,
-                        if (user.roles.isNotEmpty)
-                          l10n.rolesLabel(user.roles.map((r) => r.name)),
-                      ].join(' · '),
+                      subtitle: user.email,
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
