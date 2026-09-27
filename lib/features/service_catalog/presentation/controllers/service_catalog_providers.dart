@@ -14,7 +14,7 @@ final canManageServicesProvider = Provider<bool>((ref) {
 /// The catalog's three lists (services, categories, units).
 enum CatalogList { services, categories, units }
 
-/// Each list's search and status filter, kept while moving between them.
+/// Each list's search, kept while moving between them.
 final catalogQueryProvider =
     NotifierProvider.family<CatalogQueryController, CatalogQuery, CatalogList>(
       CatalogQueryController.new,
@@ -25,16 +25,11 @@ class CatalogQueryController extends Notifier<CatalogQuery> {
 
   final CatalogList list;
 
-  /// Services list active and inactive together; the others start on active.
+  /// Every list shows active and inactive together.
   @override
-  CatalogQuery build() => list == CatalogList.services
-      ? const CatalogQuery(isActive: null)
-      : const CatalogQuery();
+  CatalogQuery build() => const CatalogQuery(isActive: null);
 
   void search(String text) => state = state.copyWith(search: text);
-
-  void status(bool? isActive) =>
-      state = state.copyWith(isActive: () => isActive);
 }
 
 final servicesProvider = FutureProvider<List<ServiceItem>>(

@@ -394,13 +394,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get filterInactive => 'Inactivos';
 
   @override
-  String get filterAll => 'Todos';
-
-  @override
   String get noUsersFound => 'Ningún usuario coincide';
 
   @override
-  String get noUsersFoundHint => 'Prueba con otro nombre o filtro.';
+  String get noUsersFoundHint => 'Prueba con otro nombre o correo.';
 
   @override
   String get inactiveTag => 'Inactivo';
@@ -880,7 +877,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noMatchesFound => 'Nada coincide';
 
   @override
-  String get noMatchesHint => 'Prueba con otra búsqueda o filtro.';
+  String get noMatchesHint => 'Prueba con otra búsqueda.';
 
   @override
   String get noCategoriesYet => 'Aún no hay categorías';

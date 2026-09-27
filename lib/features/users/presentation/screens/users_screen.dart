@@ -10,8 +10,9 @@ import '../../../auth/domain/entities/user.dart';
 import '../controllers/users_providers.dart';
 import '../widgets/user_labels.dart';
 
-/// Everyone who can sign in: staff and clients' own people. Search, filter by
-/// status, open a user; owners can add one.
+/// Everyone who can sign in, staff and clients' own people, active and
+/// deactivated together, each marked. Search, open a user; owners add one
+/// from the tab dock's "+".
 class UsersScreen extends ConsumerStatefulWidget {
   const UsersScreen({super.key});
 
@@ -50,7 +51,6 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final users = ref.watch(usersProvider);
-    final query = ref.watch(userQueryProvider);
     Future<void> refresh() => ref.refresh(usersProvider.future);
 
     return SpacePage(
@@ -68,17 +68,6 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                 onChanged: _onSearch,
                 // From the first keystroke until the results are in.
                 busy: _pending || users.isLoading,
-              ),
-              const SizedBox(height: 12),
-              PillToggle<bool?>(
-                options: {
-                  true: l10n.filterActive,
-                  false: l10n.filterInactive,
-                  null: l10n.filterAll,
-                },
-                selected: query.isActive,
-                onChanged: (v) =>
-                    ref.read(userQueryProvider.notifier).status(v),
               ),
             ],
           ),
@@ -101,24 +90,27 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                     ListRow(
                       leading: InitialsAvatar(name: user.name),
                       title: user.name,
+                      // Deactivated people recede; the icon says which.
+                      muted: !user.isActive,
                       subtitle: [
                         user.email,
                         if (user.roles.isNotEmpty)
                           l10n.rolesLabel(user.roles.map((r) => r.name)),
                       ].join(' · '),
-                      trailing: !user.isActive
-                          ? StatusPill(
-                              label: l10n.inactiveTag,
-                              color: context.colors.inkMuted,
-                              background: context.colors.sunken,
-                            )
-                          : user.userType == UserType.external
-                          ? StatusPill(
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (user.userType == UserType.external) ...[
+                            StatusPill(
                               label: l10n.clientUserTag,
                               color: context.colors.accent,
                               background: context.colors.accentSoft,
-                            )
-                          : null,
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          StatusIcon(isActive: user.isActive),
+                        ],
+                      ),
                       onTap: () =>
                           context.push('${UsersScreen.path}/${user.id}'),
                     ),

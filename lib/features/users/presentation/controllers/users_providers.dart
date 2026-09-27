@@ -19,19 +19,17 @@ final canEditUsersProvider = Provider<bool>((ref) {
   return auth is Authenticated && UserAdminPolicy.canEdit(auth.user);
 });
 
-/// The list's search and filters.
+/// The list's search.
 final userQueryProvider = NotifierProvider<UserQueryController, UserQuery>(
   UserQueryController.new,
 );
 
 class UserQueryController extends Notifier<UserQuery> {
+  /// Active and inactive together (active first), each marked.
   @override
-  UserQuery build() => const UserQuery();
+  UserQuery build() => const UserQuery(isActive: null);
 
   void search(String text) => state = state.copyWith(search: text);
-
-  void status(bool? isActive) =>
-      state = state.copyWith(isActive: () => isActive);
 }
 
 final usersProvider = FutureProvider<List<ManagedUser>>(

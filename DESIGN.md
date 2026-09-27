@@ -326,7 +326,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 - **Circle buttons:** 44px circles inside a 48px target, with 22px rounded icons. Primary Orange with a white icon (4.55:1) is for the screen's main add or edit action (the class is still `CircleButton.dark`). Its fill measures 4.05:1 against the ground. White with an ink icon is for back and secondary actions. Every one has a tooltip and a semantic label.
 
 ### Chips / Pills
-- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a Primary Orange pill with white 14px/700 text (4.55:1), and idle options are transparent with Muted Ink text. Used for the language and appearance toggles and for list status filters (Active / Inactive / All). When text is too large for a pill, its label scales down to show the whole word instead of cutting it off.
+- **Pill toggle** (single choice): a white or sunken track with 4px padding. The selected option is a Primary Orange pill with white 14px/700 text (4.55:1), and idle options are transparent with Muted Ink text. Used for the language and appearance toggles and for a form's Active / Inactive status. Lists don't filter by status; they show every entry with a status icon. When text is too large for a pill, its label scales down to show the whole word instead of cutting it off.
 - **Choice pills** (multi-select): pills at least 44px tall, sunken with ink text when idle, and Primary Orange with a white check when selected. Used to pick roles.
 - **Status pill:** a wash fill with a matching icon and 12.5px/700 label in that hue's ink tone. The pairs are Logo Navy on Navy Wash for Scheduled (7.82:1), Orange Ink on Orange Wash for In progress (5.64:1), Success Ink on Success Wash for Completed (6.12:1), and Muted Ink on Sunken for Cancelled (5.39:1). The icon is always present, so status never depends on color alone.
 
@@ -354,6 +354,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
   - Any other page: everything the user may create (New account, New service, New user).
 
   With one option it opens that form directly; with several it opens a native choice sheet with just the options, no heading. It hides when nothing is allowed (crew, supervisors and clients on most pages).
+- **Status icon** (`StatusIcon`): how a list marks each entry active or inactive (users, services, categories, units), 20px under a row's trailing figure or before its chevron. Active is a filled Success check. Inactive is an outlined Muted Ink minus, and the row's title turns muted. The two shapes differ, so color is never the only cue; the tooltip and screen-reader label say "Active" or "Inactive".
 - **Search field** (users list): a white pill on the ground with a 1px Soft Ink outline (3.64:1 against the ground), a Muted Ink search icon and hint, and a 2px Primary Orange border on focus.
 - **Header:** one row with the page title (or a hero headline) and round action buttons. Pushed screens start the row with a white back circle, and the native back gesture still works.
 

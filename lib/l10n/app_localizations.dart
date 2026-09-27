@@ -788,12 +788,6 @@ abstract class AppLocalizations {
   /// **'Inactive'**
   String get filterInactive;
 
-  /// No description provided for @filterAll.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get filterAll;
-
   /// No description provided for @noUsersFound.
   ///
   /// In en, this message translates to:
@@ -803,7 +797,7 @@ abstract class AppLocalizations {
   /// No description provided for @noUsersFoundHint.
   ///
   /// In en, this message translates to:
-  /// **'Try another name or filter.'**
+  /// **'Try another name or email.'**
   String get noUsersFoundHint;
 
   /// No description provided for @inactiveTag.
@@ -1637,7 +1631,7 @@ abstract class AppLocalizations {
   /// No description provided for @noMatchesHint.
   ///
   /// In en, this message translates to:
-  /// **'Try another search or filter.'**
+  /// **'Try another search.'**
   String get noMatchesHint;
 
   /// No description provided for @noCategoriesYet.

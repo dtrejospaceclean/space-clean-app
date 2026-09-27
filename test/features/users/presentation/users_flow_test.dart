@@ -36,20 +36,20 @@ void main() {
     expect(find.text('Users'), findsNothing);
   });
 
-  testWidgets('owners list active users and can filter to inactive', (
-    tester,
-  ) async {
+  testWidgets('owners see everyone, active first, each marked', (tester) async {
     await openUsers(tester, owner);
 
+    // No status filter: active and deactivated in one list.
+    expect(find.text('All'), findsNothing);
     expect(find.text('Ana Pérez'), findsOneWidget);
-    expect(find.text('Luis Gómez'), findsNothing);
-    expect(find.byTooltip('Create'), findsOneWidget);
-
-    await tester.tap(find.text('Inactive'));
-    await tester.pumpAndSettle();
-
     expect(find.text('Luis Gómez'), findsOneWidget);
-    expect(find.text('Ana Pérez'), findsNothing);
+    expect(
+      tester.getTopLeft(find.text('Ana Pérez')).dy,
+      lessThan(tester.getTopLeft(find.text('Luis Gómez')).dy),
+    );
+    expect(find.byTooltip('Active'), findsOneWidget);
+    expect(find.byTooltip('Inactive'), findsOneWidget);
+    expect(find.byTooltip('Create'), findsOneWidget);
   });
 
   testWidgets('the search shows a spinner until the results are in', (

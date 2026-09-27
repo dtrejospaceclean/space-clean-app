@@ -206,6 +206,9 @@ void main() {
     ) async {
       await openCategories(tester);
 
+      // No status filter; each row carries its status icon.
+      expect(find.text('All'), findsNothing);
+      expect(find.byTooltip('Active'), findsNWidgets(2));
       expect(find.text('Janitorial'), findsOneWidget);
       expect(find.text('1 service'), findsOneWidget);
       expect(find.text('Carpets and hard floors'), findsOneWidget);

@@ -25,7 +25,7 @@ class ServicesScreen extends StatelessWidget {
   );
 }
 
-/// The categories that group the catalog; "+" in the tab dock adds one.
+/// Every category, active and inactive; "+" in the tab dock adds one.
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
 
@@ -38,7 +38,8 @@ class CategoriesScreen extends StatelessWidget {
   );
 }
 
-/// The units services are priced in; "+" in the tab dock adds one.
+/// Every unit services are priced in, active and inactive; "+" in the tab
+/// dock adds one.
 class UnitsScreen extends StatelessWidget {
   const UnitsScreen({super.key});
 
@@ -51,8 +52,8 @@ class UnitsScreen extends StatelessWidget {
   );
 }
 
-/// One catalog list: a search, an Active / Inactive / All filter (not on
-/// services), the rows.
+/// One catalog list: a search over every entry, active and inactive, each
+/// marked with its status icon.
 class _CatalogPage extends ConsumerStatefulWidget {
   const _CatalogPage({required this.list, required this.title});
 
@@ -128,21 +129,6 @@ class _CatalogPageState extends ConsumerState<_CatalogPage> {
                 // From the first keystroke until the results are in.
                 busy: _pending || loading,
               ),
-              // Services show active and inactive together, each marked;
-              // categories and units filter by status.
-              if (list != CatalogList.services) ...[
-                const SizedBox(height: 12),
-                PillToggle<bool?>(
-                  semanticLabel: l10n.accountStatusLabel,
-                  options: {
-                    true: l10n.filterActive,
-                    false: l10n.filterInactive,
-                    null: l10n.filterAll,
-                  },
-                  selected: query.isActive,
-                  onChanged: _query.status,
-                ),
-              ],
             ],
           ),
         ),
@@ -168,9 +154,8 @@ class _CatalogPageState extends ConsumerState<_CatalogPage> {
   }
 }
 
-/// No search, and not narrowed to inactive: the list itself is empty.
-bool _unfiltered(CatalogQuery q) =>
-    q.search.trim().isEmpty && q.isActive != false;
+/// No search: the list itself is empty.
+bool _unfiltered(CatalogQuery q) => q.search.trim().isEmpty;
 
 /// What an empty list says: "nothing yet" (with how to start, for those who
 /// can add) or "nothing matches".
@@ -190,21 +175,12 @@ Widget _empty(
       );
 
 /// The right-hand column of a row: a figure (price, count) in tabular digits,
-/// with a status icon under it for retired entries (and active ones too with
-/// [showActive]).
+/// with the entry's status icon under it.
 class _Trailing extends StatelessWidget {
-  const _Trailing({
-    required this.value,
-    required this.isActive,
-    this.strong,
-    this.showActive = false,
-  });
+  const _Trailing({required this.value, required this.isActive, this.strong});
 
   final String value;
   final bool isActive;
-
-  /// Also label active entries, where active and retired share one list.
-  final bool showActive;
 
   /// A real figure reads in ink and bold; a placeholder stays muted.
   final bool? strong;
@@ -229,40 +205,9 @@ class _Trailing extends StatelessWidget {
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
         ),
-        if (!isActive || showActive) ...[
-          const SizedBox(height: 4),
-          _StatusIcon(isActive: isActive),
-        ],
+        const SizedBox(height: 4),
+        StatusIcon(isActive: isActive),
       ],
-    );
-  }
-}
-
-/// Active or inactive as an icon: a filled green check or a muted outlined
-/// minus. The shapes differ, so color isn't the only cue; screen readers
-/// and a long press give the word.
-class _StatusIcon extends StatelessWidget {
-  const _StatusIcon({required this.isActive});
-
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final label = isActive ? l10n.activeTag : l10n.inactiveTag;
-    return Tooltip(
-      message: label,
-      child: Semantics(
-        label: label,
-        excludeSemantics: true,
-        child: Icon(
-          isActive
-              ? Icons.check_circle_rounded
-              : Icons.remove_circle_outline_rounded,
-          size: 20,
-          color: isActive ? context.colors.success : context.colors.inkMuted,
-        ),
-      ),
     );
   }
 }
@@ -314,7 +259,6 @@ class _ServicesList extends ConsumerWidget {
                     },
                     strong: service.defaultPrice != null,
                     isActive: service.isActive,
-                    showActive: true,
                   ),
                   onTap: canManage
                       ? () =>
@@ -363,6 +307,7 @@ class _CategoriesList extends ConsumerWidget {
               for (final category in list)
                 ListRow(
                   title: category.name,
+                  muted: !category.isActive,
                   subtitle: category.description,
                   trailing: _Trailing(
                     value: l10n.serviceCount(category.serviceCount),
@@ -416,6 +361,7 @@ class _UnitsList extends ConsumerWidget {
               for (final unit in list)
                 ListRow(
                   title: unit.name,
+                  muted: !unit.isActive,
                   // How prices show it; nothing when that's just the name.
                   subtitle: unit.abbreviation == null
                       ? null

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../tokens.dart';
 
 /// Round icon badge at the top of tiles.
@@ -143,4 +144,33 @@ class StatusPill extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// Active or inactive as an icon, for lists that show both: a filled green
+/// check or a muted outlined minus. The shapes differ, so color isn't the
+/// only cue; screen readers and a long press give the word.
+class StatusIcon extends StatelessWidget {
+  const StatusIcon({super.key, required this.isActive});
+
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final label = isActive ? l10n.activeTag : l10n.inactiveTag;
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        label: label,
+        excludeSemantics: true,
+        child: Icon(
+          isActive
+              ? Icons.check_circle_rounded
+              : Icons.remove_circle_outline_rounded,
+          size: 20,
+          color: isActive ? context.colors.success : context.colors.inkMuted,
+        ),
+      ),
+    );
+  }
 }
