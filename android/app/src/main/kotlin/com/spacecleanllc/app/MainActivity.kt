@@ -1,4 +1,4 @@
-package com.example.sp_cln_app
+package com.spacecleanllc.app
 
 import io.flutter.embedding.android.FlutterActivity
 
