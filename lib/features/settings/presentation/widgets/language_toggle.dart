@@ -6,31 +6,18 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/app_language.dart';
 import '../controllers/language_controller.dart';
 
-/// EN/ES pill toggle. [compact] shows codes ("EN") for headers; otherwise
-/// full names for settings.
+/// Compact EN/ES pill toggle for screen headers (sign-in). Signed-in users
+/// change the language in Me → Settings.
 class LanguageToggle extends ConsumerWidget {
-  const LanguageToggle({super.key, this.compact = false});
-
-  final bool compact;
-
-  static const _names = {AppLanguage.en: 'English', AppLanguage.es: 'Español'};
+  const LanguageToggle({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final current =
-        ref.watch(languageControllerProvider) ??
-        AppLanguage.tryParse(Localizations.localeOf(context).languageCode) ??
-        AppLanguage.en;
-    return PillToggle<AppLanguage>(
-      semanticLabel: AppLocalizations.of(context).languageLabel,
-      expand: !compact,
-      track: compact ? context.colors.surface : context.colors.sunken,
-      options: {
-        for (final l in AppLanguage.values)
-          l: compact ? l.name.toUpperCase() : _names[l]!,
-      },
-      selected: current,
-      onChanged: (l) => ref.read(languageControllerProvider.notifier).select(l),
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => PillToggle<AppLanguage>(
+    semanticLabel: AppLocalizations.of(context).languageLabel,
+    expand: false,
+    track: context.colors.surface,
+    options: {for (final l in AppLanguage.values) l: l.name.toUpperCase()},
+    selected: currentLanguage(context, ref),
+    onChanged: (l) => ref.read(languageControllerProvider.notifier).select(l),
+  );
 }

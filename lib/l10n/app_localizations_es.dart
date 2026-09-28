@@ -1327,4 +1327,25 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get membersUserNotActive =>
       'Este usuario está desactivado. Reactívalo antes de agregarlo.';
+
+  @override
+  String get languageAndAppearance => 'Idioma y apariencia';
+
+  @override
+  String get languageEnglish => 'Inglés';
+
+  @override
+  String get languageSpanish => 'Español';
+
+  @override
+  String get themeSystemHint => 'Sigue el modo claro u oscuro de tu teléfono';
+
+  @override
+  String get themeSystemSummary => 'Tema del sistema';
+
+  @override
+  String get themeLightSummary => 'Tema claro';
+
+  @override
+  String get themeDarkSummary => 'Tema oscuro';
 }

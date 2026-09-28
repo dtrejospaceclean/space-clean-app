@@ -153,8 +153,19 @@ void main() {
     expect(find.text('Ana Pérez'), findsOneWidget);
     expect(find.text('Supervisor'), findsOneWidget);
 
+    await revealBelow(tester, find.text('Language and appearance'));
+    await tester.tap(find.text('Language and appearance'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Español'));
     await tester.pumpAndSettle();
+    // Settings answers in Spanish at once, English still findable.
+    expect(find.text('Ajustes'), findsOneWidget);
+    expect(find.text('Inglés'), findsOneWidget);
+
+    // Spanish now, so the back button says so too.
+    await tester.tap(find.byTooltip('Atrás').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Español · Tema del sistema'), findsOneWidget);
     await revealBelow(tester, find.text('Cerrar sesión'));
     expect(find.text('Cerrar sesión'), findsOneWidget);
     expect(find.byType(SpaceBottomBar), findsOneWidget);

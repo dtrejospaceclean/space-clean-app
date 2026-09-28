@@ -21,3 +21,10 @@ class LanguageController extends Notifier<AppLanguage?> {
 extension AppLanguageLocale on AppLanguage {
   Locale get locale => Locale(name);
 }
+
+/// The language in effect: the saved choice, or the phone's when it's one
+/// the app speaks.
+AppLanguage currentLanguage(BuildContext context, WidgetRef ref) =>
+    ref.watch(languageControllerProvider) ??
+    AppLanguage.tryParse(Localizations.localeOf(context).languageCode) ??
+    AppLanguage.en;

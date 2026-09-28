@@ -381,5 +381,12 @@
   "accessUpload": "Subir",
   "accessManage": "Gestionar",
   "membersNotFound": "Esta persona ya no está en este equipo.",
-  "membersUserNotActive": "Este usuario está desactivado. Reactívalo antes de agregarlo."
+  "membersUserNotActive": "Este usuario está desactivado. Reactívalo antes de agregarlo.",
+  "languageAndAppearance": "Idioma y apariencia",
+  "languageEnglish": "Inglés",
+  "languageSpanish": "Español",
+  "themeSystemHint": "Sigue el modo claro u oscuro de tu teléfono",
+  "themeSystemSummary": "Tema del sistema",
+  "themeLightSummary": "Tema claro",
+  "themeDarkSummary": "Tema oscuro"
 }

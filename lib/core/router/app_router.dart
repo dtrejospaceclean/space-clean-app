@@ -29,6 +29,7 @@ import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/service_catalog/presentation/screens/lookup_form_screen.dart';
 import '../../features/service_catalog/presentation/screens/service_form_screen.dart';
 import '../../features/service_catalog/presentation/screens/services_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/shell/presentation/app_shell.dart';
 import '../../features/team/presentation/screens/member_form_screen.dart';
 import '../../features/team/presentation/screens/member_screen.dart';
@@ -316,6 +317,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'password',
                     builder: (_, _) => const ChangePasswordScreen(),
+                  ),
+                  GoRoute(
+                    path: 'settings',
+                    builder: (_, _) => const SettingsScreen(),
                   ),
                   GoRoute(
                     path: 'services',

@@ -127,7 +127,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return SpacePage(
       showBack: false,
-      actions: const [LanguageToggle(compact: true)],
+      actions: const [LanguageToggle()],
       slivers: [
         PageBox(
           top: 8,

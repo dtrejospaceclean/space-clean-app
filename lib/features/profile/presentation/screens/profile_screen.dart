@@ -7,8 +7,9 @@ import '../../../../core/l10n/role_names.dart';
 import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
-import '../../../settings/presentation/widgets/language_toggle.dart';
-import '../../../settings/presentation/widgets/theme_mode_toggle.dart';
+import '../../../settings/presentation/controllers/language_controller.dart';
+import '../../../settings/presentation/controllers/theme_mode_controller.dart';
+import '../../../settings/presentation/screens/settings_screen.dart';
 import '../admin_modules.dart';
 import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
@@ -144,41 +145,19 @@ class ProfileScreen extends ConsumerWidget {
         PageBox(top: 12, child: SectionHeader(title: l10n.sectionSettings)),
         PageBox(
           top: 0,
-          child: SpaceCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final (i, (icon, label, control)) in [
-                  (
-                    Icons.language_rounded,
-                    l10n.languageLabel,
-                    const LanguageToggle(),
-                  ),
-                  (
-                    Icons.contrast_rounded,
-                    l10n.appearanceLabel,
-                    const ThemeModeToggle(),
-                  ),
-                ].indexed) ...[
-                  if (i > 0)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 18),
-                      child: Divider(),
-                    ),
-                  Row(
-                    children: [
-                      IconBadge(icon: icon, size: 36),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(label, style: theme.textTheme.titleMedium),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  control,
-                ],
-              ],
-            ),
+          child: ListCard(
+            children: [
+              ListRow(
+                leading: const IconBadge(icon: Icons.tune_rounded),
+                title: l10n.languageAndAppearance,
+                // What's in effect now: "English · System theme".
+                subtitle: [
+                  languageEndonyms[currentLanguage(context, ref)]!,
+                  l10n.themeSummary(ref.watch(themeModeControllerProvider)),
+                ].join(' · '),
+                onTap: () => context.push(SettingsScreen.path),
+              ),
+            ],
           ),
         ),
         PageBox(

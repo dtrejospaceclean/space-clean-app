@@ -253,12 +253,9 @@ Future<void> _settle(WidgetTester tester) async {
 /// device (safe area 47 + 64-dp bar), never inside a centered group.
 void _expectBarAtTop(WidgetTester tester, Finder phone) {
   final top = tester.getTopLeft(phone).dy;
-  // Only the header toggle; the full one on Me lives in a settings card.
+  // The header toggle; signed in, the language lives in Me → Settings.
   for (final type in [LanguageToggle]) {
-    final found = _in(
-      phone,
-      find.byWidgetPredicate((w) => w is LanguageToggle && w.compact),
-    );
+    final found = _in(phone, find.byType(LanguageToggle));
     if (found.evaluate().isEmpty) continue;
     expect(
       tester.getTopLeft(found.first).dy - top,
@@ -439,6 +436,34 @@ void main() {
 
   testWidgets('admin ios', (tester) async {
     await _sheet(tester, 'admin_ios', TargetPlatform.iOS, adminPhones());
+  });
+
+  // Me and its Settings screen: light, dark, and Spanish at 200%.
+  testWidgets('settings', (tester) async {
+    await _sheet(tester, 'settings', TargetPlatform.iOS, [
+      Phone(
+        '1 · Me (scrolled)',
+        signedIn: true,
+        location: '/me',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -400));
+        },
+      ),
+      Phone('2 · Settings', signedIn: true, location: '/me/settings'),
+      Phone(
+        '3 · Settings dark',
+        signedIn: true,
+        dark: true,
+        location: '/me/settings',
+      ),
+      Phone(
+        '4 · Spanish, 200% text',
+        signedIn: true,
+        spanish: true,
+        textScale: 2,
+        location: '/me/settings',
+      ),
+    ]);
   });
 
   // Account details: full, sparse, editing, dark, and Spanish at 200%.

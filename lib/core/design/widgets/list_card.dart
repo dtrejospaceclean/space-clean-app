@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../tokens.dart';
 import 'cards.dart';
@@ -41,6 +42,7 @@ class ListRow extends StatelessWidget {
     this.onTap,
     this.destructive = false,
     this.muted = false,
+    this.chevron,
   });
 
   final String title;
@@ -53,6 +55,10 @@ class ListRow extends StatelessWidget {
   /// For a missing value ("Not set"): the title recedes to muted ink so it
   /// doesn't read like real data.
   final bool muted;
+
+  /// Whether to end with a chevron. Defaults to showing one when tappable;
+  /// rows that act in place (a choice) turn it off.
+  final bool? chevron;
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +105,7 @@ class ListRow extends StatelessWidget {
                   child: trailing!,
                 ),
               ],
-              if (onTap != null) ...[
+              if (chevron ?? onTap != null) ...[
                 const SizedBox(width: 8),
                 Icon(
                   Icons.chevron_right_rounded,
@@ -112,4 +118,50 @@ class ListRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// One option of a single choice in a [ListCard] (a language, a theme):
+/// tapping picks it, and the picked one shows a filled check. Read out as a
+/// selected or unselected option of a group.
+class ChoiceRow extends StatelessWidget {
+  const ChoiceRow({
+    super.key,
+    required this.title,
+    required this.selected,
+    required this.onSelect,
+    this.subtitle,
+    this.leading,
+  });
+
+  final String title;
+  final String? subtitle;
+  final Widget? leading;
+  final bool selected;
+  final VoidCallback onSelect;
+
+  @override
+  Widget build(BuildContext context) => MergeSemantics(
+    child: Semantics(
+      checked: selected,
+      inMutuallyExclusiveGroup: true,
+      child: ListRow(
+        title: title,
+        subtitle: subtitle,
+        leading: leading,
+        chevron: false,
+        onTap: selected
+            ? null
+            : () {
+                HapticFeedback.selectionClick();
+                onSelect();
+              },
+        // The shape changes too, so the choice never rests on color alone.
+        trailing: Icon(
+          selected ? Icons.check_circle_rounded : Icons.circle_outlined,
+          size: 26,
+          color: selected ? context.colors.accent : context.colors.inkSoft,
+        ),
+      ),
+    ),
+  );
 }

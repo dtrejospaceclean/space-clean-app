@@ -580,5 +580,12 @@
   "accessUpload": "Upload",
   "accessManage": "Manage",
   "membersNotFound": "This person is no longer on this team.",
-  "membersUserNotActive": "This user is deactivated. Reactivate them before adding them."
+  "membersUserNotActive": "This user is deactivated. Reactivate them before adding them.",
+  "languageAndAppearance": "Language and appearance",
+  "languageEnglish": "English",
+  "languageSpanish": "Spanish",
+  "themeSystemHint": "Matches your phone's light or dark mode",
+  "themeSystemSummary": "System theme",
+  "themeLightSummary": "Light theme",
+  "themeDarkSummary": "Dark theme"
 }

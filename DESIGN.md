@@ -335,6 +335,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 - **StatCard:** a muted label over a big 800-weight tabular number, with an optional icon badge, corner arrow, and caption. Compact uses 16px padding and a 26px number.
 - **TileCard:** an icon badge, 28px space, a 700 title, and a muted subtitle, placed in a two-column CardGrid. Account tiles use a 48px initials badge that alternates between navy on Navy Wash (7.82:1) and Orange Ink on Orange Wash (5.64:1).
 - **ListCard / ListRow:** rows inside one card, separated by inset hairlines. Rows are at least 60px tall, with a leading badge or avatar, a title and muted subtitle, a trailing muted value, and a Soft Ink chevron when tappable (4.09:1).
+- **ChoiceRow:** one option of a single choice (language, appearance) as a ListRow without a chevron. The picked row ends in an accent-filled check circle, the others in an empty Soft Ink circle, so the choice shows by shape as well as color; it reads as a checked option in a group, and picking gives a selection haptic. Settings uses it instead of pill toggles: full-width rows are easier to hit with gloves.
 - **AccentBanner:** a full-bleed navy strip in a card's footer with white 14px/600 text (9.41:1) and an optional white icon ("3 of 8 done").
 
 ### Inputs / Fields

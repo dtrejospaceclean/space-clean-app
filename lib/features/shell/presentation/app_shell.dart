@@ -129,6 +129,7 @@ bool _noPlus(String route) =>
     route.endsWith('/new') ||
     route.endsWith('/edit') ||
     route == '/me/password' ||
+    route == '/me/settings' ||
     route.endsWith('/login') ||
     route.startsWith('${ServicesScreen.path}/:') ||
     route.startsWith('${CategoriesScreen.path}/:') ||

@@ -2389,6 +2389,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This user is deactivated. Reactivate them before adding them.'**
   String get membersUserNotActive;
+
+  /// No description provided for @languageAndAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Language and appearance'**
+  String get languageAndAppearance;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageSpanish.
+  ///
+  /// In en, this message translates to:
+  /// **'Spanish'**
+  String get languageSpanish;
+
+  /// No description provided for @themeSystemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches your phone\'s light or dark mode'**
+  String get themeSystemHint;
+
+  /// No description provided for @themeSystemSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'System theme'**
+  String get themeSystemSummary;
+
+  /// No description provided for @themeLightSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Light theme'**
+  String get themeLightSummary;
+
+  /// No description provided for @themeDarkSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark theme'**
+  String get themeDarkSummary;
 }
 
 class _AppLocalizationsDelegate
