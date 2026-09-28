@@ -70,8 +70,6 @@
   "clientStatusProspect": "Prospecto",
   "clientStatusInactive": "Inactiva",
   "yourRole": "Tu rol: {role}",
-  "sectionWork": "Trabajo",
-  "sectionAccount": "Cuenta",
   "moduleJobs": "Trabajos",
   "moduleCalendar": "Calendario",
   "moduleComplaints": "Quejas",

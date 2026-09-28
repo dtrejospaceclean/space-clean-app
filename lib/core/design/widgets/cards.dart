@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../tokens.dart';
@@ -143,7 +145,7 @@ class TileCard extends StatelessWidget {
     return SpaceCard(
       onTap: onTap,
       padding: compact
-          ? const EdgeInsets.symmetric(horizontal: 10, vertical: 14)
+          ? const EdgeInsets.symmetric(horizontal: _compactSide, vertical: 14)
           : const EdgeInsets.all(SpaceSpace.card),
       child: Column(
         crossAxisAlignment: compact
@@ -153,17 +155,26 @@ class TileCard extends StatelessWidget {
         children: [
           icon,
           SizedBox(height: compact ? 10 : 28),
-          Text(
-            title,
-            textAlign: compact ? TextAlign.center : null,
-            maxLines: compact ? null : 2,
-            overflow: compact ? null : TextOverflow.ellipsis,
-            style:
-                (compact
-                        ? theme.textTheme.titleSmall
-                        : theme.textTheme.titleMedium)
-                    ?.copyWith(fontWeight: FontWeight.w700),
-          ),
+          if (compact)
+            _WholeWordsTitle(
+              title,
+              width: switch (_GridCell.widthOf(context)) {
+                final cell? => cell - 2 * _compactSide,
+                null => null,
+              },
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            )
+          else
+            Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           if (subtitle != null) ...[
             const SizedBox(height: 2),
             Text(
@@ -179,6 +190,63 @@ class TileCard extends StatelessWidget {
   }
 }
 
+/// Side padding of a compact [TileCard].
+const _compactSide = 10.0;
+
+/// The width of one [CardGrid] cell, for tiles that fit their text to it.
+/// (A LayoutBuilder can't sit inside the grid's equal-height rows.)
+class _GridCell extends InheritedWidget {
+  const _GridCell({required this.width, required super.child});
+
+  final double width;
+
+  static double? widthOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_GridCell>()?.width;
+
+  @override
+  bool updateShouldNotify(_GridCell old) => old.width != width;
+}
+
+/// A centered title that wraps between words but never inside one: when
+/// its longest word is wider than [width] (long Spanish words at large text
+/// sizes), the whole title shrinks just enough to fit it.
+class _WholeWordsTitle extends StatelessWidget {
+  const _WholeWordsTitle(this.text, {this.width, this.style});
+
+  final String text;
+  final double? width;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    var shrink = 1.0;
+    if (width case final width? when width > 0) {
+      final scaler = MediaQuery.textScalerOf(context);
+      for (final word in text.split(RegExp(r'\s+'))) {
+        final painter = TextPainter(
+          text: TextSpan(text: word, style: style),
+          textDirection: Directionality.of(context),
+          textScaler: scaler,
+          maxLines: 1,
+        )..layout();
+        // A few pixels to spare: a word exactly as wide as the line can
+        // still break from rounding.
+        if (painter.width > width - 4) {
+          shrink = min(shrink, (width - 4) / painter.width);
+        }
+        painter.dispose();
+      }
+    }
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: shrink < 1
+          ? style?.copyWith(fontSize: (style?.fontSize ?? 14) * shrink)
+          : style,
+    );
+  }
+}
+
 /// Lays out cards [columns] per row (two by default) with the standard gap.
 /// Each row takes the height of its tallest card; a short last row keeps
 /// the same card width.
@@ -189,7 +257,13 @@ class CardGrid extends StatelessWidget {
   final int columns;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => _build(
+      (constraints.maxWidth - SpaceSpace.gap * (columns - 1)) / columns,
+    ),
+  );
+
+  Widget _build(double cellWidth) {
     final rows = <Widget>[];
     for (var i = 0; i < children.length; i += columns) {
       rows.add(
@@ -201,7 +275,7 @@ class CardGrid extends StatelessWidget {
                 if (j > i) const SizedBox(width: SpaceSpace.gap),
                 Expanded(
                   child: j < children.length
-                      ? children[j]
+                      ? _GridCell(width: cellWidth, child: children[j])
                       : const SizedBox.shrink(),
                 ),
               ],

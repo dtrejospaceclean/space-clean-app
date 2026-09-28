@@ -518,18 +518,6 @@ abstract class AppLocalizations {
   /// **'Your role: {role}'**
   String yourRole(String role);
 
-  /// No description provided for @sectionWork.
-  ///
-  /// In en, this message translates to:
-  /// **'Work'**
-  String get sectionWork;
-
-  /// No description provided for @sectionAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get sectionAccount;
-
   /// No description provided for @moduleJobs.
   ///
   /// In en, this message translates to:

@@ -256,12 +256,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get sectionWork => 'Trabajo';
-
-  @override
-  String get sectionAccount => 'Cuenta';
-
-  @override
   String get moduleJobs => 'Trabajos';
 
   @override

@@ -6,16 +6,9 @@ import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../team/presentation/screens/team_screen.dart';
 
-/// The groups an account's modules are listed under, in screen order.
-enum AccountSection {
-  work,
-  account;
-
-  String label(AppLocalizations l10n) => switch (this) {
-    work => l10n.sectionWork,
-    account => l10n.sectionAccount,
-  };
-}
+/// How an account's modules are ordered on its screen: the work first,
+/// then the account's own records.
+enum AccountSection { work, account }
 
 /// One thing a member can open inside an account.
 class AccountModule {
