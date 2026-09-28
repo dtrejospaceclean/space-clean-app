@@ -3,4 +3,6 @@
     <!-- The app's blue-gray ground (SpaceColors.ground), shown behind Flutter
          before its first frame so launch never flashes white or black. -->
     <color name="ground">#EEF2F6</color>
+    <!-- Launcher icon ground (flutter_launcher_icons). -->
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

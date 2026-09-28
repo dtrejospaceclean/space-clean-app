@@ -24,8 +24,9 @@ flutter test test/core/network/auth_interceptor_test.dart
 flutter test --plain-name "logs in and out"
 dart format lib test tool
 flutter test --update-goldens tool/screenshots   # phone + tablet contact sheets → build/screenshots/*.png (not in the regular suite)
-flutter test --update-goldens tool/brand         # re-render native splash logo PNGs from the SVG
+flutter test --update-goldens tool/brand         # re-render splash and launcher icon PNGs from the SVGs in assets/brand
 dart run flutter_native_splash:create           # regenerate native launch screens (config at the bottom of pubspec.yaml)
+dart run flutter_launcher_icons                 # regenerate the Android launcher icon (config in pubspec.yaml)
 ```
 
 On a Windows dev machine, building with plugins requires Developer Mode (symlink support).
