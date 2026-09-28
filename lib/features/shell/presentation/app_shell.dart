@@ -11,6 +11,7 @@ import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../clients/domain/usecases/manage_clients.dart';
 import '../../clients/presentation/screens/accounts_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
+import '../../locations/presentation/screens/locations_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
 import '../../service_catalog/presentation/screens/services_screen.dart';
 import '../../users/domain/usecases/user_usecases.dart';
@@ -97,6 +98,13 @@ final _byPage = <String, List<_PlusOption>>{
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ContactsScreen.route}/new',
       (l10n) => l10n.newContactTitle,
+      Permissions.infoEdit,
+    ),
+  ],
+  '${AccountsScreen.path}/:clientId/${LocationsScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${LocationsScreen.route}/new',
+      (l10n) => l10n.newLocationTitle,
       Permissions.infoEdit,
     ),
   ],

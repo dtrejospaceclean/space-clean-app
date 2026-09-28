@@ -21,6 +21,14 @@ extension DateFormatting on BuildContext {
   String formatDayLong(DateTime day) =>
       DateFormat.MMMMEEEEd(_locale).format(day);
 
+  /// A decimal string from the API ("12000") grouped in the app's
+  /// language: "12,000" (English), "12.000" (Spanish). Unparseable input is
+  /// shown as is.
+  String formatNumber(String value) => switch (num.tryParse(value)) {
+    final n? => NumberFormat.decimalPattern(_locale).format(n),
+    null => value,
+  };
+
   /// A decimal string from the API ("0.12") as dollars in the app's
   /// language: "$0.12". Unparseable input is shown as is.
   String formatMoney(String amount) => switch (num.tryParse(amount)) {

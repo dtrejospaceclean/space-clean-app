@@ -1125,4 +1125,109 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get clientContactsLoginExists => 'Este contacto ya tiene acceso.';
+
+  @override
+  String get moduleLocations => 'Ubicaciones';
+
+  @override
+  String get moduleLocationsHint => 'Sitios, accesos e instrucciones';
+
+  @override
+  String get searchLocationsHint => 'Buscar nombre, dirección o ciudad';
+
+  @override
+  String get noLocationsYet => 'Aún no hay ubicaciones';
+
+  @override
+  String get noLocationsYetHint =>
+      'Agrega con + los sitios donde se hace el trabajo.';
+
+  @override
+  String get locationTitle => 'Ubicación';
+
+  @override
+  String get newLocationTitle => 'Nueva ubicación';
+
+  @override
+  String get editLocation => 'Editar ubicación';
+
+  @override
+  String get deleteLocation => 'Eliminar ubicación';
+
+  @override
+  String get locationNameHint => 'p. ej. Torre A – Piso 3';
+
+  @override
+  String get sectionAddress => 'Dirección';
+
+  @override
+  String get sectionSiteDetails => 'Detalles del sitio';
+
+  @override
+  String get sectionUsedBy => 'En uso por';
+
+  @override
+  String get squareFootageLabel => 'Superficie (pies²)';
+
+  @override
+  String squareFootageValue(String value) {
+    return '$value pies²';
+  }
+
+  @override
+  String get floorCountLabel => 'Pisos';
+
+  @override
+  String get accessCodesLabel => 'Códigos de acceso';
+
+  @override
+  String get accessCodesHelp =>
+      'Códigos de puerta o alarma. Solo los miembros de esta cuenta los ven.';
+
+  @override
+  String get specialInstructionsLabel => 'Instrucciones especiales';
+
+  @override
+  String get specialInstructionsHint =>
+      'p. ej. Usar la entrada de servicio después de las 6 PM';
+
+  @override
+  String get invalidSquareFootage => 'Ingresa un número como 12000 o 850.5.';
+
+  @override
+  String get invalidWholeNumber => 'Ingresa un número entero.';
+
+  @override
+  String scopeOfWorkCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count alcances de trabajo',
+      one: '1 alcance de trabajo',
+      zero: 'Ningún alcance de trabajo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String jobCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trabajos',
+      one: '1 trabajo',
+      zero: 'Ningún trabajo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get locationInUse =>
+      'Hay alcances de trabajo o trabajos que usan esta ubicación, así que no se puede eliminar.';
+
+  @override
+  String get locationsNotFound => 'Esta ubicación ya no existe.';
+
+  @override
+  String get streetAddressLabel => 'Calle y número';
 }

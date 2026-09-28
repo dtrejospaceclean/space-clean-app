@@ -14,6 +14,9 @@ import '../../features/contacts/presentation/screens/contact_login_screen.dart';
 import '../../features/contacts/presentation/screens/contact_screen.dart';
 import '../../features/contacts/presentation/screens/contacts_screen.dart';
 import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
+import '../../features/locations/presentation/screens/location_form_screen.dart';
+import '../../features/locations/presentation/screens/location_screen.dart';
+import '../../features/locations/presentation/screens/locations_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
 import '../../features/jobs/presentation/screens/today_screen.dart';
 import '../../features/password_reset/presentation/screens/forgot_password_screen.dart';
@@ -178,6 +181,38 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                 builder: (_, state) => ContactLoginScreen(
                                   clientId: state.pathParameters['clientId']!,
                                   contactId: state.pathParameters['contactId']!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      GoRoute(
+                        path: LocationsScreen.route,
+                        builder: (_, state) => LocationsScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':locationId' so "new" isn't read as an id.
+                          GoRoute(
+                            path: 'new',
+                            builder: (_, state) => LocationFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                          ),
+                          GoRoute(
+                            path: ':locationId',
+                            builder: (_, state) => LocationScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              locationId: state.pathParameters['locationId']!,
+                            ),
+                            routes: [
+                              GoRoute(
+                                path: 'edit',
+                                builder: (_, state) => LocationFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  locationId:
+                                      state.pathParameters['locationId'],
                                 ),
                               ),
                             ],

@@ -1115,4 +1115,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clientContactsLoginExists => 'This contact already has a login.';
+
+  @override
+  String get moduleLocations => 'Locations';
+
+  @override
+  String get moduleLocationsHint => 'Sites, access and instructions';
+
+  @override
+  String get searchLocationsHint => 'Search name, address or city';
+
+  @override
+  String get noLocationsYet => 'No locations yet';
+
+  @override
+  String get noLocationsYetHint =>
+      'Add the sites where the work happens with +.';
+
+  @override
+  String get locationTitle => 'Location';
+
+  @override
+  String get newLocationTitle => 'New location';
+
+  @override
+  String get editLocation => 'Edit location';
+
+  @override
+  String get deleteLocation => 'Delete location';
+
+  @override
+  String get locationNameHint => 'e.g. Tower A – Floor 3';
+
+  @override
+  String get sectionAddress => 'Address';
+
+  @override
+  String get sectionSiteDetails => 'Site details';
+
+  @override
+  String get sectionUsedBy => 'Used by';
+
+  @override
+  String get squareFootageLabel => 'Square footage';
+
+  @override
+  String squareFootageValue(String value) {
+    return '$value sq ft';
+  }
+
+  @override
+  String get floorCountLabel => 'Floors';
+
+  @override
+  String get accessCodesLabel => 'Access codes';
+
+  @override
+  String get accessCodesHelp =>
+      'Door or alarm codes. Only members of this account see them.';
+
+  @override
+  String get specialInstructionsLabel => 'Special instructions';
+
+  @override
+  String get specialInstructionsHint =>
+      'e.g. Use the service entrance after 6 PM';
+
+  @override
+  String get invalidSquareFootage => 'Enter a number like 12000 or 850.5.';
+
+  @override
+  String get invalidWholeNumber => 'Enter a whole number.';
+
+  @override
+  String scopeOfWorkCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count scopes of work',
+      one: '1 scope of work',
+      zero: 'No scopes of work',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String jobCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jobs',
+      one: '1 job',
+      zero: 'No jobs',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get locationInUse =>
+      'Scopes of work or jobs use this location, so it can\'t be deleted.';
+
+  @override
+  String get locationsNotFound => 'This location no longer exists.';
+
+  @override
+  String get streetAddressLabel => 'Street address';
 }

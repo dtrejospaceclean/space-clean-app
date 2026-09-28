@@ -2047,6 +2047,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This contact already has a login.'**
   String get clientContactsLoginExists;
+
+  /// No description provided for @moduleLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Locations'**
+  String get moduleLocations;
+
+  /// No description provided for @moduleLocationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sites, access and instructions'**
+  String get moduleLocationsHint;
+
+  /// No description provided for @searchLocationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, address or city'**
+  String get searchLocationsHint;
+
+  /// No description provided for @noLocationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No locations yet'**
+  String get noLocationsYet;
+
+  /// No description provided for @noLocationsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the sites where the work happens with +.'**
+  String get noLocationsYetHint;
+
+  /// No description provided for @locationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationTitle;
+
+  /// No description provided for @newLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New location'**
+  String get newLocationTitle;
+
+  /// No description provided for @editLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit location'**
+  String get editLocation;
+
+  /// No description provided for @deleteLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete location'**
+  String get deleteLocation;
+
+  /// No description provided for @locationNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Tower A – Floor 3'**
+  String get locationNameHint;
+
+  /// No description provided for @sectionAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get sectionAddress;
+
+  /// No description provided for @sectionSiteDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Site details'**
+  String get sectionSiteDetails;
+
+  /// No description provided for @sectionUsedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by'**
+  String get sectionUsedBy;
+
+  /// No description provided for @squareFootageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Square footage'**
+  String get squareFootageLabel;
+
+  /// No description provided for @squareFootageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} sq ft'**
+  String squareFootageValue(String value);
+
+  /// No description provided for @floorCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Floors'**
+  String get floorCountLabel;
+
+  /// No description provided for @accessCodesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Access codes'**
+  String get accessCodesLabel;
+
+  /// No description provided for @accessCodesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Door or alarm codes. Only members of this account see them.'**
+  String get accessCodesHelp;
+
+  /// No description provided for @specialInstructionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Special instructions'**
+  String get specialInstructionsLabel;
+
+  /// No description provided for @specialInstructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Use the service entrance after 6 PM'**
+  String get specialInstructionsHint;
+
+  /// No description provided for @invalidSquareFootage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number like 12000 or 850.5.'**
+  String get invalidSquareFootage;
+
+  /// No description provided for @invalidWholeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number.'**
+  String get invalidWholeNumber;
+
+  /// No description provided for @scopeOfWorkCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No scopes of work} =1{1 scope of work} other{{count} scopes of work}}'**
+  String scopeOfWorkCount(int count);
+
+  /// No description provided for @jobCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No jobs} =1{1 job} other{{count} jobs}}'**
+  String jobCount(int count);
+
+  /// No description provided for @locationInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Scopes of work or jobs use this location, so it can\'t be deleted.'**
+  String get locationInUse;
+
+  /// No description provided for @locationsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This location no longer exists.'**
+  String get locationsNotFound;
+
+  /// No description provided for @streetAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Street address'**
+  String get streetAddressLabel;
 }
 
 class _AppLocalizationsDelegate

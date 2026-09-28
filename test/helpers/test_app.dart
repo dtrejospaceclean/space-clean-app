@@ -23,6 +23,9 @@ import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dart';
 import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
+import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
+import 'package:sp_cln_app/features/locations/domain/entities/location.dart';
+import 'package:sp_cln_app/features/locations/domain/repositories/locations_repository.dart';
 import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.dart';
 import 'package:sp_cln_app/features/password_reset/domain/repositories/password_reset_repository.dart';
 import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
@@ -478,6 +481,108 @@ class FakeContactsRepository implements ContactsRepository {
   }
 }
 
+/// In-memory locations, searched and ordered like the API. Deleting one
+/// that scopes or jobs use fails like the API does. Records every write.
+class FakeLocationsRepository implements LocationsRepository {
+  FakeLocationsRepository([List<Location> locations = const []])
+    : locations = [...locations];
+
+  List<Location> locations;
+  final writes = <String>[];
+  final drafts = <LocationDraft>[];
+
+  /// Every non-empty search the server received.
+  final searches = <String>[];
+
+  @override
+  Future<List<Location>> getLocations(
+    String clientId, {
+    String search = '',
+  }) async {
+    if (search.isNotEmpty) searches.add(search);
+    final text = search.toLowerCase();
+    return locations
+        .where((l) => l.clientId == clientId)
+        .where(
+          (l) => [
+            l.name,
+            l.address,
+            l.city,
+          ].any((v) => v.toLowerCase().contains(text)),
+        )
+        .toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+  }
+
+  @override
+  Future<Location> getLocation(String clientId, String locationId) async {
+    for (final l in locations) {
+      if (l.id == locationId) return l;
+    }
+    throw const ServerFailure('locations.not_found', statusCode: 404);
+  }
+
+  Location _fromDraft(
+    String id,
+    String clientId,
+    LocationDraft d, [
+    Location? was,
+  ]) {
+    String? text(String? v) => (v ?? '').trim().isEmpty ? null : v!.trim();
+    return Location(
+      id: id,
+      clientId: clientId,
+      name: d.name.trim(),
+      address: d.address.trim(),
+      city: d.city.trim(),
+      state: d.state.trim(),
+      zipCode: d.zipCode.trim(),
+      accessCodes: text(d.accessCodes),
+      squareFootage: text(d.squareFootage),
+      floorCount: int.tryParse(d.floorCount ?? ''),
+      specialInstructions: text(d.specialInstructions),
+      scopeOfWorkCount: was?.scopeOfWorkCount ?? 0,
+      jobCount: was?.jobCount ?? 0,
+    );
+  }
+
+  @override
+  Future<void> createLocation(String clientId, LocationDraft draft) async {
+    writes.add('create:${draft.name}');
+    drafts.add(draft);
+    locations = [
+      ...locations,
+      _fromDraft('l${locations.length + 1}', clientId, draft),
+    ];
+  }
+
+  @override
+  Future<void> updateLocation(
+    String clientId,
+    String locationId,
+    LocationDraft draft,
+  ) async {
+    writes.add('update:$locationId');
+    drafts.add(draft);
+    final i = locations.indexWhere((l) => l.id == locationId);
+    locations = [...locations]
+      ..[i] = _fromDraft(locationId, clientId, draft, locations[i]);
+  }
+
+  @override
+  Future<void> deleteLocation(String clientId, String locationId) async {
+    final location = await getLocation(clientId, locationId);
+    if (location.isInUse) {
+      throw const ServerFailure(
+        'locations.has_related_records',
+        statusCode: 409,
+      );
+    }
+    writes.add('delete:$locationId');
+    locations = locations.where((l) => l.id != locationId).toList();
+  }
+}
+
 /// Jobs per client id; a [Failure] value makes that account fail.
 class FakeJobsRepository implements JobsRepository {
   FakeJobsRepository([this.byClient = const {}]);
@@ -768,6 +873,7 @@ Future<SharedPreferences> pumpApp(
   ProfileRepository? profile,
   ServiceCatalogRepository? services,
   ContactsRepository? contacts,
+  LocationsRepository? locations,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -804,6 +910,9 @@ Future<SharedPreferences> pumpApp(
         ),
         contactsRepositoryProvider.overrideWithValue(
           contacts ?? FakeContactsRepository(),
+        ),
+        locationsRepositoryProvider.overrideWithValue(
+          locations ?? FakeLocationsRepository(),
         ),
         clockProvider.overrideWithValue(() => testNow),
       ],

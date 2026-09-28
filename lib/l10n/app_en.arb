@@ -495,5 +495,53 @@
   "contactRoleHelp": "An account has one primary and one billing contact. Choosing one here takes it from whoever had it.",
   "clientContactsNotFound": "This contact no longer exists.",
   "clientContactsEmailRequired": "Add an email to this contact before giving them a login.",
-  "clientContactsLoginExists": "This contact already has a login."
+  "clientContactsLoginExists": "This contact already has a login.",
+  "moduleLocations": "Locations",
+  "moduleLocationsHint": "Sites, access and instructions",
+  "searchLocationsHint": "Search name, address or city",
+  "noLocationsYet": "No locations yet",
+  "noLocationsYetHint": "Add the sites where the work happens with +.",
+  "locationTitle": "Location",
+  "newLocationTitle": "New location",
+  "editLocation": "Edit location",
+  "deleteLocation": "Delete location",
+  "locationNameHint": "e.g. Tower A – Floor 3",
+  "sectionAddress": "Address",
+  "sectionSiteDetails": "Site details",
+  "sectionUsedBy": "Used by",
+  "squareFootageLabel": "Square footage",
+  "squareFootageValue": "{value} sq ft",
+  "@squareFootageValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "floorCountLabel": "Floors",
+  "accessCodesLabel": "Access codes",
+  "accessCodesHelp": "Door or alarm codes. Only members of this account see them.",
+  "specialInstructionsLabel": "Special instructions",
+  "specialInstructionsHint": "e.g. Use the service entrance after 6 PM",
+  "invalidSquareFootage": "Enter a number like 12000 or 850.5.",
+  "invalidWholeNumber": "Enter a whole number.",
+  "scopeOfWorkCount": "{count, plural, =0{No scopes of work} =1{1 scope of work} other{{count} scopes of work}}",
+  "@scopeOfWorkCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jobCount": "{count, plural, =0{No jobs} =1{1 job} other{{count} jobs}}",
+  "@jobCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "locationInUse": "Scopes of work or jobs use this location, so it can't be deleted.",
+  "locationsNotFound": "This location no longer exists.",
+  "streetAddressLabel": "Street address"
 }

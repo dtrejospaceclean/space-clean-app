@@ -28,6 +28,8 @@ extension FailureMessages on AppLocalizations {
     'clients.assignee_not_active' => clientsAssigneeNotActive,
     'clients.has_related_records' => clientsHasRelatedRecords,
     'client_contacts.not_found' => clientContactsNotFound,
+    'locations.not_found' => locationsNotFound,
+    'locations.has_related_records' => locationInUse,
     'client_contacts.email_required' => clientContactsEmailRequired,
     'client_contacts.login_exists' => clientContactsLoginExists,
     'service_catalog.not_found' => serviceCatalogNotFound,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../access/domain/entities/account_access.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
+import '../../locations/presentation/screens/locations_screen.dart';
 
 /// The groups an account's modules are listed under, in screen order.
 enum AccountSection {
@@ -67,6 +68,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleContacts,
     description: (l10n) => l10n.moduleContactsHint,
     route: ContactsScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.account,
+    permission: Permissions.infoView,
+    icon: Icons.location_on_outlined,
+    label: (l10n) => l10n.moduleLocations,
+    description: (l10n) => l10n.moduleLocationsHint,
+    route: LocationsScreen.route,
   ),
 ];
 

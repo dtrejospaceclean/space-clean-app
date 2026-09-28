@@ -16,6 +16,7 @@ void main() {
     expect(sections[AccountSection.account]!.map((m) => m.route), [
       'info',
       'contacts',
+      'locations',
     ]);
   });
 
