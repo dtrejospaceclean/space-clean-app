@@ -209,7 +209,9 @@ class _GridCell extends InheritedWidget {
 
 /// A centered title that wraps between words but never inside one: when
 /// its longest word is wider than [width] (long Spanish words at large text
-/// sizes), the whole title shrinks just enough to fit it.
+/// sizes), the whole title shrinks just enough to fit it. It always takes
+/// at least two lines' height, one-line names centered in it, so every tile
+/// in a grid comes out the same size.
 class _WholeWordsTitle extends StatelessWidget {
   const _WholeWordsTitle(this.text, {this.width, this.style});
 
@@ -219,13 +221,14 @@ class _WholeWordsTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaler = MediaQuery.textScalerOf(context);
+    final direction = Directionality.of(context);
     var shrink = 1.0;
     if (width case final width? when width > 0) {
-      final scaler = MediaQuery.textScalerOf(context);
       for (final word in text.split(RegExp(r'\s+'))) {
         final painter = TextPainter(
           text: TextSpan(text: word, style: style),
-          textDirection: Directionality.of(context),
+          textDirection: direction,
           textScaler: scaler,
           maxLines: 1,
         )..layout();
@@ -237,12 +240,23 @@ class _WholeWordsTitle extends StatelessWidget {
         painter.dispose();
       }
     }
-    return Text(
-      text,
-      textAlign: TextAlign.center,
-      style: shrink < 1
-          ? style?.copyWith(fontSize: (style?.fontSize ?? 14) * shrink)
-          : style,
+    final fitted = shrink < 1
+        ? style?.copyWith(fontSize: (style?.fontSize ?? 14) * shrink)
+        : style;
+    // Two lines of this exact style, text scale included.
+    final twoLines = TextPainter(
+      text: TextSpan(text: '\n', style: fitted),
+      textDirection: direction,
+      textScaler: scaler,
+    )..layout();
+    final minHeight = twoLines.height;
+    twoLines.dispose();
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: minHeight),
+      child: Center(
+        heightFactor: 1,
+        child: Text(text, textAlign: TextAlign.center, style: fitted),
+      ),
     );
   }
 }
