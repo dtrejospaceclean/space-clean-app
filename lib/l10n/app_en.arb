@@ -443,5 +443,57 @@
   "manageUnits": "Manage units",
   "categoriesTitle": "Categories",
   "unitsTitle": "Units of measure",
-  "activeTag": "Active"
+  "activeTag": "Active",
+  "moduleContacts": "Contacts",
+  "moduleContactsHint": "People at the client",
+  "noContactsYet": "No contacts yet",
+  "noContactsYetHint": "Add the people you deal with at this account with +.",
+  "primaryContactTag": "Primary",
+  "billingContactTag": "Billing",
+  "contactTitle": "Contact",
+  "newContactTitle": "New contact",
+  "editContact": "Edit contact",
+  "deleteContact": "Delete contact",
+  "deleteContactWithLoginBody": "Their login stays: they can still sign in and see this account. This can't be undone.",
+  "contactHasLogin": "Has a login",
+  "contactHasLoginHint": "Signs in as a client of this account",
+  "giveLogin": "Give a login",
+  "signsInWith": "Will sign in with {email}",
+  "@signsInWith": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "giveLoginNeedsEmail": "Add an email to this contact first",
+  "giveLoginFootnote": "{name} will see this account in the app as a client.",
+  "@giveLoginFootnote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "loginCreatedTitle": "Login created",
+  "loginCreatedBody": "They can now sign in with {email} and the password you set. Share it with them privately.",
+  "@loginCreatedBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "notesLabel": "Notes",
+  "sectionPerson": "Person",
+  "firstNameLabel": "First name",
+  "lastNameLabel": "Last name",
+  "jobTitleLabel": "Job title",
+  "jobTitleHint": "e.g. Facilities Manager",
+  "contactNotesHint": "e.g. Prefers calls in the morning",
+  "contactRoleLabel": "Role at the account",
+  "contactRoleHelp": "An account has one primary and one billing contact. Choosing one here takes it from whoever had it.",
+  "clientContactsNotFound": "This contact no longer exists.",
+  "clientContactsEmailRequired": "Add an email to this contact before giving them a login.",
+  "clientContactsLoginExists": "This contact already has a login."
 }

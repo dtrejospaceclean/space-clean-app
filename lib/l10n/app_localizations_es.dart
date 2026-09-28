@@ -1022,4 +1022,107 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get activeTag => 'Activo';
+
+  @override
+  String get moduleContacts => 'Contactos';
+
+  @override
+  String get moduleContactsHint => 'Personas del cliente';
+
+  @override
+  String get noContactsYet => 'Aún no hay contactos';
+
+  @override
+  String get noContactsYetHint =>
+      'Agrega con + a las personas con las que tratas en esta cuenta.';
+
+  @override
+  String get primaryContactTag => 'Principal';
+
+  @override
+  String get billingContactTag => 'Facturación';
+
+  @override
+  String get contactTitle => 'Contacto';
+
+  @override
+  String get newContactTitle => 'Nuevo contacto';
+
+  @override
+  String get editContact => 'Editar contacto';
+
+  @override
+  String get deleteContact => 'Eliminar contacto';
+
+  @override
+  String get deleteContactWithLoginBody =>
+      'Su acceso se mantiene: podrá seguir iniciando sesión y viendo esta cuenta. No se puede deshacer.';
+
+  @override
+  String get contactHasLogin => 'Tiene acceso';
+
+  @override
+  String get contactHasLoginHint => 'Inicia sesión como cliente de esta cuenta';
+
+  @override
+  String get giveLogin => 'Dar acceso';
+
+  @override
+  String signsInWith(String email) {
+    return 'Iniciará sesión con $email';
+  }
+
+  @override
+  String get giveLoginNeedsEmail => 'Primero agrega un correo a este contacto';
+
+  @override
+  String giveLoginFootnote(String name) {
+    return '$name verá esta cuenta en la app como cliente.';
+  }
+
+  @override
+  String get loginCreatedTitle => 'Acceso creado';
+
+  @override
+  String loginCreatedBody(String email) {
+    return 'Ya puede iniciar sesión con $email y la contraseña que definiste. Compártela en privado.';
+  }
+
+  @override
+  String get notesLabel => 'Notas';
+
+  @override
+  String get sectionPerson => 'Persona';
+
+  @override
+  String get firstNameLabel => 'Nombre';
+
+  @override
+  String get lastNameLabel => 'Apellido';
+
+  @override
+  String get jobTitleLabel => 'Cargo';
+
+  @override
+  String get jobTitleHint => 'p. ej. Gerente de mantenimiento';
+
+  @override
+  String get contactNotesHint => 'p. ej. Prefiere llamadas por la mañana';
+
+  @override
+  String get contactRoleLabel => 'Rol en la cuenta';
+
+  @override
+  String get contactRoleHelp =>
+      'Una cuenta tiene un contacto principal y uno de facturación. Elegirlo aquí se lo quita a quien lo tenía.';
+
+  @override
+  String get clientContactsNotFound => 'Este contacto ya no existe.';
+
+  @override
+  String get clientContactsEmailRequired =>
+      'Agrega un correo a este contacto antes de darle acceso.';
+
+  @override
+  String get clientContactsLoginExists => 'Este contacto ya tiene acceso.';
 }

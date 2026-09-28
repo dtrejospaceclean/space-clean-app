@@ -13,7 +13,10 @@ void main() {
 
     expect(sections.keys, [AccountSection.work, AccountSection.account]);
     expect(sections[AccountSection.work]!.map((m) => m.route), ['jobs']);
-    expect(sections[AccountSection.account]!.map((m) => m.route), ['info']);
+    expect(sections[AccountSection.account]!.map((m) => m.route), [
+      'info',
+      'contacts',
+    ]);
   });
 
   test('leaves out sections with nothing allowed', () {

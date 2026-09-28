@@ -16,6 +16,9 @@ import 'package:sp_cln_app/features/auth/domain/repositories/auth_repository.dar
 import 'package:sp_cln_app/features/clients/di/clients_providers.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/clients/domain/repositories/clients_repository.dart';
+import 'package:sp_cln_app/features/contacts/di/contacts_providers.dart';
+import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
+import 'package:sp_cln_app/features/contacts/domain/repositories/contacts_repository.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dart';
@@ -343,6 +346,138 @@ class FakeClientsRepository implements ClientsRepository {
   }
 }
 
+/// In-memory contacts, kept like the API: primary first, at most one
+/// primary and one billing contact per account. Records every write.
+class FakeContactsRepository implements ContactsRepository {
+  FakeContactsRepository([List<Contact> contacts = const []])
+    : contacts = [...contacts];
+
+  List<Contact> contacts;
+  final writes = <String>[];
+  final drafts = <ContactDraft>[];
+
+  /// Contact ids whose login would clash with an existing user's email.
+  final emailTaken = <String>{};
+
+  @override
+  Future<List<Contact>> getContacts(String clientId) async =>
+      contacts.where((c) => c.clientId == clientId).toList()..sort(
+        (a, b) => a.isPrimary == b.isPrimary
+            ? a.lastName.compareTo(b.lastName)
+            : (a.isPrimary ? -1 : 1),
+      );
+
+  Contact _fromDraft(
+    String id,
+    String clientId,
+    ContactDraft d, {
+    String? userId,
+  }) {
+    String? text(String? v) => (v ?? '').trim().isEmpty ? null : v!.trim();
+    return Contact(
+      id: id,
+      clientId: clientId,
+      firstName: d.firstName.trim(),
+      lastName: d.lastName.trim(),
+      title: text(d.title),
+      email: text(d.email),
+      phone: text(d.phone),
+      notes: text(d.notes),
+      isPrimary: d.isPrimary,
+      isBillingContact: d.isBillingContact,
+      userId: userId,
+    );
+  }
+
+  /// Setting a flag clears it on the account's other contacts.
+  void _clearFlags(String clientId, ContactDraft d, String exceptId) {
+    contacts = [
+      for (final c in contacts)
+        if (c.clientId != clientId || c.id == exceptId)
+          c
+        else
+          Contact(
+            id: c.id,
+            clientId: c.clientId,
+            firstName: c.firstName,
+            lastName: c.lastName,
+            title: c.title,
+            email: c.email,
+            phone: c.phone,
+            notes: c.notes,
+            isPrimary: c.isPrimary && !d.isPrimary,
+            isBillingContact: c.isBillingContact && !d.isBillingContact,
+            userId: c.userId,
+          ),
+    ];
+  }
+
+  @override
+  Future<Contact> createContact(String clientId, ContactDraft draft) async {
+    writes.add('create:${draft.firstName}');
+    drafts.add(draft);
+    final contact = _fromDraft('k${contacts.length + 1}', clientId, draft);
+    _clearFlags(clientId, draft, contact.id);
+    contacts = [...contacts, contact];
+    return contact;
+  }
+
+  @override
+  Future<Contact> updateContact(
+    String clientId,
+    String contactId,
+    ContactDraft draft,
+  ) async {
+    writes.add('update:$contactId');
+    drafts.add(draft);
+    final i = contacts.indexWhere((c) => c.id == contactId);
+    final contact = _fromDraft(
+      contactId,
+      clientId,
+      draft,
+      userId: contacts[i].userId,
+    );
+    contacts = [...contacts]..[i] = contact;
+    _clearFlags(clientId, draft, contactId);
+    return contact;
+  }
+
+  @override
+  Future<void> deleteContact(String clientId, String contactId) async {
+    writes.add('delete:$contactId');
+    contacts = contacts.where((c) => c.id != contactId).toList();
+  }
+
+  @override
+  Future<ContactLogin> createLogin(
+    String clientId,
+    String contactId,
+    String password,
+  ) async {
+    if (emailTaken.contains(contactId)) {
+      throw const ServerFailure('users.email_taken', statusCode: 409);
+    }
+    writes.add('login:$contactId');
+    final i = contacts.indexWhere((c) => c.id == contactId);
+    final c = contacts[i];
+    contacts = [...contacts]
+      ..[i] = Contact(
+        id: c.id,
+        clientId: c.clientId,
+        firstName: c.firstName,
+        lastName: c.lastName,
+        title: c.title,
+        email: c.email,
+        phone: c.phone,
+        notes: c.notes,
+        isPrimary: c.isPrimary,
+        isBillingContact: c.isBillingContact,
+        userId: 'u-$contactId',
+      );
+    return ContactLogin(userId: 'u-$contactId', email: c.email!);
+  }
+}
+
 /// Jobs per client id; a [Failure] value makes that account fail.
 class FakeJobsRepository implements JobsRepository {
   FakeJobsRepository([this.byClient = const {}]);
@@ -632,6 +767,7 @@ Future<SharedPreferences> pumpApp(
   RolesRepository? roles,
   ProfileRepository? profile,
   ServiceCatalogRepository? services,
+  ContactsRepository? contacts,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -665,6 +801,9 @@ Future<SharedPreferences> pumpApp(
         ),
         serviceCatalogRepositoryProvider.overrideWithValue(
           services ?? FakeServiceCatalogRepository(),
+        ),
+        contactsRepositoryProvider.overrideWithValue(
+          contacts ?? FakeContactsRepository(),
         ),
         clockProvider.overrideWithValue(() => testNow),
       ],

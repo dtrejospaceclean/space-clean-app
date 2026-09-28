@@ -28,6 +28,8 @@ class SpaceTextField extends StatelessWidget {
     this.enabled = true,
     this.autofocus = false,
     this.textCapitalization = TextCapitalization.none,
+    this.maxLines = 1,
+    this.minLines,
     this.validator,
     this.onChanged,
     this.onFieldSubmitted,
@@ -53,6 +55,10 @@ class SpaceTextField extends StatelessWidget {
   final bool enabled;
   final bool autofocus;
   final TextCapitalization textCapitalization;
+
+  /// More than 1 (or null, to grow) for free text such as notes.
+  final int? maxLines;
+  final int? minLines;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
@@ -91,6 +97,8 @@ class SpaceTextField extends StatelessWidget {
             autofillHints: autofillHints,
             inputFormatters: inputFormatters,
             textCapitalization: textCapitalization,
+            maxLines: maxLines,
+            minLines: minLines,
             autocorrect: false,
             enableSuggestions: !obscureText,
             validator: validator,

@@ -1861,6 +1861,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Active'**
   String get activeTag;
+
+  /// No description provided for @moduleContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get moduleContacts;
+
+  /// No description provided for @moduleContactsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'People at the client'**
+  String get moduleContactsHint;
+
+  /// No description provided for @noContactsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts yet'**
+  String get noContactsYet;
+
+  /// No description provided for @noContactsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the people you deal with at this account with +.'**
+  String get noContactsYetHint;
+
+  /// No description provided for @primaryContactTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get primaryContactTag;
+
+  /// No description provided for @billingContactTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing'**
+  String get billingContactTag;
+
+  /// No description provided for @contactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contactTitle;
+
+  /// No description provided for @newContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New contact'**
+  String get newContactTitle;
+
+  /// No description provided for @editContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit contact'**
+  String get editContact;
+
+  /// No description provided for @deleteContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete contact'**
+  String get deleteContact;
+
+  /// No description provided for @deleteContactWithLoginBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Their login stays: they can still sign in and see this account. This can\'t be undone.'**
+  String get deleteContactWithLoginBody;
+
+  /// No description provided for @contactHasLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Has a login'**
+  String get contactHasLogin;
+
+  /// No description provided for @contactHasLoginHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Signs in as a client of this account'**
+  String get contactHasLoginHint;
+
+  /// No description provided for @giveLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Give a login'**
+  String get giveLogin;
+
+  /// No description provided for @signsInWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Will sign in with {email}'**
+  String signsInWith(String email);
+
+  /// No description provided for @giveLoginNeedsEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an email to this contact first'**
+  String get giveLoginNeedsEmail;
+
+  /// No description provided for @giveLoginFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will see this account in the app as a client.'**
+  String giveLoginFootnote(String name);
+
+  /// No description provided for @loginCreatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login created'**
+  String get loginCreatedTitle;
+
+  /// No description provided for @loginCreatedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They can now sign in with {email} and the password you set. Share it with them privately.'**
+  String loginCreatedBody(String email);
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesLabel;
+
+  /// No description provided for @sectionPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get sectionPerson;
+
+  /// No description provided for @firstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get firstNameLabel;
+
+  /// No description provided for @lastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get lastNameLabel;
+
+  /// No description provided for @jobTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Job title'**
+  String get jobTitleLabel;
+
+  /// No description provided for @jobTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Facilities Manager'**
+  String get jobTitleHint;
+
+  /// No description provided for @contactNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Prefers calls in the morning'**
+  String get contactNotesHint;
+
+  /// No description provided for @contactRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role at the account'**
+  String get contactRoleLabel;
+
+  /// No description provided for @contactRoleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An account has one primary and one billing contact. Choosing one here takes it from whoever had it.'**
+  String get contactRoleHelp;
+
+  /// No description provided for @clientContactsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This contact no longer exists.'**
+  String get clientContactsNotFound;
+
+  /// No description provided for @clientContactsEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an email to this contact before giving them a login.'**
+  String get clientContactsEmailRequired;
+
+  /// No description provided for @clientContactsLoginExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This contact already has a login.'**
+  String get clientContactsLoginExists;
 }
 
 class _AppLocalizationsDelegate

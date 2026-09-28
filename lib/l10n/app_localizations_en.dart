@@ -1012,4 +1012,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activeTag => 'Active';
+
+  @override
+  String get moduleContacts => 'Contacts';
+
+  @override
+  String get moduleContactsHint => 'People at the client';
+
+  @override
+  String get noContactsYet => 'No contacts yet';
+
+  @override
+  String get noContactsYetHint =>
+      'Add the people you deal with at this account with +.';
+
+  @override
+  String get primaryContactTag => 'Primary';
+
+  @override
+  String get billingContactTag => 'Billing';
+
+  @override
+  String get contactTitle => 'Contact';
+
+  @override
+  String get newContactTitle => 'New contact';
+
+  @override
+  String get editContact => 'Edit contact';
+
+  @override
+  String get deleteContact => 'Delete contact';
+
+  @override
+  String get deleteContactWithLoginBody =>
+      'Their login stays: they can still sign in and see this account. This can\'t be undone.';
+
+  @override
+  String get contactHasLogin => 'Has a login';
+
+  @override
+  String get contactHasLoginHint => 'Signs in as a client of this account';
+
+  @override
+  String get giveLogin => 'Give a login';
+
+  @override
+  String signsInWith(String email) {
+    return 'Will sign in with $email';
+  }
+
+  @override
+  String get giveLoginNeedsEmail => 'Add an email to this contact first';
+
+  @override
+  String giveLoginFootnote(String name) {
+    return '$name will see this account in the app as a client.';
+  }
+
+  @override
+  String get loginCreatedTitle => 'Login created';
+
+  @override
+  String loginCreatedBody(String email) {
+    return 'They can now sign in with $email and the password you set. Share it with them privately.';
+  }
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get sectionPerson => 'Person';
+
+  @override
+  String get firstNameLabel => 'First name';
+
+  @override
+  String get lastNameLabel => 'Last name';
+
+  @override
+  String get jobTitleLabel => 'Job title';
+
+  @override
+  String get jobTitleHint => 'e.g. Facilities Manager';
+
+  @override
+  String get contactNotesHint => 'e.g. Prefers calls in the morning';
+
+  @override
+  String get contactRoleLabel => 'Role at the account';
+
+  @override
+  String get contactRoleHelp =>
+      'An account has one primary and one billing contact. Choosing one here takes it from whoever had it.';
+
+  @override
+  String get clientContactsNotFound => 'This contact no longer exists.';
+
+  @override
+  String get clientContactsEmailRequired =>
+      'Add an email to this contact before giving them a login.';
+
+  @override
+  String get clientContactsLoginExists => 'This contact already has a login.';
 }

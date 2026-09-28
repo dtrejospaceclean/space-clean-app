@@ -9,6 +9,10 @@ import '../../features/clients/presentation/screens/account_form_screen.dart';
 import '../../features/clients/presentation/screens/account_info_screen.dart';
 import '../../features/clients/presentation/screens/account_screen.dart';
 import '../../features/clients/presentation/screens/accounts_screen.dart';
+import '../../features/contacts/presentation/screens/contact_form_screen.dart';
+import '../../features/contacts/presentation/screens/contact_login_screen.dart';
+import '../../features/contacts/presentation/screens/contact_screen.dart';
+import '../../features/contacts/presentation/screens/contacts_screen.dart';
 import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
 import '../../features/jobs/presentation/screens/today_screen.dart';
@@ -139,6 +143,44 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                             builder: (_, state) => AccountFormScreen(
                               clientId: state.pathParameters['clientId'],
                             ),
+                          ),
+                        ],
+                      ),
+                      GoRoute(
+                        path: ContactsScreen.route,
+                        builder: (_, state) => ContactsScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':contactId' so "new" isn't read as an id.
+                          GoRoute(
+                            path: 'new',
+                            builder: (_, state) => ContactFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                          ),
+                          GoRoute(
+                            path: ':contactId',
+                            builder: (_, state) => ContactScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              contactId: state.pathParameters['contactId']!,
+                            ),
+                            routes: [
+                              GoRoute(
+                                path: 'edit',
+                                builder: (_, state) => ContactFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  contactId: state.pathParameters['contactId'],
+                                ),
+                              ),
+                              GoRoute(
+                                path: 'login',
+                                builder: (_, state) => ContactLoginScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  contactId: state.pathParameters['contactId']!,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
