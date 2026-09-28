@@ -438,6 +438,22 @@ void main() {
     await _sheet(tester, 'admin_ios', TargetPlatform.iOS, adminPhones());
   });
 
+  // An account's screen as an owner: every module, dark, Spanish at 200%.
+  testWidgets('account', (tester) async {
+    await _sheet(tester, 'account', TargetPlatform.iOS, [
+      Phone('1 · Account (owner)', asOwner: true, location: '/accounts/c1'),
+      Phone('2 · Supervisor', signedIn: true, location: '/accounts/c1'),
+      Phone('3 · Dark', asOwner: true, dark: true, location: '/accounts/c1'),
+      Phone(
+        '4 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '/accounts/c1',
+      ),
+    ]);
+  });
+
   // Me and its Settings screen: light, dark, and Spanish at 200%.
   testWidgets('settings', (tester) async {
     await _sheet(tester, 'settings', TargetPlatform.iOS, [

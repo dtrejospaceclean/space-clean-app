@@ -125,6 +125,7 @@ class TileCard extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.onTap,
+    this.compact = false,
   });
 
   final Widget icon;
@@ -132,24 +133,36 @@ class TileCard extends StatelessWidget {
   final String? subtitle;
   final VoidCallback? onTap;
 
+  /// Tighter padding and a smaller title, both centered, for three across.
+  /// The title wraps instead of truncating, so a narrow tile grows taller.
+  final bool compact;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SpaceCard(
       onTap: onTap,
+      padding: compact
+          ? const EdgeInsets.symmetric(horizontal: 10, vertical: 14)
+          : const EdgeInsets.all(SpaceSpace.card),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: compact
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           icon,
-          const SizedBox(height: 28),
+          SizedBox(height: compact ? 10 : 28),
           Text(
             title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            textAlign: compact ? TextAlign.center : null,
+            maxLines: compact ? null : 2,
+            overflow: compact ? null : TextOverflow.ellipsis,
+            style:
+                (compact
+                        ? theme.textTheme.titleSmall
+                        : theme.textTheme.titleMedium)
+                    ?.copyWith(fontWeight: FontWeight.w700),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 2),
@@ -166,29 +179,32 @@ class TileCard extends StatelessWidget {
   }
 }
 
-/// Lays out cards two per row with the standard gap. Each row takes the
-/// height of its taller card.
+/// Lays out cards [columns] per row (two by default) with the standard gap.
+/// Each row takes the height of its tallest card; a short last row keeps
+/// the same card width.
 class CardGrid extends StatelessWidget {
-  const CardGrid({super.key, required this.children});
+  const CardGrid({super.key, required this.children, this.columns = 2});
 
   final List<Widget> children;
+  final int columns;
 
   @override
   Widget build(BuildContext context) {
     final rows = <Widget>[];
-    for (var i = 0; i < children.length; i += 2) {
+    for (var i = 0; i < children.length; i += columns) {
       rows.add(
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: children[i]),
-              const SizedBox(width: SpaceSpace.gap),
-              Expanded(
-                child: i + 1 < children.length
-                    ? children[i + 1]
-                    : const SizedBox.shrink(),
-              ),
+              for (var j = i; j < i + columns; j++) ...[
+                if (j > i) const SizedBox(width: SpaceSpace.gap),
+                Expanded(
+                  child: j < children.length
+                      ? children[j]
+                      : const SizedBox.shrink(),
+                ),
+              ],
             ],
           ),
         ),

@@ -55,17 +55,45 @@ class AccountScreen extends ConsumerWidget {
                   ),
                   PageBox(
                     top: 0,
-                    child: ListCard(
-                      children: [
-                        for (final module in modules)
-                          ListRow(
-                            leading: IconBadge.strong(icon: module.icon),
-                            title: module.label(l10n),
-                            subtitle: module.description(l10n),
-                            onTap: () => context.push('$here/${module.route}'),
-                          ),
-                      ],
-                    ),
+                    child: switch (section) {
+                      // The account's own records: tiles, three across
+                      // (two when large text needs the width).
+                      AccountSection.account => CardGrid(
+                        columns:
+                            MediaQuery.textScalerOf(context).scale(1) >= 1.5
+                            ? 2
+                            : 3,
+                        children: [
+                          for (final module in modules)
+                            Semantics(
+                              button: true,
+                              hint: module.description(l10n),
+                              child: TileCard(
+                                compact: true,
+                                icon: IconBadge.strong(
+                                  icon: module.icon,
+                                  size: 34,
+                                ),
+                                title: module.label(l10n),
+                                onTap: () =>
+                                    context.push('$here/${module.route}'),
+                              ),
+                            ),
+                        ],
+                      ),
+                      AccountSection.work => ListCard(
+                        children: [
+                          for (final module in modules)
+                            ListRow(
+                              leading: IconBadge.strong(icon: module.icon),
+                              title: module.label(l10n),
+                              subtitle: module.description(l10n),
+                              onTap: () =>
+                                  context.push('$here/${module.route}'),
+                            ),
+                        ],
+                      ),
+                    },
                   ),
                 ],
               ],
