@@ -16,6 +16,7 @@ import '../../domain/usecases/user_usecases.dart';
 import '../controllers/users_providers.dart';
 import '../widgets/user_labels.dart';
 import 'users_screen.dart';
+import '../../../../core/widgets/us_phone.dart';
 
 class UserDetailScreen extends ConsumerWidget {
   const UserDetailScreen({super.key, required this.userId});
@@ -226,7 +227,9 @@ class UserDetailScreen extends ConsumerWidget {
                     ),
                     ListRow(
                       leading: const IconBadge(icon: Icons.phone_outlined),
-                      title: orNull(user.phoneNumber) ?? l10n.notSet,
+                      title:
+                          orNull(UsPhone.format(user.phoneNumber)) ??
+                          l10n.notSet,
                     ),
                     ListRow(
                       leading: IconBadge(
@@ -237,7 +240,7 @@ class UserDetailScreen extends ConsumerWidget {
                       title: orNull(user.emergencyContactName) ?? l10n.notSet,
                       subtitle: [
                         l10n.sectionEmergency,
-                        ?orNull(user.emergencyContactPhone),
+                        ?orNull(UsPhone.format(user.emergencyContactPhone)),
                       ].join(' · '),
                     ),
                   ],

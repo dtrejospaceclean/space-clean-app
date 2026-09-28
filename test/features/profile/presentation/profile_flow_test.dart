@@ -25,12 +25,19 @@ void main() {
     expect(find.textContaining('ana@example.com'), findsOneWidget);
 
     await tester.enterText(field('Full name'), 'Ana M. Pérez');
+    // A number without its area code is refused before saving.
     await tester.enterText(field('Phone').first, '555-0100');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('Enter a 10-digit phone number.'), findsOneWidget);
+    expect(profile.writes, isEmpty);
+
+    await tester.enterText(field('Phone').first, '713-555-0100');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
     expect(profile.writes, ['profile']);
-    expect(auth.sessionUser!.phoneNumber, '555-0100');
+    expect(auth.sessionUser!.phoneNumber, '(713) 555-0100');
     // Back on Me, with the new name.
     expect(find.byTooltip('Edit profile'), findsOneWidget);
     expect(find.text('Ana M. Pérez'), findsOneWidget);

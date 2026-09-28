@@ -11,6 +11,7 @@ import '../../di/contacts_providers.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/usecases/contact_usecases.dart';
 import '../controllers/contacts_providers.dart';
+import '../../../../core/widgets/us_phone.dart';
 
 /// Add a contact to an account ([contactId] null) or edit one. Both need
 /// `info.edit` on the account.
@@ -78,7 +79,9 @@ class _ContactFormState extends ConsumerState<_ContactForm> {
   late final _lastName = TextEditingController(text: widget.initial?.lastName);
   late final _title = TextEditingController(text: widget.initial?.title);
   late final _email = TextEditingController(text: widget.initial?.email);
-  late final _phone = TextEditingController(text: widget.initial?.phone);
+  late final _phone = TextEditingController(
+    text: UsPhone.format(widget.initial?.phone),
+  );
   late final _notes = TextEditingController(text: widget.initial?.notes);
   late final _flags = <_Flag>{
     if (widget.initial?.isPrimary ?? false) _Flag.primary,
@@ -156,6 +159,7 @@ class _ContactFormState extends ConsumerState<_ContactForm> {
     TextInputType? keyboardType,
     TextInputAction action = TextInputAction.next,
     int? maxLines = 1,
+    bool phone = false,
     String? Function(String value)? validate,
   }) => SpaceTextField(
     label: label,
@@ -166,6 +170,7 @@ class _ContactFormState extends ConsumerState<_ContactForm> {
     keyboardType: keyboardType,
     textInputAction: action,
     maxLines: maxLines,
+    phone: phone,
     validator: _validator(field, validate),
   );
 
@@ -256,12 +261,7 @@ class _ContactFormState extends ConsumerState<_ContactForm> {
                         ? l10n.validationInvalidEmail
                         : null,
                   ),
-                  _text(
-                    l10n.phoneLabel,
-                    _phone,
-                    'phone',
-                    keyboardType: TextInputType.phone,
-                  ),
+                  _text(l10n.phoneLabel, _phone, 'phone', phone: true),
                 ]),
                 FormSection(l10n.contactRoleLabel, [
                   ChoicePills<_Flag>(

@@ -2209,6 +2209,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Street address'**
   String get streetAddressLabel;
+
+  /// No description provided for @invalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a 10-digit phone number.'**
+  String get invalidPhone;
 }
 
 class _AppLocalizationsDelegate

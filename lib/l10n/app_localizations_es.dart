@@ -1230,4 +1230,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get streetAddressLabel => 'Calle y número';
+
+  @override
+  String get invalidPhone => 'Ingresa un número de teléfono de 10 dígitos.';
 }

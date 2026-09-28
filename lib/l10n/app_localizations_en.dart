@@ -1220,4 +1220,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get streetAddressLabel => 'Street address';
+
+  @override
+  String get invalidPhone => 'Enter a 10-digit phone number.';
 }

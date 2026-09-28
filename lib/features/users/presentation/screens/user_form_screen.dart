@@ -19,6 +19,7 @@ import '../../domain/entities/role_info.dart';
 import '../../domain/usecases/user_usecases.dart';
 import '../controllers/users_providers.dart';
 import '../widgets/user_labels.dart';
+import '../../../../core/widgets/us_phone.dart';
 
 /// Create a user ([userId] null) or edit one. Owners only.
 class UserFormScreen extends ConsumerWidget {
@@ -90,7 +91,9 @@ class _UserFormState extends ConsumerState<_UserForm> {
   late final _name = TextEditingController(text: widget.initial?.name);
   late final _email = TextEditingController(text: widget.initial?.email);
   final _password = TextEditingController();
-  late final _phone = TextEditingController(text: widget.initial?.phoneNumber);
+  late final _phone = TextEditingController(
+    text: UsPhone.format(widget.initial?.phoneNumber),
+  );
   late final _employeeId = TextEditingController(
     text: widget.initial?.employeeId,
   );
@@ -99,7 +102,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
     text: widget.initial?.emergencyContactName,
   );
   late final _emergencyPhone = TextEditingController(
-    text: widget.initial?.emergencyContactPhone,
+    text: UsPhone.format(widget.initial?.emergencyContactPhone),
   );
   late String? _employmentType = widget.initial?.employmentType;
   late DateTime? _hireDate = widget.initial?.hireDate;
@@ -311,7 +314,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                       label: l10n.phoneLabel,
                       controller: _phone,
                       enabled: !_saving,
-                      keyboardType: TextInputType.phone,
+                      phone: true,
                       validator: _validator('phoneNumber'),
                     ),
                   ]),
@@ -442,7 +445,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                       label: l10n.emergencyPhoneLabel,
                       controller: _emergencyPhone,
                       enabled: !_saving,
-                      keyboardType: TextInputType.phone,
+                      phone: true,
                       textInputAction: TextInputAction.done,
                       validator: _validator('emergencyContactPhone'),
                     ),

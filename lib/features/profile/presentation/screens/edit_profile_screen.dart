@@ -11,6 +11,7 @@ import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../di/profile_providers.dart';
 import '../../domain/entities/profile_draft.dart';
+import '../../../../core/widgets/us_phone.dart';
 
 /// The signed-in user's own details (`PATCH /auth/me`), open to everyone.
 /// Email, roles and employment stay with owners, under Administration.
@@ -43,12 +44,14 @@ class _ProfileForm extends ConsumerStatefulWidget {
 class _ProfileFormState extends ConsumerState<_ProfileForm> {
   final _formKey = GlobalKey<FormState>();
   late final _name = TextEditingController(text: widget.user.name);
-  late final _phone = TextEditingController(text: widget.user.phoneNumber);
+  late final _phone = TextEditingController(
+    text: UsPhone.format(widget.user.phoneNumber),
+  );
   late final _emergencyName = TextEditingController(
     text: widget.user.emergencyContactName,
   );
   late final _emergencyPhone = TextEditingController(
-    text: widget.user.emergencyContactPhone,
+    text: UsPhone.format(widget.user.emergencyContactPhone),
   );
 
   bool _saving = false;
@@ -164,8 +167,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
                       label: l10n.phoneLabel,
                       controller: _phone,
                       enabled: !_saving,
-                      keyboardType: TextInputType.phone,
-                      autofillHints: const [AutofillHints.telephoneNumber],
+                      phone: true,
                       validator: _validator('phoneNumber'),
                     ),
                   ], footer: l10n.profileEmailFootnote(widget.user.email)),
@@ -181,7 +183,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
                       label: l10n.emergencyPhoneLabel,
                       controller: _emergencyPhone,
                       enabled: !_saving,
-                      keyboardType: TextInputType.phone,
+                      phone: true,
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _save(),
                       validator: _validator('emergencyContactPhone'),

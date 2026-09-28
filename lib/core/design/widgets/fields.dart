@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../widgets/us_phone.dart';
 import '../tokens.dart';
 import 'cards.dart';
 import 'space_page.dart';
@@ -30,6 +31,7 @@ class SpaceTextField extends StatelessWidget {
     this.textCapitalization = TextCapitalization.none,
     this.maxLines = 1,
     this.minLines,
+    this.phone = false,
     this.validator,
     this.onChanged,
     this.onFieldSubmitted,
@@ -59,6 +61,13 @@ class SpaceTextField extends StatelessWidget {
   /// More than 1 (or null, to grow) for free text such as notes.
   final int? maxLines;
   final int? minLines;
+
+  /// A US phone number: masked as "(713) 555-0142" while typing, with the
+  /// phone keypad, and invalid unless empty or all 10 digits. Give the
+  /// controller [UsPhone.format]ted text.
+  final bool phone;
+
+  /// Runs before the phone check, so server errors come first.
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
@@ -92,16 +101,26 @@ class SpaceTextField extends StatelessWidget {
             enabled: enabled,
             autofocus: autofocus,
             obscureText: obscureText,
-            keyboardType: keyboardType,
+            keyboardType: phone ? TextInputType.phone : keyboardType,
             textInputAction: textInputAction,
-            autofillHints: autofillHints,
-            inputFormatters: inputFormatters,
+            autofillHints:
+                autofillHints ??
+                (phone ? const [AutofillHints.telephoneNumberNational] : null),
+            inputFormatters: phone
+                ? const [UsPhoneInputFormatter()]
+                : inputFormatters,
             textCapitalization: textCapitalization,
             maxLines: maxLines,
             minLines: minLines,
             autocorrect: false,
             enableSuggestions: !obscureText,
-            validator: validator,
+            validator: phone
+                ? (v) =>
+                      validator?.call(v) ??
+                      (UsPhone.isValid(v ?? '')
+                          ? null
+                          : AppLocalizations.of(context).invalidPhone)
+                : validator,
             onChanged: onChanged,
             onFieldSubmitted: onFieldSubmitted,
             cursorColor: context.colors.primary,
@@ -112,7 +131,7 @@ class SpaceTextField extends StatelessWidget {
               color: context.colors.ink,
             ),
             decoration: InputDecoration(
-              hintText: hint,
+              hintText: hint ?? (phone ? '(713) 555-0142' : null),
               helperText: helper,
               helperMaxLines: 3,
               helperStyle: theme.textTheme.bodySmall?.copyWith(

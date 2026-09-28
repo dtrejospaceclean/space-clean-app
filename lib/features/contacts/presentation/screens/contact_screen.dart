@@ -13,6 +13,7 @@ import '../../di/contacts_providers.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/usecases/contact_usecases.dart';
 import '../controllers/contacts_providers.dart';
+import '../../../../core/widgets/us_phone.dart';
 
 /// One contact: how to reach them, their role at the account and whether
 /// they can sign in. Editing and deleting need `info.edit`; giving them a
@@ -212,7 +213,11 @@ class ContactScreen extends ConsumerWidget {
                         l10n.emailLabel,
                         c.email,
                       ),
-                      fact(Icons.phone_outlined, l10n.phoneLabel, c.phone),
+                      fact(
+                        Icons.phone_outlined,
+                        l10n.phoneLabel,
+                        UsPhone.format(c.phone),
+                      ),
                     ],
                   ),
                 ),

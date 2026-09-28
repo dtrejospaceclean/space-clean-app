@@ -136,13 +136,15 @@ void main() {
     await tester.tap(find.byTooltip('Edit contact'));
     await tester.pumpAndSettle();
     await tester.enterText(field('Job title'), '');
-    await tester.enterText(field('Phone'), '+52 55 5555 5555');
+    await tester.enterText(field('Phone'), '7135550142');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
     expect(contacts.writes, ['update:k1']);
     expect(contacts.drafts.single.isPrimary, isTrue);
-    expect(find.text('+52 55 5555 5555'), findsOneWidget);
+    // Typed digits are saved in the US format.
+    expect(contacts.drafts.single.phone, '(713) 555-0142');
+    expect(find.text('(713) 555-0142'), findsOneWidget);
     expect(find.text('Facilities Manager'), findsNothing);
   });
 

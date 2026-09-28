@@ -351,5 +351,6 @@
   "jobCount": "{count, plural, =0{Ningún trabajo} =1{1 trabajo} other{{count} trabajos}}",
   "locationInUse": "Hay alcances de trabajo o trabajos que usan esta ubicación, así que no se puede eliminar.",
   "locationsNotFound": "Esta ubicación ya no existe.",
-  "streetAddressLabel": "Calle y número"
+  "streetAddressLabel": "Calle y número",
+  "invalidPhone": "Ingresa un número de teléfono de 10 dígitos."
 }

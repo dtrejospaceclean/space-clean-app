@@ -543,5 +543,6 @@
   },
   "locationInUse": "Scopes of work or jobs use this location, so it can't be deleted.",
   "locationsNotFound": "This location no longer exists.",
-  "streetAddressLabel": "Street address"
+  "streetAddressLabel": "Street address",
+  "invalidPhone": "Enter a 10-digit phone number."
 }
