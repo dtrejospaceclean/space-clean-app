@@ -191,7 +191,7 @@ abstract final class SpaceSpace {
   static const page = 20.0;
 
   /// Gap between cards.
-  static const gap = 12.0;
+  static const gap = 8.0;
 
   /// Card inner padding.
   static const card = 20.0;

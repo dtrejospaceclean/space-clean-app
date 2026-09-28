@@ -148,7 +148,7 @@ class _Title extends StatelessWidget {
 
 /// Page-width padding for a sliver.
 class PageSliver extends StatelessWidget {
-  const PageSliver({super.key, required this.sliver, this.top = 16});
+  const PageSliver({super.key, required this.sliver, this.top = 12});
 
   final Widget sliver;
   final double top;
@@ -165,7 +165,7 @@ class PageSliver extends StatelessWidget {
 
 /// A box widget as a padded page sliver.
 class PageBox extends StatelessWidget {
-  const PageBox({super.key, required this.child, this.top = 16});
+  const PageBox({super.key, required this.child, this.top = 12});
 
   final Widget child;
   final double top;
