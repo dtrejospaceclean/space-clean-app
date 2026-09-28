@@ -29,6 +29,8 @@ extension FailureMessages on AppLocalizations {
     'clients.has_related_records' => clientsHasRelatedRecords,
     'client_contacts.not_found' => clientContactsNotFound,
     'locations.not_found' => locationsNotFound,
+    'members.not_found' => membersNotFound,
+    'members.user_not_active' => membersUserNotActive,
     'locations.has_related_records' => locationInUse,
     'client_contacts.email_required' => clientContactsEmailRequired,
     'client_contacts.login_exists' => clientContactsLoginExists,

@@ -1233,4 +1233,98 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get invalidPhone => 'Ingresa un número de teléfono de 10 dígitos.';
+
+  @override
+  String get moduleTeamHint => 'Quién trabaja aquí y qué puede hacer';
+
+  @override
+  String get moduleTimeline => 'Historial';
+
+  @override
+  String get noTeamYet => 'Aún no hay nadie en este equipo';
+
+  @override
+  String get noTeamYetHint => 'Agrega personas con +.';
+
+  @override
+  String get customAccessTag => 'Acceso personalizado';
+
+  @override
+  String get memberTitle => 'Miembro del equipo';
+
+  @override
+  String get sectionAccess => 'Acceso';
+
+  @override
+  String get editAccess => 'Editar acceso';
+
+  @override
+  String get addMemberTitle => 'Agregar al equipo';
+
+  @override
+  String get memberUserLabel => 'Persona';
+
+  @override
+  String get baseRoleLabel => 'Rol en esta cuenta';
+
+  @override
+  String get baseRoleChangeHelp =>
+      'Cambiar el rol restablece el acceso a lo predeterminado de ese rol.';
+
+  @override
+  String get accessHelp => 'Al quitar Ver se quita todo lo demás de esa área.';
+
+  @override
+  String get resetAccess => 'Restablecer lo predeterminado del rol';
+
+  @override
+  String get addMemberHelp =>
+      'El acceso empieza con lo predeterminado del rol. Podrás ajustarlo después de agregarlo.';
+
+  @override
+  String get noOneToAdd =>
+      'Todas las personas activas ya están en este equipo.';
+
+  @override
+  String get removeMember => 'Quitar del equipo';
+
+  @override
+  String removeMemberConfirmTitle(String name) {
+    return '¿Quitar a $name?';
+  }
+
+  @override
+  String get removeMemberConfirmBody =>
+      'Perderá el acceso a esta cuenta. Su usuario y su historial se conservan.';
+
+  @override
+  String get removeButton => 'Quitar';
+
+  @override
+  String get teamReadOnly => 'Solo los propietarios pueden cambiar el equipo.';
+
+  @override
+  String get accessView => 'Ver';
+
+  @override
+  String get accessEdit => 'Editar';
+
+  @override
+  String get accessAssign => 'Asignar';
+
+  @override
+  String get accessDownload => 'Descargar';
+
+  @override
+  String get accessUpload => 'Subir';
+
+  @override
+  String get accessManage => 'Gestionar';
+
+  @override
+  String get membersNotFound => 'Esta persona ya no está en este equipo.';
+
+  @override
+  String get membersUserNotActive =>
+      'Este usuario está desactivado. Reactívalo antes de agregarlo.';
 }

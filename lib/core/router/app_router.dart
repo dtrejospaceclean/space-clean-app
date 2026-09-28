@@ -30,6 +30,9 @@ import '../../features/service_catalog/presentation/screens/lookup_form_screen.d
 import '../../features/service_catalog/presentation/screens/service_form_screen.dart';
 import '../../features/service_catalog/presentation/screens/services_screen.dart';
 import '../../features/shell/presentation/app_shell.dart';
+import '../../features/team/presentation/screens/member_form_screen.dart';
+import '../../features/team/presentation/screens/member_screen.dart';
+import '../../features/team/presentation/screens/team_screen.dart';
 import '../../features/shell/presentation/branch_container.dart';
 import '../../features/users/presentation/screens/roles_screen.dart';
 import '../../features/users/presentation/screens/user_detail_screen.dart';
@@ -213,6 +216,37 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   clientId: state.pathParameters['clientId']!,
                                   locationId:
                                       state.pathParameters['locationId'],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      GoRoute(
+                        path: TeamScreen.route,
+                        builder: (_, state) => TeamScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':userId' so "new" isn't read as an id.
+                          GoRoute(
+                            path: 'new',
+                            builder: (_, state) => AddMemberScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                          ),
+                          GoRoute(
+                            path: ':userId',
+                            builder: (_, state) => MemberScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              userId: state.pathParameters['userId']!,
+                            ),
+                            routes: [
+                              GoRoute(
+                                path: 'edit',
+                                builder: (_, state) => MemberAccessScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  userId: state.pathParameters['userId']!,
                                 ),
                               ),
                             ],

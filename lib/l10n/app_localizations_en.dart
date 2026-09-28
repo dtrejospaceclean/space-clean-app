@@ -1223,4 +1223,97 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidPhone => 'Enter a 10-digit phone number.';
+
+  @override
+  String get moduleTeamHint => 'Who works here and what they can do';
+
+  @override
+  String get moduleTimeline => 'Timeline';
+
+  @override
+  String get noTeamYet => 'No one on this team yet';
+
+  @override
+  String get noTeamYetHint => 'Add people with +.';
+
+  @override
+  String get customAccessTag => 'Custom access';
+
+  @override
+  String get memberTitle => 'Team member';
+
+  @override
+  String get sectionAccess => 'Access';
+
+  @override
+  String get editAccess => 'Edit access';
+
+  @override
+  String get addMemberTitle => 'Add to team';
+
+  @override
+  String get memberUserLabel => 'Person';
+
+  @override
+  String get baseRoleLabel => 'Role on this account';
+
+  @override
+  String get baseRoleChangeHelp =>
+      'Changing the role resets access to that role\'s defaults.';
+
+  @override
+  String get accessHelp => 'Turning off View turns off the rest of that area.';
+
+  @override
+  String get resetAccess => 'Reset to the role\'s defaults';
+
+  @override
+  String get addMemberHelp =>
+      'Access starts at the role\'s defaults. You can adjust it after adding them.';
+
+  @override
+  String get noOneToAdd => 'Everyone active is already on this team.';
+
+  @override
+  String get removeMember => 'Remove from team';
+
+  @override
+  String removeMemberConfirmTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get removeMemberConfirmBody =>
+      'They\'ll lose access to this account. Their user and history stay.';
+
+  @override
+  String get removeButton => 'Remove';
+
+  @override
+  String get teamReadOnly => 'Only owners can change the team.';
+
+  @override
+  String get accessView => 'View';
+
+  @override
+  String get accessEdit => 'Edit';
+
+  @override
+  String get accessAssign => 'Assign';
+
+  @override
+  String get accessDownload => 'Download';
+
+  @override
+  String get accessUpload => 'Upload';
+
+  @override
+  String get accessManage => 'Manage';
+
+  @override
+  String get membersNotFound => 'This person is no longer on this team.';
+
+  @override
+  String get membersUserNotActive =>
+      'This user is deactivated. Reactivate them before adding them.';
 }

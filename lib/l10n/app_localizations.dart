@@ -2215,6 +2215,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a 10-digit phone number.'**
   String get invalidPhone;
+
+  /// No description provided for @moduleTeamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Who works here and what they can do'**
+  String get moduleTeamHint;
+
+  /// No description provided for @moduleTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get moduleTimeline;
+
+  /// No description provided for @noTeamYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No one on this team yet'**
+  String get noTeamYet;
+
+  /// No description provided for @noTeamYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add people with +.'**
+  String get noTeamYetHint;
+
+  /// No description provided for @customAccessTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom access'**
+  String get customAccessTag;
+
+  /// No description provided for @memberTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Team member'**
+  String get memberTitle;
+
+  /// No description provided for @sectionAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get sectionAccess;
+
+  /// No description provided for @editAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit access'**
+  String get editAccess;
+
+  /// No description provided for @addMemberTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to team'**
+  String get addMemberTitle;
+
+  /// No description provided for @memberUserLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get memberUserLabel;
+
+  /// No description provided for @baseRoleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Role on this account'**
+  String get baseRoleLabel;
+
+  /// No description provided for @baseRoleChangeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the role resets access to that role\'s defaults.'**
+  String get baseRoleChangeHelp;
+
+  /// No description provided for @accessHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turning off View turns off the rest of that area.'**
+  String get accessHelp;
+
+  /// No description provided for @resetAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to the role\'s defaults'**
+  String get resetAccess;
+
+  /// No description provided for @addMemberHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Access starts at the role\'s defaults. You can adjust it after adding them.'**
+  String get addMemberHelp;
+
+  /// No description provided for @noOneToAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone active is already on this team.'**
+  String get noOneToAdd;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from team'**
+  String get removeMember;
+
+  /// No description provided for @removeMemberConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String removeMemberConfirmTitle(String name);
+
+  /// No description provided for @removeMemberConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'ll lose access to this account. Their user and history stay.'**
+  String get removeMemberConfirmBody;
+
+  /// No description provided for @removeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeButton;
+
+  /// No description provided for @teamReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only owners can change the team.'**
+  String get teamReadOnly;
+
+  /// No description provided for @accessView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get accessView;
+
+  /// No description provided for @accessEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get accessEdit;
+
+  /// No description provided for @accessAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign'**
+  String get accessAssign;
+
+  /// No description provided for @accessDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get accessDownload;
+
+  /// No description provided for @accessUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get accessUpload;
+
+  /// No description provided for @accessManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get accessManage;
+
+  /// No description provided for @membersNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This person is no longer on this team.'**
+  String get membersNotFound;
+
+  /// No description provided for @membersUserNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'This user is deactivated. Reactivate them before adding them.'**
+  String get membersUserNotActive;
 }
 
 class _AppLocalizationsDelegate

@@ -32,6 +32,9 @@ import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
 import 'package:sp_cln_app/features/profile/domain/repositories/profile_repository.dart';
 import 'package:sp_cln_app/features/service_catalog/di/service_catalog_providers.dart';
+import 'package:sp_cln_app/features/team/di/team_providers.dart';
+import 'package:sp_cln_app/features/team/domain/entities/member.dart';
+import 'package:sp_cln_app/features/team/domain/repositories/team_repository.dart';
 import 'package:sp_cln_app/features/service_catalog/domain/entities/service_item.dart';
 import 'package:sp_cln_app/features/service_catalog/domain/repositories/service_catalog_repository.dart';
 import 'package:sp_cln_app/features/users/di/users_providers.dart';
@@ -583,6 +586,146 @@ class FakeLocationsRepository implements LocationsRepository {
   }
 }
 
+/// A trimmed permission catalog: two areas plus team, with defaults per
+/// base role like the API's.
+const testCatalog = PermissionCatalog(
+  permissions: [
+    'info.view',
+    'info.edit',
+    'jobs.view',
+    'jobs.edit',
+    'jobs.assign',
+    'team.view',
+  ],
+  defaultsByRole: {
+    'owner': {
+      'info.view',
+      'info.edit',
+      'jobs.view',
+      'jobs.edit',
+      'jobs.assign',
+      'team.view',
+    },
+    'account_manager': {
+      'info.view',
+      'info.edit',
+      'jobs.view',
+      'jobs.edit',
+      'jobs.assign',
+      'team.view',
+    },
+    'supervisor': {
+      'info.view',
+      'jobs.view',
+      'jobs.edit',
+      'jobs.assign',
+      'team.view',
+    },
+    'crew': {'jobs.view'},
+    'client': {'info.view', 'jobs.view'},
+  },
+);
+
+/// In-memory teams per account, with effective permissions worked out from
+/// [testCatalog] like the API does. Records every write.
+class FakeTeamRepository implements TeamRepository {
+  FakeTeamRepository([List<Member> members = const []])
+    : members = [...members];
+
+  List<Member> members;
+  final writes = <String>[];
+
+  /// The user ids [setMember] refuses as inactive.
+  final inactive = <String>{};
+
+  Member _with(Member m, {String? baseRole, Map<String, bool>? overrides}) {
+    final role = baseRole ?? m.baseRole;
+    final flags = overrides ?? m.overrides;
+    return Member(
+      userId: m.userId,
+      clientId: m.clientId,
+      name: m.name,
+      email: m.email,
+      isActive: m.isActive,
+      baseRole: role,
+      overrides: flags,
+      permissions:
+          {
+            ...testCatalog.defaultsFor(role),
+            for (final MapEntry(:key, :value) in flags.entries)
+              if (value) key,
+          }..removeAll([
+            for (final MapEntry(:key, :value) in flags.entries)
+              if (!value) key,
+          ]),
+    );
+  }
+
+  @override
+  Future<List<Member>> getMembers(String clientId) async =>
+      members.where((m) => m.clientId == clientId).toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
+
+  @override
+  Future<PermissionCatalog> getCatalog() async => testCatalog;
+
+  @override
+  Future<Member> setMember(
+    String clientId, {
+    required String userId,
+    required String baseRole,
+  }) async {
+    if (inactive.contains(userId)) {
+      throw const ServerFailure('members.user_not_active', statusCode: 400);
+    }
+    writes.add('member:$userId:$baseRole');
+    final i = members.indexWhere(
+      (m) => m.userId == userId && m.clientId == clientId,
+    );
+    // Changing the role keeps the overrides, like the API.
+    final member = i >= 0
+        ? _with(members[i], baseRole: baseRole)
+        : _with(
+            Member(
+              userId: userId,
+              clientId: clientId,
+              name: 'User $userId',
+              email: '$userId@example.com',
+              baseRole: baseRole,
+            ),
+          );
+    members = [
+      for (final m in members)
+        if (m.userId != userId || m.clientId != clientId) m,
+      member,
+    ];
+    return member;
+  }
+
+  @override
+  Future<Member> setOverrides(
+    String clientId,
+    String userId,
+    Map<String, bool> overrides,
+  ) async {
+    writes.add('overrides:$userId:$overrides');
+    final i = members.indexWhere(
+      (m) => m.userId == userId && m.clientId == clientId,
+    );
+    final member = _with(members[i], overrides: overrides);
+    members = [...members]..[i] = member;
+    return member;
+  }
+
+  @override
+  Future<void> removeMember(String clientId, String userId) async {
+    writes.add('remove:$userId');
+    members = members
+        .where((m) => m.userId != userId || m.clientId != clientId)
+        .toList();
+  }
+}
+
 /// Jobs per client id; a [Failure] value makes that account fail.
 class FakeJobsRepository implements JobsRepository {
   FakeJobsRepository([this.byClient = const {}]);
@@ -874,6 +1017,7 @@ Future<SharedPreferences> pumpApp(
   ServiceCatalogRepository? services,
   ContactsRepository? contacts,
   LocationsRepository? locations,
+  TeamRepository? team,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -914,6 +1058,7 @@ Future<SharedPreferences> pumpApp(
         locationsRepositoryProvider.overrideWithValue(
           locations ?? FakeLocationsRepository(),
         ),
+        teamRepositoryProvider.overrideWithValue(team ?? FakeTeamRepository()),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,

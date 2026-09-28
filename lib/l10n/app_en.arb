@@ -544,5 +544,41 @@
   "locationInUse": "Scopes of work or jobs use this location, so it can't be deleted.",
   "locationsNotFound": "This location no longer exists.",
   "streetAddressLabel": "Street address",
-  "invalidPhone": "Enter a 10-digit phone number."
+  "invalidPhone": "Enter a 10-digit phone number.",
+  "moduleTeamHint": "Who works here and what they can do",
+  "moduleTimeline": "Timeline",
+  "noTeamYet": "No one on this team yet",
+  "noTeamYetHint": "Add people with +.",
+  "customAccessTag": "Custom access",
+  "memberTitle": "Team member",
+  "sectionAccess": "Access",
+  "editAccess": "Edit access",
+  "addMemberTitle": "Add to team",
+  "memberUserLabel": "Person",
+  "baseRoleLabel": "Role on this account",
+  "baseRoleChangeHelp": "Changing the role resets access to that role's defaults.",
+  "accessHelp": "Turning off View turns off the rest of that area.",
+  "resetAccess": "Reset to the role's defaults",
+  "addMemberHelp": "Access starts at the role's defaults. You can adjust it after adding them.",
+  "noOneToAdd": "Everyone active is already on this team.",
+  "removeMember": "Remove from team",
+  "removeMemberConfirmTitle": "Remove {name}?",
+  "@removeMemberConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "removeMemberConfirmBody": "They'll lose access to this account. Their user and history stay.",
+  "removeButton": "Remove",
+  "teamReadOnly": "Only owners can change the team.",
+  "accessView": "View",
+  "accessEdit": "Edit",
+  "accessAssign": "Assign",
+  "accessDownload": "Download",
+  "accessUpload": "Upload",
+  "accessManage": "Manage",
+  "membersNotFound": "This person is no longer on this team.",
+  "membersUserNotActive": "This user is deactivated. Reactivate them before adding them."
 }

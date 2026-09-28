@@ -4,6 +4,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../access/domain/entities/account_access.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
+import '../../team/presentation/screens/team_screen.dart';
 
 /// The groups an account's modules are listed under, in screen order.
 enum AccountSection {
@@ -76,6 +77,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleLocations,
     description: (l10n) => l10n.moduleLocationsHint,
     route: LocationsScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.account,
+    permission: Permissions.teamView,
+    icon: Icons.groups_outlined,
+    label: (l10n) => l10n.moduleTeam,
+    description: (l10n) => l10n.moduleTeamHint,
+    route: TeamScreen.route,
   ),
 ];
 

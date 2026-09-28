@@ -13,6 +13,8 @@ import '../../clients/presentation/screens/accounts_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
+import '../../team/domain/usecases/team_usecases.dart';
+import '../../team/presentation/screens/team_screen.dart';
 import '../../service_catalog/presentation/screens/services_screen.dart';
 import '../../users/domain/usecases/user_usecases.dart';
 import '../../users/presentation/screens/users_screen.dart';
@@ -21,10 +23,11 @@ import '../../users/presentation/screens/users_screen.dart';
 class _PlusOption {
   const _PlusOption(this.path, this.label, this.isAllowed) : permission = null;
 
-  /// Inside an account: [path] may contain `:clientId`, filled from the page.
+  /// Gated by a permission on the page's account.
   const _PlusOption.inAccount(this.path, this.label, String this.permission)
     : isAllowed = null;
 
+  /// May contain `:clientId`, filled from the page's path.
   final String path;
   final String Function(AppLocalizations l10n) label;
 
@@ -106,6 +109,14 @@ final _byPage = <String, List<_PlusOption>>{
       '${AccountsScreen.path}/:clientId/${LocationsScreen.route}/new',
       (l10n) => l10n.newLocationTitle,
       Permissions.infoEdit,
+    ),
+  ],
+  // Teams change by global role (owners), not by a permission on the account.
+  '${AccountsScreen.path}/:clientId/${TeamScreen.route}': [
+    _PlusOption(
+      '${AccountsScreen.path}/:clientId/${TeamScreen.route}/new',
+      (l10n) => l10n.addMemberTitle,
+      TeamPolicy.canManage,
     ),
   ],
 };
