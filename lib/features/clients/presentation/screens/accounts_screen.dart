@@ -64,6 +64,8 @@ class _AccountsScreenState extends ConsumerState<AccountsScreen> {
     }
 
     return SpacePage(
+      // A tab's home: nothing to go back to.
+      showBack: false,
       title: l10n.accountsTitle,
       onRefresh: refresh,
       slivers: [

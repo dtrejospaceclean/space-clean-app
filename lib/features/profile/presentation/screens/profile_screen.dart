@@ -58,6 +58,8 @@ class ProfileScreen extends ConsumerWidget {
     if (user == null) return SizedBox.shrink();
 
     return SpacePage(
+      // A tab's home: nothing to go back to.
+      showBack: false,
       title: l10n.profileTitle,
       actions: [
         CircleButton.dark(

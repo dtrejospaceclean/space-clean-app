@@ -38,7 +38,9 @@ class SpacePage extends StatelessWidget {
   /// Pinned at the bottom (e.g. a save button over the keyboard).
   final Widget? bottom;
 
-  /// Defaults to whether the router can go back.
+  /// Defaults to whether the router can go back. That's read once per
+  /// build, and a page leaving with a transition (sign-in handing over to
+  /// the tabs) still counts, so root screens pass `false`.
   final bool? showBack;
 
   @override

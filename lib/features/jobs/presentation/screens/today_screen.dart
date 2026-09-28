@@ -37,6 +37,8 @@ class TodayScreen extends ConsumerWidget {
     }
 
     return SpacePage(
+      // A tab's home: nothing to go back to.
+      showBack: false,
       title: l10n.todayTitle,
       onRefresh: refresh,
       actions: [

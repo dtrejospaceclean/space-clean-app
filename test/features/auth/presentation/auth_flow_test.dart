@@ -93,6 +93,37 @@ void main() {
     expect(find.textContaining(_tagline, findRichText: true), findsOneWidget);
   });
 
+  testWidgets('no back button on the way in or out, frame by frame', (
+    tester,
+  ) async {
+    await pumpApp(tester, auth: FakeAuthRepository());
+    final back = find.byTooltip('Back');
+
+    // Sign-in fades into the tabs; the sign-in page is still leaving while
+    // Today first builds, and there is nothing to go back to.
+    await tester.enterText(field('Email'), 'ana@example.com');
+    await tester.enterText(field('Password'), 'correct-horse-battery');
+    await tester.tap(button('Sign in'));
+    for (var i = 0; i < 30; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(back, findsNothing, reason: 'frame $i after sign-in');
+    }
+    await tester.pumpAndSettle();
+    expect(find.text('No jobs today'), findsOneWidget);
+    expect(back, findsNothing);
+
+    await tester.tap(find.byTooltip('Me'));
+    await tester.pumpAndSettle();
+    await revealBelow(tester, find.text('Sign out'));
+    await tester.tap(find.text('Sign out'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sign out').last);
+    for (var i = 0; i < 30; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(back, findsNothing, reason: 'frame $i after sign-out');
+    }
+  });
+
   testWidgets('prefills the remembered email, and "Not you?" clears it', (
     tester,
   ) async {
