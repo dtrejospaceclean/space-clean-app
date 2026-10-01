@@ -48,8 +48,14 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Closer to its own card below than to the one above. Only a header
+    // with an action takes the action's 48px row; a plain title fits its
+    // text, so sections don't drift apart.
     return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      padding: EdgeInsets.only(
+        top: actionLabel == null ? 6 : 0,
+        bottom: actionLabel == null ? 8 : 0,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -76,9 +82,7 @@ class SectionHeader extends StatelessWidget {
                 ),
               ),
               child: Text(actionLabel!),
-            )
-          else
-            const SizedBox(height: 48),
+            ),
         ],
       ),
     );
