@@ -173,7 +173,7 @@ void main() {
 
     await tester.tap(find.text('Ana Pérez'));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Deactivate user'), 200);
+    await revealBelow(tester, find.text('Deactivate user'));
     await tester.tap(find.text('Deactivate user'));
     await tester.pumpAndSettle();
     expect(find.text('Deactivate Ana Pérez?'), findsOneWidget);

@@ -21,6 +21,9 @@ extension DateFormatting on BuildContext {
   String formatDayLong(DateTime day) =>
       DateFormat.MMMMEEEEd(_locale).format(day);
 
+  /// "Sep 23, 2026".
+  String formatDate(DateTime day) => DateFormat.yMMMd(_locale).format(day);
+
   /// A decimal string from the API ("12000") grouped in the app's
   /// language: "12,000" (English), "12.000" (Spanish). Unparseable input is
   /// shown as is.

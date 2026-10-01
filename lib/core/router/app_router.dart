@@ -17,6 +17,13 @@ import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
 import '../../features/locations/presentation/screens/location_form_screen.dart';
 import '../../features/locations/presentation/screens/location_screen.dart';
 import '../../features/locations/presentation/screens/locations_screen.dart';
+import '../../features/proposals/domain/entities/proposal.dart';
+import '../../features/proposals/domain/usecases/proposal_usecases.dart';
+import '../../features/proposals/presentation/screens/approve_proposal_screen.dart';
+import '../../features/proposals/presentation/screens/line_item_screen.dart';
+import '../../features/proposals/presentation/screens/proposal_form_screen.dart';
+import '../../features/proposals/presentation/screens/proposal_screen.dart';
+import '../../features/proposals/presentation/screens/proposals_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
 import '../../features/jobs/presentation/screens/today_screen.dart';
 import '../../features/password_reset/presentation/screens/forgot_password_screen.dart';
@@ -150,6 +157,60 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                             builder: (_, state) => AccountFormScreen(
                               clientId: state.pathParameters['clientId'],
                             ),
+                          ),
+                        ],
+                      ),
+                      GoRoute(
+                        path: ProposalsScreen.route,
+                        builder: (_, state) => ProposalsScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':proposalId' so "new" isn't read as an id.
+                          GoRoute(
+                            path: 'new',
+                            builder: (_, state) => ProposalFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              mode: ProposalSave.create,
+                            ),
+                            routes: [_lineItemRoute],
+                          ),
+                          GoRoute(
+                            path: ':proposalId',
+                            builder: (_, state) => ProposalScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              proposalId: state.pathParameters['proposalId']!,
+                            ),
+                            routes: [
+                              GoRoute(
+                                path: 'edit',
+                                builder: (_, state) => ProposalFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  mode: ProposalSave.edit,
+                                  proposalId:
+                                      state.pathParameters['proposalId'],
+                                ),
+                                routes: [_lineItemRoute],
+                              ),
+                              GoRoute(
+                                path: 'version',
+                                builder: (_, state) => ProposalFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  mode: ProposalSave.newVersion,
+                                  proposalId:
+                                      state.pathParameters['proposalId'],
+                                ),
+                                routes: [_lineItemRoute],
+                              ),
+                              GoRoute(
+                                path: 'approve',
+                                builder: (_, state) => ApproveProposalScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  proposalId:
+                                      state.pathParameters['proposalId']!,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -391,3 +452,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+/// A proposal form's line item page. The item to edit comes in `extra`;
+/// a new item (or a page reopened without it) starts empty.
+final _lineItemRoute = GoRoute(
+  path: LineItemScreen.route,
+  builder: (_, state) => LineItemScreen(
+    initial: switch (state.extra) {
+      final LineItemDraft item => item,
+      _ => null,
+    },
+  ),
+);

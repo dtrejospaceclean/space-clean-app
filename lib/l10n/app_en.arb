@@ -585,5 +585,133 @@
   "themeSystemHint": "Matches your phone's light or dark mode",
   "themeSystemSummary": "System theme",
   "themeLightSummary": "Light theme",
-  "themeDarkSummary": "Dark theme"
+  "themeDarkSummary": "Dark theme",
+  "moduleProposalsHint": "Pipeline, pricing and versions",
+  "proposalStageLead": "Lead",
+  "proposalStageWalkthrough": "Walkthrough",
+  "proposalStagePricing": "Pricing",
+  "proposalStageProposal": "Proposal",
+  "proposalStageNegotiation": "Negotiation",
+  "proposalStageApproved": "Approved",
+  "proposalStageUnknown": "Other stage",
+  "noProposalsYet": "No proposals yet",
+  "noProposalsYetHint": "Start one with +.",
+  "newProposalTitle": "New proposal",
+  "proposalTitle": "Proposal",
+  "editProposal": "Edit proposal",
+  "newVersionTitle": "New version",
+  "approveProposalTitle": "Approve proposal",
+  "approveButton": "Approve",
+  "proposalVersion": "Version {number}",
+  "@proposalVersion": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "proposalNoLineItems": "No line items yet",
+  "proposalMoreItems": "{count, plural, =1{{description} and 1 more} other{{description} and {count} more}}",
+  "@proposalMoreItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalPreparedBy": "Prepared by {name}",
+  "@proposalPreparedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalApprovedBy": "Approved by {name} on {date}",
+  "@proposalApprovedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalApprovedOn": "Approved on {date}",
+  "@proposalApprovedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalExpired": "Expired",
+  "pipelineStageLabel": "Stage",
+  "validUntilLabel": "Valid until",
+  "agreedPriceLabel": "Agreed price",
+  "agreedPriceHelp": "Optional until the proposal is approved.",
+  "lineItemsTotalLabel": "Line items total",
+  "versionNoteLabel": "Version note",
+  "versionNoteHint": "e.g. Annual contract discount",
+  "sectionLineItems": "Line items",
+  "lineItemTitle": "Item {number}",
+  "@lineItemTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "addLineItem": "Add line item",
+  "removeLineItem": "Remove item",
+  "lineItemServiceLabel": "From the catalog",
+  "lineItemDescriptionLabel": "Description",
+  "lineItemQuantityLabel": "Quantity",
+  "lineItemQuantityUnitLabel": "Quantity ({unit})",
+  "@lineItemQuantityUnitLabel": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "lineItemUnitPriceLabel": "Unit price",
+  "lineItemTotal": "Line total: {amount}",
+  "@lineItemTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "invalidQuantity": "Enter a number like 12000 or 2.5.",
+  "serviceNotInCatalog": "No longer in the catalog",
+  "sectionVersions": "Versions",
+  "currentVersionTag": "Current",
+  "olderVersionNotice": "This is an earlier version, kept as history. Only the current version can change.",
+  "approvedProposalNote": "An approved proposal can't change.",
+  "newVersionHelp": "The current version stays in the history as it is.",
+  "approveHelp": "Approving locks this version at the agreed price.",
+  "proposalsNotFound": "This proposal no longer exists.",
+  "proposalsNotCurrentVersion": "Only the current version can change. Add a new version instead.",
+  "proposalsAlreadyApproved": "This proposal is approved and can't change.",
+  "proposalsAgreedPriceRequired": "Enter the agreed price to approve it.",
+  "noPriceYet": "No price yet",
+  "editLineItem": "Edit line item",
+  "lineItemError": "Item {number}: {message}",
+  "@lineItemError": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "searchProposalsHint": "Search services, notes or stage"
 }

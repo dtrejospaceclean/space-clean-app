@@ -195,4 +195,7 @@ abstract final class SpaceSpace {
 
   /// Card inner padding.
   static const card = 20.0;
+
+  /// Padding inside text fields, picker fields and the search box.
+  static const field = 13.0;
 }

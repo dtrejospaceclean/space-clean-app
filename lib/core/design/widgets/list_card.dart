@@ -37,6 +37,7 @@ class ListRow extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.tag,
     this.leading,
     this.trailing,
     this.onTap,
@@ -47,6 +48,9 @@ class ListRow extends StatelessWidget {
 
   final String title;
   final String? subtitle;
+
+  /// A small widget under the subtitle, such as a status pill.
+  final Widget? tag;
   final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -94,6 +98,10 @@ class ListRow extends StatelessWidget {
                     if (subtitle != null && subtitle!.isNotEmpty) ...[
                       const SizedBox(height: 2),
                       Text(subtitle!, style: theme.textTheme.bodyMedium),
+                    ],
+                    if (tag case final tag?) ...[
+                      const SizedBox(height: 6),
+                      tag,
                     ],
                   ],
                 ),

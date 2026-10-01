@@ -22,6 +22,8 @@ import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
 import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.dart';
+import 'package:sp_cln_app/features/proposals/di/proposals_providers.dart';
+import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
 import 'package:sp_cln_app/features/password_reset/presentation/controllers/password_reset_controller.dart';
 import 'package:sp_cln_app/features/settings/di/settings_providers.dart';
 import 'package:sp_cln_app/features/settings/domain/entities/app_language.dart';
@@ -131,6 +133,9 @@ Future<void> _sheet(
         usersRepositoryProvider.overrideWithValue(FakeUsersRepository()),
         rolesRepositoryProvider.overrideWithValue(FakeRolesRepository()),
         serviceCatalogRepositoryProvider.overrideWithValue(_demoCatalog()),
+        proposalsRepositoryProvider.overrideWithValue(
+          FakeProposalsRepository(_demoProposals()),
+        ),
         clockProvider.overrideWithValue(() => testNow),
         if (phone.resetAvailable)
           passwordResetRepositoryProvider.overrideWithValue(
@@ -544,6 +549,59 @@ void main() {
     ]);
   });
 
+  // Proposals: the pipeline, a negotiation with history, its forms, an
+  // approved one, dark, and Spanish at 200%.
+  testWidgets('proposals', (tester) async {
+    const base = '/accounts/c1/proposals';
+    await _sheet(tester, 'proposals', TargetPlatform.iOS, [
+      Phone('1 · Pipeline', asOwner: true, location: base),
+      Phone('2 · Negotiation', asOwner: true, location: '$base/p3'),
+      Phone(
+        '3 · Negotiation (scrolled)',
+        asOwner: true,
+        location: '$base/p3',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -600));
+        },
+      ),
+      Phone('4 · Earlier version', asOwner: true, location: '$base/p2'),
+      Phone('5 · Edit', asOwner: true, location: '$base/p3/edit'),
+      Phone('6 · Approve', asOwner: true, location: '$base/p3/approve'),
+      Phone(
+        '6b · Add line item',
+        asOwner: true,
+        location: '$base/p3/edit/item',
+      ),
+      Phone(
+        '5b · Edit (scrolled)',
+        asOwner: true,
+        location: '$base/p3/edit',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -500));
+        },
+      ),
+      Phone('7 · Approved', asOwner: true, location: '$base/p5'),
+      Phone('8 · Dark', asOwner: true, dark: true, location: '$base/p3'),
+      Phone(
+        '9 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: base,
+      ),
+      Phone(
+        '10 · Edit, Spanish 200%',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/p3/edit',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -700));
+        },
+      ),
+    ]);
+  });
+
   testWidgets('admin dark', (tester) async {
     await _sheet(
       tester,
@@ -702,6 +760,103 @@ class _MemoryThemeMode implements ThemeModeRepository {
 
   @override
   Future<void> saveThemeMode(AppThemeMode mode) async => savedThemeMode = mode;
+}
+
+/// Torre Norte's pipeline: a fresh lead, a negotiation on its third
+/// version, a walkthrough, and an approved renewal.
+List<Proposal> _demoProposals() {
+  ProposalLineItem item(
+    String id,
+    String description,
+    String quantity,
+    String price, {
+    String? serviceId,
+  }) => ProposalLineItem(
+    id: id,
+    serviceId: serviceId,
+    description: description,
+    quantity: quantity,
+    unitPrice: price,
+    lineTotal: centsToDecimal(lineTotalCents(quantity, price)),
+  );
+  Proposal version(
+    String id,
+    String group,
+    int number, {
+    required ProposalStage stage,
+    bool current = true,
+    String? note,
+    String? agreed,
+    List<ProposalLineItem> items = const [],
+    String? approvedBy,
+  }) => Proposal(
+    id: id,
+    clientId: 'c1',
+    groupId: group,
+    stage: stage,
+    versionNumber: number,
+    isCurrent: current,
+    versionNote: note,
+    agreedPrice: agreed,
+    validUntil: DateTime(2026, 10, 31),
+    preparedByName: 'Carlos Medina',
+    approvedByName: approvedBy,
+    approvedDate: approvedBy == null ? null : DateTime(2026, 9, 2),
+    createdAt: DateTime(2026, 9, 10 + number),
+    lineItems: items,
+  );
+  final offices = [
+    item('a', 'Office cleaning, floors 1–12', '48000', '0.12', serviceId: 's1'),
+    item('b', 'Lobby and restrooms, nightly', '22', '85'),
+    item('c', 'Window washing, exterior', '4', '650'),
+  ];
+  return [
+    version(
+      'p1',
+      'g1',
+      1,
+      stage: ProposalStage.pricing,
+      current: false,
+      note: 'First pass',
+      items: [offices[0]],
+    ),
+    version(
+      'p2',
+      'g1',
+      2,
+      stage: ProposalStage.proposal,
+      current: false,
+      note: 'Added restrooms',
+      items: offices.take(2).toList(),
+    ),
+    version(
+      'p3',
+      'g1',
+      3,
+      stage: ProposalStage.negotiation,
+      note: 'Annual contract discount',
+      agreed: '9800',
+      items: offices,
+    ),
+    version(
+      'p4',
+      'g2',
+      1,
+      stage: ProposalStage.walkthrough,
+      items: [item('d', 'Warehouse floor scrub', '1', '1200')],
+    ),
+    version(
+      'p5',
+      'g3',
+      1,
+      stage: ProposalStage.approved,
+      agreed: '3150',
+      approvedBy: 'Olga Ruiz',
+      note: '2026 renewal',
+      items: [item('e', 'Day porter, weekdays', '21', '150')],
+    ),
+    version('p6', 'g4', 1, stage: ProposalStage.lead),
+  ];
 }
 
 FakeServiceCatalogRepository _demoCatalog() {

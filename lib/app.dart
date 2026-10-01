@@ -22,6 +22,7 @@ class App extends ConsumerWidget {
       theme: SpaceTheme.light(),
       darkTheme: SpaceTheme.dark(),
       themeMode: ref.watch(themeModeControllerProvider).material,
+      builder: SpaceTheme.scaleText,
     );
   }
 }

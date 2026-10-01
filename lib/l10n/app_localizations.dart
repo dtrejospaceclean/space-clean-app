@@ -2419,6 +2419,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark theme'**
   String get themeDarkSummary;
+
+  /// No description provided for @moduleProposalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pipeline, pricing and versions'**
+  String get moduleProposalsHint;
+
+  /// No description provided for @proposalStageLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead'**
+  String get proposalStageLead;
+
+  /// No description provided for @proposalStageWalkthrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Walkthrough'**
+  String get proposalStageWalkthrough;
+
+  /// No description provided for @proposalStagePricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing'**
+  String get proposalStagePricing;
+
+  /// No description provided for @proposalStageProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal'**
+  String get proposalStageProposal;
+
+  /// No description provided for @proposalStageNegotiation.
+  ///
+  /// In en, this message translates to:
+  /// **'Negotiation'**
+  String get proposalStageNegotiation;
+
+  /// No description provided for @proposalStageApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get proposalStageApproved;
+
+  /// No description provided for @proposalStageUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other stage'**
+  String get proposalStageUnknown;
+
+  /// No description provided for @noProposalsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No proposals yet'**
+  String get noProposalsYet;
+
+  /// No description provided for @noProposalsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start one with +.'**
+  String get noProposalsYetHint;
+
+  /// No description provided for @newProposalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New proposal'**
+  String get newProposalTitle;
+
+  /// No description provided for @proposalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal'**
+  String get proposalTitle;
+
+  /// No description provided for @editProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit proposal'**
+  String get editProposal;
+
+  /// No description provided for @newVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New version'**
+  String get newVersionTitle;
+
+  /// No description provided for @approveProposalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve proposal'**
+  String get approveProposalTitle;
+
+  /// No description provided for @approveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approveButton;
+
+  /// No description provided for @proposalVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {number}'**
+  String proposalVersion(int number);
+
+  /// No description provided for @proposalNoLineItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No line items yet'**
+  String get proposalNoLineItems;
+
+  /// No description provided for @proposalMoreItems.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{{description} and 1 more} other{{description} and {count} more}}'**
+  String proposalMoreItems(int count, String description);
+
+  /// No description provided for @proposalPreparedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared by {name}'**
+  String proposalPreparedBy(String name);
+
+  /// No description provided for @proposalApprovedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved by {name} on {date}'**
+  String proposalApprovedBy(String name, String date);
+
+  /// No description provided for @proposalApprovedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved on {date}'**
+  String proposalApprovedOn(String date);
+
+  /// No description provided for @proposalExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get proposalExpired;
+
+  /// No description provided for @pipelineStageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stage'**
+  String get pipelineStageLabel;
+
+  /// No description provided for @validUntilLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until'**
+  String get validUntilLabel;
+
+  /// No description provided for @agreedPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Agreed price'**
+  String get agreedPriceLabel;
+
+  /// No description provided for @agreedPriceHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional until the proposal is approved.'**
+  String get agreedPriceHelp;
+
+  /// No description provided for @lineItemsTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Line items total'**
+  String get lineItemsTotalLabel;
+
+  /// No description provided for @versionNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version note'**
+  String get versionNoteLabel;
+
+  /// No description provided for @versionNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Annual contract discount'**
+  String get versionNoteHint;
+
+  /// No description provided for @sectionLineItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Line items'**
+  String get sectionLineItems;
+
+  /// No description provided for @lineItemTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Item {number}'**
+  String lineItemTitle(int number);
+
+  /// No description provided for @addLineItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add line item'**
+  String get addLineItem;
+
+  /// No description provided for @removeLineItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove item'**
+  String get removeLineItem;
+
+  /// No description provided for @lineItemServiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'From the catalog'**
+  String get lineItemServiceLabel;
+
+  /// No description provided for @lineItemDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get lineItemDescriptionLabel;
+
+  /// No description provided for @lineItemQuantityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get lineItemQuantityLabel;
+
+  /// No description provided for @lineItemQuantityUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity ({unit})'**
+  String lineItemQuantityUnitLabel(String unit);
+
+  /// No description provided for @lineItemUnitPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit price'**
+  String get lineItemUnitPriceLabel;
+
+  /// No description provided for @lineItemTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Line total: {amount}'**
+  String lineItemTotal(String amount);
+
+  /// No description provided for @invalidQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number like 12000 or 2.5.'**
+  String get invalidQuantity;
+
+  /// No description provided for @serviceNotInCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'No longer in the catalog'**
+  String get serviceNotInCatalog;
+
+  /// No description provided for @sectionVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get sectionVersions;
+
+  /// No description provided for @currentVersionTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get currentVersionTag;
+
+  /// No description provided for @olderVersionNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This is an earlier version, kept as history. Only the current version can change.'**
+  String get olderVersionNotice;
+
+  /// No description provided for @approvedProposalNote.
+  ///
+  /// In en, this message translates to:
+  /// **'An approved proposal can\'t change.'**
+  String get approvedProposalNote;
+
+  /// No description provided for @newVersionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The current version stays in the history as it is.'**
+  String get newVersionHelp;
+
+  /// No description provided for @approveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Approving locks this version at the agreed price.'**
+  String get approveHelp;
+
+  /// No description provided for @proposalsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This proposal no longer exists.'**
+  String get proposalsNotFound;
+
+  /// No description provided for @proposalsNotCurrentVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the current version can change. Add a new version instead.'**
+  String get proposalsNotCurrentVersion;
+
+  /// No description provided for @proposalsAlreadyApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'This proposal is approved and can\'t change.'**
+  String get proposalsAlreadyApproved;
+
+  /// No description provided for @proposalsAgreedPriceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the agreed price to approve it.'**
+  String get proposalsAgreedPriceRequired;
+
+  /// No description provided for @noPriceYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No price yet'**
+  String get noPriceYet;
+
+  /// No description provided for @editLineItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit line item'**
+  String get editLineItem;
+
+  /// No description provided for @lineItemError.
+  ///
+  /// In en, this message translates to:
+  /// **'Item {number}: {message}'**
+  String lineItemError(int number, String message);
+
+  /// No description provided for @searchProposalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search services, notes or stage'**
+  String get searchProposalsHint;
 }
 
 class _AppLocalizationsDelegate

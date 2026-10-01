@@ -57,11 +57,11 @@ typography:
     fontWeight: 400
   field-label:
     fontFamily: "Manrope"
-    fontSize: "13px"
+    fontSize: "12.5px"
     fontWeight: 600
   field-value:
     fontFamily: "Manrope"
-    fontSize: "15.5px"
+    fontSize: "14px"
     fontWeight: 500
   button:
     fontFamily: "Manrope"
@@ -124,7 +124,7 @@ components:
     textColor: "{colors.ink}"
     typography: "{typography.field-value}"
     rounded: "{rounded.inner}"
-    padding: "18px"
+    padding: "13px"
   pill-toggle-selected:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
@@ -266,12 +266,12 @@ Dark mode keeps the same roles, with its own values (`SpaceColors.dark` in `lib/
 - **Title** (700, 14.5px; card titles 17px): card and tile titles, section headers, and list-row titles (600).
 - **Body** (400, 15px, 1.45): intros and prose. Reset step intros use Muted Ink.
 - **Body muted** (400, 13px, Muted Ink): labels above numbers, subtitles, and captions.
-- **Field label** (600, 13px, ink) over **field value** (500, 15.5px).
+- **Field label** (600, 12.5px, ink) over **field value** (500, 14px). The search box's text is 14px too.
 - **Button** (700, 15px). Text links use 700 at 14px in navy.
 - **Pill** (700, 12.5px): status pills.
-- **Footnote** (400, 12.5px): helper text and footnotes. 12.5px is the floor: no text in the app is smaller.
+- **Footnote** (400, 12.5px): helper text and footnotes. 12.5px is the floor at design size: no text in the app is set smaller (it renders at about 11.3px; see below).
 
-Sizes are set directly on the tokens and widgets, matched to the reference `docs/new_screen.png` (list rows about 14px, compact titles). There is no app-wide text-scale multiplier; the OS text size still scales everything.
+Sizes are set directly on the tokens and widgets, matched to the reference `docs/new_screen.png` (list rows about 14px, compact titles). Every size here is a design size: the whole app renders text at 90% of it (`SpaceTheme.textScale`, applied in `MaterialApp.builder` by `SpaceTheme.scaleText`), an owner decision made on 2026-10-01. The OS text size still scales on top of that, so 200% in the phone's settings shows 180% of the design size. Change the one constant to resize all text; don't shrink individual sizes.
 
 ### Dark Palette
 
@@ -334,13 +334,13 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
 - **SpaceCard:** white, 24px corners, 20px padding, no border or shadow, and a whole-card ink ripple when tappable. It is the only container.
 - **StatCard:** a muted label over a big 800-weight tabular number, with an optional icon badge, corner arrow, and caption. Compact uses 16px padding and a 26px number.
 - **TileCard:** an icon badge, 28px space, a 700 title, and a muted subtitle, placed in a two-column CardGrid. `compact` tiles go three across: 14px top and bottom, 10px sides, the badge and a 700 titleSmall centered with 10px between them, and no subtitle. The title wraps only between words (a word too wide for the tile shrinks the title just enough) and always takes at least two lines' height with one-line names centered in it, so every tile in a grid is the same size. The account screen uses a 34px badge in them. The account screen is one grid of compact tiles with no section headings (Jobs, then details, contacts, locations, team); each tile's description is its screen-reader hint. At 150% text and up the grid drops to two across so words aren't broken. Account tiles use a 48px initials badge that alternates between navy on Navy Wash (7.82:1) and Orange Ink on Orange Wash (5.64:1).
-- **ListCard / ListRow:** rows inside one card, separated by inset hairlines. Rows are at least 60px tall, with a leading badge or avatar, a title and muted subtitle, a trailing muted value, and a Soft Ink chevron when tappable (4.09:1).
+- **ListCard / ListRow:** rows inside one card, separated by inset hairlines. Rows are at least 60px tall, with a leading badge or avatar, a title and muted subtitle, an optional tag under them (a status pill, as on proposals), a trailing muted value, and a Soft Ink chevron when tappable (4.09:1).
 - **ChoiceRow:** one option of a single choice (language, appearance) as a ListRow without a chevron. The picked row ends in an accent-filled check circle, the others in an empty Soft Ink circle, so the choice shows by shape as well as color; it reads as a checked option in a group, and picking gives a selection haptic. Settings uses it instead of pill toggles: full-width rows are easier to hit with gloves.
 - **AccentBanner:** a full-bleed navy strip in a card's footer with white 14px/600 text (9.41:1) and an optional white icon ("3 of 8 done").
 
 ### Inputs / Fields
-- **Text field:** a 14px/600 ink label in a row at least 36px tall (it can hold a trailing link), over a sunken fill with 16px corners, 18px padding, and 17px/500 ink text. At rest the field has a 1px Soft Ink outline (3.81:1 against the fill, 4.09:1 against the white card), and the hint is Muted Ink. Focus shows a 2px Primary Orange border and an orange cursor, errors show a 2px danger border, and error text is 13px/600 danger. Fields sit inside a white card.
-- **Picker field:** looks like a text field, with the same 1px Soft Ink outline and a trailing Muted Ink expand icon. "Not set" appears in Muted Ink. It opens the platform's native picker.
+- **Text field:** a 12.5px/600 ink label 6px above its own box (a label holding a trailing link, such as "Not you?", gets a row at least 36px tall for the link's target), over a sunken fill with 16px corners, 13px padding (`SpaceSpace.field`), and 14px/500 ink text, 48px tall. At rest the field has a 1px Soft Ink outline (3.81:1 against the fill, 4.09:1 against the white card), and the hint is Muted Ink. Focus shows a 2px Primary Orange border and an orange cursor, errors show a 2px danger border, and error text is 12.5px/600 danger. Fields sit inside a white card.
+- **Picker field:** looks like a text field, with the same 1px Soft Ink outline, padding and 48px height, and a trailing 22px Muted Ink expand icon (sized so it doesn't make the picker taller). "Not set" appears in Muted Ink. It opens the platform's native picker.
 - **Code input:** six sunken 64px-tall boxes, 8px apart, over one invisible field (supports paste and OS one-time-code autofill). Digits are 28px/800 tabular. Idle boxes have a 1px Soft Ink outline, and the active box gets a 2px Primary Orange border with a 160ms ease-out-cubic transition.
 - **Notice:** a wash-tinted 16px-corner block (danger, navy info, or success) with a 22px icon in the strong tone and 15px/500 ink text. It is announced as a live region.
 
@@ -351,7 +351,7 @@ The shapes are rounded throughout, in four steps. Cards and dialogs use 24px cor
   - Users: New user.
   - Service catalog: New service, Manage categories, Manage units.
   - Categories: New category. Units: New unit.
-  - Forms and editors: hidden.
+  - Forms and editors: hidden, unless the form adds inside itself: the proposal form's "+" adds a line item.
   - Any other page: everything the user may create (New account, New service, New user).
 
   With one option it opens that form directly; with several it opens a native choice sheet with just the options, no heading. It hides when nothing is allowed (crew, supervisors and clients on most pages).

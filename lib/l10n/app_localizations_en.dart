@@ -1331,4 +1331,201 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeDarkSummary => 'Dark theme';
+
+  @override
+  String get moduleProposalsHint => 'Pipeline, pricing and versions';
+
+  @override
+  String get proposalStageLead => 'Lead';
+
+  @override
+  String get proposalStageWalkthrough => 'Walkthrough';
+
+  @override
+  String get proposalStagePricing => 'Pricing';
+
+  @override
+  String get proposalStageProposal => 'Proposal';
+
+  @override
+  String get proposalStageNegotiation => 'Negotiation';
+
+  @override
+  String get proposalStageApproved => 'Approved';
+
+  @override
+  String get proposalStageUnknown => 'Other stage';
+
+  @override
+  String get noProposalsYet => 'No proposals yet';
+
+  @override
+  String get noProposalsYetHint => 'Start one with +.';
+
+  @override
+  String get newProposalTitle => 'New proposal';
+
+  @override
+  String get proposalTitle => 'Proposal';
+
+  @override
+  String get editProposal => 'Edit proposal';
+
+  @override
+  String get newVersionTitle => 'New version';
+
+  @override
+  String get approveProposalTitle => 'Approve proposal';
+
+  @override
+  String get approveButton => 'Approve';
+
+  @override
+  String proposalVersion(int number) {
+    return 'Version $number';
+  }
+
+  @override
+  String get proposalNoLineItems => 'No line items yet';
+
+  @override
+  String proposalMoreItems(int count, String description) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$description and $count more',
+      one: '$description and 1 more',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String proposalPreparedBy(String name) {
+    return 'Prepared by $name';
+  }
+
+  @override
+  String proposalApprovedBy(String name, String date) {
+    return 'Approved by $name on $date';
+  }
+
+  @override
+  String proposalApprovedOn(String date) {
+    return 'Approved on $date';
+  }
+
+  @override
+  String get proposalExpired => 'Expired';
+
+  @override
+  String get pipelineStageLabel => 'Stage';
+
+  @override
+  String get validUntilLabel => 'Valid until';
+
+  @override
+  String get agreedPriceLabel => 'Agreed price';
+
+  @override
+  String get agreedPriceHelp => 'Optional until the proposal is approved.';
+
+  @override
+  String get lineItemsTotalLabel => 'Line items total';
+
+  @override
+  String get versionNoteLabel => 'Version note';
+
+  @override
+  String get versionNoteHint => 'e.g. Annual contract discount';
+
+  @override
+  String get sectionLineItems => 'Line items';
+
+  @override
+  String lineItemTitle(int number) {
+    return 'Item $number';
+  }
+
+  @override
+  String get addLineItem => 'Add line item';
+
+  @override
+  String get removeLineItem => 'Remove item';
+
+  @override
+  String get lineItemServiceLabel => 'From the catalog';
+
+  @override
+  String get lineItemDescriptionLabel => 'Description';
+
+  @override
+  String get lineItemQuantityLabel => 'Quantity';
+
+  @override
+  String lineItemQuantityUnitLabel(String unit) {
+    return 'Quantity ($unit)';
+  }
+
+  @override
+  String get lineItemUnitPriceLabel => 'Unit price';
+
+  @override
+  String lineItemTotal(String amount) {
+    return 'Line total: $amount';
+  }
+
+  @override
+  String get invalidQuantity => 'Enter a number like 12000 or 2.5.';
+
+  @override
+  String get serviceNotInCatalog => 'No longer in the catalog';
+
+  @override
+  String get sectionVersions => 'Versions';
+
+  @override
+  String get currentVersionTag => 'Current';
+
+  @override
+  String get olderVersionNotice =>
+      'This is an earlier version, kept as history. Only the current version can change.';
+
+  @override
+  String get approvedProposalNote => 'An approved proposal can\'t change.';
+
+  @override
+  String get newVersionHelp =>
+      'The current version stays in the history as it is.';
+
+  @override
+  String get approveHelp => 'Approving locks this version at the agreed price.';
+
+  @override
+  String get proposalsNotFound => 'This proposal no longer exists.';
+
+  @override
+  String get proposalsNotCurrentVersion =>
+      'Only the current version can change. Add a new version instead.';
+
+  @override
+  String get proposalsAlreadyApproved =>
+      'This proposal is approved and can\'t change.';
+
+  @override
+  String get proposalsAgreedPriceRequired =>
+      'Enter the agreed price to approve it.';
+
+  @override
+  String get noPriceYet => 'No price yet';
+
+  @override
+  String get editLineItem => 'Edit line item';
+
+  @override
+  String lineItemError(int number, String message) {
+    return 'Item $number: $message';
+  }
+
+  @override
+  String get searchProposalsHint => 'Search services, notes or stage';
 }

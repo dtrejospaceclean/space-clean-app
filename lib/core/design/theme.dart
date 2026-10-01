@@ -9,6 +9,21 @@ import 'tokens.dart';
 abstract final class SpaceTheme {
   static const font = 'Manrope';
 
+  /// Every text renders at this share of its design size (the sizes set in
+  /// the theme and widgets), on top of the phone's own text size setting.
+  static const textScale = 0.9;
+
+  /// `MaterialApp.builder`: applies [textScale] to the whole app.
+  static Widget scaleText(BuildContext context, Widget? child) {
+    final media = MediaQuery.of(context);
+    return MediaQuery(
+      data: media.copyWith(
+        textScaler: _ScaledText(media.textScaler, textScale),
+      ),
+      child: child ?? const SizedBox.shrink(),
+    );
+  }
+
   static ThemeData light() => _build(SpaceColors.light, Brightness.light);
 
   static ThemeData dark() => _build(SpaceColors.dark, Brightness.dark);
@@ -122,10 +137,7 @@ abstract final class SpaceTheme {
         filled: true,
         fillColor: c.sunken,
         hintStyle: TextStyle(color: c.inkMuted),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 18,
-        ),
+        contentPadding: const EdgeInsets.all(SpaceSpace.field),
         // A visible edge (3.9:1) so filled fields read as fields.
         border: _field(c.inkSoft),
         enabledBorder: _field(c.inkSoft),
@@ -177,4 +189,27 @@ abstract final class SpaceTheme {
         borderRadius: BorderRadius.circular(SpaceRadius.inner),
         borderSide: BorderSide(color: color, width: width),
       );
+}
+
+/// The phone's text scaler times a fixed [factor], keeping the OS's own
+/// (possibly nonlinear) scaling underneath.
+class _ScaledText extends TextScaler {
+  const _ScaledText(this.base, this.factor);
+
+  final TextScaler base;
+  final double factor;
+
+  @override
+  double scale(double fontSize) => base.scale(fontSize) * factor;
+
+  @override
+  @Deprecated('Use scale() instead.')
+  double get textScaleFactor => scale(1);
+
+  @override
+  bool operator ==(Object other) =>
+      other is _ScaledText && other.base == base && other.factor == factor;
+
+  @override
+  int get hashCode => Object.hash(base, factor);
 }

@@ -8,6 +8,12 @@ import 'cards.dart';
 import 'space_page.dart';
 import 'text_blocks.dart';
 
+/// What's typed or picked in a field, and in the search box.
+const _valueSize = 14.0;
+
+/// The label above a field.
+const _labelSize = 12.5;
+
 /// Label above a filled, rounded field. Meant to sit inside a white card
 /// (the fill is the card's sunken tone). Errors show in red below.
 class SpaceTextField extends StatelessWidget {
@@ -79,22 +85,7 @@ class SpaceTextField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 36),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    label,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: context.colors.ink,
-                    ),
-                  ),
-                ),
-                ?labelAction,
-              ],
-            ),
-          ),
+          _FieldLabel(label, action: labelAction),
           TextFormField(
             controller: controller,
             focusNode: focusNode,
@@ -126,7 +117,7 @@ class SpaceTextField extends StatelessWidget {
             cursorColor: context.colors.primary,
             style: TextStyle(
               fontFamily: 'Manrope',
-              fontSize: 15.5,
+              fontSize: _valueSize,
               fontWeight: FontWeight.w500,
               color: context.colors.ink,
             ),
@@ -176,13 +167,7 @@ class PickerField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 36),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(label, style: theme.textTheme.titleSmall),
-          ),
-        ),
+        _FieldLabel(label),
         Semantics(
           button: true,
           label: ['$label: ${value ?? l10n.notSet}', ?errorText].join('. '),
@@ -199,10 +184,7 @@ class PickerField extends StatelessWidget {
             child: InkWell(
               onTap: onTap,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 18,
-                ),
+                padding: const EdgeInsets.all(SpaceSpace.field),
                 child: Row(
                   children: [
                     Expanded(
@@ -210,7 +192,7 @@ class PickerField extends StatelessWidget {
                         value ?? l10n.notSet,
                         style: TextStyle(
                           fontFamily: 'Manrope',
-                          fontSize: 15.5,
+                          fontSize: _valueSize,
                           fontWeight: FontWeight.w500,
                           color: value == null
                               ? context.colors.inkMuted
@@ -218,7 +200,8 @@ class PickerField extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Icon(icon, color: context.colors.inkMuted),
+                    // 22px keeps a picker exactly as tall as a text field.
+                    Icon(icon, size: 22, color: context.colors.inkMuted),
                   ],
                 ),
               ),
@@ -345,6 +328,12 @@ class SearchField extends StatelessWidget {
     return TextField(
       controller: controller,
       onChanged: onChanged,
+      style: TextStyle(
+        fontFamily: 'Manrope',
+        fontSize: _valueSize,
+        fontWeight: FontWeight.w500,
+        color: context.colors.ink,
+      ),
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: hint,
@@ -375,11 +364,12 @@ class SearchField extends StatelessWidget {
 }
 
 /// A titled white card of form fields with page margins, as used by every
-/// form screen (fields 12 apart, an optional footnote under them).
+/// form screen (fields 12 apart, an optional footnote under them). A null
+/// [title] leaves the heading out, for a page whose title already says it.
 class FormSection extends StatelessWidget {
   const FormSection(this.title, this.fields, {super.key, this.footer});
 
-  final String title;
+  final String? title;
   final List<Widget> fields;
   final String? footer;
 
@@ -389,7 +379,7 @@ class FormSection extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SectionHeader(title: title),
+        if (title case final title?) SectionHeader(title: title),
         SpaceCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -408,4 +398,34 @@ class FormSection extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// The label above a field, sitting just over its own box. A label with an
+/// [action] ("Not you?") gets a row tall enough for the link's tap target.
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(this.label, {this.action});
+
+  final String label;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Text(
+      label,
+      style: Theme.of(context).textTheme.titleSmall
+          ?.copyWith(fontSize: _labelSize, color: context.colors.ink),
+    );
+    return switch (action) {
+      null => Padding(padding: const EdgeInsets.only(bottom: 6), child: text),
+      final action => ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 36),
+        child: Row(
+          children: [
+            Expanded(child: text),
+            action,
+          ],
+        ),
+      ),
+    };
+  }
 }

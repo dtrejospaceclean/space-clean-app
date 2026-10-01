@@ -12,12 +12,14 @@ import '../../clients/domain/usecases/manage_clients.dart';
 import '../../clients/presentation/screens/accounts_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
+import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
 import '../../team/domain/usecases/team_usecases.dart';
 import '../../team/presentation/screens/team_screen.dart';
 import '../../service_catalog/presentation/screens/services_screen.dart';
 import '../../users/domain/usecases/user_usecases.dart';
 import '../../users/presentation/screens/users_screen.dart';
+import 'page_action.dart';
 
 /// Something the "+" beside the tab dock can open.
 class _PlusOption {
@@ -97,6 +99,13 @@ final _byPage = <String, List<_PlusOption>>{
       ServiceCatalogPolicy.canManage,
     ),
   ],
+  '${AccountsScreen.path}/:clientId/${ProposalsScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${ProposalsScreen.route}/new',
+      (l10n) => l10n.newProposalTitle,
+      Permissions.proposalEdit,
+    ),
+  ],
   '${AccountsScreen.path}/:clientId/${ContactsScreen.route}': [
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ContactsScreen.route}/new',
@@ -128,6 +137,9 @@ final _everywhere = [_newAccount, _newService, _newUser];
 bool _noPlus(String route) =>
     route.endsWith('/new') ||
     route.endsWith('/edit') ||
+    route.endsWith('/version') ||
+    route.endsWith('/approve') ||
+    route.endsWith('/item') ||
     route == '/me/password' ||
     route == '/me/settings' ||
     route.endsWith('/login') ||
@@ -216,10 +228,22 @@ class AppShell extends ConsumerWidget {
                 : (page ?? _everywhere)
                       .where((o) => o.allows(user, access))
                       .toList();
+            // A page acting in its own state (a form's "Add line item")
+            // takes "+" while it's the page on top.
+            final pageAction = switch (ref.watch(pageActionProvider)) {
+              final a? when a.location == top.uri.path => a,
+              _ => null,
+            };
             return SpaceBottomBar(
               currentIndex: navigationShell.currentIndex,
               onTap: _select,
-              action: options.isEmpty
+              action: pageAction != null
+                  ? BottomBarAction(
+                      icon: Icons.add_rounded,
+                      label: pageAction.label,
+                      onPressed: pageAction.onPressed,
+                    )
+                  : options.isEmpty
                   ? null
                   : BottomBarAction(
                       icon: Icons.add_rounded,

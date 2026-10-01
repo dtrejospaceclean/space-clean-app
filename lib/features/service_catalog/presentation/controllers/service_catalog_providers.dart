@@ -72,6 +72,11 @@ final activeUnitsProvider = FutureProvider<List<UnitOfMeasure>>(
   (ref) => ref.watch(getUnitsProvider)(const CatalogQuery()),
 );
 
+/// Every active service by name, for the pickers of proposals and scopes.
+final activeServicesProvider = FutureProvider<List<ServiceItem>>(
+  (ref) => ref.watch(getServicesProvider)(const CatalogQuery()),
+);
+
 /// Drops every cached catalog list after a save or delete, since counts and
 /// names show across tabs and pickers.
 void invalidateCatalog(WidgetRef ref) => ref
@@ -82,4 +87,5 @@ void invalidateCatalog(WidgetRef ref) => ref
   ..invalidate(unitsProvider)
   ..invalidate(unitProvider)
   ..invalidate(activeCategoriesProvider)
-  ..invalidate(activeUnitsProvider);
+  ..invalidate(activeUnitsProvider)
+  ..invalidate(activeServicesProvider);

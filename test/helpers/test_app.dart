@@ -31,6 +31,9 @@ import 'package:sp_cln_app/features/password_reset/domain/repositories/password_
 import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
 import 'package:sp_cln_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:sp_cln_app/features/proposals/di/proposals_providers.dart';
+import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
+import 'package:sp_cln_app/features/proposals/domain/repositories/proposals_repository.dart';
 import 'package:sp_cln_app/features/service_catalog/di/service_catalog_providers.dart';
 import 'package:sp_cln_app/features/team/di/team_providers.dart';
 import 'package:sp_cln_app/features/team/domain/entities/member.dart';
@@ -586,6 +589,202 @@ class FakeLocationsRepository implements LocationsRepository {
   }
 }
 
+/// In-memory proposals with the API's version rules: only the current,
+/// unapproved version changes; a new version retires the current one.
+/// Records every write and draft.
+class FakeProposalsRepository implements ProposalsRepository {
+  FakeProposalsRepository([List<Proposal> proposals = const []])
+    : proposals = [...proposals];
+
+  /// Every version of every negotiation.
+  List<Proposal> proposals;
+  final writes = <String>[];
+  final drafts = <ProposalDraft>[];
+
+  @override
+  Future<List<Proposal>> getProposals(String clientId) async => proposals
+      .where((p) => p.clientId == clientId && p.isCurrent)
+      .toList()
+      .reversed
+      .toList();
+
+  @override
+  Future<Proposal> getProposal(String clientId, String proposalId) async {
+    for (final p in proposals) {
+      if (p.id == proposalId) return p;
+    }
+    throw const ServerFailure('proposals.not_found', statusCode: 404);
+  }
+
+  @override
+  Future<List<Proposal>> getVersions(String clientId, String proposalId) async {
+    final p = await getProposal(clientId, proposalId);
+    return proposals.where((v) => v.groupId == p.groupId).toList()
+      ..sort((a, b) => b.versionNumber.compareTo(a.versionNumber));
+  }
+
+  Proposal _fromDraft(
+    ProposalDraft d, {
+    required String id,
+    required String clientId,
+    required String groupId,
+    required int version,
+  }) {
+    String? text(String? v) => (v ?? '').trim().isEmpty ? null : v!.trim();
+    return Proposal(
+      id: id,
+      clientId: clientId,
+      groupId: groupId,
+      stage: d.stage,
+      versionNumber: version,
+      isCurrent: true,
+      versionNote: text(d.versionNote),
+      agreedPrice: text(d.agreedPrice),
+      validUntil: d.validUntil,
+      preparedByName: 'Ana Pérez',
+      lineItems: [
+        for (final (i, item) in d.lineItems.indexed)
+          ProposalLineItem(
+            id: '$id-$i',
+            serviceId: item.serviceId,
+            description: item.description.trim(),
+            quantity: item.quantity.trim(),
+            unitPrice: item.unitPrice.trim(),
+            lineTotal: centsToDecimal(
+              lineTotalCents(item.quantity, item.unitPrice),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Future<Proposal> _editable(String clientId, String proposalId) async {
+    final p = await getProposal(clientId, proposalId);
+    if (!p.isCurrent) {
+      throw const ServerFailure(
+        'proposals.not_current_version',
+        statusCode: 409,
+      );
+    }
+    if (p.isApproved) {
+      throw const ServerFailure('proposals.already_approved', statusCode: 409);
+    }
+    return p;
+  }
+
+  void _replace(Proposal next) =>
+      proposals = [for (final p in proposals) p.id == next.id ? next : p];
+
+  @override
+  Future<Proposal> createProposal(String clientId, ProposalDraft draft) async {
+    writes.add('create');
+    drafts.add(draft);
+    final id = 'p${proposals.length + 1}';
+    final created = _fromDraft(
+      draft,
+      id: id,
+      clientId: clientId,
+      groupId: 'g-$id',
+      version: 1,
+    );
+    proposals = [...proposals, created];
+    return created;
+  }
+
+  @override
+  Future<Proposal> updateProposal(
+    String clientId,
+    String proposalId,
+    ProposalDraft draft,
+  ) async {
+    final p = await _editable(clientId, proposalId);
+    writes.add('update:$proposalId');
+    drafts.add(draft);
+    final updated = _fromDraft(
+      draft,
+      id: p.id,
+      clientId: clientId,
+      groupId: p.groupId,
+      version: p.versionNumber,
+    );
+    _replace(updated);
+    return updated;
+  }
+
+  @override
+  Future<Proposal> addVersion(
+    String clientId,
+    String proposalId,
+    ProposalDraft draft,
+  ) async {
+    final source = await getProposal(clientId, proposalId);
+    writes.add('version:$proposalId');
+    drafts.add(draft);
+    final versions = await getVersions(clientId, proposalId);
+    proposals = [
+      for (final p in proposals)
+        p.groupId == source.groupId && p.isCurrent ? _retired(p) : p,
+    ];
+    final created = _fromDraft(
+      draft,
+      id: 'p${proposals.length + 1}',
+      clientId: clientId,
+      groupId: source.groupId,
+      version: versions.first.versionNumber + 1,
+    );
+    proposals = [...proposals, created];
+    return created;
+  }
+
+  static Proposal _retired(Proposal p) => Proposal(
+    id: p.id,
+    clientId: p.clientId,
+    groupId: p.groupId,
+    stage: p.stage,
+    versionNumber: p.versionNumber,
+    isCurrent: false,
+    versionNote: p.versionNote,
+    agreedPrice: p.agreedPrice,
+    validUntil: p.validUntil,
+    preparedByName: p.preparedByName,
+    lineItems: p.lineItems,
+  );
+
+  @override
+  Future<Proposal> approveProposal(
+    String clientId,
+    String proposalId, {
+    String? agreedPrice,
+  }) async {
+    final p = await _editable(clientId, proposalId);
+    final price = agreedPrice ?? p.agreedPrice;
+    if (price == null) {
+      throw const ServerFailure(
+        'proposals.agreed_price_required',
+        statusCode: 400,
+      );
+    }
+    writes.add('approve:$proposalId:$price');
+    final approved = Proposal(
+      id: p.id,
+      clientId: p.clientId,
+      groupId: p.groupId,
+      stage: ProposalStage.approved,
+      versionNumber: p.versionNumber,
+      isCurrent: true,
+      versionNote: p.versionNote,
+      agreedPrice: price,
+      validUntil: p.validUntil,
+      preparedByName: p.preparedByName,
+      approvedByName: 'Olga Ruiz',
+      approvedDate: testNow,
+      lineItems: p.lineItems,
+    );
+    _replace(approved);
+    return approved;
+  }
+}
+
 /// A trimmed permission catalog: two areas plus team, with defaults per
 /// base role like the API's.
 const testCatalog = PermissionCatalog(
@@ -1018,6 +1217,7 @@ Future<SharedPreferences> pumpApp(
   ContactsRepository? contacts,
   LocationsRepository? locations,
   TeamRepository? team,
+  ProposalsRepository? proposals,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -1059,6 +1259,9 @@ Future<SharedPreferences> pumpApp(
           locations ?? FakeLocationsRepository(),
         ),
         teamRepositoryProvider.overrideWithValue(team ?? FakeTeamRepository()),
+        proposalsRepositoryProvider.overrideWithValue(
+          proposals ?? FakeProposalsRepository(),
+        ),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,

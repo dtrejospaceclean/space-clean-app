@@ -3,6 +3,7 @@ abstract final class Permissions {
   static const infoView = 'info.view';
   static const infoEdit = 'info.edit';
   static const proposalView = 'proposal.view';
+  static const proposalEdit = 'proposal.edit';
   static const contractView = 'contract.view';
   static const scopeView = 'scope.view';
   static const jobsView = 'jobs.view';
