@@ -247,7 +247,8 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
                     ),
                     child: Notice(message: l10n.failureMessage(failure)),
                   ),
-                FormSection(l10n.sectionService, [
+                // One card: what the service is and how it's priced.
+                FormSection(null, [
                   SpaceTextField(
                     label: l10n.serviceNameLabel,
                     controller: _name,
@@ -264,8 +265,6 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
                     onTap: _saving ? null : _pickCategory,
                     errorText: _serverError('categoryId'),
                   ),
-                ]),
-                FormSection(l10n.sectionPricing, [
                   PickerField(
                     label: l10n.unitOfMeasureLabel,
                     value: switch (_unit) {
