@@ -583,6 +583,13 @@ void main() {
       Phone('7 · Approved', asOwner: true, location: '$base/p5'),
       Phone('8 · Dark', asOwner: true, dark: true, location: '$base/p3'),
       Phone(
+        '8b · Detail, Spanish 200%',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/p3',
+      ),
+      Phone(
         '9 · Spanish, 200% text',
         asOwner: true,
         spanish: true,

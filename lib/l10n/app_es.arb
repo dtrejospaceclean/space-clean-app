@@ -409,7 +409,6 @@
   "proposalPreparedBy": "Preparada por {name}",
   "proposalApprovedBy": "Aprobada por {name} el {date}",
   "proposalApprovedOn": "Aprobada el {date}",
-  "proposalExpired": "Vencida",
   "pipelineStageLabel": "Etapa",
   "validUntilLabel": "Válida hasta",
   "agreedPriceLabel": "Precio acordado",
@@ -442,5 +441,7 @@
   "noPriceYet": "Aún sin precio",
   "editLineItem": "Editar concepto",
   "lineItemError": "Concepto {number}: {message}",
-  "searchProposalsHint": "Busca servicios, notas o etapa"
+  "searchProposalsHint": "Busca servicios, notas o etapa",
+  "proposalValidUntil": "Válida hasta el {date}",
+  "proposalExpiredOn": "Venció el {date}"
 }

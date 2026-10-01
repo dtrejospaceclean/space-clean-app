@@ -132,7 +132,8 @@ void main() {
 
     await openCurrent(tester);
     expect(find.text(r'$2,040.00'), findsWidgets);
-    expect(find.text('Oct 31, 2026'), findsOneWidget);
+    // How long the price holds sits with the price.
+    expect(find.text('Valid until Oct 31, 2026'), findsOneWidget);
     expect(find.text('Annual discount'), findsOneWidget);
     expect(find.byTooltip('Edit proposal'), findsNothing);
     await revealBelow(tester, find.text(r'12,000 × $0.12'));
@@ -147,6 +148,44 @@ void main() {
     expect(find.textContaining('earlier version'), findsOneWidget);
     expect(find.text(r'$1,800.00'), findsWidgets);
     expect(proposals.writes, isEmpty);
+  });
+
+  testWidgets('an open proposal past its date says it expired', (tester) async {
+    // The test clock reads Sep 23, 2026.
+    final stale = Proposal(
+      id: 'p-old',
+      clientId: 'c1',
+      groupId: 'g9',
+      stage: ProposalStage.proposal,
+      versionNumber: 1,
+      isCurrent: true,
+      validUntil: DateTime(2026, 9, 1),
+      lineItems: const [_windows],
+    );
+    await pumpApp(
+      tester,
+      auth: FakeAuthRepository(sessionUser: ana),
+      clients: FakeClientsRepository([_tower]),
+      proposals: FakeProposalsRepository([stale]),
+      access: FakeAccessRepository({
+        'c1': const AccountAccess(
+          clientId: 'c1',
+          baseRole: 'salesperson',
+          permissions: {Permissions.proposalView},
+        ),
+      }),
+    );
+    await tester.tap(find.byTooltip('Accounts'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Torre Norte'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Proposals'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Window washing'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Expired Sep 1, 2026'), findsOneWidget);
+    expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
   });
 
   testWidgets('the search matches services, stage and notes as you type', (

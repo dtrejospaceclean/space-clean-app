@@ -649,7 +649,6 @@
       }
     }
   },
-  "proposalExpired": "Expired",
   "pipelineStageLabel": "Stage",
   "validUntilLabel": "Valid until",
   "agreedPriceLabel": "Agreed price",
@@ -713,5 +712,21 @@
       }
     }
   },
-  "searchProposalsHint": "Search services, notes or stage"
+  "searchProposalsHint": "Search services, notes or stage",
+  "proposalValidUntil": "Valid until {date}",
+  "@proposalValidUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalExpiredOn": "Expired {date}",
+  "@proposalExpiredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

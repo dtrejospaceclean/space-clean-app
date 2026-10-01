@@ -2552,12 +2552,6 @@ abstract class AppLocalizations {
   /// **'Approved on {date}'**
   String proposalApprovedOn(String date);
 
-  /// No description provided for @proposalExpired.
-  ///
-  /// In en, this message translates to:
-  /// **'Expired'**
-  String get proposalExpired;
-
   /// No description provided for @pipelineStageLabel.
   ///
   /// In en, this message translates to:
@@ -2755,6 +2749,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search services, notes or stage'**
   String get searchProposalsHint;
+
+  /// No description provided for @proposalValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {date}'**
+  String proposalValidUntil(String date);
+
+  /// No description provided for @proposalExpiredOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired {date}'**
+  String proposalExpiredOn(String date);
 }
 
 class _AppLocalizationsDelegate

@@ -1415,9 +1415,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get proposalExpired => 'Expired';
-
-  @override
   String get pipelineStageLabel => 'Stage';
 
   @override
@@ -1528,4 +1525,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchProposalsHint => 'Search services, notes or stage';
+
+  @override
+  String proposalValidUntil(String date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String proposalExpiredOn(String date) {
+    return 'Expired $date';
+  }
 }
