@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
@@ -136,6 +138,7 @@ void main() {
     expect(find.text('Valid until Oct 31, 2026'), findsOneWidget);
     expect(find.text('Annual discount'), findsOneWidget);
     expect(find.byTooltip('Edit proposal'), findsNothing);
+    expect(find.byTooltip('Delete proposal'), findsNothing);
     await revealBelow(tester, find.text(r'12,000 × $0.12'));
     expect(find.text(r'$1,440.00'), findsOneWidget);
     expect(find.text('Approve'), findsNothing);
@@ -233,10 +236,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('New proposal'), findsOneWidget);
 
-    // Line items come from the "+" beside the dock and get their own page.
+    // Line items come from the "+" beside the dock, which says so, and get
+    // their own page. The empty section points to it and opens one too.
     expect(find.text('Add line item'), findsNothing);
     expect(find.text('Pricing'), findsNothing);
     expect(find.byTooltip('Create'), findsNothing);
+    expect(find.text('Line items'), findsOneWidget);
+    expect(find.text('Line item'), findsOneWidget);
+    await tester.tap(find.text('None yet. Tap + below to add one.'));
+    await tester.pumpAndSettle();
+    expect(find.text('Done'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Done'), findsNothing);
     await tester.tap(find.byTooltip('Add line item'));
     await tester.pumpAndSettle();
     expect(find.text('Save'), findsNothing);
@@ -261,6 +273,7 @@ void main() {
     expect(find.byTooltip('Add line item'), findsOneWidget);
     expect(find.text(r'12,000 sq ft × $0.12'), findsOneWidget);
     expect(find.text(r'Line items total: $1,440.00'), findsOneWidget);
+    expect(find.text('None yet. Tap + below to add one.'), findsNothing);
     expect(proposals.writes, isEmpty);
 
     await tester.tap(find.text('Save'));
@@ -299,6 +312,7 @@ void main() {
     expect(proposals.writes, ['approve:p-v2:2000']);
     expect(find.text('Approved by Olga Ruiz on Sep 23, 2026'), findsOneWidget);
     expect(find.byTooltip('Edit proposal'), findsNothing);
+    expect(find.byTooltip('Delete proposal'), findsNothing);
     // The agreed price heads the page.
     await tester.drag(find.byType(Scrollable).last, const Offset(0, 2000));
     await tester.pumpAndSettle();
@@ -306,6 +320,101 @@ void main() {
     expect(find.text('Agreed price'), findsOneWidget);
     await revealBelow(tester, find.text('An approved proposal can\'t change.'));
     expect(button('Approve'), findsNothing);
+  });
+
+  testWidgets('an editor deletes a negotiation after confirming', (
+    tester,
+  ) async {
+    final proposals = await openProposals(
+      tester,
+      accountManager,
+      permissions: _editor,
+    );
+    await openCurrent(tester);
+
+    // Cancelling keeps it.
+    await tester.tap(find.byTooltip('Delete proposal'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete this proposal?'), findsOneWidget);
+    expect(
+      find.text(
+        "Every version and its line items will be deleted. "
+        "This can't be undone.",
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(proposals.writes, isEmpty);
+    expect(find.text('Proposal'), findsOneWidget);
+
+    // While it's deleting, the trash button spins and Edit can't start.
+    final gate = proposals.deleteGate = Completer<void>();
+    await tester.tap(find.byTooltip('Delete proposal'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pump();
+    expect(
+      find.descendant(
+        of: find.byTooltip('Delete proposal'),
+        matching: find.byType(CircularProgressIndicator),
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.byTooltip('Edit proposal'), warnIfMissed: false);
+    await tester.pump();
+    expect(find.text('Edit proposal'), findsNothing);
+    gate.complete();
+    await tester.pumpAndSettle();
+
+    // Every version goes, and the list no longer shows it.
+    expect(proposals.writes, ['delete:p-v2']);
+    expect(proposals.proposals.map((p) => p.id), ['p-lead']);
+    expect(find.byType(ProposalsScreen), findsOneWidget);
+    expect(find.text('Office cleaning and 1 more'), findsNothing);
+    expect(find.text('No line items yet'), findsOneWidget);
+  });
+
+  testWidgets('an earlier version offers no delete', (tester) async {
+    await openProposals(tester, accountManager, permissions: _editor);
+    await openCurrent(tester);
+    await revealBelow(tester, find.text('Version 1'));
+    await tester.tap(find.text('Version 1'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Delete proposal'), findsNothing);
+    expect(find.byTooltip('Edit proposal'), findsNothing);
+  });
+
+  testWidgets('swiping a line item left removes it', (tester) async {
+    final proposals = await openProposals(
+      tester,
+      accountManager,
+      permissions: _editor,
+    );
+    await openCurrent(tester);
+    await tester.tap(find.byTooltip('Edit proposal'));
+    await tester.pumpAndSettle();
+    await revealBelow(tester, find.text('Window washing'));
+    expect(find.text(r'Line items total: $2,040.00'), findsOneWidget);
+
+    // A swipe the other way does nothing.
+    await tester.drag(find.text('Window washing'), const Offset(300, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Window washing'), findsOneWidget);
+
+    await tester.drag(find.text('Window washing'), const Offset(-300, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Window washing'), findsNothing);
+    expect(find.text('Office cleaning'), findsOneWidget);
+    expect(find.text(r'Line items total: $1,440.00'), findsOneWidget);
+    expect(proposals.writes, isEmpty);
+
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(proposals.writes, ['update:p-v2']);
+    expect(proposals.drafts.single.lineItems.map((i) => i.description), [
+      'Office cleaning',
+    ]);
   });
 
   testWidgets('a new version keeps the current one as history', (tester) async {

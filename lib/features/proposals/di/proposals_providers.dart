@@ -27,3 +27,6 @@ final saveProposalProvider = Provider(
 final approveProposalProvider = Provider(
   (ref) => ApproveProposal(ref.watch(proposalsRepositoryProvider)),
 );
+final deleteProposalProvider = Provider(
+  (ref) => DeleteProposal(ref.watch(proposalsRepositoryProvider)),
+);

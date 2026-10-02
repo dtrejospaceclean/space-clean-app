@@ -672,6 +672,24 @@ class FakeProposalsRepository implements ProposalsRepository {
     return p;
   }
 
+  /// When set, deletes wait on it, so a test can see the page mid-delete.
+  Completer<void>? deleteGate;
+
+  @override
+  Future<void> deleteProposal(String clientId, String proposalId) async {
+    writes.add('delete:$proposalId');
+    await deleteGate?.future;
+    final group = await getVersions(clientId, proposalId);
+    if (group.any((v) => v.isApproved)) {
+      throw const ServerFailure('proposals.already_approved', statusCode: 409);
+    }
+    final ids = {for (final v in group) v.id};
+    proposals = [
+      for (final p in proposals)
+        if (!ids.contains(p.id)) p,
+    ];
+  }
+
   void _replace(Proposal next) =>
       proposals = [for (final p in proposals) p.id == next.id ? next : p];
 

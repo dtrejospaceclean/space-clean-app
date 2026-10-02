@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -130,6 +131,7 @@ class _ProposalFormState extends ConsumerState<_ProposalForm>
     registerPageAction(
       location: GoRouterState.of(context).matchedLocation,
       label: AppLocalizations.of(context).addLineItem,
+      text: AppLocalizations.of(context).addLineItemShort,
       onPressed: () {
         if (!_saving) _openItem();
       },
@@ -202,6 +204,13 @@ class _ProposalFormState extends ConsumerState<_ProposalForm>
       }
     });
   }
+
+  /// Swiped away (or removed by a screen reader's action).
+  void _removeItem(int index) => setState(() {
+    // Server errors about the items are stale once they change.
+    if (_failure is ValidationFailure) _failure = null;
+    _items = [..._items]..removeAt(index);
+  });
 
   Future<void> _save() async {
     setState(() => _failure = null);
@@ -358,31 +367,54 @@ class _ProposalFormState extends ConsumerState<_ProposalForm>
                             ],
                           ),
                         ),
-                        for (final (i, item) in _items.indexed) ...[
-                          const Divider(
-                            indent: SpaceSpace.card,
-                            endIndent: SpaceSpace.card,
+                        // Headed even when empty, so the form shows
+                        // where items go and that "+" adds them.
+                        const Divider(
+                          indent: SpaceSpace.card,
+                          endIndent: SpaceSpace.card,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            SpaceSpace.card,
+                            12,
+                            SpaceSpace.card,
+                            0,
                           ),
-                          LineItemRow(
-                            description: item.description,
-                            quantity: item.quantity,
-                            unitPrice: item.unitPrice,
-                            lineTotal: centsToDecimal(
-                              lineTotalCents(item.quantity, item.unitPrice),
+                          child: FieldLabel(l10n.sectionLineItems),
+                        ),
+                        if (_items.isEmpty)
+                          _EmptyItems(onTap: _saving ? null : _openItem),
+                        for (final (i, item) in _items.indexed) ...[
+                          if (i > 0)
+                            const Divider(
+                              indent: SpaceSpace.card,
+                              endIndent: SpaceSpace.card,
                             ),
-                            unit: catalog
-                                ?.where((s) => s.id == item.serviceId)
-                                .firstOrNull
-                                ?.unit
-                                .short,
-                            onTap: _saving ? null : () => _openItem(i),
+                          _SwipeToRemove(
+                            // Drafts have no id; each is its own object.
+                            key: ObjectKey(item),
+                            enabled: !_saving,
+                            onRemove: () => _removeItem(i),
+                            child: LineItemRow(
+                              description: item.description,
+                              quantity: item.quantity,
+                              unitPrice: item.unitPrice,
+                              lineTotal: centsToDecimal(
+                                lineTotalCents(item.quantity, item.unitPrice),
+                              ),
+                              unit: catalog
+                                  ?.where((s) => s.id == item.serviceId)
+                                  .firstOrNull
+                                  ?.unit
+                                  .short,
+                              onTap: _saving ? null : () => _openItem(i),
+                            ),
                           ),
                         ],
-                        if (_items.isNotEmpty)
-                          const Divider(
-                            indent: SpaceSpace.card,
-                            endIndent: SpaceSpace.card,
-                          ),
+                        const Divider(
+                          indent: SpaceSpace.card,
+                          endIndent: SpaceSpace.card,
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(
                             SpaceSpace.card,
@@ -452,6 +484,102 @@ class _ProposalFormState extends ConsumerState<_ProposalForm>
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Where line items go before there are any: points to the "+" beside the
+/// dock, and opens a new item itself for anyone who taps it instead.
+class _EmptyItems extends StatelessWidget {
+  const _EmptyItems({required this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.lineItemsEmpty,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              SpaceSpace.card,
+              4,
+              SpaceSpace.card,
+              12,
+            ),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                l10n.lineItemsEmpty,
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: context.colors.inkMuted),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A line item row that's removed by swiping it toward the start (right
+/// to left), the platforms' usual gesture for deleting from a list. Screen
+/// readers get the same as a "Remove item" action.
+class _SwipeToRemove extends StatelessWidget {
+  const _SwipeToRemove({
+    required super.key,
+    required this.enabled,
+    required this.onRemove,
+    required this.child,
+  });
+
+  final bool enabled;
+  final VoidCallback onRemove;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final c = context.colors;
+    return Semantics(
+      customSemanticsActions: {
+        if (enabled)
+          CustomSemanticsAction(label: l10n.removeLineItem): onRemove,
+      },
+      child: Dismissible(
+        key: key!,
+        direction: enabled
+            ? DismissDirection.endToStart
+            : DismissDirection.none,
+        onDismissed: (_) {
+          HapticFeedback.mediumImpact();
+          onRemove();
+        },
+        // What's revealed under the row as it slides away.
+        background: const SizedBox.shrink(),
+        // Just the icon: a label would show cut off while it uncovers.
+        secondaryBackground: ColoredBox(
+          color: c.dangerSoft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: SpaceSpace.card),
+            child: Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: Icon(
+                Icons.delete_outline_rounded,
+                color: c.danger,
+                size: 24,
+              ),
+            ),
+          ),
+        ),
+        child: child,
+      ),
     );
   }
 }

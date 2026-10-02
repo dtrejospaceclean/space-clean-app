@@ -241,6 +241,7 @@ class AppShell extends ConsumerWidget {
                   ? BottomBarAction(
                       icon: Icons.add_rounded,
                       label: pageAction.label,
+                      text: pageAction.text,
                       onPressed: pageAction.onPressed,
                     )
                   : options.isEmpty

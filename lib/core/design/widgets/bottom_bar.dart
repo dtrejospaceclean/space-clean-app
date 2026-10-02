@@ -23,11 +23,19 @@ class BottomBarAction {
     required this.icon,
     required this.label,
     required this.onPressed,
+    this.text,
   });
 
   final IconData icon;
+
+  /// Tooltip and screen-reader label ("Add line item").
   final String label;
   final VoidCallback onPressed;
+
+  /// A short word drawn beside the icon ("Line item"), widening the circle
+  /// into a pill. For an action that works inside the page, so "+" says
+  /// what it adds. Dropped at large text, where it would crowd the dock.
+  final String? text;
 }
 
 /// The tab dock: a floating white pill of icon-only tabs, with an optional
@@ -95,7 +103,7 @@ class SpaceBottomBar extends StatelessWidget {
             ),
             if (action != null) ...[
               const SizedBox(width: 10),
-              _ActionButton(action: action),
+              _ActionButton(action: action, duration: duration),
             ],
           ],
         ),
@@ -163,30 +171,65 @@ class _Tab extends StatelessWidget {
 }
 
 class _ActionButton extends StatelessWidget {
-  const _ActionButton({required this.action});
+  const _ActionButton({required this.action, required this.duration});
 
   final BottomBarAction action;
+  final Duration duration;
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
+    final icon = Icon(action.icon, color: c.onPrimary, size: 28);
+    final text = switch (action.text) {
+      final text? when MediaQuery.textScalerOf(context).scale(1) < 1.5 => text,
+      _ => null,
+    };
+
     return Tooltip(
       message: action.label,
       child: Semantics(
         button: true,
         label: action.label,
         excludeSemantics: true,
-        child: Material(
-          color: context.colors.primary,
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: action.onPressed,
-            child: SizedBox.square(
-              dimension: SpaceBottomBar.height,
-              child: Icon(
-                action.icon,
-                color: context.colors.onPrimary,
-                size: 28,
+        child: AnimatedSize(
+          duration: duration,
+          curve: Curves.easeOutCubic,
+          child: Material(
+            color: c.primary,
+            // A circle while square, a pill once it carries text.
+            shape: const StadiumBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: action.onPressed,
+              child: SizedBox(
+                height: SpaceBottomBar.height,
+                child: switch (text) {
+                  null => SizedBox.square(
+                    dimension: SpaceBottomBar.height,
+                    child: icon,
+                  ),
+                  final text => Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 22, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        icon,
+                        const SizedBox(width: 6),
+                        Text(
+                          text,
+                          maxLines: 1,
+                          softWrap: false,
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: c.onPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                },
               ),
             ),
           ),

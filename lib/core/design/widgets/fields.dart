@@ -85,7 +85,7 @@ class SpaceTextField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _FieldLabel(label, action: labelAction),
+          FieldLabel(label, action: labelAction),
           TextFormField(
             controller: controller,
             focusNode: focusNode,
@@ -167,7 +167,7 @@ class PickerField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _FieldLabel(label),
+        FieldLabel(label),
         Semantics(
           button: true,
           label: ['$label: ${value ?? l10n.notSet}', ?errorText].join('. '),
@@ -402,8 +402,9 @@ class FormSection extends StatelessWidget {
 
 /// The label above a field, sitting just over its own box. A label with an
 /// [action] ("Not you?") gets a row tall enough for the link's tap target.
-class _FieldLabel extends StatelessWidget {
-  const _FieldLabel(this.label, {this.action});
+/// Also heads a group of rows inside a form card (a proposal's line items).
+class FieldLabel extends StatelessWidget {
+  const FieldLabel(this.label, {super.key, this.action});
 
   final String label;
   final Widget? action;

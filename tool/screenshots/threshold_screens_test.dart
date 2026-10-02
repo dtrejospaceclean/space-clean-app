@@ -566,6 +566,27 @@ void main() {
       ),
       Phone('4 · Earlier version', asOwner: true, location: '$base/p2'),
       Phone('5 · Edit', asOwner: true, location: '$base/p3/edit'),
+      Phone('5a · New, no items yet', asOwner: true, location: '$base/new'),
+      Phone(
+        '5c · Edit, swiping an item away',
+        asOwner: true,
+        location: '$base/p3/edit',
+        act: (tester, phone) async {
+          // Held mid-swipe, so the frame shows what's revealed.
+          final gesture = await tester.startGesture(
+            tester.getCenter(
+              find.descendant(
+                of: phone,
+                matching: find.text('Window washing, exterior'),
+              ),
+            ),
+          );
+          await gesture.moveBy(const Offset(-40, 0));
+          await tester.pump();
+          await gesture.moveBy(const Offset(-110, 0));
+          await tester.pump();
+        },
+      ),
       Phone('6 · Approve', asOwner: true, location: '$base/p3/approve'),
       Phone(
         '6b · Add line item',

@@ -1372,6 +1372,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editProposal => 'Edit proposal';
 
   @override
+  String get deleteProposal => 'Delete proposal';
+
+  @override
+  String get deleteProposalConfirmTitle => 'Delete this proposal?';
+
+  @override
+  String get deleteProposalConfirmBody =>
+      'Every version and its line items will be deleted. This can\'t be undone.';
+
+  @override
   String get newVersionTitle => 'New version';
 
   @override
@@ -1447,6 +1457,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addLineItem => 'Add line item';
 
   @override
+  String get addLineItemShort => 'Line item';
+
+  @override
+  String get lineItemsEmpty => 'None yet. Tap + below to add one.';
+
+  @override
   String get removeLineItem => 'Remove item';
 
   @override
@@ -1507,6 +1523,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get proposalsAlreadyApproved =>
       'This proposal is approved and can\'t change.';
+
+  @override
+  String get proposalsHasRelatedRecords =>
+      'A contract uses this proposal, so it can\'t be deleted.';
 
   @override
   String get proposalsAgreedPriceRequired =>

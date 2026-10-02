@@ -1383,6 +1383,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editProposal => 'Editar propuesta';
 
   @override
+  String get deleteProposal => 'Eliminar propuesta';
+
+  @override
+  String get deleteProposalConfirmTitle => '¿Eliminar esta propuesta?';
+
+  @override
+  String get deleteProposalConfirmBody =>
+      'Se eliminarán todas sus versiones y conceptos. No se puede deshacer.';
+
+  @override
   String get newVersionTitle => 'Nueva versión';
 
   @override
@@ -1458,6 +1468,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addLineItem => 'Agregar concepto';
 
   @override
+  String get addLineItemShort => 'Concepto';
+
+  @override
+  String get lineItemsEmpty =>
+      'Ninguno todavía. Toca + abajo para agregar uno.';
+
+  @override
   String get removeLineItem => 'Quitar concepto';
 
   @override
@@ -1520,6 +1537,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get proposalsAlreadyApproved =>
       'Esta propuesta está aprobada y no se puede cambiar.';
+
+  @override
+  String get proposalsHasRelatedRecords =>
+      'Un contrato usa esta propuesta, así que no se puede eliminar.';
 
   @override
   String get proposalsAgreedPriceRequired =>

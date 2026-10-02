@@ -40,4 +40,10 @@ abstract interface class ProposalsRepository {
     String proposalId, {
     String? agreedPrice,
   });
+
+  /// Deletes the whole negotiation: every version of [proposalId]'s, with
+  /// their line items. Needs `proposal.edit`; refused once any version is
+  /// approved (`proposals.already_approved`) or a contract uses one
+  /// (`proposals.has_related_records`).
+  Future<void> deleteProposal(String clientId, String proposalId);
 }

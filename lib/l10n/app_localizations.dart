@@ -2498,6 +2498,24 @@ abstract class AppLocalizations {
   /// **'Edit proposal'**
   String get editProposal;
 
+  /// No description provided for @deleteProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete proposal'**
+  String get deleteProposal;
+
+  /// No description provided for @deleteProposalConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this proposal?'**
+  String get deleteProposalConfirmTitle;
+
+  /// No description provided for @deleteProposalConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every version and its line items will be deleted. This can\'t be undone.'**
+  String get deleteProposalConfirmBody;
+
   /// No description provided for @newVersionTitle.
   ///
   /// In en, this message translates to:
@@ -2612,6 +2630,18 @@ abstract class AppLocalizations {
   /// **'Add line item'**
   String get addLineItem;
 
+  /// No description provided for @addLineItemShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Line item'**
+  String get addLineItemShort;
+
+  /// No description provided for @lineItemsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet. Tap + below to add one.'**
+  String get lineItemsEmpty;
+
   /// No description provided for @removeLineItem.
   ///
   /// In en, this message translates to:
@@ -2719,6 +2749,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This proposal is approved and can\'t change.'**
   String get proposalsAlreadyApproved;
+
+  /// No description provided for @proposalsHasRelatedRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'A contract uses this proposal, so it can\'t be deleted.'**
+  String get proposalsHasRelatedRecords;
 
   /// No description provided for @proposalsAgreedPriceRequired.
   ///

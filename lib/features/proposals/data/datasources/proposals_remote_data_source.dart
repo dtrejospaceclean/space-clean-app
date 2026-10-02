@@ -72,4 +72,8 @@ class ProposalsRemoteDataSource {
       body: {'agreedPrice': ?num.tryParse(agreedPrice?.trim() ?? '')},
     ),
   );
+
+  /// Removes every version of the negotiation; returns no data.
+  Future<void> deleteProposal(String clientId, String proposalId) =>
+      _api.delete('${_path(clientId)}/$proposalId');
 }

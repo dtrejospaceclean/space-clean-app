@@ -82,6 +82,17 @@ class SaveProposal implements UseCase<Proposal, SaveProposalParams> {
   };
 }
 
+/// Deletes every version of the referenced proposal's negotiation.
+class DeleteProposal implements UseCase<void, ProposalRef> {
+  const DeleteProposal(this._repository);
+
+  final ProposalsRepository _repository;
+
+  @override
+  Future<void> call(ProposalRef params) =>
+      _repository.deleteProposal(params.clientId, params.proposalId);
+}
+
 class ApproveProposalParams {
   const ApproveProposalParams({
     required this.clientId,

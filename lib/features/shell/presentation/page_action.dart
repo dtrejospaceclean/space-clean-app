@@ -10,6 +10,7 @@ class PageAction {
     required this.label,
     required this.onPressed,
     required this.owner,
+    this.text,
   });
 
   /// The page's path; the action shows only while it's the page on top.
@@ -18,6 +19,9 @@ class PageAction {
   /// Tooltip and screen-reader label ("Add line item").
   final String label;
   final VoidCallback onPressed;
+
+  /// Drawn beside the "+" ("Line item"), so it says what it adds.
+  final String? text;
 
   /// Who set it, so a page that's going away only clears its own.
   final Object owner;
@@ -50,6 +54,7 @@ mixin PageActionHost<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     required String location,
     required String label,
     required VoidCallback onPressed,
+    String? text,
   }) {
     _actions = ref.read(pageActionProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,6 +64,7 @@ mixin PageActionHost<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           location: location,
           label: label,
           onPressed: onPressed,
+          text: text,
           owner: this,
         ),
       );

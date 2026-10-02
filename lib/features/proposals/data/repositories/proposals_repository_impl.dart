@@ -55,4 +55,8 @@ class ProposalsRepositoryImpl implements ProposalsRepository {
     () =>
         _remote.approveProposal(clientId, proposalId, agreedPrice: agreedPrice),
   );
+
+  @override
+  Future<void> deleteProposal(String clientId, String proposalId) =>
+      _guard(() => _remote.deleteProposal(clientId, proposalId));
 }

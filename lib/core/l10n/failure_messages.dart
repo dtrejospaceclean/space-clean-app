@@ -33,6 +33,7 @@ extension FailureMessages on AppLocalizations {
     'proposals.not_found' => proposalsNotFound,
     'proposals.not_current_version' => proposalsNotCurrentVersion,
     'proposals.already_approved' => proposalsAlreadyApproved,
+    'proposals.has_related_records' => proposalsHasRelatedRecords,
     'proposals.agreed_price_required' => proposalsAgreedPriceRequired,
     'members.user_not_active' => membersUserNotActive,
     'locations.has_related_records' => locationInUse,
