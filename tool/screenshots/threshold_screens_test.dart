@@ -18,6 +18,7 @@ import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
 import 'package:sp_cln_app/features/clients/di/clients_providers.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
+import 'package:sp_cln_app/features/clients/domain/repositories/module_order_repository.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
@@ -109,6 +110,7 @@ Future<void> _sheet(
         ),
         // Appearance: System, so each phone's own light/dark mode shows.
         themeModeRepositoryProvider.overrideWithValue(_MemoryThemeMode()),
+        moduleOrderRepositoryProvider.overrideWithValue(_MemoryModuleOrder()),
         authRepositoryProvider.overrideWithValue(
           FakeAuthRepository(
             rememberedEmail: phone.remembered
@@ -443,12 +445,23 @@ void main() {
     await _sheet(tester, 'admin_ios', TargetPlatform.iOS, adminPhones());
   });
 
-  // An account's screen as an owner: every module, dark, Spanish at 200%.
+  // An account's screen as an owner: every module, dark, reordering,
+  // Spanish at 200%.
   testWidgets('account', (tester) async {
     await _sheet(tester, 'account', TargetPlatform.iOS, [
       Phone('1 · Account (owner)', asOwner: true, location: '/accounts/c1'),
       Phone('2 · Supervisor', signedIn: true, location: '/accounts/c1'),
       Phone('3 · Dark', asOwner: true, dark: true, location: '/accounts/c1'),
+      Phone(
+        '3b · Reordering',
+        asOwner: true,
+        location: '/accounts/c1',
+        act: (tester, phone) async {
+          await tester.tap(
+            find.descendant(of: phone, matching: find.byTooltip('Reorder')),
+          );
+        },
+      ),
       Phone(
         '4 · Spanish, 200% text',
         asOwner: true,
@@ -788,6 +801,14 @@ class _MemoryThemeMode implements ThemeModeRepository {
 
   @override
   Future<void> saveThemeMode(AppThemeMode mode) async => savedThemeMode = mode;
+}
+
+class _MemoryModuleOrder implements ModuleOrderRepository {
+  @override
+  List<String> savedOrder = const [];
+
+  @override
+  Future<void> saveOrder(List<String> routes) async => savedOrder = routes;
 }
 
 /// Torre Norte's pipeline: a fresh lead, a negotiation on its third

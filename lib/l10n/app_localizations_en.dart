@@ -289,6 +289,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'You don\'t have access to anything in this account yet.';
 
   @override
+  String get reorderModules => 'Reorder';
+
+  @override
+  String get reorderModulesHint =>
+      'Drag the handles to set the order. It\'s the same in every account.';
+
+  @override
   String get jobsNextDays => 'Next 7 days';
 
   @override

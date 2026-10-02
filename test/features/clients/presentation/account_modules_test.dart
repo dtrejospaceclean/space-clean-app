@@ -2,35 +2,59 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/clients/presentation/account_modules.dart';
 
-void main() {
-  test('lists only allowed modules, grouped in screen order', () {
-    final sections = visibleModules(
-      const AccountAccess(
-        clientId: 'c1',
-        permissions: {Permissions.infoView, Permissions.jobsView},
-      ),
-    );
+List<String> routes(List<AccountModule> modules) =>
+    modules.map((m) => m.route).toList();
 
-    expect(sections.keys, [AccountSection.work, AccountSection.account]);
-    expect(sections[AccountSection.work]!.map((m) => m.route), ['jobs']);
-    expect(sections[AccountSection.account]!.map((m) => m.route), [
+void main() {
+  const infoAndJobs = AccountAccess(
+    clientId: 'c1',
+    permissions: {Permissions.infoView, Permissions.jobsView},
+  );
+
+  test('lists only allowed modules, work first by default', () {
+    expect(routes(orderedModules(infoAndJobs, const [])), [
+      'jobs',
       'info',
       'contacts',
       'locations',
     ]);
   });
 
-  test('leaves out sections with nothing allowed', () {
-    final sections = visibleModules(
-      const AccountAccess(clientId: 'c1', permissions: {Permissions.jobsView}),
+  test('a global owner sees every module', () {
+    expect(
+      orderedModules(const AccountAccess.owner('c1'), const []).length,
+      accountModules.length,
     );
-
-    expect(sections.keys, [AccountSection.work]);
   });
 
-  test('a global owner sees every module', () {
-    final sections = visibleModules(const AccountAccess.owner('c1'));
+  test('follows the saved order; unknown routes drop, new ones go last', () {
+    expect(
+      routes(orderedModules(infoAndJobs, const ['locations', 'gone', 'info'])),
+      ['locations', 'info', 'jobs', 'contacts'],
+    );
+  });
 
-    expect(sections.values.expand((m) => m).length, accountModules.length);
+  test('reordering what is visible keeps hidden modules in place', () {
+    // Proposals and team are hidden here; they keep their slots.
+    final order = reorderVisible(const [], const [
+      'locations',
+      'jobs',
+      'info',
+      'contacts',
+    ]);
+    expect(order, [
+      'locations',
+      'proposals',
+      'jobs',
+      'info',
+      'contacts',
+      'team',
+    ]);
+    expect(routes(orderedModules(infoAndJobs, order)), [
+      'locations',
+      'jobs',
+      'info',
+      'contacts',
+    ]);
   });
 }

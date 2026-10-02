@@ -590,6 +590,18 @@ abstract class AppLocalizations {
   /// **'You don\'t have access to anything in this account yet.'**
   String get noModules;
 
+  /// No description provided for @reorderModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder'**
+  String get reorderModules;
+
+  /// No description provided for @reorderModulesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the handles to set the order. It\'s the same in every account.'**
+  String get reorderModulesHint;
+
   /// No description provided for @jobsNextDays.
   ///
   /// In en, this message translates to:

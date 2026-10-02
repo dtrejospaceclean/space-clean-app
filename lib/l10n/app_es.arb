@@ -82,6 +82,8 @@
   "moduleFiles": "Archivos",
   "comingSoon": "Pronto",
   "noModules": "Todavía no tienes acceso a nada en esta cuenta.",
+  "reorderModules": "Ordenar",
+  "reorderModulesHint": "Arrastra las asas para cambiar el orden. Es el mismo en todas las cuentas.",
   "jobsNextDays": "Próximos 7 días",
   "noJobsAhead": "No hay trabajos en los próximos 7 días",
   "jobStatusScheduled": "Programado",

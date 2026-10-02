@@ -152,6 +152,8 @@
   "moduleFiles": "Files",
   "comingSoon": "Soon",
   "noModules": "You don't have access to anything in this account yet.",
+  "reorderModules": "Reorder",
+  "reorderModulesHint": "Drag the handles to set the order. It's the same in every account.",
   "jobsNextDays": "Next 7 days",
   "noJobsAhead": "No jobs in the next 7 days",
   "jobStatusScheduled": "Scheduled",

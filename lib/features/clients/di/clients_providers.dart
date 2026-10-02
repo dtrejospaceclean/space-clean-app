@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/network_providers.dart';
+import '../../../core/storage/preferences.dart';
 import '../data/datasources/clients_remote_data_source.dart';
 import '../data/repositories/clients_repository_impl.dart';
+import '../data/repositories/module_order_repository_impl.dart';
 import '../domain/repositories/clients_repository.dart';
+import '../domain/repositories/module_order_repository.dart';
 import '../domain/usecases/get_my_clients.dart';
 import '../domain/usecases/manage_clients.dart';
 
@@ -30,4 +33,8 @@ final updateClientProvider = Provider(
 );
 final deleteClientProvider = Provider(
   (ref) => DeleteClient(ref.watch(clientsRepositoryProvider)),
+);
+
+final moduleOrderRepositoryProvider = Provider<ModuleOrderRepository>(
+  (ref) => ModuleOrderRepositoryImpl(ref.watch(sharedPreferencesProvider)),
 );

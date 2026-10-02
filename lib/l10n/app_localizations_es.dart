@@ -292,6 +292,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noModules => 'Todavía no tienes acceso a nada en esta cuenta.';
 
   @override
+  String get reorderModules => 'Ordenar';
+
+  @override
+  String get reorderModulesHint =>
+      'Arrastra las asas para cambiar el orden. Es el mismo en todas las cuentas.';
+
+  @override
   String get jobsNextDays => 'Próximos 7 días';
 
   @override

@@ -7,8 +7,8 @@ import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../team/presentation/screens/team_screen.dart';
 
-/// How an account's modules are ordered on its screen: the work first,
-/// then the account's own records.
+/// How an account's modules are ordered until the user sets their own
+/// order: the work first, then the account's own records.
 enum AccountSection { work, account }
 
 /// One thing a member can open inside an account.
@@ -36,9 +36,10 @@ class AccountModule {
   final String route;
 }
 
-/// Every module the app has built, in display order within each section.
+/// Every module the app has built, in default order within each section.
 /// To add one, give it a route under `/accounts/:clientId` and an entry
-/// here; the account screen picks it up, grouped and permission-filtered.
+/// here; the account screen picks it up, permission-filtered. A user who
+/// reordered the list sees a new module at the end of it.
 final accountModules = <AccountModule>[
   AccountModule(
     section: AccountSection.work,
@@ -90,14 +91,44 @@ final accountModules = <AccountModule>[
   ),
 ];
 
-/// The modules [access] allows, grouped by section in screen order. Empty
-/// sections are left out.
-Map<AccountSection, List<AccountModule>> visibleModules(AccountAccess access) =>
-    {
-      for (final section in AccountSection.values)
-        if (accountModules.where(
-              (m) => m.section == section && access.can(m.permission),
-            )
-            case final modules when modules.isNotEmpty)
-          section: modules.toList(),
-    };
+/// Every module's route in the order the user set ([saved], routes from
+/// [ModuleOrderController]), defaulting to section order. Saved routes that
+/// no longer exist are dropped; modules the user never ordered come last.
+List<String> fullOrder(List<String> saved) {
+  final known = {for (final m in accountModules) m.route};
+  final defaults = [
+    for (final section in AccountSection.values)
+      for (final m in accountModules)
+        if (m.section == section) m.route,
+  ];
+  final ordered = [
+    for (final route in saved)
+      if (known.contains(route)) route,
+  ];
+  return [
+    ...ordered,
+    for (final route in defaults)
+      if (!ordered.contains(route)) route,
+  ];
+}
+
+/// The modules [access] allows, in the user's order ([saved]).
+List<AccountModule> orderedModules(AccountAccess access, List<String> saved) {
+  final byRoute = {for (final m in accountModules) m.route: m};
+  return [
+    for (final route in fullOrder(saved))
+      if (byRoute[route]! case final m when access.can(m.permission)) m,
+  ];
+}
+
+/// The full order after the user rearranged the modules they can see into
+/// [visible]: those take the places they held, in their new order, and
+/// modules hidden from them in this account keep their own places.
+List<String> reorderVisible(List<String> saved, List<String> visible) {
+  final shown = visible.toSet();
+  final next = visible.iterator;
+  return [
+    for (final route in fullOrder(saved))
+      if (shown.contains(route)) (next..moveNext()).current else route,
+  ];
+}
