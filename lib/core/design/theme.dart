@@ -167,6 +167,14 @@ abstract final class SpaceTheme {
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(color: c.primary),
+      // Every pushed page slides in from the right on both platforms, with
+      // the swipe-from-edge back gesture.
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: SlidePageTransitions(),
+          TargetPlatform.iOS: SlidePageTransitions(),
+        },
+      ),
       cupertinoOverrideTheme: CupertinoThemeData(
         brightness: brightness,
         primaryColor: c.primary,
@@ -189,6 +197,51 @@ abstract final class SpaceTheme {
         borderRadius: BorderRadius.circular(SpaceRadius.inner),
         borderSide: BorderSide(color: color, width: width),
       );
+}
+
+/// The iOS page slide (the new page in from the right, the one under it
+/// shifting left) and its edge-swipe back, used on both platforms. Instant
+/// when the OS asks for reduced motion; the swipe back still works.
+class SlidePageTransitions extends PageTransitionsBuilder {
+  const SlidePageTransitions();
+
+  static const _slide = CupertinoPageTransitionsBuilder();
+
+  @override
+  Duration get transitionDuration => _slide.transitionDuration;
+
+  @override
+  Duration get reverseTransitionDuration => _slide.reverseTransitionDuration;
+
+  @override
+  DelegatedTransitionBuilder? get delegatedTransition =>
+      _slide.delegatedTransition;
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return CupertinoRouteTransitionMixin.buildPageTransitions(
+        route,
+        context,
+        kAlwaysCompleteAnimation,
+        kAlwaysDismissedAnimation,
+        child,
+      );
+    }
+    return _slide.buildTransitions(
+      route,
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    );
+  }
 }
 
 /// The phone's text scaler times a fixed [factor], keeping the OS's own

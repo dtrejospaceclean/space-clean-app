@@ -87,18 +87,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           LoginScreen(prefillEmail: state.uri.queryParameters['email']),
         ),
         routes: [
-          GoRoute(
+          SlideRoute(
             path: 'forgot',
             builder: (_, state) => ForgotPasswordScreen(
               prefillEmail: state.uri.queryParameters['email'],
             ),
             routes: [
-              GoRoute(path: 'code', builder: (_, _) => const ResetCodeScreen()),
-              GoRoute(
+              SlideRoute(
+                path: 'code',
+                builder: (_, _) => const ResetCodeScreen(),
+              ),
+              SlideRoute(
                 path: 'password',
                 builder: (_, _) => const NewPasswordScreen(),
               ),
-              GoRoute(path: 'done', builder: (_, _) => const ResetDoneScreen()),
+              SlideRoute(
+                path: 'done',
+                builder: (_, _) => const ResetDoneScreen(),
+              ),
             ],
           ),
         ],
@@ -114,11 +120,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         branches: [
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              SlideRoute(
                 path: TodayScreen.path,
                 builder: (_, _) => const TodayScreen(),
                 routes: [
-                  GoRoute(
+                  SlideRoute(
                     path: 'job/:clientId/:jobId',
                     builder: (_, state) => JobDetailScreen(
                       clientId: state.pathParameters['clientId']!,
@@ -131,28 +137,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              SlideRoute(
                 path: AccountsScreen.path,
                 builder: (_, _) => const AccountsScreen(),
                 routes: [
                   // Before ':clientId' so "new" isn't read as an id.
-                  GoRoute(
+                  SlideRoute(
                     path: 'new',
                     builder: (_, _) => const AccountFormScreen(),
                   ),
-                  GoRoute(
+                  SlideRoute(
                     path: ':clientId',
                     builder: (_, state) => AccountScreen(
                       clientId: state.pathParameters['clientId']!,
                     ),
                     routes: [
-                      GoRoute(
+                      SlideRoute(
                         path: 'info',
                         builder: (_, state) => AccountInfoScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
-                          GoRoute(
+                          SlideRoute(
                             path: 'edit',
                             builder: (_, state) => AccountFormScreen(
                               clientId: state.pathParameters['clientId'],
@@ -160,14 +166,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: ProposalsScreen.route,
                         builder: (_, state) => ProposalsScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
                           // Before ':proposalId' so "new" isn't read as an id.
-                          GoRoute(
+                          SlideRoute(
                             path: 'new',
                             builder: (_, state) => ProposalFormScreen(
                               clientId: state.pathParameters['clientId']!,
@@ -175,14 +181,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                             ),
                             routes: [_lineItemRoute],
                           ),
-                          GoRoute(
+                          SlideRoute(
                             path: ':proposalId',
                             builder: (_, state) => ProposalScreen(
                               clientId: state.pathParameters['clientId']!,
                               proposalId: state.pathParameters['proposalId']!,
                             ),
                             routes: [
-                              GoRoute(
+                              SlideRoute(
                                 path: 'edit',
                                 builder: (_, state) => ProposalFormScreen(
                                   clientId: state.pathParameters['clientId']!,
@@ -192,7 +198,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                 ),
                                 routes: [_lineItemRoute],
                               ),
-                              GoRoute(
+                              SlideRoute(
                                 path: 'version',
                                 builder: (_, state) => ProposalFormScreen(
                                   clientId: state.pathParameters['clientId']!,
@@ -202,7 +208,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                 ),
                                 routes: [_lineItemRoute],
                               ),
-                              GoRoute(
+                              SlideRoute(
                                 path: 'approve',
                                 builder: (_, state) => ApproveProposalScreen(
                                   clientId: state.pathParameters['clientId']!,
@@ -214,34 +220,34 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: ContactsScreen.route,
                         builder: (_, state) => ContactsScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
                           // Before ':contactId' so "new" isn't read as an id.
-                          GoRoute(
+                          SlideRoute(
                             path: 'new',
                             builder: (_, state) => ContactFormScreen(
                               clientId: state.pathParameters['clientId']!,
                             ),
                           ),
-                          GoRoute(
+                          SlideRoute(
                             path: ':contactId',
                             builder: (_, state) => ContactScreen(
                               clientId: state.pathParameters['clientId']!,
                               contactId: state.pathParameters['contactId']!,
                             ),
                             routes: [
-                              GoRoute(
+                              SlideRoute(
                                 path: 'edit',
                                 builder: (_, state) => ContactFormScreen(
                                   clientId: state.pathParameters['clientId']!,
                                   contactId: state.pathParameters['contactId'],
                                 ),
                               ),
-                              GoRoute(
+                              SlideRoute(
                                 path: 'login',
                                 builder: (_, state) => ContactLoginScreen(
                                   clientId: state.pathParameters['clientId']!,
@@ -252,27 +258,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: LocationsScreen.route,
                         builder: (_, state) => LocationsScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
                           // Before ':locationId' so "new" isn't read as an id.
-                          GoRoute(
+                          SlideRoute(
                             path: 'new',
                             builder: (_, state) => LocationFormScreen(
                               clientId: state.pathParameters['clientId']!,
                             ),
                           ),
-                          GoRoute(
+                          SlideRoute(
                             path: ':locationId',
                             builder: (_, state) => LocationScreen(
                               clientId: state.pathParameters['clientId']!,
                               locationId: state.pathParameters['locationId']!,
                             ),
                             routes: [
-                              GoRoute(
+                              SlideRoute(
                                 path: 'edit',
                                 builder: (_, state) => LocationFormScreen(
                                   clientId: state.pathParameters['clientId']!,
@@ -284,27 +290,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: TeamScreen.route,
                         builder: (_, state) => TeamScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
                           // Before ':userId' so "new" isn't read as an id.
-                          GoRoute(
+                          SlideRoute(
                             path: 'new',
                             builder: (_, state) => AddMemberScreen(
                               clientId: state.pathParameters['clientId']!,
                             ),
                           ),
-                          GoRoute(
+                          SlideRoute(
                             path: ':userId',
                             builder: (_, state) => MemberScreen(
                               clientId: state.pathParameters['clientId']!,
                               userId: state.pathParameters['userId']!,
                             ),
                             routes: [
-                              GoRoute(
+                              SlideRoute(
                                 path: 'edit',
                                 builder: (_, state) => MemberAccessScreen(
                                   clientId: state.pathParameters['clientId']!,
@@ -315,13 +321,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: 'jobs',
                         builder: (_, state) => AccountJobsScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
-                          GoRoute(
+                          SlideRoute(
                             path: ':jobId',
                             builder: (_, state) => JobDetailScreen(
                               clientId: state.pathParameters['clientId']!,
@@ -338,30 +344,30 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              SlideRoute(
                 path: ProfileScreen.path,
                 builder: (_, _) => const ProfileScreen(),
                 routes: [
-                  GoRoute(
+                  SlideRoute(
                     path: 'edit',
                     builder: (_, _) => const EditProfileScreen(),
                   ),
-                  GoRoute(
+                  SlideRoute(
                     path: 'users',
                     builder: (_, _) => const UsersScreen(),
                     routes: [
                       // Before ':userId' so "new" isn't read as an id.
-                      GoRoute(
+                      SlideRoute(
                         path: 'new',
                         builder: (_, _) => const UserFormScreen(),
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: ':userId',
                         builder: (_, state) => UserDetailScreen(
                           userId: state.pathParameters['userId']!,
                         ),
                         routes: [
-                          GoRoute(
+                          SlideRoute(
                             path: 'edit',
                             builder: (_, state) => UserFormScreen(
                               userId: state.pathParameters['userId'],
@@ -371,38 +377,38 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       ),
                     ],
                   ),
-                  GoRoute(
+                  SlideRoute(
                     path: 'roles',
                     builder: (_, _) => const RolesScreen(),
                   ),
-                  GoRoute(
+                  SlideRoute(
                     path: 'password',
                     builder: (_, _) => const ChangePasswordScreen(),
                   ),
-                  GoRoute(
+                  SlideRoute(
                     path: 'settings',
                     builder: (_, _) => const SettingsScreen(),
                   ),
-                  GoRoute(
+                  SlideRoute(
                     path: 'services',
                     builder: (_, _) => const ServicesScreen(),
                     routes: [
                       // Before ':serviceId' so these aren't read as an id.
-                      GoRoute(
+                      SlideRoute(
                         path: 'new',
                         builder: (_, _) => const ServiceFormScreen(),
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: 'categories',
                         builder: (_, _) => const CategoriesScreen(),
                         routes: [
-                          GoRoute(
+                          SlideRoute(
                             path: 'new',
                             builder: (_, _) => const LookupFormScreen(
                               kind: LookupKind.category,
                             ),
                           ),
-                          GoRoute(
+                          SlideRoute(
                             path: ':id',
                             builder: (_, state) => LookupFormScreen(
                               kind: LookupKind.category,
@@ -411,16 +417,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: 'units',
                         builder: (_, _) => const UnitsScreen(),
                         routes: [
-                          GoRoute(
+                          SlideRoute(
                             path: 'new',
                             builder: (_, _) =>
                                 const LookupFormScreen(kind: LookupKind.unit),
                           ),
-                          GoRoute(
+                          SlideRoute(
                             path: ':id',
                             builder: (_, state) => LookupFormScreen(
                               kind: LookupKind.unit,
@@ -429,7 +435,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           ),
                         ],
                       ),
-                      GoRoute(
+                      SlideRoute(
                         path: ':serviceId',
                         builder: (_, state) => ServiceFormScreen(
                           serviceId: state.pathParameters['serviceId'],
@@ -455,7 +461,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
 /// A proposal form's line item page. The item to edit comes in `extra`;
 /// a new item (or a page reopened without it) starts empty.
-final _lineItemRoute = GoRoute(
+final _lineItemRoute = SlideRoute(
   path: LineItemScreen.route,
   builder: (_, state) => LineItemScreen(
     initial: switch (state.extra) {
