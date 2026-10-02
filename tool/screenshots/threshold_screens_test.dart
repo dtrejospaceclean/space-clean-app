@@ -19,6 +19,7 @@ import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
 import 'package:sp_cln_app/features/clients/di/clients_providers.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/clients/domain/repositories/module_order_repository.dart';
+import 'package:sp_cln_app/features/notifications/di/notifications_providers.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/presentation/controllers/jobs_providers.dart';
@@ -111,6 +112,9 @@ Future<void> _sheet(
         // Appearance: System, so each phone's own light/dark mode shows.
         themeModeRepositoryProvider.overrideWithValue(_MemoryThemeMode()),
         moduleOrderRepositoryProvider.overrideWithValue(_MemoryModuleOrder()),
+        notificationsRepositoryProvider.overrideWithValue(
+          FakeNotificationsRepository(3),
+        ),
         authRepositoryProvider.overrideWithValue(
           FakeAuthRepository(
             rememberedEmail: phone.remembered

@@ -256,6 +256,8 @@ class AppShell extends ConsumerWidget {
                         fromPage: page != null,
                       ),
                     ),
+              // Me is the third branch but has no tab: Today's avatar opens
+              // it, and while it's showing neither tab is current.
               items: [
                 BottomBarItem(
                   icon: Icons.today_outlined,
@@ -266,11 +268,6 @@ class AppShell extends ConsumerWidget {
                   icon: Icons.apartment_outlined,
                   activeIcon: Icons.apartment_rounded,
                   label: l10n.tabAccounts,
-                ),
-                BottomBarItem(
-                  icon: Icons.person_outline_rounded,
-                  activeIcon: Icons.person_rounded,
-                  label: l10n.tabProfile,
                 ),
               ],
             );

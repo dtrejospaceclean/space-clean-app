@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:sp_cln_app/core/design/design.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
@@ -172,6 +173,79 @@ void main() {
     expect(find.byTooltip('Hoy'), findsOneWidget);
   });
 
+  testWidgets('Me opens from the avatar, not the dock, and back returns', (
+    tester,
+  ) async {
+    await signedIn(tester);
+
+    // Two tabs; Me is only Today's avatar.
+    expect(find.byTooltip('Today'), findsOneWidget);
+    expect(find.byTooltip('Accounts'), findsOneWidget);
+    await tester.tap(find.byTooltip('Accounts'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Me'), findsNothing);
+    await tester.tap(find.byTooltip('Today'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Me'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sign out'), findsOneWidget);
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sign out'), findsNothing);
+    expect(find.text('No jobs today'), findsOneWidget);
+
+    // The system back does the same.
+    await tester.tap(find.byTooltip('Me'));
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('No jobs today'), findsOneWidget);
+  });
+
+  testWidgets('the avatar counts unread notifications', (tester) async {
+    final semantics = tester.ensureSemantics();
+    final notifications = FakeNotificationsRepository(3);
+    await pumpApp(
+      tester,
+      auth: FakeAuthRepository(sessionUser: ana),
+      notifications: notifications,
+    );
+
+    expect(
+      find.descendant(of: find.byTooltip('Me'), matching: find.text('3')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Me, 3 unread notifications'), findsOneWidget);
+
+    // None unread: no badge.
+    notifications.unread = 0;
+    await tester.fling(
+      find.byType(Scrollable).first,
+      const Offset(0, 400),
+      1000,
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(of: find.byTooltip('Me'), matching: find.text('3')),
+      findsNothing,
+    );
+    expect(find.bySemanticsLabel('Me'), findsOneWidget);
+    semantics.dispose();
+  });
+
+  testWidgets('no badge with nothing unread', (tester) async {
+    await signedIn(tester);
+    expect(find.byType(CountBadge), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(CountBadge),
+        matching: find.byType(PositionedDirectional),
+      ),
+      findsNothing,
+    );
+  });
+
   testWidgets('the tab dock survives 200% text in Spanish', (tester) async {
     tester.platformDispatcher.textScaleFactorTestValue = 2;
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
@@ -181,11 +255,13 @@ void main() {
       preferences: {'settings.language': 'es'},
     );
 
-    for (final tab in ['Cuentas', 'Yo', 'Hoy']) {
-      await tester.tap(find.byTooltip(tab));
+    // Yo opens from Today's avatar, then its back button returns.
+    for (final target in ['Cuentas', 'Hoy', 'Yo', 'Atrás']) {
+      await tester.tap(find.byTooltip(target));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     }
+    expect(find.text('Hoy'), findsWidgets);
   });
 
   group('the + beside the tab dock', () {

@@ -174,3 +174,53 @@ class StatusIcon extends StatelessWidget {
     );
   }
 }
+
+/// A small orange count over the top-right of [child] (an avatar): unread
+/// notifications. Hidden at 0; "99+" past that. Visual only, so the
+/// widget that owns it says the count to screen readers.
+class CountBadge extends StatelessWidget {
+  const CountBadge({super.key, required this.count, required this.child});
+
+  final int count;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (count <= 0) return child;
+    final c = context.colors;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        PositionedDirectional(
+          top: -4,
+          end: -6,
+          child: ExcludeSemantics(
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              alignment: Alignment.center,
+              // A ring in the page's tone keeps it apart from the avatar.
+              decoration: ShapeDecoration(
+                color: c.primary,
+                shape: StadiumBorder(
+                  side: BorderSide(color: c.ground, width: 2),
+                ),
+              ),
+              child: Text(
+                count > 99 ? '99+' : '$count',
+                style: TextStyle(
+                  fontFamily: 'Manrope',
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                  color: c.onPrimary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

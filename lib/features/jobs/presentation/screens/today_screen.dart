@@ -7,6 +7,8 @@ import '../../../../core/l10n/formatting.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../clients/presentation/controllers/clients_providers.dart';
+import '../../../notifications/presentation/controllers/notifications_providers.dart';
+import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../domain/entities/job.dart';
 import '../controllers/jobs_providers.dart';
 import '../widgets/job_row.dart';
@@ -33,6 +35,7 @@ class TodayScreen extends ConsumerWidget {
 
     Future<void> refresh() async {
       ref.invalidate(myClientsProvider);
+      ref.invalidate(unreadNotificationsProvider);
       await ref.read(todayJobsProvider.future);
     }
 
@@ -41,16 +44,7 @@ class TodayScreen extends ConsumerWidget {
       showBack: false,
       title: l10n.todayTitle,
       onRefresh: refresh,
-      actions: [
-        if (user != null)
-          Tooltip(
-            message: user.name,
-            child: InitialsAvatar(
-              name: user.name,
-              background: context.colors.surface,
-            ),
-          ),
-      ],
+      actions: [if (user != null) _ProfileButton(name: user.name)],
       slivers: [
         PageBox(
           top: 4,
@@ -140,6 +134,51 @@ class TodayScreen extends ConsumerWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+/// The user's avatar, which opens Me (profile, administration, settings),
+/// with the unread notifications counted on it.
+class _ProfileButton extends ConsumerWidget {
+  const _ProfileButton({required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final unread = ref.watch(unreadNotificationsProvider).value ?? 0;
+    return Tooltip(
+      message: l10n.profileTitle,
+      child: Semantics(
+        button: true,
+        label: [
+          l10n.profileTitle,
+          if (unread > 0) l10n.unreadNotifications(unread),
+        ].join(', '),
+        excludeSemantics: true,
+        child: SizedBox.square(
+          dimension: 48,
+          child: Center(
+            child: CountBadge(
+              count: unread,
+              child: Material(
+                type: MaterialType.transparency,
+                shape: const CircleBorder(),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () => context.go(ProfileScreen.path),
+                  child: InitialsAvatar(
+                    name: name,
+                    background: context.colors.surface,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

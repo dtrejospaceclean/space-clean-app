@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sp_cln_app/app.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/storage/preferences.dart';
+import 'package:sp_cln_app/features/notifications/di/notifications_providers.dart';
+import 'package:sp_cln_app/features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:sp_cln_app/features/access/di/access_providers.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/access/domain/repositories/access_repository.dart';
@@ -1236,6 +1238,7 @@ Future<SharedPreferences> pumpApp(
   LocationsRepository? locations,
   TeamRepository? team,
   ProposalsRepository? proposals,
+  NotificationsRepository? notifications,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -1280,6 +1283,11 @@ Future<SharedPreferences> pumpApp(
         proposalsRepositoryProvider.overrideWithValue(
           proposals ?? FakeProposalsRepository(),
         ),
+        // None unread unless a test says so (the real one is a placeholder
+        // count until the API has notifications).
+        notificationsRepositoryProvider.overrideWithValue(
+          notifications ?? FakeNotificationsRepository(0),
+        ),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,
@@ -1288,6 +1296,16 @@ Future<SharedPreferences> pumpApp(
   );
   await tester.pumpAndSettle();
   return prefs;
+}
+
+/// A fixed unread count.
+class FakeNotificationsRepository implements NotificationsRepository {
+  FakeNotificationsRepository(this.unread);
+
+  int unread;
+
+  @override
+  Future<int> unreadCount() async => unread;
 }
 
 /// Scrolls the current page until [finder] is built and clear of the

@@ -7,6 +7,7 @@ import '../../../../core/l10n/role_names.dart';
 import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../jobs/presentation/screens/today_screen.dart';
 import '../../../settings/presentation/controllers/language_controller.dart';
 import '../../../settings/presentation/controllers/theme_mode_controller.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
@@ -58,8 +59,8 @@ class ProfileScreen extends ConsumerWidget {
     if (user == null) return SizedBox.shrink();
 
     return SpacePage(
-      // A tab's home: nothing to go back to.
-      showBack: false,
+      // Opened from Today's avatar rather than a tab, so back returns there.
+      onBack: () => context.go(TodayScreen.path),
       title: l10n.profileTitle,
       actions: [
         CircleButton.dark(

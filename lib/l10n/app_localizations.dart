@@ -446,11 +446,11 @@ abstract class AppLocalizations {
   /// **'Accounts'**
   String get tabAccounts;
 
-  /// No description provided for @tabProfile.
+  /// No description provided for @unreadNotifications.
   ///
   /// In en, this message translates to:
-  /// **'Me'**
-  String get tabProfile;
+  /// **'{count, plural, =1{1 unread notification} other{{count} unread notifications}}'**
+  String unreadNotifications(int count);
 
   /// No description provided for @todayTitle.
   ///

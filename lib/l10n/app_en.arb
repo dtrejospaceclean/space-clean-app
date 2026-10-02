@@ -107,7 +107,14 @@
   "errorsFeatureUnavailable": "Password reset isn't available in the app yet. Ask your supervisor or admin to reset your password.",
   "tabToday": "Today",
   "tabAccounts": "Accounts",
-  "tabProfile": "Me",
+  "unreadNotifications": "{count, plural, =1{1 unread notification} other{{count} unread notifications}}",
+  "@unreadNotifications": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "todayTitle": "Today",
   "greeting": "Hi, {name}",
   "@greeting": {

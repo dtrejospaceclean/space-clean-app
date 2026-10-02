@@ -58,7 +58,7 @@
   "errorsFeatureUnavailable": "Aún no se puede restablecer la contraseña desde la app. Pide a tu supervisor o administrador que la restablezca.",
   "tabToday": "Hoy",
   "tabAccounts": "Cuentas",
-  "tabProfile": "Yo",
+  "unreadNotifications": "{count, plural, =1{1 notificación sin leer} other{{count} notificaciones sin leer}}",
   "todayTitle": "Hoy",
   "greeting": "Hola, {name}",
   "noJobsToday": "No hay trabajos hoy",

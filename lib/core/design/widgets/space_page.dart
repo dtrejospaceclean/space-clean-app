@@ -21,6 +21,7 @@ class SpacePage extends StatelessWidget {
     this.onRefresh,
     this.bottom,
     this.showBack,
+    this.onBack,
   });
 
   /// The page title.
@@ -43,9 +44,16 @@ class SpacePage extends StatelessWidget {
   /// the tabs) still counts, so root screens pass `false`.
   final bool? showBack;
 
+  /// Where back goes from a page with nothing under it (Me, opened from
+  /// Today's avatar). Shows the back button, and handles the system back.
+  final VoidCallback? onBack;
+
   @override
   Widget build(BuildContext context) {
-    final canPop = showBack ?? (GoRouter.maybeOf(context)?.canPop() ?? false);
+    final onBack = this.onBack;
+    final canPop =
+        onBack != null ||
+        (showBack ?? (GoRouter.maybeOf(context)?.canPop() ?? false));
 
     // One row: back button (pushed screens), title, then actions. The title
     // wraps rather than clips at large text sizes.
@@ -57,7 +65,7 @@ class SpacePage extends StatelessWidget {
             CircleButton.light(
               icon: Icons.arrow_back_rounded,
               tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-              onPressed: () => Navigator.of(context).maybePop(),
+              onPressed: onBack ?? () => Navigator.of(context).maybePop(),
             ),
             const SizedBox(width: 10),
           ],
@@ -96,7 +104,7 @@ class SpacePage extends StatelessWidget {
       ],
     );
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    final page = AnnotatedRegion<SystemUiOverlayStyle>(
       // Status bar icons contrast with the ground in either theme.
       value:
           (Theme.of(context).brightness == Brightness.dark
@@ -114,6 +122,14 @@ class SpacePage extends StatelessWidget {
               ),
         bottomNavigationBar: bottom,
       ),
+    );
+    if (onBack == null) return page;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) onBack();
+      },
+      child: page,
     );
   }
 }

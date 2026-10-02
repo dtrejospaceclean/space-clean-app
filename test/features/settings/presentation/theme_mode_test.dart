@@ -25,7 +25,8 @@ void main() {
     await tester.pumpAndSettle();
     // Me says what's in effect without opening Settings.
     await revealBelow(tester, find.text('English · System theme'));
-    await openSettings(tester);
+    await tester.tap(find.text('Language and appearance'));
+    await tester.pumpAndSettle();
     expect(find.text('Appearance'), findsOneWidget);
     // "System" is the checked option of its group, for screen readers too.
     expect(

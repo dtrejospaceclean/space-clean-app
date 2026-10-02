@@ -202,7 +202,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabAccounts => 'Accounts';
 
   @override
-  String get tabProfile => 'Me';
+  String unreadNotifications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread notifications',
+      one: '1 unread notification',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get todayTitle => 'Today';
