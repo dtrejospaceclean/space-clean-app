@@ -63,8 +63,8 @@ Finder picker(String label) => find.descendant(
   matching: find.byType(InkWell),
 );
 
-/// The pill for [action] under the area [module] on the access list.
-Finder pill(String module, String action) => find.descendant(
+/// The switch row for [action] under the area [module] on the access list.
+Finder toggle(String module, String action) => find.descendant(
   of: find.ancestor(of: find.text(module), matching: find.byType(Column)).first,
   matching: find.text(action),
 );
@@ -82,6 +82,9 @@ void main() {
     expect(find.text('marco@example.com'), findsOneWidget);
     expect(find.text('Custom access'), findsOneWidget);
     expect(find.byTooltip('Edit access'), findsNothing);
+    // Read-only access shows marks, not switches that look pressable.
+    expect(find.byType(SwitchRow), findsWidgets);
+    expect(find.byType(SpaceSwitch), findsNothing);
     await revealBelow(tester, find.text('Only owners can change the team.'));
     expect(find.text('Remove from team'), findsNothing);
     expect(team.writes, isEmpty);
@@ -125,8 +128,8 @@ void main() {
 
     await tester.tap(find.byTooltip('Edit access'));
     await tester.pumpAndSettle();
-    await revealBelow(tester, pill('Jobs', 'Assign'));
-    await tester.tap(pill('Jobs', 'Assign'));
+    await revealBelow(tester, toggle('Jobs', 'Assign'));
+    await tester.tap(toggle('Jobs', 'Assign'));
     await tester.pumpAndSettle();
     // Back to the supervisor defaults.
     expect(find.text('Reset to the role\'s defaults'), findsNothing);
@@ -145,9 +148,21 @@ void main() {
     await tester.tap(find.byTooltip('Edit access'));
     await tester.pumpAndSettle();
 
-    await revealBelow(tester, pill('Jobs', 'View'));
-    await tester.tap(pill('Jobs', 'View'));
+    await revealBelow(tester, toggle('Jobs', 'View'));
+    await tester.tap(toggle('Jobs', 'View'));
     await tester.pumpAndSettle();
+    // The rest of the area's switches turned off with it.
+    for (final action in ['View', 'Edit', 'Assign']) {
+      expect(
+        tester.getSemantics(
+          find.ancestor(
+            of: toggle('Jobs', action),
+            matching: find.byType(SwitchRow),
+          ),
+        ),
+        isSemantics(hasToggledState: true, isToggled: false),
+      );
+    }
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 

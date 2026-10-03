@@ -18,4 +18,5 @@ export 'widgets/pickers.dart';
 export 'widgets/pill_toggle.dart';
 export 'widgets/progress_bar.dart';
 export 'widgets/space_page.dart';
+export 'widgets/switch.dart';
 export 'widgets/text_blocks.dart';

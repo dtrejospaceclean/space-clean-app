@@ -341,11 +341,9 @@ class _AccessEditorState extends ConsumerState<_AccessEditor> {
                 AccessList(
                   catalog: catalog,
                   granted: _granted,
-                  onToggle: _saving
-                      ? null
-                      : (p) => setState(
-                          () => _granted = catalog.toggled(_granted, p),
-                        ),
+                  enabled: !_saving,
+                  onToggle: (p) =>
+                      setState(() => _granted = catalog.toggled(_granted, p)),
                 ),
                 if (!isDefault)
                   Align(
