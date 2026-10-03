@@ -43,7 +43,7 @@ final canManageTeamProvider = Provider<bool>(
 
 /// Active users to add to a team. Only owners manage teams, and owners can
 /// list users.
-final activeUsersProvider = FutureProvider<List<ManagedUser>>(
+final activeUsersProvider = FutureProvider.autoDispose<List<ManagedUser>>(
   (ref) => ref.watch(getUsersProvider)(const UserQuery()),
 );
 

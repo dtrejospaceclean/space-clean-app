@@ -80,7 +80,9 @@ final seesAllAccountsProvider = Provider<bool>((ref) {
 
 /// Active users to pick an account's manager, supervisor and salesperson
 /// from. `null` when the signed-in user can't list users.
-final assignableUsersProvider = FutureProvider<List<ManagedUser>?>((ref) {
+final assignableUsersProvider = FutureProvider.autoDispose<List<ManagedUser>?>((
+  ref,
+) {
   final user = _signedIn(ref);
   if (user == null || !UserAdminPolicy.canView(user)) return null;
   return ref.watch(getUsersProvider)(const UserQuery());
