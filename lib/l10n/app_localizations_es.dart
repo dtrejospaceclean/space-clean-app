@@ -697,6 +697,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get salespersonLabel => 'Vendedor';
 
   @override
+  String get assigneesNoAccess =>
+      'Solo como referencia. Para dar acceso a esta cuenta, agrega a la persona en Equipo.';
+
+  @override
   String get assigneesReadOnly =>
       'Solo los propietarios y gerentes de cuenta pueden cambiar a los responsables.';
 

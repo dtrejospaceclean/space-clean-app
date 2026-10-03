@@ -432,11 +432,17 @@ class _AccountFormState extends ConsumerState<_AccountForm> {
                   ),
                   _text(l10n.billingZipLabel, _zip, 'billingZip'),
                 ]),
-                FormSection(l10n.sectionPeopleInCharge, [
-                  assignee(_Slot.accountManager, l10n.roleAccountManager),
-                  assignee(_Slot.supervisor, l10n.roleSupervisor),
-                  assignee(_Slot.salesperson, l10n.salespersonLabel),
-                ], footer: cannotAssign ? l10n.assigneesReadOnly : null),
+                FormSection(
+                  l10n.sectionPeopleInCharge,
+                  [
+                    assignee(_Slot.accountManager, l10n.roleAccountManager),
+                    assignee(_Slot.supervisor, l10n.roleSupervisor),
+                    assignee(_Slot.salesperson, l10n.salespersonLabel),
+                  ],
+                  footer: cannotAssign
+                      ? '${l10n.assigneesNoAccess} ${l10n.assigneesReadOnly}'
+                      : l10n.assigneesNoAccess,
+                ),
               ],
             ),
           ),

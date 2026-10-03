@@ -1292,6 +1292,12 @@ abstract class AppLocalizations {
   /// **'Salesperson'**
   String get salespersonLabel;
 
+  /// No description provided for @assigneesNoAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'For reference only. To give someone access to this account, add them in Team.'**
+  String get assigneesNoAccess;
+
   /// No description provided for @assigneesReadOnly.
   ///
   /// In en, this message translates to:

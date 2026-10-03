@@ -199,6 +199,7 @@
   "billingStateLabel": "Estado o provincia",
   "billingZipLabel": "Código postal",
   "salespersonLabel": "Vendedor",
+  "assigneesNoAccess": "Solo como referencia. Para dar acceso a esta cuenta, agrega a la persona en Equipo.",
   "assigneesReadOnly": "Solo los propietarios y gerentes de cuenta pueden cambiar a los responsables.",
   "deleteAccount": "Eliminar cuenta",
   "deleteAccountConfirmBody": "Solo se pueden eliminar cuentas que nunca se usaron. Esto no se puede deshacer.",

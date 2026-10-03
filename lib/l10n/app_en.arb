@@ -321,6 +321,7 @@
   "billingStateLabel": "State",
   "billingZipLabel": "ZIP code",
   "salespersonLabel": "Salesperson",
+  "assigneesNoAccess": "For reference only. To give someone access to this account, add them in Team.",
   "assigneesReadOnly": "Only owners and account managers can change who's in charge.",
   "deleteAccount": "Delete account",
   "deleteAccountConfirmBody": "Only accounts that were never used can be deleted. This can't be undone.",

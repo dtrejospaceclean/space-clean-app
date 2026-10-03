@@ -691,6 +691,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salespersonLabel => 'Salesperson';
 
   @override
+  String get assigneesNoAccess =>
+      'For reference only. To give someone access to this account, add them in Team.';
+
+  @override
   String get assigneesReadOnly =>
       'Only owners and account managers can change who\'s in charge.';
 
