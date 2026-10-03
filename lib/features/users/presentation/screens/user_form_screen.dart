@@ -13,6 +13,7 @@ import '../../../../core/l10n/role_names.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../password_reset/domain/entities/password_policy.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../jobs/presentation/controllers/jobs_providers.dart';
 import '../../di/users_providers.dart';
 import '../../domain/entities/managed_user.dart';
 import '../../domain/entities/role_info.dart';
@@ -426,6 +427,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
                               final picked = await showAppDatePicker(
                                 context,
                                 initial: _hireDate,
+                                last: ref.read(clockProvider)(),
                               );
                               if (picked != null) {
                                 setState(() => _hireDate = picked);

@@ -73,15 +73,20 @@ Future<String?> showAppChoice(
 }
 
 /// Picks a calendar date: the Material date dialog on Android, a date wheel
-/// in a bottom popup on iOS. Returns `null` when dismissed.
+/// in a bottom popup on iOS. Returns `null` when dismissed. [last] is the
+/// latest selectable day (default: the end of next year).
 Future<DateTime?> showAppDatePicker(
   BuildContext context, {
   DateTime? initial,
+  DateTime? last,
 }) async {
   final now = DateTime.now();
   final first = DateTime(1970);
-  final last = DateTime(now.year + 1, 12, 31);
-  final start = initial ?? DateTime(now.year, now.month, now.day);
+  last = last == null
+      ? DateTime(now.year + 1, 12, 31)
+      : DateTime(last.year, last.month, last.day);
+  var start = initial ?? DateTime(now.year, now.month, now.day);
+  if (start.isAfter(last)) start = last;
   if (!useCupertino(context)) {
     return showDatePicker(
       context: context,
