@@ -33,7 +33,7 @@ class LocationFormScreen extends ConsumerWidget {
     }
     // Wait for the location before building fields.
     return switch (ref.watch(locationProvider((clientId, id)))) {
-      AsyncData(value: final location) => _LocationForm(
+      AsyncValue(value: final location?) => _LocationForm(
         key: ValueKey(id),
         clientId: clientId,
         title: l10n.editLocation,

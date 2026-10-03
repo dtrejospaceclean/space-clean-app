@@ -33,7 +33,7 @@ class ApproveProposalScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final key = (clientId, proposalId);
     return switch (ref.watch(proposalProvider(key))) {
-      AsyncData(value: final proposal) => _ApproveForm(
+      AsyncValue(value: final proposal?) => _ApproveForm(
         key: ValueKey(proposalId),
         clientId: clientId,
         proposal: proposal,

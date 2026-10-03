@@ -22,21 +22,23 @@ class LocationSearchController extends Notifier<String> {
 }
 
 /// An account's locations by name, filtered by its search.
-final locationsProvider = FutureProvider.family<List<Location>, String>(
-  (ref, clientId) => ref.watch(getLocationsProvider)(
-    LocationQuery(
-      clientId: clientId,
-      search: ref.watch(locationSearchProvider(clientId)),
-    ),
-  ),
-);
+final locationsProvider = FutureProvider.autoDispose
+    .family<List<Location>, String>(
+      (ref, clientId) => ref.watch(getLocationsProvider)(
+        LocationQuery(
+          clientId: clientId,
+          search: ref.watch(locationSearchProvider(clientId)),
+        ),
+      ),
+    );
 
 /// One location with its usage counts: `(clientId, locationId)`.
-final locationProvider = FutureProvider.family<Location, (String, String)>(
-  (ref, key) => ref.watch(getLocationProvider)(
-    LocationRef(clientId: key.$1, locationId: key.$2),
-  ),
-);
+final locationProvider = FutureProvider.autoDispose
+    .family<Location, (String, String)>(
+      (ref, key) => ref.watch(getLocationProvider)(
+        LocationRef(clientId: key.$1, locationId: key.$2),
+      ),
+    );
 
 /// Drops an account's cached locations after a save or delete.
 void invalidateLocations(WidgetRef ref, String clientId) => ref

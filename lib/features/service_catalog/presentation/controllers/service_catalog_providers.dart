@@ -32,48 +32,50 @@ class CatalogQueryController extends Notifier<CatalogQuery> {
   void search(String text) => state = state.copyWith(search: text);
 }
 
-final servicesProvider = FutureProvider<List<ServiceItem>>(
+final servicesProvider = FutureProvider.autoDispose<List<ServiceItem>>(
   (ref) => ref.watch(getServicesProvider)(
     ref.watch(catalogQueryProvider(CatalogList.services)),
   ),
 );
 
-final serviceProvider = FutureProvider.family<ServiceItem, String>(
+final serviceProvider = FutureProvider.autoDispose.family<ServiceItem, String>(
   (ref, id) => ref.watch(getServiceProvider)(id),
 );
 
-final categoriesProvider = FutureProvider<List<ServiceCategory>>(
+final categoriesProvider = FutureProvider.autoDispose<List<ServiceCategory>>(
   (ref) => ref.watch(getCategoriesProvider)(
     ref.watch(catalogQueryProvider(CatalogList.categories)),
   ),
 );
 
-final categoryProvider = FutureProvider.family<ServiceCategory, String>(
-  (ref, id) => ref.watch(getCategoryProvider)(id),
-);
+final categoryProvider = FutureProvider.autoDispose
+    .family<ServiceCategory, String>(
+      (ref, id) => ref.watch(getCategoryProvider)(id),
+    );
 
-final unitsProvider = FutureProvider<List<UnitOfMeasure>>(
+final unitsProvider = FutureProvider.autoDispose<List<UnitOfMeasure>>(
   (ref) => ref.watch(getUnitsProvider)(
     ref.watch(catalogQueryProvider(CatalogList.units)),
   ),
 );
 
-final unitProvider = FutureProvider.family<UnitOfMeasure, String>(
+final unitProvider = FutureProvider.autoDispose.family<UnitOfMeasure, String>(
   (ref, id) => ref.watch(getUnitProvider)(id),
 );
 
 /// Every active category, for pickers and the services filter.
-final activeCategoriesProvider = FutureProvider<List<ServiceCategory>>(
-  (ref) => ref.watch(getCategoriesProvider)(const CatalogQuery()),
-);
+final activeCategoriesProvider =
+    FutureProvider.autoDispose<List<ServiceCategory>>(
+      (ref) => ref.watch(getCategoriesProvider)(const CatalogQuery()),
+    );
 
 /// Every active unit, for the service form's picker.
-final activeUnitsProvider = FutureProvider<List<UnitOfMeasure>>(
+final activeUnitsProvider = FutureProvider.autoDispose<List<UnitOfMeasure>>(
   (ref) => ref.watch(getUnitsProvider)(const CatalogQuery()),
 );
 
 /// Every active service by name, for the pickers of proposals and scopes.
-final activeServicesProvider = FutureProvider<List<ServiceItem>>(
+final activeServicesProvider = FutureProvider.autoDispose<List<ServiceItem>>(
   (ref) => ref.watch(getServicesProvider)(const CatalogQuery()),
 );
 

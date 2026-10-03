@@ -27,7 +27,7 @@ class ServiceFormScreen extends ConsumerWidget {
 
     final title = l10n.editServiceTitle;
     return switch (ref.watch(serviceProvider(id))) {
-      AsyncData(:final value) => _ServiceForm(
+      AsyncValue(:final value?) => _ServiceForm(
         key: ValueKey(id),
         title: title,
         initial: value,
@@ -211,6 +211,8 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
         failure.messageKey != _categoryGone &&
         failure.messageKey != _unitGone;
     final noUnits = ref.watch(activeUnitsProvider).value?.isEmpty ?? false;
+    // Keeps the category picker's list loaded while the form is open.
+    ref.watch(activeCategoriesProvider);
 
     return SpacePage(
       title: widget.title,

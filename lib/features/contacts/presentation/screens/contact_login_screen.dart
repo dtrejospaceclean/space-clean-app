@@ -31,7 +31,7 @@ class ContactLoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     return switch (ref.watch(contactProvider((clientId, contactId)))) {
-      AsyncData(value: final contact) => _LoginForm(contact: contact),
+      AsyncValue(value: final contact?) => _LoginForm(contact: contact),
       final other => SpacePage(
         title: l10n.giveLogin,
         slivers: [

@@ -32,14 +32,14 @@ class UserQueryController extends Notifier<UserQuery> {
   void search(String text) => state = state.copyWith(search: text);
 }
 
-final usersProvider = FutureProvider<List<ManagedUser>>(
+final usersProvider = FutureProvider.autoDispose<List<ManagedUser>>(
   (ref) => ref.watch(getUsersProvider)(ref.watch(userQueryProvider)),
 );
 
-final userProvider = FutureProvider.family<ManagedUser, String>(
+final userProvider = FutureProvider.autoDispose.family<ManagedUser, String>(
   (ref, id) => ref.watch(getUserProvider)(id),
 );
 
-final rolesProvider = FutureProvider<List<RoleInfo>>(
+final rolesProvider = FutureProvider.autoDispose<List<RoleInfo>>(
   (ref) => ref.watch(getRolesProvider)(const NoParams()),
 );

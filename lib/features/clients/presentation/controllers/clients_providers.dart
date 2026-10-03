@@ -11,7 +11,7 @@ import '../../domain/entities/client.dart';
 import '../../domain/usecases/manage_clients.dart';
 
 /// The signed-in user's accounts. Refresh with `ref.invalidate`.
-final myClientsProvider = FutureProvider<List<Client>>((ref) {
+final myClientsProvider = FutureProvider.autoDispose<List<Client>>((ref) {
   // Reload when the session changes (sign-out, another user signs in).
   ref.watch(authControllerProvider.select((s) => s.value));
   return ref.watch(getMyClientsProvider)(const NoParams());
@@ -35,7 +35,9 @@ class AccountSearchController extends Notifier<String> {
 
 /// What the Accounts tab lists: every account, or the server's matches for
 /// the search text.
-final accountsListProvider = FutureProvider<List<Client>>((ref) async {
+final accountsListProvider = FutureProvider.autoDispose<List<Client>>((
+  ref,
+) async {
   final search = ref.watch(accountSearchProvider);
   // Also re-runs the search whenever the full list reloads (pull to
   // refresh, an account created, edited or deleted).
@@ -45,7 +47,7 @@ final accountsListProvider = FutureProvider<List<Client>>((ref) async {
 });
 
 /// One account from the list, by id.
-final clientByIdProvider = FutureProvider.family<Client?, String>((
+final clientByIdProvider = FutureProvider.autoDispose.family<Client?, String>((
   ref,
   clientId,
 ) async {
@@ -57,7 +59,7 @@ final clientByIdProvider = FutureProvider.family<Client?, String>((
 });
 
 /// One account with all its details (`GET /clients/:id`, needs `info.view`).
-final clientDetailProvider = FutureProvider.family<Client, String>(
+final clientDetailProvider = FutureProvider.autoDispose.family<Client, String>(
   (ref, clientId) => ref.watch(getClientProvider)(clientId),
 );
 

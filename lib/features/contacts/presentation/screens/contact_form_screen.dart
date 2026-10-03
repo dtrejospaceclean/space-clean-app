@@ -30,7 +30,7 @@ class ContactFormScreen extends ConsumerWidget {
     }
     // Wait for the contact before building fields.
     return switch (ref.watch(contactProvider((clientId, id)))) {
-      AsyncData(value: final contact) => _ContactForm(
+      AsyncValue(value: final contact?) => _ContactForm(
         key: ValueKey(id),
         clientId: clientId,
         title: l10n.editContact,

@@ -51,7 +51,7 @@ class ProposalFormScreen extends ConsumerWidget {
     }
     // Wait for the version before building fields.
     return switch (ref.watch(proposalProvider((clientId, id)))) {
-      AsyncData(value: final proposal) => _ProposalForm(
+      AsyncValue(value: final proposal?) => _ProposalForm(
         key: ValueKey(id),
         clientId: clientId,
         mode: mode,

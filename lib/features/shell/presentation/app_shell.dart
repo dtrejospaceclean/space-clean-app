@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/design/design.dart';
+import '../../../core/refresh/live_data.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../access/domain/entities/account_access.dart';
 import '../../access/presentation/controllers/account_access_provider.dart';
@@ -208,7 +209,7 @@ class AppShell extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: context.colors.ground,
-      body: navigationShell,
+      body: RefreshOnReturn(child: navigationShell),
       bottomNavigationBar: ListenableBuilder(
         // Rebuilds on every navigation, so "+" follows the page.
         listenable: router.routerDelegate,

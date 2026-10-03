@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sp_cln_app/app.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
+import 'package:sp_cln_app/core/refresh/live_data.dart';
 import 'package:sp_cln_app/core/storage/preferences.dart';
 import 'package:sp_cln_app/features/notifications/di/notifications_providers.dart';
 import 'package:sp_cln_app/features/notifications/domain/repositories/notifications_repository.dart';
@@ -124,9 +125,14 @@ class FakeUsersRepository implements UsersRepository {
   /// When set, searches wait for it (a slow server).
   Completer<void>? searchGate;
 
+  /// When set, loading one user fails with it.
+  Failure? getUserError;
+
   @override
-  Future<ManagedUser> getUser(String id) async =>
-      users.firstWhere((u) => u.id == id);
+  Future<ManagedUser> getUser(String id) async {
+    if (getUserError case final error?) throw error;
+    return users.firstWhere((u) => u.id == id);
+  }
 
   @override
   Future<ManagedUser> createUser(UserDraft draft) async {
@@ -1291,6 +1297,7 @@ Future<SharedPreferences> pumpApp(
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,
+      observers: const [LiveDataObserver()],
       child: const App(),
     ),
   );

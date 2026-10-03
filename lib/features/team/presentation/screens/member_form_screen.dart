@@ -234,7 +234,7 @@ class MemberAccessScreen extends ConsumerWidget {
       ref.watch(memberProvider((clientId, userId))),
       ref.watch(permissionCatalogProvider),
     )) {
-      AsyncData(value: (final member, final catalog)) => _AccessEditor(
+      AsyncValue(value: (final member, final catalog)?) => _AccessEditor(
         key: ValueKey(userId),
         member: member,
         catalog: catalog,

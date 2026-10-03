@@ -42,8 +42,8 @@ class UserFormScreen extends ConsumerWidget {
 
     // Wait for the roles (and the user when editing) before building fields.
     final ready = switch ((roles, user)) {
-      (AsyncData(value: final r), null) => (r, null),
-      (AsyncData(value: final r), AsyncData(value: final u)) => (r, u),
+      (AsyncValue(value: final r?), null) => (r, null),
+      (AsyncValue(value: final r?), AsyncValue(value: final u?)) => (r, u),
       _ => null,
     };
     if (ready == null) {

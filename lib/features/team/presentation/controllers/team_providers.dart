@@ -11,25 +11,23 @@ import '../../domain/usecases/team_usecases.dart';
 
 /// An account's members by name. Later pickers (jobs, complaints, tasks)
 /// read this too. Refresh with `ref.invalidate` after any change.
-final membersProvider = FutureProvider.family<List<Member>, String>(
+final membersProvider = FutureProvider.autoDispose.family<List<Member>, String>(
   (ref, clientId) => ref.watch(getMembersProvider)(clientId),
 );
 
 /// One member, read from the account's list: `(clientId, userId)`.
-final memberProvider = FutureProvider.family<Member, (String, String)>((
-  ref,
-  key,
-) async {
-  final (clientId, userId) = key;
-  final members = await ref.watch(membersProvider(clientId).future);
-  for (final member in members) {
-    if (member.userId == userId) return member;
-  }
-  throw const ServerFailure('members.not_found', statusCode: 404);
-});
+final memberProvider = FutureProvider.autoDispose
+    .family<Member, (String, String)>((ref, key) async {
+      final (clientId, userId) = key;
+      final members = await ref.watch(membersProvider(clientId).future);
+      for (final member in members) {
+        if (member.userId == userId) return member;
+      }
+      throw const ServerFailure('members.not_found', statusCode: 404);
+    });
 
 /// Every permission and each role's defaults. Static on the server.
-final permissionCatalogProvider = FutureProvider<PermissionCatalog>(
+final permissionCatalogProvider = FutureProvider.autoDispose<PermissionCatalog>(
   (ref) => ref.watch(getPermissionCatalogProvider)(const NoParams()),
 );
 

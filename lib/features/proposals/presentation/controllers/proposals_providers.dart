@@ -5,16 +5,18 @@ import '../../domain/entities/proposal.dart';
 import '../../domain/usecases/proposal_usecases.dart';
 
 /// An account's negotiations (current versions), newest first.
-final proposalsProvider = FutureProvider.family<List<Proposal>, String>(
-  (ref, clientId) => ref.watch(getProposalsProvider)(clientId),
-);
+final proposalsProvider = FutureProvider.autoDispose
+    .family<List<Proposal>, String>(
+      (ref, clientId) => ref.watch(getProposalsProvider)(clientId),
+    );
 
 /// One version: `(clientId, proposalId)`.
-final proposalProvider = FutureProvider.family<Proposal, (String, String)>(
-  (ref, key) => ref.watch(getProposalProvider)(
-    ProposalRef(clientId: key.$1, proposalId: key.$2),
-  ),
-);
+final proposalProvider = FutureProvider.autoDispose
+    .family<Proposal, (String, String)>(
+      (ref, key) => ref.watch(getProposalProvider)(
+        ProposalRef(clientId: key.$1, proposalId: key.$2),
+      ),
+    );
 
 /// Every version of a negotiation, newest first: `(clientId, proposalId)`.
 final proposalVersionsProvider =

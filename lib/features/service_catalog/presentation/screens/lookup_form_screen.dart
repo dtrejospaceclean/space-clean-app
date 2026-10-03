@@ -35,23 +35,28 @@ class LookupFormScreen extends ConsumerWidget {
     };
     if (id == null) return _LookupForm(kind: kind, title: newTitle);
 
-    final AsyncValue<_Lookup> value = switch (kind) {
-      LookupKind.category =>
-        ref.watch(categoryProvider(id)).whenData(_Lookup.category),
-      LookupKind.unit => ref.watch(unitProvider(id)).whenData(_Lookup.unit),
+    final AsyncValue<Object> value = switch (kind) {
+      LookupKind.category => ref.watch(categoryProvider(id)),
+      LookupKind.unit => ref.watch(unitProvider(id)),
     };
-    return switch (value) {
-      AsyncData(value: final lookup) => _LookupForm(
+    // A refresh keeps the last value, so the form stays while it reloads.
+    final lookup = switch (value.value) {
+      final ServiceCategory c => _Lookup.category(c),
+      final UnitOfMeasure u => _Lookup.unit(u),
+      _ => null,
+    };
+    return switch (lookup) {
+      final lookup? => _LookupForm(
         key: ValueKey(id),
         kind: kind,
         title: editTitle,
         initial: lookup,
       ),
-      final other => SpacePage(
+      null => SpacePage(
         title: editTitle,
         slivers: [
-          AsyncSlivers<_Lookup>(
-            value: other,
+          AsyncSlivers<Object>(
+            value: value,
             onRetry: () => kind == LookupKind.category
                 ? ref.invalidate(categoryProvider(id))
                 : ref.invalidate(unitProvider(id)),

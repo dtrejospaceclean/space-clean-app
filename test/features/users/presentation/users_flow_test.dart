@@ -24,6 +24,20 @@ Future<void> openUsers(
   await tester.pumpAndSettle();
 }
 
+/// The app goes to the background and comes back.
+void returnToApp(WidgetTester tester) {
+  for (final state in [
+    AppLifecycleState.inactive,
+    AppLifecycleState.hidden,
+    AppLifecycleState.paused,
+    AppLifecycleState.hidden,
+    AppLifecycleState.inactive,
+    AppLifecycleState.resumed,
+  ]) {
+    tester.binding.handleAppLifecycleStateChanged(state);
+  }
+}
+
 void main() {
   testWidgets('people without an admin role see no Administration', (
     tester,
@@ -165,6 +179,48 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Another user already has this email.'), findsOneWidget);
+  });
+
+  testWidgets(
+    'back from the background, the list shows users added elsewhere',
+    (tester) async {
+      final users = FakeUsersRepository();
+      await openUsers(tester, owner, users: users);
+      expect(find.text('Rosa Lima'), findsNothing);
+
+      users.users.add(
+        const ManagedUser(
+          id: 'u3',
+          email: 'rosa@example.com',
+          name: 'Rosa Lima',
+          userType: UserType.internal,
+          isActive: true,
+          roles: [],
+        ),
+      );
+      returnToApp(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Rosa Lima'), findsOneWidget);
+    },
+  );
+
+  testWidgets('a form keeps what was typed when its reload fails', (
+    tester,
+  ) async {
+    final users = FakeUsersRepository();
+    await openUsers(tester, owner, users: users);
+    await tester.tap(find.text('Ana Pérez'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Edit user'));
+    await tester.pumpAndSettle();
+    await tester.enterText(field('Name'), 'Ana María Pérez');
+
+    users.getUserError = const NetworkFailure();
+    returnToApp(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ana María Pérez'), findsOneWidget);
   });
 
   testWidgets('an owner deactivates a user after confirming', (tester) async {
