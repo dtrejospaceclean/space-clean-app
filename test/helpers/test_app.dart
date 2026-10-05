@@ -22,6 +22,9 @@ import 'package:sp_cln_app/features/clients/domain/repositories/clients_reposito
 import 'package:sp_cln_app/features/contacts/di/contacts_providers.dart';
 import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/contacts/domain/repositories/contacts_repository.dart';
+import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
+import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
+import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repository.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dart';
@@ -594,6 +597,150 @@ class FakeLocationsRepository implements LocationsRepository {
     }
     writes.add('delete:$locationId');
     locations = locations.where((l) => l.id != locationId).toList();
+  }
+}
+
+/// In-memory contracts with the API's rules: a cancelled contract is
+/// read-only, signing happens once and activates, only an untouched draft
+/// is deleted. Records every write and draft.
+class FakeContractsRepository implements ContractsRepository {
+  FakeContractsRepository([List<Contract> contracts = const []])
+    : contracts = [...contracts];
+
+  List<Contract> contracts;
+  final writes = <String>[];
+  final drafts = <ContractDraft>[];
+
+  @override
+  Future<List<Contract>> getContracts(String clientId) async =>
+      contracts.where((c) => c.clientId == clientId).toList();
+
+  @override
+  Future<Contract> getContract(String clientId, String contractId) async {
+    for (final c in contracts) {
+      if (c.id == contractId) return c;
+    }
+    throw const ServerFailure('contracts.not_found', statusCode: 404);
+  }
+
+  Contract _with(
+    Contract c, {
+    ContractDraft? draft,
+    ContractStatus? status,
+    DateTime? signedDate,
+    String? signedByName,
+  }) => Contract(
+    id: c.id,
+    clientId: c.clientId,
+    proposalId: c.proposalId,
+    proposalVersion: c.proposalVersion,
+    contractValue: draft?.contractValue ?? c.contractValue,
+    startDate: draft?.startDate ?? c.startDate,
+    expirationDate: draft == null ? c.expirationDate : draft.expirationDate,
+    paymentTerms: draft == null
+        ? c.paymentTerms
+        : switch (draft.paymentTerms?.trim()) {
+            '' || null => null,
+            final t => t,
+          },
+    status: status ?? c.status,
+    autoRenew: draft?.autoRenew ?? c.autoRenew,
+    cancellationNoticeDays: draft == null
+        ? c.cancellationNoticeDays
+        : int.tryParse(draft.cancellationNoticeDays ?? ''),
+    signedByName: signedByName ?? c.signedByName,
+    signedDate: signedDate ?? c.signedDate,
+    scopeOfWorkCount: c.scopeOfWorkCount,
+    invoiceCount: c.invoiceCount,
+    daysUntilExpiration: c.daysUntilExpiration,
+    isExpiringSoon: c.isExpiringSoon,
+  );
+
+  void _replace(Contract next) =>
+      contracts = [for (final c in contracts) c.id == next.id ? next : c];
+
+  Future<Contract> _open(String clientId, String contractId) async {
+    final c = await getContract(clientId, contractId);
+    if (c.isCancelled) {
+      throw const ServerFailure('contracts.cancelled', statusCode: 409);
+    }
+    return c;
+  }
+
+  @override
+  Future<Contract> createContract(String clientId, ContractDraft draft) async {
+    writes.add('create:${draft.proposalId}');
+    drafts.add(draft);
+    final created = _with(
+      Contract(
+        id: 'k${contracts.length + 1}',
+        clientId: clientId,
+        proposalId: draft.proposalId,
+        contractValue: '0',
+        startDate: draft.startDate,
+        status: ContractStatus.draft,
+      ),
+      draft: draft,
+    );
+    contracts = [created, ...contracts];
+    return created;
+  }
+
+  @override
+  Future<Contract> updateContract(
+    String clientId,
+    String contractId,
+    ContractDraft draft,
+  ) async {
+    final c = await _open(clientId, contractId);
+    writes.add('update:$contractId');
+    drafts.add(draft);
+    final next = _with(c, draft: draft);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Contract> signContract(
+    String clientId,
+    String contractId, {
+    DateTime? signedDate,
+  }) async {
+    final c = await _open(clientId, contractId);
+    if (c.isSigned) {
+      throw const ServerFailure('contracts.already_signed', statusCode: 409);
+    }
+    writes.add('sign:$contractId:${signedDate?.toIso8601String()}');
+    final next = _with(
+      c,
+      status: ContractStatus.active,
+      signedDate: signedDate ?? DateTime(2026, 9, 23),
+      signedByName: 'Ana Pérez',
+    );
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Contract> cancelContract(String clientId, String contractId) async {
+    final c = await _open(clientId, contractId);
+    writes.add('cancel:$contractId');
+    final next = _with(c, status: ContractStatus.cancelled);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<void> deleteContract(String clientId, String contractId) async {
+    final c = await getContract(clientId, contractId);
+    if (c.status != ContractStatus.draft) {
+      throw const ServerFailure(
+        'contracts.only_drafts_deletable',
+        statusCode: 409,
+      );
+    }
+    writes.add('delete:$contractId');
+    contracts = contracts.where((k) => k.id != contractId).toList();
   }
 }
 
@@ -1244,6 +1391,7 @@ Future<SharedPreferences> pumpApp(
   LocationsRepository? locations,
   TeamRepository? team,
   ProposalsRepository? proposals,
+  ContractsRepository? contracts,
   NotificationsRepository? notifications,
   Map<String, Object> preferences = const {},
 }) async {
@@ -1288,6 +1436,9 @@ Future<SharedPreferences> pumpApp(
         teamRepositoryProvider.overrideWithValue(team ?? FakeTeamRepository()),
         proposalsRepositoryProvider.overrideWithValue(
           proposals ?? FakeProposalsRepository(),
+        ),
+        contractsRepositoryProvider.overrideWithValue(
+          contracts ?? FakeContractsRepository(),
         ),
         // None unread unless a test says so (the real one is a placeholder
         // count until the API has notifications).

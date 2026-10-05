@@ -10,6 +10,7 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
+import '../../../contracts/presentation/screens/contracts_screen.dart';
 import '../../../jobs/presentation/controllers/jobs_providers.dart';
 import '../../di/proposals_providers.dart';
 import '../../domain/entities/proposal.dart';
@@ -101,18 +102,16 @@ class _ProposalScreenState extends ConsumerState<ProposalScreen> {
     final key = (widget.clientId, widget.proposalId);
     final proposal = ref.watch(proposalProvider(key));
     final versions = ref.watch(proposalVersionsProvider(key)).value ?? [];
-    final canEdit =
-        ref
-            .watch(accountAccessProvider(widget.clientId))
-            .value
-            ?.can(Permissions.proposalEdit) ??
-        false;
+    final access = ref.watch(accountAccessProvider(widget.clientId)).value;
+    final canEdit = access?.can(Permissions.proposalEdit) ?? false;
+    final canContract = access?.can(Permissions.contractEdit) ?? false;
     final open = canEdit && (proposal.value?.isOpen ?? false);
     final now = ref.watch(clockProvider)();
     final today = DateTime(now.year, now.month, now.day);
     final here = GoRouterState.of(context).matchedLocation;
     // The list this version sits under, for its sibling versions.
     final list = here.substring(0, here.lastIndexOf('/'));
+    final account = list.substring(0, list.lastIndexOf('/'));
     Future<void> refresh() {
       ref.invalidate(proposalVersionsProvider(key));
       return ref.refresh(proposalProvider(key).future);
@@ -257,6 +256,19 @@ class _ProposalScreenState extends ConsumerState<ProposalScreen> {
                         child: Text(
                           l10n.approvedProposalNote,
                           style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    // What an approved proposal leads to.
+                    if (canContract && p.isApproved)
+                      PageBox(
+                        top: 24,
+                        child: PrimaryButton(
+                          label: l10n.createContract,
+                          icon: Icons.history_edu_outlined,
+                          onPressed: () => context.push(
+                            '$account/${ContractsScreen.route}/new'
+                            '?proposal=${p.id}',
+                          ),
                         ),
                       ),
                     // History, once there's more than this version.

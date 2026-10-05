@@ -1588,4 +1588,227 @@ class AppLocalizationsEs extends AppLocalizations {
   String proposalExpiredOn(String date) {
     return 'Venció el $date';
   }
+
+  @override
+  String get moduleContractsHint => 'Condiciones, firmas y renovaciones';
+
+  @override
+  String get noContractsYet => 'Aún no hay contratos';
+
+  @override
+  String get noContractsYetHint =>
+      'Crea uno con + o desde una propuesta aprobada.';
+
+  @override
+  String get contractsFilterLabel => 'Mostrar';
+
+  @override
+  String get contractsFilterAll => 'Todos';
+
+  @override
+  String contractsFilterExpiring(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Por vencer ($count)',
+      zero: 'Por vencer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noContractsExpiring => 'Nada por vencer';
+
+  @override
+  String get noContractsExpiringHint =>
+      'Ningún contrato activo vence en los próximos 30 días.';
+
+  @override
+  String contractFromProposal(int number) {
+    return 'De la versión $number de la propuesta';
+  }
+
+  @override
+  String contractFrom(String date) {
+    return 'Desde el $date';
+  }
+
+  @override
+  String get contractStatusDraft => 'Borrador';
+
+  @override
+  String get contractStatusActive => 'Activo';
+
+  @override
+  String get contractStatusExpired => 'Vencido';
+
+  @override
+  String get contractStatusCancelled => 'Cancelado';
+
+  @override
+  String get contractStatusUnknown => 'Otro estado';
+
+  @override
+  String get contractExpiringSoon => 'Por vencer';
+
+  @override
+  String get contractTitle => 'Contrato';
+
+  @override
+  String get newContractTitle => 'Nuevo contrato';
+
+  @override
+  String get editContract => 'Editar contrato';
+
+  @override
+  String get deleteContract => 'Eliminar contrato';
+
+  @override
+  String get keepContract => 'Conservarlo';
+
+  @override
+  String get deleteContractConfirmTitle => '¿Eliminar este borrador?';
+
+  @override
+  String get deleteContractConfirmBody =>
+      'Se eliminará el borrador del contrato. Esto no se puede deshacer.';
+
+  @override
+  String get cancelContract => 'Cancelar contrato';
+
+  @override
+  String get cancelContractConfirmTitle => '¿Cancelar este contrato?';
+
+  @override
+  String get cancelContractConfirmBody =>
+      'Queda en el historial de la cuenta, pero ya no se podrá editar ni firmar.';
+
+  @override
+  String get cancelledContractNotice =>
+      'Este contrato está cancelado. Se conserva como historial y no puede cambiar.';
+
+  @override
+  String get contractValueLabel => 'Valor del contrato';
+
+  @override
+  String get contractValueFromProposalHelp =>
+      'Parte del precio acordado de la propuesta.';
+
+  @override
+  String get contractProposalLabel => 'Propuesta';
+
+  @override
+  String get contractStartLabel => 'Fecha de inicio';
+
+  @override
+  String get contractExpirationLabel => 'Fecha de vencimiento';
+
+  @override
+  String get expirationBeforeStart =>
+      'Elige un día igual o posterior a la fecha de inicio.';
+
+  @override
+  String get noEndDate => 'Sin fecha de fin';
+
+  @override
+  String get sectionTerm => 'Vigencia';
+
+  @override
+  String get paymentTermsLabel => 'Condiciones de pago';
+
+  @override
+  String get paymentTermsHint => 'p. ej. Neto 30';
+
+  @override
+  String get autoRenewLabel => 'Se renueva automáticamente';
+
+  @override
+  String get autoRenewOn => 'Se renueva automáticamente';
+
+  @override
+  String get autoRenewOff => 'No se renueva automáticamente';
+
+  @override
+  String get cancellationNoticeLabel => 'Aviso de cancelación';
+
+  @override
+  String get cancellationNoticeHelp =>
+      'Días de aviso necesarios para cancelar.';
+
+  @override
+  String daysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count días',
+      one: '1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String contractDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Vence en $count días',
+      one: 'Vence mañana',
+      zero: 'Vence hoy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signatureLabel => 'Firma';
+
+  @override
+  String get signedOnLabel => 'Firmado el';
+
+  @override
+  String contractSignedBy(String name, String date) {
+    return 'Firmado por $name el $date';
+  }
+
+  @override
+  String contractSignedOn(String date) {
+    return 'Firmado el $date';
+  }
+
+  @override
+  String get contractNotSigned => 'Sin firmar';
+
+  @override
+  String get signContract => 'Firmar contrato';
+
+  @override
+  String get signContractHelp =>
+      'Al firmar quedas registrado como firmante y el contrato pasa a activo.';
+
+  @override
+  String get createContract => 'Crear contrato';
+
+  @override
+  String get contractsNotFound => 'Este contrato ya no existe.';
+
+  @override
+  String get contractsValueRequired => 'Ingresa el valor del contrato.';
+
+  @override
+  String get contractsProposalNotApproved =>
+      'Un contrato solo puede partir de una propuesta aprobada.';
+
+  @override
+  String get contractsAlreadySigned => 'Este contrato ya está firmado.';
+
+  @override
+  String get contractsCancelled =>
+      'Este contrato está cancelado y no puede cambiar.';
+
+  @override
+  String get contractsOnlyDraftsDeletable =>
+      'Solo se puede eliminar un contrato en borrador. Cancélalo en su lugar.';
+
+  @override
+  String get contractsHasRelatedRecords =>
+      'Hay alcances de trabajo o facturas que usan este contrato, así que no se puede eliminar.';
 }

@@ -119,10 +119,11 @@ void main() {
       'Account details',
       'Contacts',
     ]);
-    // The hidden Team module keeps its place at the end.
+    // Hidden modules keep their places: Contracts third, Team at the end.
     expect(prefs.getStringList('accounts.module_order'), [
       'locations',
       'jobs',
+      'contracts',
       'proposals',
       'info',
       'contacts',

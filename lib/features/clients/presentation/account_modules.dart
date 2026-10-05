@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../access/domain/entities/account_access.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
+import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../team/presentation/screens/team_screen.dart';
@@ -56,6 +57,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleProposals,
     description: (l10n) => l10n.moduleProposalsHint,
     route: ProposalsScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.work,
+    permission: Permissions.contractView,
+    icon: Icons.history_edu_outlined,
+    label: (l10n) => l10n.moduleContracts,
+    description: (l10n) => l10n.moduleContractsHint,
+    route: ContractsScreen.route,
   ),
   AccountModule(
     section: AccountSection.account,

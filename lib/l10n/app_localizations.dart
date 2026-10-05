@@ -2815,6 +2815,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expired {date}'**
   String proposalExpiredOn(String date);
+
+  /// No description provided for @moduleContractsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms, signatures and renewals'**
+  String get moduleContractsHint;
+
+  /// No description provided for @noContractsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No contracts yet'**
+  String get noContractsYet;
+
+  /// No description provided for @noContractsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start one with +, or from an approved proposal.'**
+  String get noContractsYetHint;
+
+  /// No description provided for @contractsFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get contractsFilterLabel;
+
+  /// No description provided for @contractsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get contractsFilterAll;
+
+  /// No description provided for @contractsFilterExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Expiring soon} other{Expiring soon ({count})}}'**
+  String contractsFilterExpiring(int count);
+
+  /// No description provided for @noContractsExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing expiring soon'**
+  String get noContractsExpiring;
+
+  /// No description provided for @noContractsExpiringHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No active contract ends in the next 30 days.'**
+  String get noContractsExpiringHint;
+
+  /// No description provided for @contractFromProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'From proposal version {number}'**
+  String contractFromProposal(int number);
+
+  /// No description provided for @contractFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {date}'**
+  String contractFrom(String date);
+
+  /// No description provided for @contractStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get contractStatusDraft;
+
+  /// No description provided for @contractStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get contractStatusActive;
+
+  /// No description provided for @contractStatusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get contractStatusExpired;
+
+  /// No description provided for @contractStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get contractStatusCancelled;
+
+  /// No description provided for @contractStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other status'**
+  String get contractStatusUnknown;
+
+  /// No description provided for @contractExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get contractExpiringSoon;
+
+  /// No description provided for @contractTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get contractTitle;
+
+  /// No description provided for @newContractTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New contract'**
+  String get newContractTitle;
+
+  /// No description provided for @editContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit contract'**
+  String get editContract;
+
+  /// No description provided for @deleteContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete contract'**
+  String get deleteContract;
+
+  /// No description provided for @keepContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepContract;
+
+  /// No description provided for @deleteContractConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this draft?'**
+  String get deleteContractConfirmTitle;
+
+  /// No description provided for @deleteContractConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The draft contract will be deleted. This can\'t be undone.'**
+  String get deleteContractConfirmBody;
+
+  /// No description provided for @cancelContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel contract'**
+  String get cancelContract;
+
+  /// No description provided for @cancelContractConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this contract?'**
+  String get cancelContractConfirmTitle;
+
+  /// No description provided for @cancelContractConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in the account\'s history, but it can\'t be edited or signed again.'**
+  String get cancelContractConfirmBody;
+
+  /// No description provided for @cancelledContractNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This contract is cancelled. It\'s kept as history and can\'t change.'**
+  String get cancelledContractNotice;
+
+  /// No description provided for @contractValueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract value'**
+  String get contractValueLabel;
+
+  /// No description provided for @contractValueFromProposalHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts from the proposal\'s agreed price.'**
+  String get contractValueFromProposalHelp;
+
+  /// No description provided for @contractProposalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal'**
+  String get contractProposalLabel;
+
+  /// No description provided for @contractStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get contractStartLabel;
+
+  /// No description provided for @contractExpirationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration date'**
+  String get contractExpirationLabel;
+
+  /// No description provided for @expirationBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a day on or after the start date.'**
+  String get expirationBeforeStart;
+
+  /// No description provided for @noEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No end date'**
+  String get noEndDate;
+
+  /// No description provided for @sectionTerm.
+  ///
+  /// In en, this message translates to:
+  /// **'Term'**
+  String get sectionTerm;
+
+  /// No description provided for @paymentTermsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment terms'**
+  String get paymentTermsLabel;
+
+  /// No description provided for @paymentTermsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Net 30'**
+  String get paymentTermsHint;
+
+  /// No description provided for @autoRenewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews automatically'**
+  String get autoRenewLabel;
+
+  /// No description provided for @autoRenewOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews automatically'**
+  String get autoRenewOn;
+
+  /// No description provided for @autoRenewOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Doesn\'t renew automatically'**
+  String get autoRenewOff;
+
+  /// No description provided for @cancellationNoticeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancellation notice'**
+  String get cancellationNoticeLabel;
+
+  /// No description provided for @cancellationNoticeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of notice needed to cancel.'**
+  String get cancellationNoticeHelp;
+
+  /// No description provided for @daysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String daysCount(int count);
+
+  /// No description provided for @contractDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Expires today} =1{Expires tomorrow} other{Expires in {count} days}}'**
+  String contractDaysLeft(int count);
+
+  /// No description provided for @signatureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature'**
+  String get signatureLabel;
+
+  /// No description provided for @signedOnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed on'**
+  String get signedOnLabel;
+
+  /// No description provided for @contractSignedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed by {name} on {date}'**
+  String contractSignedBy(String name, String date);
+
+  /// No description provided for @contractSignedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed on {date}'**
+  String contractSignedOn(String date);
+
+  /// No description provided for @contractNotSigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Not signed yet'**
+  String get contractNotSigned;
+
+  /// No description provided for @signContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign contract'**
+  String get signContract;
+
+  /// No description provided for @signContractHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing records you as the signer and makes the contract active.'**
+  String get signContractHelp;
+
+  /// No description provided for @createContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Create contract'**
+  String get createContract;
+
+  /// No description provided for @contractsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This contract no longer exists.'**
+  String get contractsNotFound;
+
+  /// No description provided for @contractsValueRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the contract value.'**
+  String get contractsValueRequired;
+
+  /// No description provided for @contractsProposalNotApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'A contract can only come from an approved proposal.'**
+  String get contractsProposalNotApproved;
+
+  /// No description provided for @contractsAlreadySigned.
+  ///
+  /// In en, this message translates to:
+  /// **'This contract is already signed.'**
+  String get contractsAlreadySigned;
+
+  /// No description provided for @contractsCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'This contract is cancelled and can\'t change.'**
+  String get contractsCancelled;
+
+  /// No description provided for @contractsOnlyDraftsDeletable.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a draft contract can be deleted. Cancel it instead.'**
+  String get contractsOnlyDraftsDeletable;
+
+  /// No description provided for @contractsHasRelatedRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Scopes of work or invoices use this contract, so it can\'t be deleted.'**
+  String get contractsHasRelatedRecords;
 }
 
 class _AppLocalizationsDelegate

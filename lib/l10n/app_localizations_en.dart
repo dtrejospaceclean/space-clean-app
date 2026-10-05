@@ -1574,4 +1574,225 @@ class AppLocalizationsEn extends AppLocalizations {
   String proposalExpiredOn(String date) {
     return 'Expired $date';
   }
+
+  @override
+  String get moduleContractsHint => 'Terms, signatures and renewals';
+
+  @override
+  String get noContractsYet => 'No contracts yet';
+
+  @override
+  String get noContractsYetHint =>
+      'Start one with +, or from an approved proposal.';
+
+  @override
+  String get contractsFilterLabel => 'Show';
+
+  @override
+  String get contractsFilterAll => 'All';
+
+  @override
+  String contractsFilterExpiring(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Expiring soon ($count)',
+      zero: 'Expiring soon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noContractsExpiring => 'Nothing expiring soon';
+
+  @override
+  String get noContractsExpiringHint =>
+      'No active contract ends in the next 30 days.';
+
+  @override
+  String contractFromProposal(int number) {
+    return 'From proposal version $number';
+  }
+
+  @override
+  String contractFrom(String date) {
+    return 'From $date';
+  }
+
+  @override
+  String get contractStatusDraft => 'Draft';
+
+  @override
+  String get contractStatusActive => 'Active';
+
+  @override
+  String get contractStatusExpired => 'Expired';
+
+  @override
+  String get contractStatusCancelled => 'Cancelled';
+
+  @override
+  String get contractStatusUnknown => 'Other status';
+
+  @override
+  String get contractExpiringSoon => 'Expiring soon';
+
+  @override
+  String get contractTitle => 'Contract';
+
+  @override
+  String get newContractTitle => 'New contract';
+
+  @override
+  String get editContract => 'Edit contract';
+
+  @override
+  String get deleteContract => 'Delete contract';
+
+  @override
+  String get keepContract => 'Keep it';
+
+  @override
+  String get deleteContractConfirmTitle => 'Delete this draft?';
+
+  @override
+  String get deleteContractConfirmBody =>
+      'The draft contract will be deleted. This can\'t be undone.';
+
+  @override
+  String get cancelContract => 'Cancel contract';
+
+  @override
+  String get cancelContractConfirmTitle => 'Cancel this contract?';
+
+  @override
+  String get cancelContractConfirmBody =>
+      'It stays in the account\'s history, but it can\'t be edited or signed again.';
+
+  @override
+  String get cancelledContractNotice =>
+      'This contract is cancelled. It\'s kept as history and can\'t change.';
+
+  @override
+  String get contractValueLabel => 'Contract value';
+
+  @override
+  String get contractValueFromProposalHelp =>
+      'Starts from the proposal\'s agreed price.';
+
+  @override
+  String get contractProposalLabel => 'Proposal';
+
+  @override
+  String get contractStartLabel => 'Start date';
+
+  @override
+  String get contractExpirationLabel => 'Expiration date';
+
+  @override
+  String get expirationBeforeStart => 'Pick a day on or after the start date.';
+
+  @override
+  String get noEndDate => 'No end date';
+
+  @override
+  String get sectionTerm => 'Term';
+
+  @override
+  String get paymentTermsLabel => 'Payment terms';
+
+  @override
+  String get paymentTermsHint => 'e.g. Net 30';
+
+  @override
+  String get autoRenewLabel => 'Renews automatically';
+
+  @override
+  String get autoRenewOn => 'Renews automatically';
+
+  @override
+  String get autoRenewOff => 'Doesn\'t renew automatically';
+
+  @override
+  String get cancellationNoticeLabel => 'Cancellation notice';
+
+  @override
+  String get cancellationNoticeHelp => 'Days of notice needed to cancel.';
+
+  @override
+  String daysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String contractDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Expires in $count days',
+      one: 'Expires tomorrow',
+      zero: 'Expires today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get signatureLabel => 'Signature';
+
+  @override
+  String get signedOnLabel => 'Signed on';
+
+  @override
+  String contractSignedBy(String name, String date) {
+    return 'Signed by $name on $date';
+  }
+
+  @override
+  String contractSignedOn(String date) {
+    return 'Signed on $date';
+  }
+
+  @override
+  String get contractNotSigned => 'Not signed yet';
+
+  @override
+  String get signContract => 'Sign contract';
+
+  @override
+  String get signContractHelp =>
+      'Signing records you as the signer and makes the contract active.';
+
+  @override
+  String get createContract => 'Create contract';
+
+  @override
+  String get contractsNotFound => 'This contract no longer exists.';
+
+  @override
+  String get contractsValueRequired => 'Enter the contract value.';
+
+  @override
+  String get contractsProposalNotApproved =>
+      'A contract can only come from an approved proposal.';
+
+  @override
+  String get contractsAlreadySigned => 'This contract is already signed.';
+
+  @override
+  String get contractsCancelled =>
+      'This contract is cancelled and can\'t change.';
+
+  @override
+  String get contractsOnlyDraftsDeletable =>
+      'Only a draft contract can be deleted. Cancel it instead.';
+
+  @override
+  String get contractsHasRelatedRecords =>
+      'Scopes of work or invoices use this contract, so it can\'t be deleted.';
 }

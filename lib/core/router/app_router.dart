@@ -13,6 +13,10 @@ import '../../features/contacts/presentation/screens/contact_form_screen.dart';
 import '../../features/contacts/presentation/screens/contact_login_screen.dart';
 import '../../features/contacts/presentation/screens/contact_screen.dart';
 import '../../features/contacts/presentation/screens/contacts_screen.dart';
+import '../../features/contracts/presentation/screens/contract_form_screen.dart';
+import '../../features/contracts/presentation/screens/contract_screen.dart';
+import '../../features/contracts/presentation/screens/contracts_screen.dart';
+import '../../features/contracts/presentation/screens/sign_contract_screen.dart';
 import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
 import '../../features/locations/presentation/screens/location_form_screen.dart';
 import '../../features/locations/presentation/screens/location_screen.dart';
@@ -214,6 +218,48 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   clientId: state.pathParameters['clientId']!,
                                   proposalId:
                                       state.pathParameters['proposalId']!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SlideRoute(
+                        path: ContractsScreen.route,
+                        builder: (_, state) => ContractsScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':contractId' so "new" isn't read as an id.
+                          // `?proposal=` starts it from an approved proposal.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => ContractFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              proposalId: state.uri.queryParameters['proposal'],
+                            ),
+                          ),
+                          SlideRoute(
+                            path: ':contractId',
+                            builder: (_, state) => ContractScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              contractId: state.pathParameters['contractId']!,
+                            ),
+                            routes: [
+                              SlideRoute(
+                                path: 'edit',
+                                builder: (_, state) => ContractFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  contractId:
+                                      state.pathParameters['contractId'],
+                                ),
+                              ),
+                              SlideRoute(
+                                path: 'sign',
+                                builder: (_, state) => SignContractScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  contractId:
+                                      state.pathParameters['contractId']!,
                                 ),
                               ),
                             ],

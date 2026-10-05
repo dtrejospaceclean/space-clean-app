@@ -744,5 +744,116 @@
         "type": "String"
       }
     }
-  }
+  },
+  "moduleContractsHint": "Terms, signatures and renewals",
+  "noContractsYet": "No contracts yet",
+  "noContractsYetHint": "Start one with +, or from an approved proposal.",
+  "contractsFilterLabel": "Show",
+  "contractsFilterAll": "All",
+  "contractsFilterExpiring": "{count, plural, =0{Expiring soon} other{Expiring soon ({count})}}",
+  "@contractsFilterExpiring": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noContractsExpiring": "Nothing expiring soon",
+  "noContractsExpiringHint": "No active contract ends in the next 30 days.",
+  "contractFromProposal": "From proposal version {number}",
+  "@contractFromProposal": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "contractFrom": "From {date}",
+  "@contractFrom": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "contractStatusDraft": "Draft",
+  "contractStatusActive": "Active",
+  "contractStatusExpired": "Expired",
+  "contractStatusCancelled": "Cancelled",
+  "contractStatusUnknown": "Other status",
+  "contractExpiringSoon": "Expiring soon",
+  "contractTitle": "Contract",
+  "newContractTitle": "New contract",
+  "editContract": "Edit contract",
+  "deleteContract": "Delete contract",
+  "keepContract": "Keep it",
+  "deleteContractConfirmTitle": "Delete this draft?",
+  "deleteContractConfirmBody": "The draft contract will be deleted. This can't be undone.",
+  "cancelContract": "Cancel contract",
+  "cancelContractConfirmTitle": "Cancel this contract?",
+  "cancelContractConfirmBody": "It stays in the account's history, but it can't be edited or signed again.",
+  "cancelledContractNotice": "This contract is cancelled. It's kept as history and can't change.",
+  "contractValueLabel": "Contract value",
+  "contractValueFromProposalHelp": "Starts from the proposal's agreed price.",
+  "contractProposalLabel": "Proposal",
+  "contractStartLabel": "Start date",
+  "contractExpirationLabel": "Expiration date",
+  "expirationBeforeStart": "Pick a day on or after the start date.",
+  "noEndDate": "No end date",
+  "sectionTerm": "Term",
+  "paymentTermsLabel": "Payment terms",
+  "paymentTermsHint": "e.g. Net 30",
+  "autoRenewLabel": "Renews automatically",
+  "autoRenewOn": "Renews automatically",
+  "autoRenewOff": "Doesn't renew automatically",
+  "cancellationNoticeLabel": "Cancellation notice",
+  "cancellationNoticeHelp": "Days of notice needed to cancel.",
+  "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contractDaysLeft": "{count, plural, =0{Expires today} =1{Expires tomorrow} other{Expires in {count} days}}",
+  "@contractDaysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "signatureLabel": "Signature",
+  "signedOnLabel": "Signed on",
+  "contractSignedBy": "Signed by {name} on {date}",
+  "@contractSignedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "contractSignedOn": "Signed on {date}",
+  "@contractSignedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "contractNotSigned": "Not signed yet",
+  "signContract": "Sign contract",
+  "signContractHelp": "Signing records you as the signer and makes the contract active.",
+  "createContract": "Create contract",
+  "contractsNotFound": "This contract no longer exists.",
+  "contractsValueRequired": "Enter the contract value.",
+  "contractsProposalNotApproved": "A contract can only come from an approved proposal.",
+  "contractsAlreadySigned": "This contract is already signed.",
+  "contractsCancelled": "This contract is cancelled and can't change.",
+  "contractsOnlyDraftsDeletable": "Only a draft contract can be deleted. Cancel it instead.",
+  "contractsHasRelatedRecords": "Scopes of work or invoices use this contract, so it can't be deleted."
 }

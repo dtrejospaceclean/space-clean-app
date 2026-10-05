@@ -35,7 +35,7 @@ void main() {
   });
 
   test('reordering what is visible keeps hidden modules in place', () {
-    // Proposals and team are hidden here; they keep their slots.
+    // Proposals, contracts and team are hidden here; they keep their slots.
     final order = reorderVisible(const [], const [
       'locations',
       'jobs',
@@ -45,6 +45,7 @@ void main() {
     expect(order, [
       'locations',
       'proposals',
+      'contracts',
       'jobs',
       'info',
       'contacts',

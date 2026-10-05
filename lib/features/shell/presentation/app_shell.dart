@@ -12,6 +12,7 @@ import '../../auth/presentation/controllers/auth_controller.dart';
 import '../../clients/domain/usecases/manage_clients.dart';
 import '../../clients/presentation/screens/accounts_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
+import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
@@ -107,6 +108,13 @@ final _byPage = <String, List<_PlusOption>>{
       Permissions.proposalEdit,
     ),
   ],
+  '${AccountsScreen.path}/:clientId/${ContractsScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${ContractsScreen.route}/new',
+      (l10n) => l10n.newContractTitle,
+      Permissions.contractEdit,
+    ),
+  ],
   '${AccountsScreen.path}/:clientId/${ContactsScreen.route}': [
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ContactsScreen.route}/new',
@@ -140,6 +148,7 @@ bool _noPlus(String route) =>
     route.endsWith('/edit') ||
     route.endsWith('/version') ||
     route.endsWith('/approve') ||
+    route.endsWith('/sign') ||
     route.endsWith('/item') ||
     route == '/me/password' ||
     route == '/me/settings' ||
