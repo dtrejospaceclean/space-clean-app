@@ -16,6 +16,13 @@ import 'package:sp_cln_app/core/router/app_router.dart';
 import 'package:sp_cln_app/features/access/di/access_providers.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
+import 'package:sp_cln_app/features/calendar/di/calendar_providers.dart';
+import 'package:sp_cln_app/features/calendar/domain/entities/calendar_event.dart';
+import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
+import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
+import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
+import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
+import 'package:sp_cln_app/features/team/di/team_providers.dart';
 import 'package:sp_cln_app/features/clients/di/clients_providers.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/clients/domain/repositories/module_order_repository.dart';
@@ -142,6 +149,15 @@ Future<void> _sheet(
         proposalsRepositoryProvider.overrideWithValue(
           FakeProposalsRepository(_demoProposals()),
         ),
+        calendarRepositoryProvider.overrideWithValue(_demoCalendar()),
+        contractsRepositoryProvider.overrideWithValue(
+          FakeContractsRepository(),
+        ),
+        scopesRepositoryProvider.overrideWithValue(FakeScopesRepository()),
+        locationsRepositoryProvider.overrideWithValue(
+          FakeLocationsRepository(),
+        ),
+        teamRepositoryProvider.overrideWithValue(FakeTeamRepository()),
         clockProvider.overrideWithValue(() => testNow),
         if (phone.resetAvailable)
           passwordResetRepositoryProvider.overrideWithValue(
@@ -647,6 +663,40 @@ void main() {
     ]);
   });
 
+  testWidgets('calendar', (tester) async {
+    const base = '/accounts/c1/calendar';
+    await _sheet(tester, 'calendar', TargetPlatform.iOS, [
+      Phone('1 · Month', asOwner: true, location: base),
+      Phone(
+        '2 · Month (scrolled)',
+        asOwner: true,
+        location: base,
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -400));
+        },
+      ),
+      Phone('3 · Event', asOwner: true, location: '$base/ev1'),
+      Phone('4 · Moved, with history', asOwner: true, location: '$base/ev2'),
+      Phone('5 · Reschedule', asOwner: true, location: '$base/ev1/reschedule'),
+      Phone('6 · New event', asOwner: true, location: '$base/new'),
+      Phone('7 · Dark', asOwner: true, dark: true, location: base),
+      Phone(
+        '8 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: base,
+      ),
+      Phone(
+        '9 · Event, Spanish 200%',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/ev2',
+      ),
+    ]);
+  });
+
   testWidgets('admin dark', (tester) async {
     await _sheet(
       tester,
@@ -997,4 +1047,63 @@ FakeServiceCatalogRepository _demoCatalog() {
       ),
     ],
   );
+}
+
+/// Torre Norte's calendar around the test clock (Wednesday, Sep 23):
+/// visits from its scopes most weekdays, a one-off, a moved one and a
+/// cancelled one.
+FakeCalendarRepository _demoCalendar() {
+  CalendarEvent scoped(
+    String id,
+    int day,
+    String title,
+    int hour, {
+    CalendarEventStatus status = CalendarEventStatus.scheduled,
+  }) => CalendarEvent(
+    id: id,
+    title: title,
+    date: DateTime(2026, 9, day),
+    startTime: ClockTime(hour, 0),
+    endTime: ClockTime(hour + 1, 30),
+    status: status,
+    locationName: 'Torre Norte — Piso 3',
+    scopeId: 's1',
+    scopeArea: title,
+    assignedToName: 'Carlos Medina',
+    scheduleId: 'w$id',
+  );
+  final repo = FakeCalendarRepository([
+    for (final day in [1, 3, 8, 10, 15, 17, 22, 29])
+      scoped('o$day', day, 'Oficinas', 7),
+    scoped('ev1', 23, 'Oficinas', 7),
+    scoped('r23', 23, 'Baños', 13),
+    scoped(
+      'ev2',
+      24,
+      'Recepción',
+      9,
+      status: CalendarEventStatus.rescheduled,
+    ),
+    scoped('c25', 25, 'Baños', 13, status: CalendarEventStatus.cancelled),
+    CalendarEvent(
+      id: 'deep',
+      title: 'Limpieza profunda de alfombras',
+      date: DateTime(2026, 9, 23),
+      startTime: const ClockTime(18, 0),
+      status: CalendarEventStatus.scheduled,
+      locationName: 'Torre Norte — Lobby',
+      notes: 'Mover sillas de la sala de juntas.',
+    ),
+  ]);
+  repo.moves['ev2'] = [
+    EventReschedule(
+      previousDate: DateTime(2026, 9, 22),
+      previousStart: const ClockTime(9, 0),
+      newDate: DateTime(2026, 9, 24),
+      newStart: const ClockTime(9, 0),
+      reason: 'El cliente pidió el jueves',
+      byName: 'Ana Pérez',
+    ),
+  ];
+  return repo;
 }

@@ -946,5 +946,91 @@
   "scopesHasJobs": "This scope already produced jobs, so it can't be deleted. Pause its time windows instead.",
   "scopeNeedsContract": "This account has no active or draft contract yet. Add one under Contracts first.",
   "scopeNeedsLocation": "This account has no locations yet. Add one under Locations first.",
-  "scopeNoServices": "The service catalog has no active services."
+  "scopeNoServices": "The service catalog has no active services.",
+  "moduleCalendarHint": "Visits by day, moves and one-offs",
+  "eventStatusScheduled": "Scheduled",
+  "eventStatusRescheduled": "Moved",
+  "eventStatusCancelled": "Cancelled",
+  "eventStatusConverted": "Job",
+  "eventStatusUnknown": "Other status",
+  "eventsCount": "{count, plural, =0{no events} =1{1 event} other{{count} events}}",
+  "@eventsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goToToday": "Go to today",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "nothingScheduled": "Nothing scheduled",
+  "nothingScheduledHint": "Add a one-off visit with +. Visits from scopes of work appear on their own.",
+  "eventTitle": "Event",
+  "newEventTitle": "New event",
+  "editEvent": "Edit event",
+  "deleteEvent": "Delete event",
+  "keepEvent": "Keep it",
+  "deleteEventConfirmTitle": "Delete this event?",
+  "deleteEventConfirmBody": "It will be removed from the calendar. This can't be undone.",
+  "cancelEvent": "Cancel event",
+  "cancelEventConfirmTitle": "Cancel this event?",
+  "cancelEventConfirmBody": "It stays on the calendar as cancelled and can't be changed again.",
+  "eventCancelledNotice": "This event is cancelled and can't change.",
+  "eventConvertedNotice": "This event became a job, so it's changed from the job now.",
+  "eventFromScope": "From a scope of work",
+  "eventOneOff": "One-off",
+  "assignedToLabel": "Assigned to",
+  "rescheduleEvent": "Reschedule",
+  "sectionMoves": "Moves",
+  "movedFrom": "From {when}",
+  "@movedFrom": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "movedTo": "to {when}",
+  "@movedTo": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "movedBy": "by {name}",
+  "@movedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "eventTitleLabel": "Title",
+  "eventTitleHint": "e.g. Deep clean",
+  "sectionWhen": "When",
+  "eventDateLabel": "Day",
+  "eventMoveHelp": "{day} at {time}. To change the day or start, use Reschedule.",
+  "@eventMoveHelp": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "eventNoScopes": "This account has no scopes of work yet.",
+  "eventNoLocations": "This account has no locations yet. Add one under Locations first.",
+  "eventNoMembers": "This account has no active team members yet.",
+  "sectionNewTime": "New day and time",
+  "rescheduleReasonLabel": "Reason",
+  "rescheduleReasonHint": "e.g. Client asked for Thursday",
+  "rescheduleHelp": "The current day and time stay in its history.",
+  "calendarNotFound": "This event no longer exists.",
+  "calendarBadRange": "That range of days is too wide.",
+  "calendarCancelled": "This event is cancelled and can't change.",
+  "calendarAlreadyConverted": "This event already became a job."
 }

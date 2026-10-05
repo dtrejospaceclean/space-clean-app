@@ -3571,6 +3571,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The service catalog has no active services.'**
   String get scopeNoServices;
+
+  /// No description provided for @moduleCalendarHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits by day, moves and one-offs'**
+  String get moduleCalendarHint;
+
+  /// No description provided for @eventStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get eventStatusScheduled;
+
+  /// No description provided for @eventStatusRescheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved'**
+  String get eventStatusRescheduled;
+
+  /// No description provided for @eventStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get eventStatusCancelled;
+
+  /// No description provided for @eventStatusConverted.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get eventStatusConverted;
+
+  /// No description provided for @eventStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other status'**
+  String get eventStatusUnknown;
+
+  /// No description provided for @eventsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no events} =1{1 event} other{{count} events}}'**
+  String eventsCount(int count);
+
+  /// No description provided for @goToToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to today'**
+  String get goToToday;
+
+  /// No description provided for @previousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// No description provided for @nextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
+
+  /// No description provided for @nothingScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing scheduled'**
+  String get nothingScheduled;
+
+  /// No description provided for @nothingScheduledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a one-off visit with +. Visits from scopes of work appear on their own.'**
+  String get nothingScheduledHint;
+
+  /// No description provided for @eventTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get eventTitle;
+
+  /// No description provided for @newEventTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New event'**
+  String get newEventTitle;
+
+  /// No description provided for @editEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit event'**
+  String get editEvent;
+
+  /// No description provided for @deleteEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete event'**
+  String get deleteEvent;
+
+  /// No description provided for @keepEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepEvent;
+
+  /// No description provided for @deleteEventConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this event?'**
+  String get deleteEventConfirmTitle;
+
+  /// No description provided for @deleteEventConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed from the calendar. This can\'t be undone.'**
+  String get deleteEventConfirmBody;
+
+  /// No description provided for @cancelEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel event'**
+  String get cancelEvent;
+
+  /// No description provided for @cancelEventConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this event?'**
+  String get cancelEventConfirmTitle;
+
+  /// No description provided for @cancelEventConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays on the calendar as cancelled and can\'t be changed again.'**
+  String get cancelEventConfirmBody;
+
+  /// No description provided for @eventCancelledNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This event is cancelled and can\'t change.'**
+  String get eventCancelledNotice;
+
+  /// No description provided for @eventConvertedNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This event became a job, so it\'s changed from the job now.'**
+  String get eventConvertedNotice;
+
+  /// No description provided for @eventFromScope.
+  ///
+  /// In en, this message translates to:
+  /// **'From a scope of work'**
+  String get eventFromScope;
+
+  /// No description provided for @eventOneOff.
+  ///
+  /// In en, this message translates to:
+  /// **'One-off'**
+  String get eventOneOff;
+
+  /// No description provided for @assignedToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned to'**
+  String get assignedToLabel;
+
+  /// No description provided for @rescheduleEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reschedule'**
+  String get rescheduleEvent;
+
+  /// No description provided for @sectionMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'Moves'**
+  String get sectionMoves;
+
+  /// No description provided for @movedFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From {when}'**
+  String movedFrom(String when);
+
+  /// No description provided for @movedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'to {when}'**
+  String movedTo(String when);
+
+  /// No description provided for @movedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String movedBy(String name);
+
+  /// No description provided for @eventTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get eventTitleLabel;
+
+  /// No description provided for @eventTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Deep clean'**
+  String get eventTitleHint;
+
+  /// No description provided for @sectionWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get sectionWhen;
+
+  /// No description provided for @eventDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get eventDateLabel;
+
+  /// No description provided for @eventMoveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} at {time}. To change the day or start, use Reschedule.'**
+  String eventMoveHelp(String day, String time);
+
+  /// No description provided for @eventNoScopes.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no scopes of work yet.'**
+  String get eventNoScopes;
+
+  /// No description provided for @eventNoLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no locations yet. Add one under Locations first.'**
+  String get eventNoLocations;
+
+  /// No description provided for @eventNoMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no active team members yet.'**
+  String get eventNoMembers;
+
+  /// No description provided for @sectionNewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'New day and time'**
+  String get sectionNewTime;
+
+  /// No description provided for @rescheduleReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get rescheduleReasonLabel;
+
+  /// No description provided for @rescheduleReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Client asked for Thursday'**
+  String get rescheduleReasonHint;
+
+  /// No description provided for @rescheduleHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The current day and time stay in its history.'**
+  String get rescheduleHelp;
+
+  /// No description provided for @calendarNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This event no longer exists.'**
+  String get calendarNotFound;
+
+  /// No description provided for @calendarBadRange.
+  ///
+  /// In en, this message translates to:
+  /// **'That range of days is too wide.'**
+  String get calendarBadRange;
+
+  /// No description provided for @calendarCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'This event is cancelled and can\'t change.'**
+  String get calendarCancelled;
+
+  /// No description provided for @calendarAlreadyConverted.
+  ///
+  /// In en, this message translates to:
+  /// **'This event already became a job.'**
+  String get calendarAlreadyConverted;
 }
 
 class _AppLocalizationsDelegate

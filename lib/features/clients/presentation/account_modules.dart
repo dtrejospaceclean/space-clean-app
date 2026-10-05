@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../access/domain/entities/account_access.dart';
+import '../../calendar/presentation/screens/calendar_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
@@ -74,6 +75,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleScope,
     description: (l10n) => l10n.moduleScopeHint,
     route: ScopesScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.work,
+    permission: Permissions.calendarView,
+    icon: Icons.calendar_month_outlined,
+    label: (l10n) => l10n.moduleCalendar,
+    description: (l10n) => l10n.moduleCalendarHint,
+    route: CalendarScreen.route,
   ),
   AccountModule(
     section: AccountSection.account,

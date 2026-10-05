@@ -2033,4 +2033,175 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get scopeNoServices => 'El catálogo no tiene servicios activos.';
+
+  @override
+  String get moduleCalendarHint => 'Visitas por día, cambios y eventos únicos';
+
+  @override
+  String get eventStatusScheduled => 'Programado';
+
+  @override
+  String get eventStatusRescheduled => 'Reprogramado';
+
+  @override
+  String get eventStatusCancelled => 'Cancelado';
+
+  @override
+  String get eventStatusConverted => 'Trabajo';
+
+  @override
+  String get eventStatusUnknown => 'Otro estado';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count eventos',
+      one: '1 evento',
+      zero: 'sin eventos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get goToToday => 'Ir a hoy';
+
+  @override
+  String get previousMonth => 'Mes anterior';
+
+  @override
+  String get nextMonth => 'Mes siguiente';
+
+  @override
+  String get nothingScheduled => 'Nada programado';
+
+  @override
+  String get nothingScheduledHint =>
+      'Agrega una visita única con +. Las visitas de los alcances aparecen solas.';
+
+  @override
+  String get eventTitle => 'Evento';
+
+  @override
+  String get newEventTitle => 'Nuevo evento';
+
+  @override
+  String get editEvent => 'Editar evento';
+
+  @override
+  String get deleteEvent => 'Eliminar evento';
+
+  @override
+  String get keepEvent => 'Conservarlo';
+
+  @override
+  String get deleteEventConfirmTitle => '¿Eliminar este evento?';
+
+  @override
+  String get deleteEventConfirmBody =>
+      'Se quitará del calendario. Esto no se puede deshacer.';
+
+  @override
+  String get cancelEvent => 'Cancelar evento';
+
+  @override
+  String get cancelEventConfirmTitle => '¿Cancelar este evento?';
+
+  @override
+  String get cancelEventConfirmBody =>
+      'Queda en el calendario como cancelado y ya no se podrá cambiar.';
+
+  @override
+  String get eventCancelledNotice =>
+      'Este evento está cancelado y no puede cambiar.';
+
+  @override
+  String get eventConvertedNotice =>
+      'Este evento se convirtió en un trabajo, así que ahora se cambia desde el trabajo.';
+
+  @override
+  String get eventFromScope => 'De un alcance de trabajo';
+
+  @override
+  String get eventOneOff => 'Único';
+
+  @override
+  String get assignedToLabel => 'Asignado a';
+
+  @override
+  String get rescheduleEvent => 'Reprogramar';
+
+  @override
+  String get sectionMoves => 'Cambios';
+
+  @override
+  String movedFrom(String when) {
+    return 'Desde $when';
+  }
+
+  @override
+  String movedTo(String when) {
+    return 'a $when';
+  }
+
+  @override
+  String movedBy(String name) {
+    return 'por $name';
+  }
+
+  @override
+  String get eventTitleLabel => 'Título';
+
+  @override
+  String get eventTitleHint => 'p. ej. Limpieza profunda';
+
+  @override
+  String get sectionWhen => 'Cuándo';
+
+  @override
+  String get eventDateLabel => 'Día';
+
+  @override
+  String eventMoveHelp(String day, String time) {
+    return '$day a las $time. Para cambiar el día o la hora de inicio, usa Reprogramar.';
+  }
+
+  @override
+  String get eventNoScopes => 'Esta cuenta aún no tiene alcances de trabajo.';
+
+  @override
+  String get eventNoLocations =>
+      'Esta cuenta aún no tiene ubicaciones. Agrega una en Ubicaciones primero.';
+
+  @override
+  String get eventNoMembers =>
+      'Esta cuenta aún no tiene miembros activos en el equipo.';
+
+  @override
+  String get sectionNewTime => 'Nuevo día y hora';
+
+  @override
+  String get rescheduleReasonLabel => 'Motivo';
+
+  @override
+  String get rescheduleReasonHint => 'p. ej. El cliente pidió el jueves';
+
+  @override
+  String get rescheduleHelp =>
+      'El día y la hora actuales quedan en su historial.';
+
+  @override
+  String get calendarNotFound => 'Este evento ya no existe.';
+
+  @override
+  String get calendarBadRange => 'Ese rango de días es demasiado amplio.';
+
+  @override
+  String get calendarCancelled =>
+      'Este evento está cancelado y no puede cambiar.';
+
+  @override
+  String get calendarAlreadyConverted =>
+      'Este evento ya se convirtió en un trabajo.';
 }

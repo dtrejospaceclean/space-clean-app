@@ -5,6 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
+import '../../features/calendar/presentation/screens/calendar_screen.dart';
+import '../../features/calendar/presentation/screens/event_form_screen.dart';
+import '../../features/calendar/presentation/screens/event_screen.dart';
+import '../../features/calendar/presentation/screens/reschedule_event_screen.dart';
 import '../../features/clients/presentation/screens/account_form_screen.dart';
 import '../../features/clients/presentation/screens/account_info_screen.dart';
 import '../../features/clients/presentation/screens/account_screen.dart';
@@ -300,6 +304,44 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   scopeId: state.pathParameters['scopeId'],
                                 ),
                                 routes: [_timeWindowRoute],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SlideRoute(
+                        path: CalendarScreen.route,
+                        builder: (_, state) => CalendarScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':eventId' so "new" isn't read as an id.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => EventFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                          ),
+                          SlideRoute(
+                            path: ':eventId',
+                            builder: (_, state) => EventScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              eventId: state.pathParameters['eventId']!,
+                            ),
+                            routes: [
+                              SlideRoute(
+                                path: 'edit',
+                                builder: (_, state) => EventFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  eventId: state.pathParameters['eventId'],
+                                ),
+                              ),
+                              SlideRoute(
+                                path: 'reschedule',
+                                builder: (_, state) => RescheduleEventScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  eventId: state.pathParameters['eventId']!,
+                                ),
                               ),
                             ],
                           ),

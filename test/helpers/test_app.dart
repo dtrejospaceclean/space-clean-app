@@ -16,6 +16,9 @@ import 'package:sp_cln_app/features/access/domain/repositories/access_repository
 import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
 import 'package:sp_cln_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:sp_cln_app/features/calendar/di/calendar_providers.dart';
+import 'package:sp_cln_app/features/calendar/domain/entities/calendar_event.dart';
+import 'package:sp_cln_app/features/calendar/domain/repositories/calendar_repository.dart';
 import 'package:sp_cln_app/features/clients/di/clients_providers.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/clients/domain/repositories/clients_repository.dart';
@@ -600,6 +603,192 @@ class FakeLocationsRepository implements LocationsRepository {
     }
     writes.add('delete:$locationId');
     locations = locations.where((l) => l.id != locationId).toList();
+  }
+}
+
+/// In-memory calendar with the API's rules: cancelled events and those
+/// turned into jobs don't change, moves keep a history entry. Records every
+/// write, each month generated, and every draft.
+class FakeCalendarRepository implements CalendarRepository {
+  FakeCalendarRepository([List<CalendarEvent> events = const []])
+    : events = [...events];
+
+  List<CalendarEvent> events;
+  final writes = <String>[];
+  final generated = <String>[];
+  final drafts = <EventDraft>[];
+  final moves = <String, List<EventReschedule>>{};
+
+  static String _ymd(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+
+  @override
+  Future<List<CalendarEvent>> getEvents(
+    String clientId, {
+    required DateTime from,
+    required DateTime to,
+  }) async =>
+      events
+          .where((e) => !e.date.isBefore(from) && !e.date.isAfter(to))
+          .toList()
+        ..sort((a, b) {
+          final byDay = a.date.compareTo(b.date);
+          return byDay != 0 ? byDay : a.startTime.compareTo(b.startTime);
+        });
+
+  @override
+  Future<int> generate(
+    String clientId, {
+    required DateTime from,
+    required DateTime to,
+  }) async {
+    generated.add('${_ymd(from)}..${_ymd(to)}');
+    return 0;
+  }
+
+  @override
+  Future<CalendarEvent> getEvent(String clientId, String eventId) async {
+    for (final e in events) {
+      if (e.id == eventId) return e;
+    }
+    throw const ServerFailure('calendar.not_found', statusCode: 404);
+  }
+
+  @override
+  Future<List<EventReschedule>> getReschedules(
+    String clientId,
+    String eventId,
+  ) async => moves[eventId] ?? const [];
+
+  Future<CalendarEvent> _editable(String clientId, String eventId) async {
+    final e = await getEvent(clientId, eventId);
+    if (e.isCancelled) {
+      throw const ServerFailure('calendar.cancelled', statusCode: 409);
+    }
+    if (e.isConverted) {
+      throw const ServerFailure('calendar.already_converted', statusCode: 409);
+    }
+    return e;
+  }
+
+  CalendarEvent _copy(
+    CalendarEvent e, {
+    EventDraft? draft,
+    DateTime? date,
+    ClockTime? start,
+    bool clearEnd = false,
+    ClockTime? end,
+    CalendarEventStatus? status,
+  }) {
+    String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
+    return CalendarEvent(
+      id: e.id,
+      title: draft?.title.trim() ?? e.title,
+      date: date ?? e.date,
+      startTime: start ?? e.startTime,
+      endTime: clearEnd ? end : (draft != null ? draft.endTime : e.endTime),
+      status: status ?? e.status,
+      notes: draft == null ? e.notes : text(draft.notes),
+      locationId: draft == null ? e.locationId : draft.locationId,
+      locationName: draft == null || draft.locationId == e.locationId
+          ? e.locationName
+          : 'Location ${draft.locationId}',
+      scopeId: draft == null ? e.scopeId : draft.scopeId,
+      scopeArea: e.scopeArea,
+      assignedToId: draft == null ? e.assignedToId : draft.assignedToId,
+      assignedToName: e.assignedToName,
+      jobId: e.jobId,
+      scheduleId: e.scheduleId,
+    );
+  }
+
+  void _replace(CalendarEvent next) =>
+      events = [for (final e in events) e.id == next.id ? next : e];
+
+  @override
+  Future<CalendarEvent> createEvent(String clientId, EventDraft draft) async {
+    writes.add('create:${_ymd(draft.date!)} ${draft.startTime!.wire}');
+    drafts.add(draft);
+    final created = _copy(
+      CalendarEvent(
+        id: 'e${events.length + 1}',
+        title: '',
+        date: draft.date!,
+        startTime: draft.startTime!,
+        status: CalendarEventStatus.scheduled,
+      ),
+      draft: draft,
+    );
+    events = [...events, created];
+    return created;
+  }
+
+  @override
+  Future<CalendarEvent> updateEvent(
+    String clientId,
+    String eventId,
+    EventDraft draft,
+  ) async {
+    final e = await _editable(clientId, eventId);
+    writes.add('update:$eventId');
+    drafts.add(draft);
+    final next = _copy(e, draft: draft);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<CalendarEvent> rescheduleEvent(
+    String clientId,
+    String eventId,
+    RescheduleDraft draft,
+  ) async {
+    final e = await _editable(clientId, eventId);
+    writes.add(
+      'reschedule:$eventId:${_ymd(draft.date)} ${draft.startTime.wire}'
+      '-${draft.endTime?.wire}:${draft.reason}',
+    );
+    moves[eventId] = [
+      EventReschedule(
+        previousDate: e.date,
+        previousStart: e.startTime,
+        newDate: draft.date,
+        newStart: draft.startTime,
+        reason: draft.reason,
+        byName: 'Ana Pérez',
+      ),
+      ...?moves[eventId],
+    ];
+    final next = _copy(
+      e,
+      date: draft.date,
+      start: draft.startTime,
+      clearEnd: true,
+      end: draft.endTime,
+      status: CalendarEventStatus.rescheduled,
+    );
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<CalendarEvent> cancelEvent(String clientId, String eventId) async {
+    final e = await _editable(clientId, eventId);
+    writes.add('cancel:$eventId');
+    final next = _copy(e, status: CalendarEventStatus.cancelled);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<void> deleteEvent(String clientId, String eventId) async {
+    final e = await getEvent(clientId, eventId);
+    if (e.isConverted) {
+      throw const ServerFailure('calendar.already_converted', statusCode: 409);
+    }
+    writes.add('delete:$eventId');
+    events = events.where((x) => x.id != eventId).toList();
   }
 }
 
@@ -1499,6 +1688,7 @@ Future<SharedPreferences> pumpApp(
   ProposalsRepository? proposals,
   ContractsRepository? contracts,
   ScopesRepository? scopes,
+  CalendarRepository? calendar,
   NotificationsRepository? notifications,
   Map<String, Object> preferences = const {},
 }) async {
@@ -1549,6 +1739,9 @@ Future<SharedPreferences> pumpApp(
         ),
         scopesRepositoryProvider.overrideWithValue(
           scopes ?? FakeScopesRepository(),
+        ),
+        calendarRepositoryProvider.overrideWithValue(
+          calendar ?? FakeCalendarRepository(),
         ),
         // None unread unless a test says so (the real one is a placeholder
         // count until the API has notifications).

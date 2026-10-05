@@ -26,6 +26,10 @@ extension DateFormatting on BuildContext {
       // Jan 1, 2024 was a Monday.
       DateFormat.E(_locale).format(DateTime(2024, 1, isoDay));
 
+  /// "September 2026".
+  String formatMonthYear(DateTime month) =>
+      DateFormat.yMMMM(_locale).format(month);
+
   /// "Wednesday, September 23".
   String formatDayLong(DateTime day) =>
       DateFormat.MMMMEEEEd(_locale).format(day);

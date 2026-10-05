@@ -9,6 +9,7 @@ import '../../access/domain/entities/account_access.dart';
 import '../../access/presentation/controllers/account_access_provider.dart';
 import '../../auth/domain/entities/user.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
+import '../../calendar/presentation/screens/calendar_screen.dart';
 import '../../clients/domain/usecases/manage_clients.dart';
 import '../../clients/presentation/screens/accounts_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
@@ -123,6 +124,13 @@ final _byPage = <String, List<_PlusOption>>{
       Permissions.scopeEdit,
     ),
   ],
+  '${AccountsScreen.path}/:clientId/${CalendarScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${CalendarScreen.route}/new',
+      (l10n) => l10n.newEventTitle,
+      Permissions.calendarEdit,
+    ),
+  ],
   '${AccountsScreen.path}/:clientId/${ContactsScreen.route}': [
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ContactsScreen.route}/new',
@@ -157,6 +165,7 @@ bool _noPlus(String route) =>
     route.endsWith('/version') ||
     route.endsWith('/approve') ||
     route.endsWith('/sign') ||
+    route.endsWith('/reschedule') ||
     route.endsWith('/item') ||
     route.endsWith('/window') ||
     route == '/me/password' ||

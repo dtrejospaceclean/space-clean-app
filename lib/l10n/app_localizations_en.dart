@@ -2016,4 +2016,171 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scopeNoServices => 'The service catalog has no active services.';
+
+  @override
+  String get moduleCalendarHint => 'Visits by day, moves and one-offs';
+
+  @override
+  String get eventStatusScheduled => 'Scheduled';
+
+  @override
+  String get eventStatusRescheduled => 'Moved';
+
+  @override
+  String get eventStatusCancelled => 'Cancelled';
+
+  @override
+  String get eventStatusConverted => 'Job';
+
+  @override
+  String get eventStatusUnknown => 'Other status';
+
+  @override
+  String eventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count events',
+      one: '1 event',
+      zero: 'no events',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get goToToday => 'Go to today';
+
+  @override
+  String get previousMonth => 'Previous month';
+
+  @override
+  String get nextMonth => 'Next month';
+
+  @override
+  String get nothingScheduled => 'Nothing scheduled';
+
+  @override
+  String get nothingScheduledHint =>
+      'Add a one-off visit with +. Visits from scopes of work appear on their own.';
+
+  @override
+  String get eventTitle => 'Event';
+
+  @override
+  String get newEventTitle => 'New event';
+
+  @override
+  String get editEvent => 'Edit event';
+
+  @override
+  String get deleteEvent => 'Delete event';
+
+  @override
+  String get keepEvent => 'Keep it';
+
+  @override
+  String get deleteEventConfirmTitle => 'Delete this event?';
+
+  @override
+  String get deleteEventConfirmBody =>
+      'It will be removed from the calendar. This can\'t be undone.';
+
+  @override
+  String get cancelEvent => 'Cancel event';
+
+  @override
+  String get cancelEventConfirmTitle => 'Cancel this event?';
+
+  @override
+  String get cancelEventConfirmBody =>
+      'It stays on the calendar as cancelled and can\'t be changed again.';
+
+  @override
+  String get eventCancelledNotice =>
+      'This event is cancelled and can\'t change.';
+
+  @override
+  String get eventConvertedNotice =>
+      'This event became a job, so it\'s changed from the job now.';
+
+  @override
+  String get eventFromScope => 'From a scope of work';
+
+  @override
+  String get eventOneOff => 'One-off';
+
+  @override
+  String get assignedToLabel => 'Assigned to';
+
+  @override
+  String get rescheduleEvent => 'Reschedule';
+
+  @override
+  String get sectionMoves => 'Moves';
+
+  @override
+  String movedFrom(String when) {
+    return 'From $when';
+  }
+
+  @override
+  String movedTo(String when) {
+    return 'to $when';
+  }
+
+  @override
+  String movedBy(String name) {
+    return 'by $name';
+  }
+
+  @override
+  String get eventTitleLabel => 'Title';
+
+  @override
+  String get eventTitleHint => 'e.g. Deep clean';
+
+  @override
+  String get sectionWhen => 'When';
+
+  @override
+  String get eventDateLabel => 'Day';
+
+  @override
+  String eventMoveHelp(String day, String time) {
+    return '$day at $time. To change the day or start, use Reschedule.';
+  }
+
+  @override
+  String get eventNoScopes => 'This account has no scopes of work yet.';
+
+  @override
+  String get eventNoLocations =>
+      'This account has no locations yet. Add one under Locations first.';
+
+  @override
+  String get eventNoMembers => 'This account has no active team members yet.';
+
+  @override
+  String get sectionNewTime => 'New day and time';
+
+  @override
+  String get rescheduleReasonLabel => 'Reason';
+
+  @override
+  String get rescheduleReasonHint => 'e.g. Client asked for Thursday';
+
+  @override
+  String get rescheduleHelp => 'The current day and time stay in its history.';
+
+  @override
+  String get calendarNotFound => 'This event no longer exists.';
+
+  @override
+  String get calendarBadRange => 'That range of days is too wide.';
+
+  @override
+  String get calendarCancelled => 'This event is cancelled and can\'t change.';
+
+  @override
+  String get calendarAlreadyConverted => 'This event already became a job.';
 }
