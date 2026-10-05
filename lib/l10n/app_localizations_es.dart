@@ -2204,4 +2204,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get calendarAlreadyConverted =>
       'Este evento ya se convirtió en un trabajo.';
+
+  @override
+  String get deleteGeneratedEventConfirmBody =>
+      'Se quitará del calendario y no volverá a aparecer cuando el mes se llene de nuevo desde su alcance. Esto no se puede deshacer.';
 }

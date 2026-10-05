@@ -3859,6 +3859,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This event already became a job.'**
   String get calendarAlreadyConverted;
+
+  /// No description provided for @deleteGeneratedEventConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed from the calendar and won\'t come back when the month is filled from its scope again. This can\'t be undone.'**
+  String get deleteGeneratedEventConfirmBody;
 }
 
 class _AppLocalizationsDelegate

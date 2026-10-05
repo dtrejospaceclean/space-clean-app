@@ -156,8 +156,8 @@ void main() {
     final calendar = await openCalendar(tester, permissions: _editor);
     await tester.tap(find.text('Offices'));
     await tester.pumpAndSettle();
-    // Made from a scope, so it's cancelled rather than deleted.
-    expect(find.byTooltip('Delete event'), findsNothing);
+    // Made from a scope, and still deletable: it won't come back.
+    expect(find.byTooltip('Delete event'), findsOneWidget);
 
     await revealBelow(tester, button('Reschedule'));
     await tester.tap(button('Reschedule'));

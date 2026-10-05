@@ -626,5 +626,6 @@
   "calendarNotFound": "Este evento ya no existe.",
   "calendarBadRange": "Ese rango de días es demasiado amplio.",
   "calendarCancelled": "Este evento está cancelado y no puede cambiar.",
-  "calendarAlreadyConverted": "Este evento ya se convirtió en un trabajo."
+  "calendarAlreadyConverted": "Este evento ya se convirtió en un trabajo.",
+  "deleteGeneratedEventConfirmBody": "Se quitará del calendario y no volverá a aparecer cuando el mes se llene de nuevo desde su alcance. Esto no se puede deshacer."
 }

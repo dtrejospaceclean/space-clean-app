@@ -76,9 +76,9 @@ class CalendarEvent {
   /// (`calendar.cancelled`, `calendar.already_converted`).
   bool get isEditable => !isCancelled && !isConverted;
 
-  /// Only one-off events: a generated one would come back the next time
-  /// its month is generated, so it's cancelled instead.
-  bool get canDelete => !isGenerated && !isConverted;
+  /// Any event until it became a job. A deleted generated event stays
+  /// gone: filling its month again skips its slot.
+  bool get canDelete => !isConverted;
 }
 
 /// One move of an event, newest first.

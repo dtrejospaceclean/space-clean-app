@@ -22,7 +22,7 @@ import '../widgets/calendar_widgets.dart';
 /// One calendar event: when and where, its scope and who it's assigned
 /// to, and where it was moved from. With `calendar.edit`, until it's
 /// cancelled or turned into a job, it can be edited, rescheduled and
-/// cancelled; a one-off event can also be deleted.
+/// cancelled; until it's a job, it can be deleted.
 class EventScreen extends ConsumerStatefulWidget {
   const EventScreen({super.key, required this.clientId, required this.eventId});
 
@@ -84,12 +84,15 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     );
   }
 
-  /// Asks first, then deletes the event and goes back to [calendar].
-  Future<void> _delete(String calendar) async {
+  /// Asks first, then deletes [event] and goes back to [calendar].
+  Future<void> _delete(CalendarEvent event, String calendar) async {
     final l10n = AppLocalizations.of(context);
     if (!await _confirm(
       l10n.deleteEventConfirmTitle,
-      l10n.deleteEventConfirmBody,
+      // One from a scope won't come back when its month is filled again.
+      event.isGenerated
+          ? l10n.deleteGeneratedEventConfirmBody
+          : l10n.deleteEventConfirmBody,
       l10n.deleteButton,
     )) {
       return;
@@ -164,7 +167,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
                 icon: Icons.delete_outline_rounded,
                 tooltip: l10n.deleteEvent,
                 busy: _busy == _Busy.delete,
-                onPressed: () => _delete(calendar),
+                onPressed: () => _delete(e!, calendar),
               ),
             if (editable)
               CircleButton.dark(

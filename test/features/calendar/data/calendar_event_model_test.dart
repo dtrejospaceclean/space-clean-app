@@ -38,8 +38,8 @@ void main() {
     expect(e.assignedToName, 'Carlos Medina');
     expect(e.isGenerated, isTrue);
     expect(e.isEditable, isTrue);
-    // Generated events come back when their month is filled again.
-    expect(e.canDelete, isFalse);
+    // A deleted generated event stays gone, so it can be deleted too.
+    expect(e.canDelete, isTrue);
   });
 
   test('a one-off turned into a job is history', () {
