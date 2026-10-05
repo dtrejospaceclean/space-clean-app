@@ -84,6 +84,16 @@ class SignContract implements UseCase<Contract, SignContractParams> {
   );
 }
 
+class MarkContractExpired implements UseCase<Contract, ContractRef> {
+  const MarkContractExpired(this._repository);
+
+  final ContractsRepository _repository;
+
+  @override
+  Future<Contract> call(ContractRef params) =>
+      _repository.markExpired(params.clientId, params.contractId);
+}
+
 class CancelContract implements UseCase<Contract, ContractRef> {
   const CancelContract(this._repository);
 

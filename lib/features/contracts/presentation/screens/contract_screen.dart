@@ -38,7 +38,7 @@ class ContractScreen extends ConsumerStatefulWidget {
 }
 
 /// What's in flight: nothing else on the page starts until it settles.
-enum _Busy { delete, cancel }
+enum _Busy { delete, expire, cancel }
 
 class _ContractScreenState extends ConsumerState<ContractScreen> {
   _Busy? _busy;
@@ -50,6 +50,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
     required String title,
     required String body,
     required String action,
+    bool destructive = true,
   }) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showAdaptiveDialog<bool>(
@@ -66,7 +67,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
           adaptiveAction(
             context,
             label: action,
-            destructive: true,
+            destructive: destructive,
             onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
@@ -117,18 +118,26 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
     }
   }
 
-  Future<void> _cancel() async {
-    final l10n = AppLocalizations.of(context);
+  /// Asks first, then runs a status change ([kind]) and reloads.
+  Future<void> _changeStatus(
+    _Busy kind, {
+    required String title,
+    required String body,
+    required String action,
+    required Future<Contract> Function() run,
+    bool destructive = true,
+  }) async {
     if (!await _confirm(
-      title: l10n.cancelContractConfirmTitle,
-      body: l10n.cancelContractConfirmBody,
-      action: l10n.cancelContract,
+      title: title,
+      body: body,
+      action: action,
+      destructive: destructive,
     )) {
       return;
     }
-    setState(() => _busy = _Busy.cancel);
+    setState(() => _busy = kind);
     try {
-      await ref.read(cancelContractProvider)(_ref);
+      await run();
       invalidateContracts(ref, widget.clientId);
     } on Failure catch (f) {
       if (mounted) await _showFailure(f);
@@ -283,12 +292,44 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                       ),
                     if (editable)
                       PageBox(
-                        top: canEdit && c.canSign ? 12 : 24,
+                        top: c.canSign ? 12 : 24,
                         child: SecondaryButton(
                           label: l10n.cancelContract,
                           icon: Icons.block_rounded,
                           destructive: true,
-                          onPressed: busy ? null : _cancel,
+                          onPressed: busy
+                              ? null
+                              : () => _changeStatus(
+                                  _Busy.cancel,
+                                  title: l10n.cancelContractConfirmTitle,
+                                  body: l10n.cancelContractConfirmBody,
+                                  action: l10n.cancelContract,
+                                  run: () =>
+                                      ref.read(cancelContractProvider)(_ref),
+                                ),
+                        ),
+                      ),
+                    // A quieter action than cancelling: closing out a
+                    // contract that ran its course.
+                    if (canEdit && c.canMarkExpired)
+                      PageBox(
+                        top: 8,
+                        child: Center(
+                          child: LinkButton(
+                            label: l10n.markExpired,
+                            onPressed: busy
+                                ? null
+                                : () => _changeStatus(
+                                    _Busy.expire,
+                                    title: l10n.markExpiredConfirmTitle,
+                                    body: l10n.markExpiredConfirmBody,
+                                    action: l10n.markExpired,
+                                    destructive: false,
+                                    run: () => ref.read(
+                                      markContractExpiredProvider,
+                                    )(_ref),
+                                  ),
+                          ),
                         ),
                       ),
                   ],
@@ -321,33 +362,28 @@ class _ValueCard extends StatelessWidget {
           .merge(moneyStyle),
     );
     final status = ContractStatusLabel(contract: c);
-    // How long is left, while it still runs. Soon turns orange, with an
-    // icon so it isn't color alone.
-    final remaining = switch (c.daysUntilExpiration) {
-      final days? when c.status == ContractStatus.active && days >= 0 => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            c.isExpiringSoon
+    // How long is left while it runs: orange when soon, red once past the
+    // end while still active, each with an icon so it isn't color alone.
+    final remaining = switch ((c.daysUntilExpiration, c.expirationDate)) {
+      (final days?, final end?) when c.status == ContractStatus.active =>
+        switch (days) {
+          < 0 => _Remaining(
+            icon: Icons.error_outline_rounded,
+            label: l10n.contractEndedOn(context.formatDate(end)),
+            color: context.colors.danger,
+            strong: true,
+          ),
+          _ => _Remaining(
+            icon: c.isExpiringSoon
                 ? Icons.schedule_rounded
                 : Icons.hourglass_empty_rounded,
-            size: 16,
+            label: l10n.contractDaysLeft(days),
             color: c.isExpiringSoon
                 ? context.colors.highlightInk
                 : context.colors.inkMuted,
+            strong: c.isExpiringSoon,
           ),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(
-              l10n.contractDaysLeft(days),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: c.isExpiringSoon ? context.colors.highlightInk : null,
-                fontWeight: c.isExpiringSoon ? FontWeight.w600 : null,
-              ),
-            ),
-          ),
-        ],
-      ),
+        },
       _ => null,
     };
 
@@ -375,4 +411,37 @@ class _ValueCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A line with an icon about how long the contract has left.
+class _Remaining extends StatelessWidget {
+  const _Remaining({
+    required this.icon,
+    required this.label,
+    required this.color,
+    this.strong = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 16, color: color),
+      const SizedBox(width: 6),
+      Flexible(
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: strong ? color : null,
+            fontWeight: strong ? FontWeight.w600 : null,
+          ),
+        ),
+      ),
+    ],
+  );
 }

@@ -1811,4 +1811,19 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get contractsHasRelatedRecords =>
       'Hay alcances de trabajo o facturas que usan este contrato, así que no se puede eliminar.';
+
+  @override
+  String get markExpired => 'Marcar como vencido';
+
+  @override
+  String get markExpiredConfirmTitle => '¿Marcar este contrato como vencido?';
+
+  @override
+  String get markExpiredConfirmBody =>
+      'Queda en el historial de la cuenta y todavía se puede editar.';
+
+  @override
+  String contractEndedOn(String date) {
+    return 'Terminó el $date';
+  }
 }

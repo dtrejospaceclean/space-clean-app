@@ -24,6 +24,9 @@ final saveContractProvider = Provider(
 final signContractProvider = Provider(
   (ref) => SignContract(ref.watch(contractsRepositoryProvider)),
 );
+final markContractExpiredProvider = Provider(
+  (ref) => MarkContractExpired(ref.watch(contractsRepositoryProvider)),
+);
 final cancelContractProvider = Provider(
   (ref) => CancelContract(ref.watch(contractsRepositoryProvider)),
 );

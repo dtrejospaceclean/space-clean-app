@@ -1795,4 +1795,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get contractsHasRelatedRecords =>
       'Scopes of work or invoices use this contract, so it can\'t be deleted.';
+
+  @override
+  String get markExpired => 'Mark expired';
+
+  @override
+  String get markExpiredConfirmTitle => 'Mark this contract expired?';
+
+  @override
+  String get markExpiredConfirmBody =>
+      'It stays in the account\'s history and can still be edited.';
+
+  @override
+  String contractEndedOn(String date) {
+    return 'Ended $date';
+  }
 }

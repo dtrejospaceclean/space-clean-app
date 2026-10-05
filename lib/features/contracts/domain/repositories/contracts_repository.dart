@@ -29,6 +29,10 @@ abstract interface class ContractsRepository {
     DateTime? signedDate,
   });
 
+  /// Sets the status to expired (a `PATCH` with only the status). Needs
+  /// `contract.edit`; refused once cancelled (`contracts.cancelled`).
+  Future<Contract> markExpired(String clientId, String contractId);
+
   /// Needs `contract.edit`. The contract stays, read-only.
   Future<Contract> cancelContract(String clientId, String contractId);
 

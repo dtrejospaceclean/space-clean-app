@@ -86,6 +86,10 @@ class Contract {
   /// Signing records who and when, once, and activates it.
   bool get canSign => !isSigned && !isCancelled;
 
+  /// Any active contract can be closed out as expired by hand; the server
+  /// never does it on its own.
+  bool get canMarkExpired => status == ContractStatus.active;
+
   /// Only a draft nothing was built on can be deleted; the rest is history.
   bool get canDelete =>
       status == ContractStatus.draft &&

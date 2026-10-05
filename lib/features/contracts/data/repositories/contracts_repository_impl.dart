@@ -45,6 +45,10 @@ class ContractsRepositoryImpl implements ContractsRepository {
   );
 
   @override
+  Future<Contract> markExpired(String clientId, String contractId) =>
+      _guard(() => _remote.markExpired(clientId, contractId));
+
+  @override
   Future<Contract> cancelContract(String clientId, String contractId) =>
       _guard(() => _remote.cancelContract(clientId, contractId));
 

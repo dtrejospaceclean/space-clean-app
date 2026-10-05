@@ -56,6 +56,15 @@ class ContractsRemoteDataSource {
     ),
   );
 
+  /// Sends only the status, so nothing else changes.
+  Future<Contract> markExpired(String clientId, String contractId) async =>
+      _one(
+        await _api.patch(
+          '${_path(clientId)}/$contractId',
+          body: {'status': ContractStatus.expired.wire},
+        ),
+      );
+
   /// Takes no body.
   Future<Contract> cancelContract(String clientId, String contractId) async =>
       _one(await _api.post('${_path(clientId)}/$contractId/cancel'));

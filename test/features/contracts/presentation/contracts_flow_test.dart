@@ -238,6 +238,8 @@ void main() {
     expect(find.byTooltip('Edit contract'), findsOneWidget);
 
     await revealBelow(tester, find.text('Cancel contract'));
+    // Any active contract can be marked expired, even one still running.
+    expect(find.text('Mark expired'), findsOneWidget);
     await tester.tap(find.text('Cancel contract'));
     await tester.pumpAndSettle();
     expect(find.text('Cancel this contract?'), findsOneWidget);
@@ -290,5 +292,44 @@ void main() {
     expect(contracts.writes, ['update:k-draft', 'delete:k-draft']);
     expect(find.text('From Nov 1, 2026'), findsNothing);
     expect(find.text('Oct 15, 2025 – Oct 14, 2026'), findsOneWidget);
+  });
+
+  testWidgets('an editor marks a contract past its end as expired', (
+    tester,
+  ) async {
+    // Active, but its end (Sep 18) is before the test clock (Sep 23).
+    final lapsed = Contract(
+      id: 'k-lapsed',
+      clientId: 'c1',
+      contractValue: '1200',
+      startDate: DateTime(2025, 9, 19),
+      expirationDate: DateTime(2026, 9, 18),
+      status: ContractStatus.active,
+      signedDate: DateTime(2025, 9, 1),
+      daysUntilExpiration: -5,
+    );
+    final contracts = await openContracts(
+      tester,
+      permissions: _editor,
+      contracts: [lapsed],
+    );
+    expect(find.text('Active'), findsOneWidget);
+    await tester.tap(find.text('Sep 19, 2025 – Sep 18, 2026'));
+    await tester.pumpAndSettle();
+    expect(find.text('Ended Sep 18, 2026'), findsOneWidget);
+
+    await revealBelow(tester, find.text('Mark expired'));
+    await tester.tap(find.text('Mark expired'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mark this contract expired?'), findsOneWidget);
+    await tester.tap(find.text('Mark expired').last);
+    await tester.pumpAndSettle();
+
+    expect(contracts.writes, ['expire:k-lapsed']);
+    expect(find.text('Expired'), findsOneWidget);
+    expect(find.text('Mark expired'), findsNothing);
+    expect(find.text('Ended Sep 18, 2026'), findsNothing);
+    // Expired isn't cancelled: it can still be edited or cancelled.
+    expect(find.byTooltip('Edit contract'), findsOneWidget);
   });
 }

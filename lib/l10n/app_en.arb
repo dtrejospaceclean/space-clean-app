@@ -855,5 +855,16 @@
   "contractsAlreadySigned": "This contract is already signed.",
   "contractsCancelled": "This contract is cancelled and can't change.",
   "contractsOnlyDraftsDeletable": "Only a draft contract can be deleted. Cancel it instead.",
-  "contractsHasRelatedRecords": "Scopes of work or invoices use this contract, so it can't be deleted."
+  "contractsHasRelatedRecords": "Scopes of work or invoices use this contract, so it can't be deleted.",
+  "markExpired": "Mark expired",
+  "markExpiredConfirmTitle": "Mark this contract expired?",
+  "markExpiredConfirmBody": "It stays in the account's history and can still be edited.",
+  "contractEndedOn": "Ended {date}",
+  "@contractEndedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

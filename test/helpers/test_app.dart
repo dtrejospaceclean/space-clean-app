@@ -722,6 +722,15 @@ class FakeContractsRepository implements ContractsRepository {
   }
 
   @override
+  Future<Contract> markExpired(String clientId, String contractId) async {
+    final c = await _open(clientId, contractId);
+    writes.add('expire:$contractId');
+    final next = _with(c, status: ContractStatus.expired);
+    _replace(next);
+    return next;
+  }
+
+  @override
   Future<Contract> cancelContract(String clientId, String contractId) async {
     final c = await _open(clientId, contractId);
     writes.add('cancel:$contractId');

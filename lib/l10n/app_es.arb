@@ -511,5 +511,9 @@
   "contractsAlreadySigned": "Este contrato ya está firmado.",
   "contractsCancelled": "Este contrato está cancelado y no puede cambiar.",
   "contractsOnlyDraftsDeletable": "Solo se puede eliminar un contrato en borrador. Cancélalo en su lugar.",
-  "contractsHasRelatedRecords": "Hay alcances de trabajo o facturas que usan este contrato, así que no se puede eliminar."
+  "contractsHasRelatedRecords": "Hay alcances de trabajo o facturas que usan este contrato, así que no se puede eliminar.",
+  "markExpired": "Marcar como vencido",
+  "markExpiredConfirmTitle": "¿Marcar este contrato como vencido?",
+  "markExpiredConfirmBody": "Queda en el historial de la cuenta y todavía se puede editar.",
+  "contractEndedOn": "Terminó el {date}"
 }

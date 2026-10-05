@@ -3169,6 +3169,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scopes of work or invoices use this contract, so it can\'t be deleted.'**
   String get contractsHasRelatedRecords;
+
+  /// No description provided for @markExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark expired'**
+  String get markExpired;
+
+  /// No description provided for @markExpiredConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark this contract expired?'**
+  String get markExpiredConfirmTitle;
+
+  /// No description provided for @markExpiredConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in the account\'s history and can still be edited.'**
+  String get markExpiredConfirmBody;
+
+  /// No description provided for @contractEndedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended {date}'**
+  String contractEndedOn(String date);
 }
 
 class _AppLocalizationsDelegate
