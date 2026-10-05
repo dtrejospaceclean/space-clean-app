@@ -40,6 +40,9 @@ import 'package:sp_cln_app/features/profile/domain/repositories/profile_reposito
 import 'package:sp_cln_app/features/proposals/di/proposals_providers.dart';
 import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
 import 'package:sp_cln_app/features/proposals/domain/repositories/proposals_repository.dart';
+import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
+import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
+import 'package:sp_cln_app/features/scopes/domain/repositories/scopes_repository.dart';
 import 'package:sp_cln_app/features/service_catalog/di/service_catalog_providers.dart';
 import 'package:sp_cln_app/features/team/di/team_providers.dart';
 import 'package:sp_cln_app/features/team/domain/entities/member.dart';
@@ -597,6 +600,100 @@ class FakeLocationsRepository implements LocationsRepository {
     }
     writes.add('delete:$locationId');
     locations = locations.where((l) => l.id != locationId).toList();
+  }
+}
+
+/// In-memory scopes with the API's rules: weekly and biweekly windows need
+/// weekdays, a scope with jobs isn't deleted, and an update without
+/// `schedules` keeps the windows. Records every write and draft.
+class FakeScopesRepository implements ScopesRepository {
+  FakeScopesRepository([List<Scope> scopes = const []]) : scopes = [...scopes];
+
+  List<Scope> scopes;
+  final writes = <String>[];
+  final drafts = <ScopeDraft>[];
+
+  @override
+  Future<List<Scope>> getScopes(String clientId, {String? contractId}) async =>
+      [
+        for (final s in scopes)
+          if (contractId == null || s.contractId == contractId) s,
+      ];
+
+  @override
+  Future<Scope> getScope(String clientId, String scopeId) async {
+    for (final s in scopes) {
+      if (s.id == scopeId) return s;
+    }
+    throw const ServerFailure('scopes.not_found', statusCode: 404);
+  }
+
+  static void _checkDays(ScopeDraft d) {
+    if (d.frequency.needsDays &&
+        (d.schedules ?? const []).any((w) => w.daysOfWeek.isEmpty)) {
+      throw const ServerFailure(
+        'scopes.days_of_week_required',
+        statusCode: 400,
+      );
+    }
+  }
+
+  Scope _from(ScopeDraft d, {required String id, Scope? base}) {
+    String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
+    return Scope(
+      id: id,
+      contractId: base?.contractId ?? d.contractId!,
+      contractStart: base?.contractStart,
+      contractEnd: base?.contractEnd,
+      locationId: d.locationId,
+      locationName: base?.locationId == d.locationId
+          ? base?.locationName
+          : 'Location ${d.locationId}',
+      serviceId: d.serviceId,
+      areaName: text(d.areaName),
+      frequency: d.frequency,
+      instructions: text(d.instructions),
+      exclusions: text(d.exclusions),
+      estimatedDurationMinutes: int.tryParse(d.estimatedDurationMinutes ?? ''),
+      requiredSupplies: text(d.requiredSupplies),
+      jobCount: base?.jobCount ?? 0,
+      schedules: d.schedules ?? base?.schedules ?? const [],
+    );
+  }
+
+  @override
+  Future<Scope> createScope(String clientId, ScopeDraft draft) async {
+    _checkDays(draft);
+    writes.add('create:${draft.contractId}');
+    drafts.add(draft);
+    final created = _from(draft, id: 's${scopes.length + 1}');
+    scopes = [...scopes, created];
+    return created;
+  }
+
+  @override
+  Future<Scope> updateScope(
+    String clientId,
+    String scopeId,
+    ScopeDraft draft,
+  ) async {
+    final current = await getScope(clientId, scopeId);
+    _checkDays(draft);
+    writes.add('update:$scopeId');
+    drafts.add(draft);
+    final next = _from(draft, id: scopeId, base: current);
+    scopes = [for (final s in scopes) s.id == scopeId ? next : s];
+    return next;
+  }
+
+  @override
+  Future<void> deleteScope(String clientId, String scopeId) async {
+    final s = await getScope(clientId, scopeId);
+    if (s.jobCount > 0) {
+      throw const ServerFailure('scopes.has_jobs', statusCode: 409);
+    }
+    writes.add('delete:$scopeId');
+    scopes = scopes.where((x) => x.id != scopeId).toList();
   }
 }
 
@@ -1401,6 +1498,7 @@ Future<SharedPreferences> pumpApp(
   TeamRepository? team,
   ProposalsRepository? proposals,
   ContractsRepository? contracts,
+  ScopesRepository? scopes,
   NotificationsRepository? notifications,
   Map<String, Object> preferences = const {},
 }) async {
@@ -1448,6 +1546,9 @@ Future<SharedPreferences> pumpApp(
         ),
         contractsRepositoryProvider.overrideWithValue(
           contracts ?? FakeContractsRepository(),
+        ),
+        scopesRepositoryProvider.overrideWithValue(
+          scopes ?? FakeScopesRepository(),
         ),
         // None unread unless a test says so (the real one is a placeholder
         // count until the API has notifications).

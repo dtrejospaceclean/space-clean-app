@@ -15,6 +15,7 @@ import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
+import '../../scopes/presentation/screens/scopes_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
 import '../../team/domain/usecases/team_usecases.dart';
 import '../../team/presentation/screens/team_screen.dart';
@@ -115,6 +116,13 @@ final _byPage = <String, List<_PlusOption>>{
       Permissions.contractEdit,
     ),
   ],
+  '${AccountsScreen.path}/:clientId/${ScopesScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${ScopesScreen.route}/new',
+      (l10n) => l10n.newScopeTitle,
+      Permissions.scopeEdit,
+    ),
+  ],
   '${AccountsScreen.path}/:clientId/${ContactsScreen.route}': [
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ContactsScreen.route}/new',
@@ -150,6 +158,7 @@ bool _noPlus(String route) =>
     route.endsWith('/approve') ||
     route.endsWith('/sign') ||
     route.endsWith('/item') ||
+    route.endsWith('/window') ||
     route == '/me/password' ||
     route == '/me/settings' ||
     route.endsWith('/login') ||

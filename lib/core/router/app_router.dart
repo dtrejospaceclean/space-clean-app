@@ -28,6 +28,10 @@ import '../../features/proposals/presentation/screens/line_item_screen.dart';
 import '../../features/proposals/presentation/screens/proposal_form_screen.dart';
 import '../../features/proposals/presentation/screens/proposal_screen.dart';
 import '../../features/proposals/presentation/screens/proposals_screen.dart';
+import '../../features/scopes/presentation/screens/scope_form_screen.dart';
+import '../../features/scopes/presentation/screens/scope_screen.dart';
+import '../../features/scopes/presentation/screens/scopes_screen.dart';
+import '../../features/scopes/presentation/screens/time_window_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
 import '../../features/jobs/presentation/screens/today_screen.dart';
 import '../../features/password_reset/presentation/screens/forgot_password_screen.dart';
@@ -261,6 +265,41 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   contractId:
                                       state.pathParameters['contractId']!,
                                 ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SlideRoute(
+                        path: ScopesScreen.route,
+                        // `?contract=` lists only that contract's scopes.
+                        builder: (_, state) => ScopesScreen(
+                          clientId: state.pathParameters['clientId']!,
+                          contractId: state.uri.queryParameters['contract'],
+                        ),
+                        routes: [
+                          // Before ':scopeId' so "new" isn't read as an id.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => ScopeFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                            routes: [_timeWindowRoute],
+                          ),
+                          SlideRoute(
+                            path: ':scopeId',
+                            builder: (_, state) => ScopeScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              scopeId: state.pathParameters['scopeId']!,
+                            ),
+                            routes: [
+                              SlideRoute(
+                                path: 'edit',
+                                builder: (_, state) => ScopeFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  scopeId: state.pathParameters['scopeId'],
+                                ),
+                                routes: [_timeWindowRoute],
                               ),
                             ],
                           ),
@@ -513,6 +552,19 @@ final _lineItemRoute = SlideRoute(
     initial: switch (state.extra) {
       final LineItemDraft item => item,
       _ => null,
+    },
+  ),
+);
+
+/// A scope form's time window page. The window and whether it needs
+/// weekdays come in `extra`; a page reopened without them starts a new
+/// window.
+final _timeWindowRoute = SlideRoute(
+  path: TimeWindowScreen.route,
+  builder: (_, state) => TimeWindowScreen(
+    args: switch (state.extra) {
+      final TimeWindowArgs args => args,
+      _ => const TimeWindowArgs(),
     },
   ),
 );

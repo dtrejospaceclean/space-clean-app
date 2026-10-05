@@ -1810,4 +1810,210 @@ class AppLocalizationsEn extends AppLocalizations {
   String contractEndedOn(String date) {
     return 'Ended $date';
   }
+
+  @override
+  String get moduleScopeHint => 'Areas, frequency and time windows';
+
+  @override
+  String get scopesOfOneContract => 'Showing one contract\'s scopes.';
+
+  @override
+  String get noScopesYet => 'No scopes of work yet';
+
+  @override
+  String get noScopesYetHint => 'Add one with + for each area of a location.';
+
+  @override
+  String get noTimeWindows => 'No time windows';
+
+  @override
+  String scheduleAndMore(String schedule, int count) {
+    return '$schedule and $count more';
+  }
+
+  @override
+  String get scopeWholeSite => 'Whole site';
+
+  @override
+  String get everyDay => 'Every day';
+
+  @override
+  String get frequencyDaily => 'Daily';
+
+  @override
+  String get frequencyWeekly => 'Weekly';
+
+  @override
+  String get frequencyBiweekly => 'Every 2 weeks';
+
+  @override
+  String get frequencyMonthly => 'Monthly';
+
+  @override
+  String get frequencyQuarterly => 'Quarterly';
+
+  @override
+  String get frequencyAnnual => 'Yearly';
+
+  @override
+  String get frequencyOneTime => 'One time';
+
+  @override
+  String get frequencyUnknown => 'Other frequency';
+
+  @override
+  String get scopeTitle => 'Scope of work';
+
+  @override
+  String get newScopeTitle => 'New scope of work';
+
+  @override
+  String get editScope => 'Edit scope';
+
+  @override
+  String get deleteScope => 'Delete scope';
+
+  @override
+  String get deleteScopeConfirmTitle => 'Delete this scope?';
+
+  @override
+  String get deleteScopeConfirmBody =>
+      'The scope and its time windows will be deleted. This can\'t be undone.';
+
+  @override
+  String get scopeHasJobsNote =>
+      'This scope already produced jobs, so it can\'t be deleted. Pause its time windows instead.';
+
+  @override
+  String get sectionTimeWindows => 'Time windows';
+
+  @override
+  String get sectionSchedule => 'Schedule';
+
+  @override
+  String get sectionDetails => 'Details';
+
+  @override
+  String get sectionHours => 'Hours';
+
+  @override
+  String get timeWindowPaused => 'Paused';
+
+  @override
+  String get timeWindowsEmpty => 'None yet. Tap + below to add one.';
+
+  @override
+  String get windowsNeedWeekdays => 'Pick the weekdays of each time window.';
+
+  @override
+  String get addTimeWindow => 'Add time window';
+
+  @override
+  String get addTimeWindowShort => 'Time window';
+
+  @override
+  String get editTimeWindow => 'Edit time window';
+
+  @override
+  String get removeTimeWindow => 'Remove time window';
+
+  @override
+  String get weekdaysLabel => 'Days';
+
+  @override
+  String get pickWeekdays => 'Pick at least one day.';
+
+  @override
+  String get startTimeLabel => 'Starts';
+
+  @override
+  String get endTimeLabel => 'Ends';
+
+  @override
+  String get noEndTime => 'No end time';
+
+  @override
+  String get endBeforeStart => 'Pick a time after the start.';
+
+  @override
+  String get timeWindowActiveLabel => 'Running';
+
+  @override
+  String get timeWindowActiveHelp =>
+      'A paused window stays on the scope but makes no new work.';
+
+  @override
+  String get locationLabel => 'Location';
+
+  @override
+  String get areaNameLabel => 'Area';
+
+  @override
+  String get areaNameHint => 'e.g. Lobby';
+
+  @override
+  String get areaNameHelp => 'Leave empty if it covers the whole site.';
+
+  @override
+  String get scopeServiceLabel => 'Service';
+
+  @override
+  String get frequencyLabel => 'Frequency';
+
+  @override
+  String get estimatedDurationLabel => 'Estimated duration';
+
+  @override
+  String get estimatedDurationHelp => 'In minutes.';
+
+  @override
+  String minutesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count min',
+      one: '1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get instructionsLabel => 'Instructions';
+
+  @override
+  String get instructionsHint => 'e.g. Mop with neutral cleaner';
+
+  @override
+  String get exclusionsLabel => 'Not included';
+
+  @override
+  String get exclusionsHint => 'e.g. Server room (4th floor)';
+
+  @override
+  String get requiredSuppliesLabel => 'Supplies';
+
+  @override
+  String get requiredSuppliesHint => 'e.g. Microfiber cloths';
+
+  @override
+  String get scopesNotFound => 'This scope of work no longer exists.';
+
+  @override
+  String get scopesDaysOfWeekRequired =>
+      'Weekly work needs the days of each time window.';
+
+  @override
+  String get scopesHasJobs =>
+      'This scope already produced jobs, so it can\'t be deleted. Pause its time windows instead.';
+
+  @override
+  String get scopeNeedsContract =>
+      'This account has no active or draft contract yet. Add one under Contracts first.';
+
+  @override
+  String get scopeNeedsLocation =>
+      'This account has no locations yet. Add one under Locations first.';
+
+  @override
+  String get scopeNoServices => 'The service catalog has no active services.';
 }

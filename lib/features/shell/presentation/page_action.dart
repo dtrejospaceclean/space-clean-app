@@ -38,6 +38,9 @@ class PageActionController extends Notifier<PageAction?> {
   void set(PageAction action) => state = action;
 
   void clear(Object owner) {
+    // The page can outlive the app's providers when everything is torn
+    // down at once.
+    if (!ref.mounted) return;
     if (state?.owner == owner) state = null;
   }
 }

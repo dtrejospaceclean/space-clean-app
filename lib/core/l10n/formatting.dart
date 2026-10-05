@@ -17,6 +17,15 @@ extension DateFormatting on BuildContext {
       ? formatTime(start)
       : '${formatTime(start)} – ${formatTime(end)}';
 
+  /// [hour]:[minute] as "7:00 AM" / "07:00".
+  String formatClock(int hour, int minute) =>
+      formatTime(DateTime(2000, 1, 1, hour, minute));
+
+  /// An ISO weekday (1 = Monday … 7 = Sunday) as "Mon" / "lun".
+  String formatWeekdayShort(int isoDay) =>
+      // Jan 1, 2024 was a Monday.
+      DateFormat.E(_locale).format(DateTime(2024, 1, isoDay));
+
   /// "Wednesday, September 23".
   String formatDayLong(DateTime day) =>
       DateFormat.MMMMEEEEd(_locale).format(day);

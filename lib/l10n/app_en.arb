@@ -866,5 +866,85 @@
         "type": "String"
       }
     }
-  }
+  },
+  "moduleScopeHint": "Areas, frequency and time windows",
+  "scopesOfOneContract": "Showing one contract's scopes.",
+  "noScopesYet": "No scopes of work yet",
+  "noScopesYetHint": "Add one with + for each area of a location.",
+  "noTimeWindows": "No time windows",
+  "scheduleAndMore": "{schedule} and {count} more",
+  "@scheduleAndMore": {
+    "placeholders": {
+      "schedule": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scopeWholeSite": "Whole site",
+  "everyDay": "Every day",
+  "frequencyDaily": "Daily",
+  "frequencyWeekly": "Weekly",
+  "frequencyBiweekly": "Every 2 weeks",
+  "frequencyMonthly": "Monthly",
+  "frequencyQuarterly": "Quarterly",
+  "frequencyAnnual": "Yearly",
+  "frequencyOneTime": "One time",
+  "frequencyUnknown": "Other frequency",
+  "scopeTitle": "Scope of work",
+  "newScopeTitle": "New scope of work",
+  "editScope": "Edit scope",
+  "deleteScope": "Delete scope",
+  "deleteScopeConfirmTitle": "Delete this scope?",
+  "deleteScopeConfirmBody": "The scope and its time windows will be deleted. This can't be undone.",
+  "scopeHasJobsNote": "This scope already produced jobs, so it can't be deleted. Pause its time windows instead.",
+  "sectionTimeWindows": "Time windows",
+  "sectionSchedule": "Schedule",
+  "sectionDetails": "Details",
+  "sectionHours": "Hours",
+  "timeWindowPaused": "Paused",
+  "timeWindowsEmpty": "None yet. Tap + below to add one.",
+  "windowsNeedWeekdays": "Pick the weekdays of each time window.",
+  "addTimeWindow": "Add time window",
+  "addTimeWindowShort": "Time window",
+  "editTimeWindow": "Edit time window",
+  "removeTimeWindow": "Remove time window",
+  "weekdaysLabel": "Days",
+  "pickWeekdays": "Pick at least one day.",
+  "startTimeLabel": "Starts",
+  "endTimeLabel": "Ends",
+  "noEndTime": "No end time",
+  "endBeforeStart": "Pick a time after the start.",
+  "timeWindowActiveLabel": "Running",
+  "timeWindowActiveHelp": "A paused window stays on the scope but makes no new work.",
+  "locationLabel": "Location",
+  "areaNameLabel": "Area",
+  "areaNameHint": "e.g. Lobby",
+  "areaNameHelp": "Leave empty if it covers the whole site.",
+  "scopeServiceLabel": "Service",
+  "frequencyLabel": "Frequency",
+  "estimatedDurationLabel": "Estimated duration",
+  "estimatedDurationHelp": "In minutes.",
+  "minutesCount": "{count, plural, =1{1 min} other{{count} min}}",
+  "@minutesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "instructionsLabel": "Instructions",
+  "instructionsHint": "e.g. Mop with neutral cleaner",
+  "exclusionsLabel": "Not included",
+  "exclusionsHint": "e.g. Server room (4th floor)",
+  "requiredSuppliesLabel": "Supplies",
+  "requiredSuppliesHint": "e.g. Microfiber cloths",
+  "scopesNotFound": "This scope of work no longer exists.",
+  "scopesDaysOfWeekRequired": "Weekly work needs the days of each time window.",
+  "scopesHasJobs": "This scope already produced jobs, so it can't be deleted. Pause its time windows instead.",
+  "scopeNeedsContract": "This account has no active or draft contract yet. Add one under Contracts first.",
+  "scopeNeedsLocation": "This account has no locations yet. Add one under Locations first.",
+  "scopeNoServices": "The service catalog has no active services."
 }

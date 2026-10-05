@@ -12,6 +12,7 @@ import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
 import '../../../proposals/presentation/screens/proposals_screen.dart';
 import '../../../proposals/presentation/widgets/line_item_row.dart';
+import '../../../scopes/presentation/screens/scopes_screen.dart';
 import '../../di/contracts_providers.dart';
 import '../../domain/entities/contract.dart';
 import '../../domain/usecases/contract_usecases.dart';
@@ -154,6 +155,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
     final access = ref.watch(accountAccessProvider(widget.clientId)).value;
     final canEdit = access?.can(Permissions.contractEdit) ?? false;
     final canViewProposals = access?.can(Permissions.proposalView) ?? false;
+    final canViewScopes = access?.can(Permissions.scopeView) ?? false;
     final c = contract.value;
     final editable = canEdit && (c?.isEditable ?? false);
     final here = GoRouterState.of(context).matchedLocation;
@@ -261,6 +263,17 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                               _ => l10n.contractNotSigned,
                             },
                           ),
+                          // The work agreed under it, area by area.
+                          if (canViewScopes)
+                            fact(
+                              Icons.checklist_rtl_rounded,
+                              l10n.moduleScope,
+                              l10n.scopeOfWorkCount(c.scopeOfWorkCount),
+                              onTap: () => context.push(
+                                '$account/${ScopesScreen.route}'
+                                '?contract=${c.id}',
+                              ),
+                            ),
                           if (c.proposalId case final proposalId?)
                             fact(
                               Icons.request_quote_outlined,

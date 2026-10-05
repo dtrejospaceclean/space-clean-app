@@ -6,6 +6,7 @@ import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
+import '../../scopes/presentation/screens/scopes_screen.dart';
 import '../../team/presentation/screens/team_screen.dart';
 
 /// How an account's modules are ordered until the user sets their own
@@ -65,6 +66,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleContracts,
     description: (l10n) => l10n.moduleContractsHint,
     route: ContractsScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.work,
+    permission: Permissions.scopeView,
+    icon: Icons.checklist_rtl_rounded,
+    label: (l10n) => l10n.moduleScope,
+    description: (l10n) => l10n.moduleScopeHint,
+    route: ScopesScreen.route,
   ),
   AccountModule(
     section: AccountSection.account,

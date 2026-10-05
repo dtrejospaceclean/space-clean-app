@@ -1826,4 +1826,211 @@ class AppLocalizationsEs extends AppLocalizations {
   String contractEndedOn(String date) {
     return 'Terminó el $date';
   }
+
+  @override
+  String get moduleScopeHint => 'Áreas, frecuencia y horarios';
+
+  @override
+  String get scopesOfOneContract => 'Se muestran los alcances de un contrato.';
+
+  @override
+  String get noScopesYet => 'Aún no hay alcances de trabajo';
+
+  @override
+  String get noScopesYetHint =>
+      'Agrega uno con + por cada área de una ubicación.';
+
+  @override
+  String get noTimeWindows => 'Sin horarios';
+
+  @override
+  String scheduleAndMore(String schedule, int count) {
+    return '$schedule y $count más';
+  }
+
+  @override
+  String get scopeWholeSite => 'Todo el sitio';
+
+  @override
+  String get everyDay => 'Todos los días';
+
+  @override
+  String get frequencyDaily => 'Diario';
+
+  @override
+  String get frequencyWeekly => 'Semanal';
+
+  @override
+  String get frequencyBiweekly => 'Cada 2 semanas';
+
+  @override
+  String get frequencyMonthly => 'Mensual';
+
+  @override
+  String get frequencyQuarterly => 'Trimestral';
+
+  @override
+  String get frequencyAnnual => 'Anual';
+
+  @override
+  String get frequencyOneTime => 'Una sola vez';
+
+  @override
+  String get frequencyUnknown => 'Otra frecuencia';
+
+  @override
+  String get scopeTitle => 'Alcance de trabajo';
+
+  @override
+  String get newScopeTitle => 'Nuevo alcance de trabajo';
+
+  @override
+  String get editScope => 'Editar alcance';
+
+  @override
+  String get deleteScope => 'Eliminar alcance';
+
+  @override
+  String get deleteScopeConfirmTitle => '¿Eliminar este alcance?';
+
+  @override
+  String get deleteScopeConfirmBody =>
+      'Se eliminarán el alcance y sus horarios. Esto no se puede deshacer.';
+
+  @override
+  String get scopeHasJobsNote =>
+      'Este alcance ya generó trabajos, así que no se puede eliminar. Pausa sus horarios en su lugar.';
+
+  @override
+  String get sectionTimeWindows => 'Horarios';
+
+  @override
+  String get sectionSchedule => 'Programación';
+
+  @override
+  String get sectionDetails => 'Detalles';
+
+  @override
+  String get sectionHours => 'Horas';
+
+  @override
+  String get timeWindowPaused => 'En pausa';
+
+  @override
+  String get timeWindowsEmpty => 'Ninguno aún. Toca + abajo para agregar uno.';
+
+  @override
+  String get windowsNeedWeekdays => 'Elige los días de cada horario.';
+
+  @override
+  String get addTimeWindow => 'Agregar horario';
+
+  @override
+  String get addTimeWindowShort => 'Horario';
+
+  @override
+  String get editTimeWindow => 'Editar horario';
+
+  @override
+  String get removeTimeWindow => 'Quitar horario';
+
+  @override
+  String get weekdaysLabel => 'Días';
+
+  @override
+  String get pickWeekdays => 'Elige al menos un día.';
+
+  @override
+  String get startTimeLabel => 'Inicio';
+
+  @override
+  String get endTimeLabel => 'Fin';
+
+  @override
+  String get noEndTime => 'Sin hora de fin';
+
+  @override
+  String get endBeforeStart => 'Elige una hora posterior al inicio.';
+
+  @override
+  String get timeWindowActiveLabel => 'Activo';
+
+  @override
+  String get timeWindowActiveHelp =>
+      'Un horario en pausa sigue en el alcance, pero no genera trabajo nuevo.';
+
+  @override
+  String get locationLabel => 'Ubicación';
+
+  @override
+  String get areaNameLabel => 'Área';
+
+  @override
+  String get areaNameHint => 'p. ej. Recepción';
+
+  @override
+  String get areaNameHelp => 'Déjalo vacío si cubre todo el sitio.';
+
+  @override
+  String get scopeServiceLabel => 'Servicio';
+
+  @override
+  String get frequencyLabel => 'Frecuencia';
+
+  @override
+  String get estimatedDurationLabel => 'Duración estimada';
+
+  @override
+  String get estimatedDurationHelp => 'En minutos.';
+
+  @override
+  String minutesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count min',
+      one: '1 min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get instructionsLabel => 'Instrucciones';
+
+  @override
+  String get instructionsHint => 'p. ej. Trapear con limpiador neutro';
+
+  @override
+  String get exclusionsLabel => 'No incluye';
+
+  @override
+  String get exclusionsHint => 'p. ej. Sala de servidores (piso 4)';
+
+  @override
+  String get requiredSuppliesLabel => 'Insumos';
+
+  @override
+  String get requiredSuppliesHint => 'p. ej. Paños de microfibra';
+
+  @override
+  String get scopesNotFound => 'Este alcance de trabajo ya no existe.';
+
+  @override
+  String get scopesDaysOfWeekRequired =>
+      'El trabajo semanal necesita los días de cada horario.';
+
+  @override
+  String get scopesHasJobs =>
+      'Este alcance ya generó trabajos, así que no se puede eliminar. Pausa sus horarios en su lugar.';
+
+  @override
+  String get scopeNeedsContract =>
+      'Esta cuenta aún no tiene un contrato activo o en borrador. Agrega uno en Contratos primero.';
+
+  @override
+  String get scopeNeedsLocation =>
+      'Esta cuenta aún no tiene ubicaciones. Agrega una en Ubicaciones primero.';
+
+  @override
+  String get scopeNoServices => 'El catálogo no tiene servicios activos.';
 }

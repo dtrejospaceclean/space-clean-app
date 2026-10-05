@@ -129,3 +129,57 @@ Future<DateTime?> showAppDatePicker(
   );
   return done == true ? DateTime(picked.year, picked.month, picked.day) : null;
 }
+
+/// Picks a time of day: the Material time dialog on Android, a time wheel
+/// in a bottom popup on iOS, each in the phone's 12/24-hour setting.
+/// Returns `null` when dismissed.
+Future<TimeOfDay?> showAppTimePicker(
+  BuildContext context, {
+  required TimeOfDay initial,
+}) async {
+  if (!useCupertino(context)) {
+    return showTimePicker(context: context, initialTime: initial);
+  }
+  var picked = initial;
+  final l10n = AppLocalizations.of(context);
+  final use24h = MediaQuery.alwaysUse24HourFormatOf(context);
+  final done = await showCupertinoModalPopup<bool>(
+    context: context,
+    builder: (context) => Container(
+      height: 300,
+      color: CupertinoColors.systemBackground.resolveFrom(context),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: CupertinoButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.doneButton),
+              ),
+            ),
+            Expanded(
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.time,
+                use24hFormat: use24h,
+                minuteInterval: 5,
+                // The wheel only lands on multiples of its interval.
+                initialDateTime: DateTime(
+                  2000,
+                  1,
+                  1,
+                  initial.hour,
+                  initial.minute - initial.minute % 5,
+                ),
+                onDateTimeChanged: (d) =>
+                    picked = TimeOfDay(hour: d.hour, minute: d.minute),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+  return done == true ? picked : null;
+}

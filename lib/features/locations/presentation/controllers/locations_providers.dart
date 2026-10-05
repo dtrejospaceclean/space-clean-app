@@ -32,6 +32,14 @@ final locationsProvider = FutureProvider.autoDispose
       ),
     );
 
+/// Every location of an account by name, unfiltered, for pickers.
+final allLocationsProvider = FutureProvider.autoDispose
+    .family<List<Location>, String>(
+      (ref, clientId) => ref.watch(getLocationsProvider)(
+        LocationQuery(clientId: clientId, search: ''),
+      ),
+    );
+
 /// One location with its usage counts: `(clientId, locationId)`.
 final locationProvider = FutureProvider.autoDispose
     .family<Location, (String, String)>(
@@ -43,4 +51,5 @@ final locationProvider = FutureProvider.autoDispose
 /// Drops an account's cached locations after a save or delete.
 void invalidateLocations(WidgetRef ref, String clientId) => ref
   ..invalidate(locationsProvider(clientId))
+  ..invalidate(allLocationsProvider(clientId))
   ..invalidate(locationProvider);

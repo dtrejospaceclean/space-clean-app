@@ -3193,6 +3193,384 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ended {date}'**
   String contractEndedOn(String date);
+
+  /// No description provided for @moduleScopeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Areas, frequency and time windows'**
+  String get moduleScopeHint;
+
+  /// No description provided for @scopesOfOneContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing one contract\'s scopes.'**
+  String get scopesOfOneContract;
+
+  /// No description provided for @noScopesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No scopes of work yet'**
+  String get noScopesYet;
+
+  /// No description provided for @noScopesYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one with + for each area of a location.'**
+  String get noScopesYetHint;
+
+  /// No description provided for @noTimeWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'No time windows'**
+  String get noTimeWindows;
+
+  /// No description provided for @scheduleAndMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{schedule} and {count} more'**
+  String scheduleAndMore(String schedule, int count);
+
+  /// No description provided for @scopeWholeSite.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole site'**
+  String get scopeWholeSite;
+
+  /// No description provided for @everyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get everyDay;
+
+  /// No description provided for @frequencyDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get frequencyDaily;
+
+  /// No description provided for @frequencyWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get frequencyWeekly;
+
+  /// No description provided for @frequencyBiweekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 2 weeks'**
+  String get frequencyBiweekly;
+
+  /// No description provided for @frequencyMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get frequencyMonthly;
+
+  /// No description provided for @frequencyQuarterly.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get frequencyQuarterly;
+
+  /// No description provided for @frequencyAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get frequencyAnnual;
+
+  /// No description provided for @frequencyOneTime.
+  ///
+  /// In en, this message translates to:
+  /// **'One time'**
+  String get frequencyOneTime;
+
+  /// No description provided for @frequencyUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other frequency'**
+  String get frequencyUnknown;
+
+  /// No description provided for @scopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scope of work'**
+  String get scopeTitle;
+
+  /// No description provided for @newScopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New scope of work'**
+  String get newScopeTitle;
+
+  /// No description provided for @editScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit scope'**
+  String get editScope;
+
+  /// No description provided for @deleteScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete scope'**
+  String get deleteScope;
+
+  /// No description provided for @deleteScopeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this scope?'**
+  String get deleteScopeConfirmTitle;
+
+  /// No description provided for @deleteScopeConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The scope and its time windows will be deleted. This can\'t be undone.'**
+  String get deleteScopeConfirmBody;
+
+  /// No description provided for @scopeHasJobsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This scope already produced jobs, so it can\'t be deleted. Pause its time windows instead.'**
+  String get scopeHasJobsNote;
+
+  /// No description provided for @sectionTimeWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Time windows'**
+  String get sectionTimeWindows;
+
+  /// No description provided for @sectionSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get sectionSchedule;
+
+  /// No description provided for @sectionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get sectionDetails;
+
+  /// No description provided for @sectionHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get sectionHours;
+
+  /// No description provided for @timeWindowPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get timeWindowPaused;
+
+  /// No description provided for @timeWindowsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet. Tap + below to add one.'**
+  String get timeWindowsEmpty;
+
+  /// No description provided for @windowsNeedWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the weekdays of each time window.'**
+  String get windowsNeedWeekdays;
+
+  /// No description provided for @addTimeWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Add time window'**
+  String get addTimeWindow;
+
+  /// No description provided for @addTimeWindowShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Time window'**
+  String get addTimeWindowShort;
+
+  /// No description provided for @editTimeWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit time window'**
+  String get editTimeWindow;
+
+  /// No description provided for @removeTimeWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove time window'**
+  String get removeTimeWindow;
+
+  /// No description provided for @weekdaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get weekdaysLabel;
+
+  /// No description provided for @pickWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one day.'**
+  String get pickWeekdays;
+
+  /// No description provided for @startTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts'**
+  String get startTimeLabel;
+
+  /// No description provided for @endTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends'**
+  String get endTimeLabel;
+
+  /// No description provided for @noEndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'No end time'**
+  String get noEndTime;
+
+  /// No description provided for @endBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time after the start.'**
+  String get endBeforeStart;
+
+  /// No description provided for @timeWindowActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get timeWindowActiveLabel;
+
+  /// No description provided for @timeWindowActiveHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A paused window stays on the scope but makes no new work.'**
+  String get timeWindowActiveHelp;
+
+  /// No description provided for @locationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationLabel;
+
+  /// No description provided for @areaNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get areaNameLabel;
+
+  /// No description provided for @areaNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Lobby'**
+  String get areaNameHint;
+
+  /// No description provided for @areaNameHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty if it covers the whole site.'**
+  String get areaNameHelp;
+
+  /// No description provided for @scopeServiceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get scopeServiceLabel;
+
+  /// No description provided for @frequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get frequencyLabel;
+
+  /// No description provided for @estimatedDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated duration'**
+  String get estimatedDurationLabel;
+
+  /// No description provided for @estimatedDurationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'In minutes.'**
+  String get estimatedDurationHelp;
+
+  /// No description provided for @minutesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 min} other{{count} min}}'**
+  String minutesCount(int count);
+
+  /// No description provided for @instructionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get instructionsLabel;
+
+  /// No description provided for @instructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Mop with neutral cleaner'**
+  String get instructionsHint;
+
+  /// No description provided for @exclusionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not included'**
+  String get exclusionsLabel;
+
+  /// No description provided for @exclusionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Server room (4th floor)'**
+  String get exclusionsHint;
+
+  /// No description provided for @requiredSuppliesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplies'**
+  String get requiredSuppliesLabel;
+
+  /// No description provided for @requiredSuppliesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Microfiber cloths'**
+  String get requiredSuppliesHint;
+
+  /// No description provided for @scopesNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This scope of work no longer exists.'**
+  String get scopesNotFound;
+
+  /// No description provided for @scopesDaysOfWeekRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly work needs the days of each time window.'**
+  String get scopesDaysOfWeekRequired;
+
+  /// No description provided for @scopesHasJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'This scope already produced jobs, so it can\'t be deleted. Pause its time windows instead.'**
+  String get scopesHasJobs;
+
+  /// No description provided for @scopeNeedsContract.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no active or draft contract yet. Add one under Contracts first.'**
+  String get scopeNeedsContract;
+
+  /// No description provided for @scopeNeedsLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no locations yet. Add one under Locations first.'**
+  String get scopeNeedsLocation;
+
+  /// No description provided for @scopeNoServices.
+  ///
+  /// In en, this message translates to:
+  /// **'The service catalog has no active services.'**
+  String get scopeNoServices;
 }
 
 class _AppLocalizationsDelegate
