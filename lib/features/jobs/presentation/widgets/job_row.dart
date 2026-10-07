@@ -28,7 +28,7 @@ class JobCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = context.colors;
-    final tone = _JobTone.of(context, job.status);
+    final tone = JobTone.of(context, job.status);
     final large = isLargeText(context);
     final place = [
       ?accountName,
@@ -166,50 +166,12 @@ class JobCard extends StatelessWidget {
   }
 }
 
-/// How a status colors a card: the left edge, the progress bar, and the
-/// progress figure.
-class _JobTone {
-  const _JobTone({required this.edge, required this.bar, required this.ink});
-
-  final Color edge;
-  final Color bar;
-
-  /// The progress figure; dark enough for small text on white.
-  final Color ink;
-
-  static _JobTone of(BuildContext context, JobStatus status) {
-    final c = context.colors;
-    return switch (status) {
-      JobStatus.completed => _JobTone(
-        edge: c.success,
-        bar: c.success,
-        ink: c.successInk,
-      ),
-      JobStatus.inProgress => _JobTone(
-        edge: c.primary,
-        bar: c.primary,
-        ink: c.highlightInk,
-      ),
-      JobStatus.scheduled => _JobTone(
-        edge: c.accentSoft,
-        bar: c.accent,
-        ink: c.inkMuted,
-      ),
-      JobStatus.cancelled || JobStatus.unknown => _JobTone(
-        edge: c.line,
-        bar: c.inkFaint,
-        ink: c.inkMuted,
-      ),
-    };
-  }
-}
-
 /// "Task completion · 1 of 1 done (100%)" over a bar in the status color.
 class _Progress extends StatelessWidget {
   const _Progress({required this.job, required this.tone});
 
   final Job job;
-  final _JobTone tone;
+  final JobTone tone;
 
   @override
   Widget build(BuildContext context) {

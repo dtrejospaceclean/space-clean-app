@@ -117,9 +117,16 @@ Future<FakeJobsRepository> openJobs(
   return repo;
 }
 
-/// The job page's two-tone title.
-Finder _headline(String title) =>
-    find.textContaining(title, findRichText: true);
+/// The job page's title.
+Finder _headline(String title) => find.text(title);
+
+/// Picks [action] from the job page's "⋯" menu.
+Future<void> _menu(WidgetTester tester, String action) async {
+  await tester.tap(find.byTooltip('More actions'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(action).last);
+  await tester.pumpAndSettle();
+}
 
 void main() {
   testWidgets('a viewer reads upcoming and past jobs, without changing them', (
@@ -141,14 +148,12 @@ void main() {
     await tester.tap(find.text('Nightly clean'));
     await tester.pumpAndSettle();
 
+    await revealBelow(tester, find.text('Mop floors'));
     expect(find.text('Empty trash'), findsOneWidget);
-    expect(find.text('Mop floors'), findsOneWidget);
-    await revealBelow(tester, find.text('Carlos Medina'));
+    await revealBelow(tester, find.text('lead').last);
     // The role under the name, the check-in at the right.
-    expect(find.text('lead'), findsOneWidget);
     expect(find.text('In 5:55 PM'), findsOneWidget);
-    expect(find.byTooltip('Edit job'), findsNothing);
-    expect(find.byTooltip('Delete job'), findsNothing);
+    expect(find.byTooltip('More actions'), findsNothing);
     expect(find.text('Edit'), findsNothing);
     expect(find.text('Cancel job'), findsNothing);
     expect(jobs.writes, isEmpty);
@@ -184,7 +189,9 @@ void main() {
     expect(_headline('Window washing'), findsOneWidget);
     expect(find.text('No checklist yet'), findsOneWidget);
     expect(find.text('No one assigned yet'), findsOneWidget);
-    expect(find.byTooltip('Delete job'), findsOneWidget);
+    await tester.tap(find.byTooltip('More actions'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete job'), findsOneWidget);
   });
 
   testWidgets('an editor changes the title, keeping the time', (tester) async {
@@ -192,8 +199,7 @@ void main() {
     await tester.tap(find.text('Nightly clean'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Edit job'));
-    await tester.pumpAndSettle();
+    await _menu(tester, 'Edit job');
     expect(find.text('6:00 PM'), findsOneWidget);
     expect(find.text('8:00 PM'), findsOneWidget);
     await tester.enterText(field('Title'), 'Evening clean');
@@ -234,7 +240,7 @@ void main() {
       for (final c in jobs.crews.single) (c.userId, c.roleOnJob),
     ], unorderedEquals([('u-carlos', 'lead'), ('u-luisa', null)]));
     await revealBelow(tester, find.text('User u-luisa'));
-    expect(find.text('Carlos Medina'), findsOneWidget);
+    expect(find.text('Carlos Medina'), findsWidgets);
   });
 
   testWidgets('an editor adds checklist items with "+", warned about ticks', (
@@ -281,7 +287,7 @@ void main() {
     final jobs = await openJobs(tester, permissions: _editor);
     await tester.tap(find.text('Nightly clean'));
     await tester.pumpAndSettle();
-    expect(find.text('1/2'), findsOneWidget);
+    expect(find.text('1 of 2 completed'), findsOneWidget);
 
     await revealBelow(tester, find.text('Mop floors'));
     await tester.tap(find.text('Mop floors'));
@@ -294,7 +300,7 @@ void main() {
     expect(jobs.writes, ['tick:i2', 'reopen:i1']);
     await tester.drag(find.byType(Scrollable).last, const Offset(0, 2000));
     await tester.pumpAndSettle();
-    expect(find.text('1/2'), findsOneWidget);
+    expect(find.text('1 of 2 completed'), findsOneWidget);
   });
 
   testWidgets('crew tick their own job; others only read it', (tester) async {
@@ -453,15 +459,13 @@ void main() {
     await tester.tap(find.text('Nightly clean'));
     await tester.pumpAndSettle();
 
-    await revealBelow(tester, find.text('Cancel job'));
-    await tester.tap(find.text('Cancel job'));
-    await tester.pumpAndSettle();
+    await _menu(tester, 'Cancel job');
     expect(find.text('Cancel this job?'), findsOneWidget);
     await tester.tap(find.text('Cancel job').last);
     await tester.pumpAndSettle();
 
     expect(jobs.writes, ['cancel:j1']);
-    expect(find.byTooltip('Edit job'), findsNothing);
+    expect(find.byTooltip('More actions'), findsNothing);
     expect(find.text('Cancel job'), findsNothing);
     expect(find.text('Edit'), findsNothing);
     await tester.drag(find.byType(Scrollable).last, const Offset(0, 2000));
@@ -477,8 +481,7 @@ void main() {
     await tester.tap(find.text('Nightly clean'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Delete job'));
-    await tester.pumpAndSettle();
+    await _menu(tester, 'Delete job');
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
 

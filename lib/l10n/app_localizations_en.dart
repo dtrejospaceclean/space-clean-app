@@ -2530,4 +2530,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dayHasJobs => 'has jobs';
+
+  @override
+  String get moreActions => 'More actions';
+
+  @override
+  String checklistCompletedCount(int done, int total) {
+    return '$done of $total completed';
+  }
+
+  @override
+  String percentDone(int percent) {
+    return '$percent% done';
+  }
+
+  @override
+  String get reviewTasks => 'Review tasks';
+
+  @override
+  String get copyButton => 'Copy';
+
+  @override
+  String get copiedButton => 'Copied';
+
+  @override
+  String get eventCheckedIn => 'Checked in';
+
+  @override
+  String get eventCheckedOut => 'Checked out';
+
+  @override
+  String get eventWorkCompleted => 'Work completed';
+
+  @override
+  String get activityTitle => 'Activity';
+
+  @override
+  String activityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count events',
+      one: '1 event',
+    );
+    return '$_temp0';
+  }
 }

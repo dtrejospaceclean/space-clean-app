@@ -1,3 +1,4 @@
+import '../../../scopes/domain/entities/scope.dart';
 import '../../domain/entities/job.dart';
 
 abstract final class JobModel {
@@ -39,6 +40,10 @@ abstract final class JobModel {
             ),
       scopeId: json['scopeOfWorkId'] as String? ?? scope?['id'] as String?,
       scopeArea: scope?['areaName'] as String?,
+      scopeFrequency: switch (scope?['frequency']) {
+        final String f => ScopeFrequency.fromWire(f),
+        _ => null,
+      },
       assignees: [
         for (final a in json['assignments'] as List? ?? const [])
           if ((a as Map)['user'] case final Map user)
@@ -74,6 +79,7 @@ abstract final class JobModel {
       },
       cleanerNotes: json['cleanerNotes'] as String?,
       clientSignoffName: json['clientSignoffName'] as String?,
+      clientSignoffAt: _local(json['clientSignoffAt']),
     );
   }
 

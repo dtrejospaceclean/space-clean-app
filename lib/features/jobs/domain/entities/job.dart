@@ -1,4 +1,5 @@
 import '../../../clients/domain/entities/client.dart';
+import '../../../scopes/domain/entities/scope.dart';
 
 enum JobStatus { scheduled, inProgress, completed, cancelled, unknown }
 
@@ -86,6 +87,7 @@ class Job {
     this.location,
     this.scopeId,
     this.scopeArea,
+    this.scopeFrequency,
     this.assignees = const [],
     this.instructions,
     this.checklist = const [],
@@ -96,6 +98,7 @@ class Job {
     this.qualityScore,
     this.cleanerNotes,
     this.clientSignoffName,
+    this.clientSignoffAt,
   });
 
   final String id;
@@ -113,6 +116,9 @@ class Job {
 
   /// The scope's area; null for a whole-site scope (or no scope).
   final String? scopeArea;
+
+  /// How often the scope's work comes round.
+  final ScopeFrequency? scopeFrequency;
   final List<JobAssignee> assignees;
   final String? instructions;
   final List<ChecklistItem> checklist;
@@ -127,6 +133,9 @@ class Job {
   final num? qualityScore;
   final String? cleanerNotes;
   final String? clientSignoffName;
+
+  /// Local time.
+  final DateTime? clientSignoffAt;
 
   int get checklistTotal => checklist.length;
   int get checklistDone => checklist.where((i) => i.isCompleted).length;

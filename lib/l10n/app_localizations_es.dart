@@ -2553,4 +2553,49 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dayHasJobs => 'tiene trabajos';
+
+  @override
+  String get moreActions => 'Más acciones';
+
+  @override
+  String checklistCompletedCount(int done, int total) {
+    return '$done de $total completadas';
+  }
+
+  @override
+  String percentDone(int percent) {
+    return '$percent % hecho';
+  }
+
+  @override
+  String get reviewTasks => 'Ver tareas';
+
+  @override
+  String get copyButton => 'Copiar';
+
+  @override
+  String get copiedButton => 'Copiado';
+
+  @override
+  String get eventCheckedIn => 'Entrada';
+
+  @override
+  String get eventCheckedOut => 'Salida';
+
+  @override
+  String get eventWorkCompleted => 'Trabajo terminado';
+
+  @override
+  String get activityTitle => 'Actividad';
+
+  @override
+  String activityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count eventos',
+      one: '1 evento',
+    );
+    return '$_temp0';
+  }
 }

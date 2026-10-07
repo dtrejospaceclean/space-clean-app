@@ -4417,6 +4417,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'has jobs'**
   String get dayHasJobs;
+
+  /// No description provided for @moreActions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get moreActions;
+
+  /// No description provided for @checklistCompletedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} completed'**
+  String checklistCompletedCount(int done, int total);
+
+  /// No description provided for @percentDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% done'**
+  String percentDone(int percent);
+
+  /// No description provided for @reviewTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Review tasks'**
+  String get reviewTasks;
+
+  /// No description provided for @copyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyButton;
+
+  /// No description provided for @copiedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copiedButton;
+
+  /// No description provided for @eventCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get eventCheckedIn;
+
+  /// No description provided for @eventCheckedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked out'**
+  String get eventCheckedOut;
+
+  /// No description provided for @eventWorkCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Work completed'**
+  String get eventWorkCompleted;
+
+  /// No description provided for @activityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get activityTitle;
+
+  /// No description provided for @activityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 event} other{{count} events}}'**
+  String activityCount(int count);
 }
 
 class _AppLocalizationsDelegate

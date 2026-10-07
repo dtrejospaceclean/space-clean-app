@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/features/jobs/data/models/job_model.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
+import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
 
 void main() {
   test('maps the API job, including crew and checklist progress', () {
@@ -23,6 +24,8 @@ void main() {
       'actualStartTime': '2026-09-23T12:05:00.000Z',
       'startedBy': {'id': 'u1', 'name': 'Ana Pérez'},
       'qualityScore': '4.5',
+      'clientSignoffName': 'María López',
+      'clientSignoffAt': '2026-09-23T14:00:00.000Z',
       'assignments': [
         {
           'userId': 'u1',
@@ -52,6 +55,8 @@ void main() {
     expect(job.scheduledEnd, isNull);
     expect((job.locationId, job.location?.city), ('l1', 'Houston'));
     expect((job.scopeId, job.scopeArea), ('s1', 'Lobby'));
+    expect(job.scopeFrequency, ScopeFrequency.daily);
+    expect(job.clientSignoffAt?.toUtc(), DateTime.utc(2026, 9, 23, 14));
     expect(job.actualStart?.toUtc(), DateTime.utc(2026, 9, 23, 12, 5));
     expect(job.startedByName, 'Ana Pérez');
     expect(job.qualityScore, 4.5);

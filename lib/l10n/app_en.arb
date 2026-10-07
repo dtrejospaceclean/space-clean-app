@@ -1245,5 +1245,40 @@
   },
   "noJobsOnDay": "No jobs this day",
   "noJobsMatchFilter": "No jobs with this status this day",
-  "dayHasJobs": "has jobs"
+  "dayHasJobs": "has jobs",
+  "moreActions": "More actions",
+  "checklistCompletedCount": "{done} of {total} completed",
+  "@checklistCompletedCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "percentDone": "{percent}% done",
+  "@percentDone": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewTasks": "Review tasks",
+  "copyButton": "Copy",
+  "copiedButton": "Copied",
+  "eventCheckedIn": "Checked in",
+  "eventCheckedOut": "Checked out",
+  "eventWorkCompleted": "Work completed",
+  "activityTitle": "Activity",
+  "activityCount": "{count, plural, =1{1 event} other{{count} events}}",
+  "@activityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

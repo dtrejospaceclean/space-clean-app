@@ -897,6 +897,7 @@ Job _demoJob(
     qualityScore: done ? 4.5 : null,
     cleanerNotes: done ? 'Restroom faucet on floor 4 is leaking.' : null,
     clientSignoffName: done ? 'María López' : null,
+    clientSignoffAt: done ? at(hour + 1, 58) : null,
   );
 }
 

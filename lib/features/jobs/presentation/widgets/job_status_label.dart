@@ -59,3 +59,41 @@ class JobStatusLabel extends StatelessWidget {
     );
   }
 }
+
+/// How a job's status colors it: the card's edge, the progress bar, and
+/// the progress figure. Shared by the job cards and the job page.
+class JobTone {
+  const JobTone({required this.edge, required this.bar, required this.ink});
+
+  final Color edge;
+  final Color bar;
+
+  /// The progress figure; dark enough for small text on white.
+  final Color ink;
+
+  static JobTone of(BuildContext context, JobStatus status) {
+    final c = context.colors;
+    return switch (status) {
+      JobStatus.completed => JobTone(
+        edge: c.success,
+        bar: c.success,
+        ink: c.successInk,
+      ),
+      JobStatus.inProgress => JobTone(
+        edge: c.primary,
+        bar: c.primary,
+        ink: c.highlightInk,
+      ),
+      JobStatus.scheduled => JobTone(
+        edge: c.accentSoft,
+        bar: c.accent,
+        ink: c.inkMuted,
+      ),
+      JobStatus.cancelled || JobStatus.unknown => JobTone(
+        edge: c.line,
+        bar: c.inkFaint,
+        ink: c.inkMuted,
+      ),
+    };
+  }
+}

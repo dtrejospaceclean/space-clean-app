@@ -719,5 +719,16 @@
   "jobsFilterOn": "Filtrado: {status}",
   "noJobsOnDay": "No hay trabajos este día",
   "noJobsMatchFilter": "No hay trabajos con este estado este día",
-  "dayHasJobs": "tiene trabajos"
+  "dayHasJobs": "tiene trabajos",
+  "moreActions": "Más acciones",
+  "checklistCompletedCount": "{done} de {total} completadas",
+  "percentDone": "{percent} % hecho",
+  "reviewTasks": "Ver tareas",
+  "copyButton": "Copiar",
+  "copiedButton": "Copiado",
+  "eventCheckedIn": "Entrada",
+  "eventCheckedOut": "Salida",
+  "eventWorkCompleted": "Trabajo terminado",
+  "activityTitle": "Actividad",
+  "activityCount": "{count, plural, =1{1 evento} other{{count} eventos}}"
 }
