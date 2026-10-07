@@ -10,6 +10,10 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
+import '../../../jobs/di/jobs_providers.dart';
+import '../../../jobs/domain/usecases/job_usecases.dart';
+import '../../../jobs/presentation/controllers/jobs_providers.dart';
+import '../../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../../proposals/presentation/widgets/line_item_row.dart';
 import '../../../scopes/domain/entities/scope.dart';
 import '../../../scopes/presentation/screens/scopes_screen.dart';
@@ -22,7 +26,8 @@ import '../widgets/calendar_widgets.dart';
 /// One calendar event: when and where, its scope and who it's assigned
 /// to, and where it was moved from. With `calendar.edit`, until it's
 /// cancelled or turned into a job, it can be edited, rescheduled and
-/// cancelled; until it's a job, it can be deleted.
+/// cancelled; until it's a job, it can be deleted. With `jobs.edit` it can
+/// be turned into a job, which then opens from here.
 class EventScreen extends ConsumerStatefulWidget {
   const EventScreen({super.key, required this.clientId, required this.eventId});
 
@@ -34,7 +39,7 @@ class EventScreen extends ConsumerStatefulWidget {
 }
 
 /// What's in flight: nothing else on the page starts until it settles.
-enum _Busy { delete, cancel }
+enum _Busy { delete, cancel, convert }
 
 class _EventScreenState extends ConsumerState<EventScreen> {
   _Busy? _busy;
@@ -132,6 +137,30 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     }
   }
 
+  /// Makes a job of [event] on its day and time, with its assignee as the
+  /// crew, and opens it.
+  Future<void> _convert(CalendarEvent event, String account) async {
+    setState(() => _busy = _Busy.convert);
+    try {
+      final job = await ref.read(convertEventToJobProvider)(
+        ConvertEventParams(
+          clientId: widget.clientId,
+          eventId: event.id,
+          assignedToId: event.assignedToId,
+        ),
+      );
+      invalidateCalendar(ref);
+      invalidateJobs(ref);
+      if (!mounted) return;
+      setState(() => _busy = null);
+      context.push('$account/${AccountJobsScreen.route}/${job.id}');
+    } on Failure catch (f) {
+      if (!mounted) return;
+      setState(() => _busy = null);
+      await _showFailure(f);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -141,6 +170,8 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     final access = ref.watch(accountAccessProvider(widget.clientId)).value;
     final canEdit = access?.can(Permissions.calendarEdit) ?? false;
     final canViewScopes = access?.can(Permissions.scopeView) ?? false;
+    final canMakeJobs = access?.can(Permissions.jobsEdit) ?? false;
+    final canViewJobs = access?.can(Permissions.jobsView) ?? false;
     final e = event.value;
     final editable = canEdit && (e?.isEditable ?? false);
     final here = GoRouterState.of(context).matchedLocation;
@@ -149,6 +180,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
     final busy = _busy != null;
     String at(DateTime day, ClockTime time) =>
         '${context.formatDate(day)}, ${context.formatClock(time.hour, time.minute)}';
+    void reschedule() => context.push('$here/reschedule');
     Future<void> refresh() {
       ref.invalidate(eventReschedulesProvider(key));
       return ref.refresh(eventProvider(key).future);
@@ -214,6 +246,16 @@ class _EventScreenState extends ConsumerState<EventScreen> {
                     PageBox(
                       child: ListCard(
                         children: [
+                          if (e.jobId case final jobId? when canViewJobs)
+                            ListRow(
+                              leading: const IconBadge(
+                                icon: Icons.cleaning_services_outlined,
+                              ),
+                              title: l10n.openJob,
+                              onTap: () => context.push(
+                                '$account/${AccountJobsScreen.route}/$jobId',
+                              ),
+                            ),
                           fact(
                             Icons.location_on_outlined,
                             l10n.locationLabel,
@@ -246,16 +288,33 @@ class _EventScreenState extends ConsumerState<EventScreen> {
                         ],
                       ),
                     ),
-                    if (editable) ...[
+                    // A cancelled event can't become a job, and one already
+                    // did.
+                    if (canMakeJobs && e.isEditable)
                       PageBox(
                         top: 24,
                         child: PrimaryButton(
-                          label: l10n.rescheduleEvent,
-                          icon: Icons.update_rounded,
-                          onPressed: busy
-                              ? null
-                              : () => context.push('$here/reschedule'),
+                          label: l10n.createJobFromEvent,
+                          icon: Icons.cleaning_services_outlined,
+                          busy: _busy == _Busy.convert,
+                          onPressed: busy ? null : () => _convert(e, account),
                         ),
+                      ),
+                    if (editable) ...[
+                      PageBox(
+                        top: canMakeJobs ? SpaceSpace.gap : 24,
+                        // Second to "Create job" when that shows.
+                        child: canMakeJobs
+                            ? SecondaryButton(
+                                label: l10n.rescheduleEvent,
+                                icon: Icons.update_rounded,
+                                onPressed: busy ? null : reschedule,
+                              )
+                            : PrimaryButton(
+                                label: l10n.rescheduleEvent,
+                                icon: Icons.update_rounded,
+                                onPressed: busy ? null : reschedule,
+                              ),
                       ),
                       PageBox(
                         child: SecondaryButton(

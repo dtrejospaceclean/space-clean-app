@@ -307,10 +307,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Arrastra las asas para cambiar el orden. Es el mismo en todas las cuentas.';
 
   @override
-  String get jobsNextDays => 'Próximos 7 días';
-
-  @override
-  String get noJobsAhead => 'No hay trabajos en los próximos 7 días';
+  String get noJobsAhead => 'No hay trabajos próximos';
 
   @override
   String get jobStatusScheduled => 'Programado';
@@ -2238,4 +2235,209 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get deleteGeneratedEventConfirmBody =>
       'Se quitará del calendario y no volverá a aparecer cuando el mes se llene de nuevo desde su alcance. Esto no se puede deshacer.';
+
+  @override
+  String get jobsPeriodLabel => 'Qué trabajos';
+
+  @override
+  String get jobsUpcoming => 'Próximos';
+
+  @override
+  String get jobsPast => 'Últimos 30 días';
+
+  @override
+  String get noJobsAheadHint =>
+      'Agrega uno con +, o créalo desde un evento del calendario.';
+
+  @override
+  String get noPastJobs => 'No hubo trabajos en los últimos 30 días';
+
+  @override
+  String get newJobTitle => 'Nuevo trabajo';
+
+  @override
+  String get editJob => 'Editar trabajo';
+
+  @override
+  String get deleteJob => 'Eliminar trabajo';
+
+  @override
+  String get keepJob => 'Conservarlo';
+
+  @override
+  String get deleteJobConfirmTitle => '¿Eliminar este trabajo?';
+
+  @override
+  String get deleteJobConfirmBody =>
+      'Se quitará junto con su equipo y su lista de tareas. Esto no se puede deshacer.';
+
+  @override
+  String get cancelJob => 'Cancelar trabajo';
+
+  @override
+  String get cancelJobConfirmTitle => '¿Cancelar este trabajo?';
+
+  @override
+  String get cancelJobConfirmBody =>
+      'Queda en la lista como cancelado y ya no se podrá cambiar.';
+
+  @override
+  String get jobCancelledNotice =>
+      'Este trabajo se canceló, así que no puede cambiar.';
+
+  @override
+  String get editButton => 'Editar';
+
+  @override
+  String get noChecklistItems => 'Aún no hay lista de tareas';
+
+  @override
+  String checkedInAt(String time) {
+    return 'Entrada $time';
+  }
+
+  @override
+  String checkedOutAt(String time) {
+    return 'Salida $time';
+  }
+
+  @override
+  String get jobTypeLabel => 'Tipo';
+
+  @override
+  String get jobTypeRecurring => 'Recurrente';
+
+  @override
+  String get jobTypeSpecial => 'Único';
+
+  @override
+  String doneAtBy(String time, String name) {
+    return '$time por $name';
+  }
+
+  @override
+  String get jobStartedLabel => 'Inicio';
+
+  @override
+  String get jobCompletedLabel => 'Terminado';
+
+  @override
+  String get qualityScoreLabel => 'Calificación de calidad';
+
+  @override
+  String qualityScoreValue(String score) {
+    return '$score de 5';
+  }
+
+  @override
+  String get clientSignoffLabel => 'Visto bueno del cliente';
+
+  @override
+  String get cleanerNotesLabel => 'Notas del equipo';
+
+  @override
+  String get checklistItemDone => 'Hecho';
+
+  @override
+  String get checklistItemOpen => 'Pendiente';
+
+  @override
+  String get editCrewTitle => 'Editar equipo';
+
+  @override
+  String get editCrewHelp =>
+      'Miembros activos del equipo de esta cuenta. Quienes se quedan conservan sus horas de entrada.';
+
+  @override
+  String get editChecklistTitle => 'Editar lista de tareas';
+
+  @override
+  String get addChecklistItem => 'Agregar tarea a la lista';
+
+  @override
+  String get addChecklistItemShort => 'Tarea';
+
+  @override
+  String checklistResetWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count tareas están marcadas. Guardar un cambio quita las marcas.',
+      one: '1 tarea está marcada. Guardar un cambio quita la marca.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String checklistFull(int max) {
+    return 'Una lista tiene como máximo $max tareas.';
+  }
+
+  @override
+  String get checklistEmptyHint => 'Aún no hay tareas. Agrégalas con +.';
+
+  @override
+  String checklistItemLabel(int number) {
+    return 'Tarea $number';
+  }
+
+  @override
+  String get checklistEditHelp =>
+      'El equipo las marca en el sitio, en este orden. Las tareas en blanco se omiten.';
+
+  @override
+  String get jobNameLabel => 'Título';
+
+  @override
+  String get jobNameHint => 'p. ej. Limpieza nocturna';
+
+  @override
+  String endsNextDay(String time) {
+    return '$time (día siguiente)';
+  }
+
+  @override
+  String get jobEndHelp => 'Un fin antes del inicio cae en el día siguiente.';
+
+  @override
+  String get jobInstructionsHint =>
+      'p. ej. El código de la alarma está en recepción';
+
+  @override
+  String get openJob => 'Abrir trabajo';
+
+  @override
+  String get createJobFromEvent => 'Crear trabajo';
+
+  @override
+  String get jobsNotFound => 'Este trabajo ya no existe.';
+
+  @override
+  String get jobsNotAssigned => 'No estás en el equipo de este trabajo.';
+
+  @override
+  String get jobsAssigneeNotActive =>
+      'Alguien elegido para el equipo ya no está activo.';
+
+  @override
+  String get jobsLocationRequired =>
+      'Este evento no tiene ubicación. Agrega una antes de crear un trabajo.';
+
+  @override
+  String get jobsClosed =>
+      'Este trabajo está terminado o cancelado, así que no puede cambiar.';
+
+  @override
+  String get jobsAlreadyCompleted => 'Este trabajo ya está terminado.';
+
+  @override
+  String get jobsOnlyScheduledDeletable =>
+      'Solo se puede eliminar un trabajo que no ha empezado.';
+
+  @override
+  String get tickChecklistItem => 'Marcar como hecha';
+
+  @override
+  String get reopenChecklistItem => 'Reabrir';
 }

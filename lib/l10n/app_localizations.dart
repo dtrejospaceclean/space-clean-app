@@ -602,16 +602,10 @@ abstract class AppLocalizations {
   /// **'Drag the handles to set the order. It\'s the same in every account.'**
   String get reorderModulesHint;
 
-  /// No description provided for @jobsNextDays.
-  ///
-  /// In en, this message translates to:
-  /// **'Next 7 days'**
-  String get jobsNextDays;
-
   /// No description provided for @noJobsAhead.
   ///
   /// In en, this message translates to:
-  /// **'No jobs in the next 7 days'**
+  /// **'No upcoming jobs'**
   String get noJobsAhead;
 
   /// No description provided for @jobStatusScheduled.
@@ -3919,6 +3913,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It will be removed from the calendar and won\'t come back when the month is filled from its scope again. This can\'t be undone.'**
   String get deleteGeneratedEventConfirmBody;
+
+  /// No description provided for @jobsPeriodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Which jobs'**
+  String get jobsPeriodLabel;
+
+  /// No description provided for @jobsUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get jobsUpcoming;
+
+  /// No description provided for @jobsPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Past 30 days'**
+  String get jobsPast;
+
+  /// No description provided for @noJobsAheadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one with +, or create one from a calendar event.'**
+  String get noJobsAheadHint;
+
+  /// No description provided for @noPastJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs in the past 30 days'**
+  String get noPastJobs;
+
+  /// No description provided for @newJobTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New job'**
+  String get newJobTitle;
+
+  /// No description provided for @editJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit job'**
+  String get editJob;
+
+  /// No description provided for @deleteJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete job'**
+  String get deleteJob;
+
+  /// No description provided for @keepJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepJob;
+
+  /// No description provided for @deleteJobConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this job?'**
+  String get deleteJobConfirmTitle;
+
+  /// No description provided for @deleteJobConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed with its crew and checklist. This can\'t be undone.'**
+  String get deleteJobConfirmBody;
+
+  /// No description provided for @cancelJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel job'**
+  String get cancelJob;
+
+  /// No description provided for @cancelJobConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this job?'**
+  String get cancelJobConfirmTitle;
+
+  /// No description provided for @cancelJobConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in the list as cancelled and can\'t be changed again.'**
+  String get cancelJobConfirmBody;
+
+  /// No description provided for @jobCancelledNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This job was cancelled, so it can\'t change.'**
+  String get jobCancelledNotice;
+
+  /// No description provided for @editButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editButton;
+
+  /// No description provided for @noChecklistItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No checklist yet'**
+  String get noChecklistItems;
+
+  /// No description provided for @checkedInAt.
+  ///
+  /// In en, this message translates to:
+  /// **'In {time}'**
+  String checkedInAt(String time);
+
+  /// No description provided for @checkedOutAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Out {time}'**
+  String checkedOutAt(String time);
+
+  /// No description provided for @jobTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get jobTypeLabel;
+
+  /// No description provided for @jobTypeRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get jobTypeRecurring;
+
+  /// No description provided for @jobTypeSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'One-off'**
+  String get jobTypeSpecial;
+
+  /// No description provided for @doneAtBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} by {name}'**
+  String doneAtBy(String time, String name);
+
+  /// No description provided for @jobStartedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get jobStartedLabel;
+
+  /// No description provided for @jobCompletedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get jobCompletedLabel;
+
+  /// No description provided for @qualityScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality score'**
+  String get qualityScoreLabel;
+
+  /// No description provided for @qualityScoreValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} of 5'**
+  String qualityScoreValue(String score);
+
+  /// No description provided for @clientSignoffLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Client sign-off'**
+  String get clientSignoffLabel;
+
+  /// No description provided for @cleanerNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crew notes'**
+  String get cleanerNotesLabel;
+
+  /// No description provided for @checklistItemDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get checklistItemDone;
+
+  /// No description provided for @checklistItemOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Not done'**
+  String get checklistItemOpen;
+
+  /// No description provided for @editCrewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit crew'**
+  String get editCrewTitle;
+
+  /// No description provided for @editCrewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Active team members of this account. People who stay keep their check-in times.'**
+  String get editCrewHelp;
+
+  /// No description provided for @editChecklistTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit checklist'**
+  String get editChecklistTitle;
+
+  /// No description provided for @addChecklistItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add checklist item'**
+  String get addChecklistItem;
+
+  /// No description provided for @addChecklistItemShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Item'**
+  String get addChecklistItemShort;
+
+  /// No description provided for @checklistResetWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item is ticked. Saving a change clears the tick.} other{{count} items are ticked. Saving a change clears the ticks.}}'**
+  String checklistResetWarning(int count);
+
+  /// No description provided for @checklistFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A checklist holds up to {max} items.'**
+  String checklistFull(int max);
+
+  /// No description provided for @checklistEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No items yet. Add them with +.'**
+  String get checklistEmptyHint;
+
+  /// No description provided for @checklistItemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Item {number}'**
+  String checklistItemLabel(int number);
+
+  /// No description provided for @checklistEditHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The crew ticks these off on site, in this order. Blank items are left out.'**
+  String get checklistEditHelp;
+
+  /// No description provided for @jobNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get jobNameLabel;
+
+  /// No description provided for @jobNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Nightly clean'**
+  String get jobNameHint;
+
+  /// No description provided for @endsNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} (next day)'**
+  String endsNextDay(String time);
+
+  /// No description provided for @jobEndHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An end before the start is on the next day.'**
+  String get jobEndHelp;
+
+  /// No description provided for @jobInstructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Alarm code is at the front desk'**
+  String get jobInstructionsHint;
+
+  /// No description provided for @openJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Open job'**
+  String get openJob;
+
+  /// No description provided for @createJobFromEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create job'**
+  String get createJobFromEvent;
+
+  /// No description provided for @jobsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This job no longer exists.'**
+  String get jobsNotFound;
+
+  /// No description provided for @jobsNotAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re not on this job\'s crew.'**
+  String get jobsNotAssigned;
+
+  /// No description provided for @jobsAssigneeNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone picked for the crew is no longer active.'**
+  String get jobsAssigneeNotActive;
+
+  /// No description provided for @jobsLocationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This event has no location. Add one before creating a job.'**
+  String get jobsLocationRequired;
+
+  /// No description provided for @jobsClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This job is completed or cancelled, so it can\'t change.'**
+  String get jobsClosed;
+
+  /// No description provided for @jobsAlreadyCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This job is already completed.'**
+  String get jobsAlreadyCompleted;
+
+  /// No description provided for @jobsOnlyScheduledDeletable.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a job that hasn\'t started can be deleted.'**
+  String get jobsOnlyScheduledDeletable;
+
+  /// No description provided for @tickChecklistItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick off'**
+  String get tickChecklistItem;
+
+  /// No description provided for @reopenChecklistItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get reopenChecklistItem;
 }
 
 class _AppLocalizationsDelegate

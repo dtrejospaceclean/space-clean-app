@@ -769,6 +769,17 @@ const _demoClients = [
   ),
 ];
 
+const _demoTasks = [
+  'Empty trash and recycling',
+  'Dust desks and sills',
+  'Wipe kitchen counters',
+  'Restock restrooms',
+  'Clean restroom fixtures',
+  'Vacuum carpets',
+  'Mop hard floors',
+  'Lock up and set the alarm',
+];
+
 Job _demoJob(
   String id,
   String clientId,
@@ -792,8 +803,14 @@ Job _demoJob(
     JobAssignee(userId: 'u1', name: 'Ana Pérez'),
     JobAssignee(userId: 'u2', name: 'Luis Gómez'),
   ],
-  checklistTotal: 8,
-  checklistDone: status == JobStatus.completed ? 8 : 3,
+  checklist: [
+    for (final (i, task) in _demoTasks.indexed)
+      ChecklistItem(
+        id: 'i$i',
+        description: task,
+        isCompleted: status == JobStatus.completed || i < 3,
+      ),
+  ],
   instructions: 'Badge in at the loading dock. Floors 3–5 only.',
 );
 
@@ -1077,13 +1094,7 @@ FakeCalendarRepository _demoCalendar() {
       scoped('o$day', day, 'Oficinas', 7),
     scoped('ev1', 23, 'Oficinas', 7),
     scoped('r23', 23, 'Baños', 13),
-    scoped(
-      'ev2',
-      24,
-      'Recepción',
-      9,
-      status: CalendarEventStatus.rescheduled,
-    ),
+    scoped('ev2', 24, 'Recepción', 9, status: CalendarEventStatus.rescheduled),
     scoped('c25', 25, 'Baños', 13, status: CalendarEventStatus.cancelled),
     CalendarEvent(
       id: 'deep',

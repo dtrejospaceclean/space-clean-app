@@ -1,42 +1,12 @@
-import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exception.dart';
-import '../../../../core/network/paginated.dart';
 import '../../domain/entities/job.dart';
 import '../../domain/repositories/jobs_repository.dart';
-import '../models/job_model.dart';
+import '../datasources/jobs_remote_data_source.dart';
 
-/// Reads `/clients/:clientId/jobs`.
 class JobsRepositoryImpl implements JobsRepository {
-  const JobsRepositoryImpl(this._api);
+  const JobsRepositoryImpl(this._remote);
 
-  final ApiClient _api;
-
-  @override
-  Future<List<Job>> getJobs({
-    required String clientId,
-    required DateTime from,
-    required DateTime to,
-  }) => _guard(() async {
-    final items = await fetchAllPages(
-      _api,
-      '/clients/$clientId/jobs',
-      query: {
-        'from': from.toUtc().toIso8601String(),
-        'to': to.toUtc().toIso8601String(),
-      },
-    );
-    return [for (final j in items) JobModel.fromJson(j, clientId: clientId)];
-  });
-
-  @override
-  Future<Job> getJob({required String clientId, required String jobId}) =>
-      _guard(() async {
-        final data = await _api.get('/clients/$clientId/jobs/$jobId') as Map;
-        return JobModel.fromJson(
-          data.cast<String, dynamic>(),
-          clientId: clientId,
-        );
-      });
+  final JobsRemoteDataSource _remote;
 
   Future<T> _guard<T>(Future<T> Function() action) async {
     try {
@@ -45,4 +15,71 @@ class JobsRepositoryImpl implements JobsRepository {
       throw e.toFailure();
     }
   }
+
+  @override
+  Future<List<Job>> getJobs({
+    required String clientId,
+    required DateTime from,
+    DateTime? to,
+  }) => _guard(() => _remote.getJobs(clientId, from: from, to: to));
+
+  @override
+  Future<Job> getJob({required String clientId, required String jobId}) =>
+      _guard(() => _remote.getJob(clientId, jobId));
+
+  @override
+  Future<Job> createJob({
+    required String clientId,
+    required JobDraft draft,
+    List<CrewMember> crew = const [],
+    List<String> checklist = const [],
+  }) => _guard(
+    () => _remote.createJob(clientId, draft, crew: crew, checklist: checklist),
+  );
+
+  @override
+  Future<Job> updateJob({
+    required String clientId,
+    required String jobId,
+    required JobDraft draft,
+  }) => _guard(() => _remote.updateJob(clientId, jobId, draft));
+
+  @override
+  Future<Job> createFromEvent({
+    required String clientId,
+    required String eventId,
+    List<CrewMember> crew = const [],
+  }) => _guard(() => _remote.createFromEvent(clientId, eventId, crew: crew));
+
+  @override
+  Future<Job> setCrew({
+    required String clientId,
+    required String jobId,
+    required List<CrewMember> crew,
+  }) => _guard(() => _remote.setCrew(clientId, jobId, crew));
+
+  @override
+  Future<Job> setChecklist({
+    required String clientId,
+    required String jobId,
+    required List<String> items,
+  }) => _guard(() => _remote.setChecklist(clientId, jobId, items));
+
+  @override
+  Future<Job> setChecklistItemDone({
+    required String clientId,
+    required String jobId,
+    required String itemId,
+    required bool done,
+  }) => _guard(
+    () => _remote.setChecklistItemDone(clientId, jobId, itemId, done: done),
+  );
+
+  @override
+  Future<Job> cancelJob({required String clientId, required String jobId}) =>
+      _guard(() => _remote.cancelJob(clientId, jobId));
+
+  @override
+  Future<void> deleteJob({required String clientId, required String jobId}) =>
+      _guard(() => _remote.deleteJob(clientId, jobId));
 }

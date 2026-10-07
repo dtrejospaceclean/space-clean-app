@@ -36,7 +36,10 @@ import '../../features/scopes/presentation/screens/scope_form_screen.dart';
 import '../../features/scopes/presentation/screens/scope_screen.dart';
 import '../../features/scopes/presentation/screens/scopes_screen.dart';
 import '../../features/scopes/presentation/screens/time_window_screen.dart';
+import '../../features/jobs/presentation/screens/job_checklist_screen.dart';
+import '../../features/jobs/presentation/screens/job_crew_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
+import '../../features/jobs/presentation/screens/job_form_screen.dart';
 import '../../features/jobs/presentation/screens/today_screen.dart';
 import '../../features/password_reset/presentation/screens/forgot_password_screen.dart';
 import '../../features/password_reset/presentation/screens/new_password_screen.dart';
@@ -142,6 +145,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       clientId: state.pathParameters['clientId']!,
                       jobId: state.pathParameters['jobId']!,
                     ),
+                    routes: _jobRoutes,
                   ),
                 ],
               ),
@@ -449,17 +453,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                         ],
                       ),
                       SlideRoute(
-                        path: 'jobs',
+                        path: AccountJobsScreen.route,
                         builder: (_, state) => AccountJobsScreen(
                           clientId: state.pathParameters['clientId']!,
                         ),
                         routes: [
+                          // Before ':jobId' so "new" isn't read as an id.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => JobFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                          ),
                           SlideRoute(
                             path: ':jobId',
                             builder: (_, state) => JobDetailScreen(
                               clientId: state.pathParameters['clientId']!,
                               jobId: state.pathParameters['jobId']!,
                             ),
+                            routes: _jobRoutes,
                           ),
                         ],
                       ),
@@ -601,6 +613,31 @@ final _lineItemRoute = SlideRoute(
 /// A scope form's time window page. The window and whether it needs
 /// weekdays come in `extra`; a page reopened without them starts a new
 /// window.
+/// A job's editors, under its page in the account's jobs and on Today.
+final _jobRoutes = [
+  SlideRoute(
+    path: 'edit',
+    builder: (_, state) => JobFormScreen(
+      clientId: state.pathParameters['clientId']!,
+      jobId: state.pathParameters['jobId'],
+    ),
+  ),
+  SlideRoute(
+    path: JobCrewScreen.route,
+    builder: (_, state) => JobCrewScreen(
+      clientId: state.pathParameters['clientId']!,
+      jobId: state.pathParameters['jobId']!,
+    ),
+  ),
+  SlideRoute(
+    path: JobChecklistScreen.route,
+    builder: (_, state) => JobChecklistScreen(
+      clientId: state.pathParameters['clientId']!,
+      jobId: state.pathParameters['jobId']!,
+    ),
+  ),
+];
+
 final _timeWindowRoute = SlideRoute(
   path: TimeWindowScreen.route,
   builder: (_, state) => TimeWindowScreen(

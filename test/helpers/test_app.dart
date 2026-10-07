@@ -1395,28 +1395,253 @@ class FakeTeamRepository implements TeamRepository {
   }
 }
 
-/// Jobs per client id; a [Failure] value makes that account fail.
+/// Jobs per client id; a [Failure] value makes that account fail. Writes
+/// follow the API's rules (completed and cancelled jobs don't change, only
+/// a scheduled job is deleted) and are recorded, with every draft, crew and
+/// checklist sent.
 class FakeJobsRepository implements JobsRepository {
-  FakeJobsRepository([this.byClient = const {}]);
+  FakeJobsRepository([Map<String, Object> byClient = const {}])
+    : byClient = {...byClient};
 
   Map<String, Object> byClient;
+  final writes = <String>[];
+  final drafts = <JobDraft>[];
+  final crews = <List<CrewMember>>[];
+  final checklists = <List<String>>[];
 
-  @override
-  Future<List<Job>> getJobs({
-    required String clientId,
-    required DateTime from,
-    required DateTime to,
-  }) async => switch (byClient[clientId]) {
+  List<Job> _jobs(String clientId) => switch (byClient[clientId]) {
     final Failure failure => throw failure,
     final List<Job> jobs => jobs,
     _ => const [],
   };
 
+  void _replace(String clientId, Job next) => byClient[clientId] = [
+    for (final j in _jobs(clientId)) j.id == next.id ? next : j,
+  ];
+
+  @override
+  Future<List<Job>> getJobs({
+    required String clientId,
+    required DateTime from,
+    DateTime? to,
+  }) async => [
+    for (final j in _jobs(clientId))
+      if (!j.scheduledStart.isBefore(from) &&
+          (to == null || !j.scheduledStart.isAfter(to)))
+        j,
+  ];
+
   @override
   Future<Job> getJob({required String clientId, required String jobId}) async {
-    final jobs = byClient[clientId];
-    if (jobs is List<Job>) return jobs.firstWhere((j) => j.id == jobId);
+    for (final j in _jobs(clientId)) {
+      if (j.id == jobId) return j;
+    }
     throw const ServerFailure('jobs.not_found', statusCode: 404);
+  }
+
+  Future<Job> _open(String clientId, String jobId) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    if (!j.isOpen) throw const ServerFailure('jobs.closed', statusCode: 409);
+    return j;
+  }
+
+  /// People who stay keep what they had (check-in times).
+  static List<JobAssignee> _assignees(List<CrewMember> crew, Job? before) => [
+    for (final c in crew)
+      before?.assignees.where((a) => a.userId == c.userId).firstOrNull ??
+          JobAssignee(
+            userId: c.userId,
+            name: 'User ${c.userId}',
+            roleOnJob: c.roleOnJob,
+          ),
+  ];
+
+  static Job _copy(
+    Job j, {
+    JobDraft? draft,
+    JobStatus? status,
+    List<JobAssignee>? assignees,
+    List<ChecklistItem>? checklist,
+  }) {
+    String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
+    return Job(
+      id: j.id,
+      clientId: j.clientId,
+      title: draft?.title.trim() ?? j.title,
+      status: status ?? j.status,
+      jobType: j.jobType,
+      scheduledStart: draft?.scheduledStart ?? j.scheduledStart,
+      scheduledEnd: draft == null ? j.scheduledEnd : draft.scheduledEnd,
+      locationId: draft?.locationId ?? j.locationId,
+      location: draft == null || draft.locationId == j.locationId
+          ? j.location
+          : JobLocation(name: 'Location ${draft.locationId}'),
+      scopeId: draft == null ? j.scopeId : draft.scopeId,
+      scopeArea: j.scopeArea,
+      assignees: assignees ?? j.assignees,
+      instructions: draft == null ? j.instructions : text(draft.instructions),
+      checklist: checklist ?? j.checklist,
+    );
+  }
+
+  @override
+  Future<Job> createJob({
+    required String clientId,
+    required JobDraft draft,
+    List<CrewMember> crew = const [],
+    List<String> checklist = const [],
+  }) async {
+    writes.add('create:${draft.title.trim()}');
+    drafts.add(draft);
+    final jobs = _jobs(clientId);
+    final created = _copy(
+      Job(
+        id: 'j${jobs.length + 1}',
+        clientId: clientId,
+        title: '',
+        status: JobStatus.scheduled,
+        scheduledStart: draft.scheduledStart,
+      ),
+      draft: draft,
+      assignees: _assignees(crew, null),
+    );
+    byClient[clientId] = [...jobs, created];
+    return created;
+  }
+
+  @override
+  Future<Job> updateJob({
+    required String clientId,
+    required String jobId,
+    required JobDraft draft,
+  }) async {
+    final j = await _open(clientId, jobId);
+    writes.add('update:$jobId');
+    drafts.add(draft);
+    final next = _copy(j, draft: draft);
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<Job> createFromEvent({
+    required String clientId,
+    required String eventId,
+    List<CrewMember> crew = const [],
+  }) async {
+    writes.add('convert:$eventId');
+    crews.add(crew);
+    final created = Job(
+      id: 'j-$eventId',
+      clientId: clientId,
+      title: 'Job from $eventId',
+      status: JobStatus.scheduled,
+      scheduledStart: testNow,
+      assignees: _assignees(crew, null),
+    );
+    byClient[clientId] = [..._jobs(clientId), created];
+    return created;
+  }
+
+  @override
+  Future<Job> setCrew({
+    required String clientId,
+    required String jobId,
+    required List<CrewMember> crew,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    writes.add('crew:$jobId');
+    crews.add(crew);
+    final next = _copy(j, assignees: _assignees(crew, j));
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<Job> setChecklist({
+    required String clientId,
+    required String jobId,
+    required List<String> items,
+  }) async {
+    final j = await _open(clientId, jobId);
+    writes.add('checklist:$jobId');
+    checklists.add(items);
+    final next = _copy(
+      j,
+      checklist: [
+        for (final (i, text) in items.indexed)
+          ChecklistItem(id: '$jobId-i$i', description: text),
+      ],
+    );
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<Job> setChecklistItemDone({
+    required String clientId,
+    required String jobId,
+    required String itemId,
+    required bool done,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    if (!j.checklist.any((i) => i.id == itemId)) {
+      throw const ServerFailure(
+        'jobs.checklist_item_not_found',
+        statusCode: 404,
+      );
+    }
+    writes.add('${done ? 'tick' : 'reopen'}:$itemId');
+    final next = _copy(
+      j,
+      checklist: [
+        for (final i in j.checklist)
+          i.id != itemId
+              ? i
+              : ChecklistItem(
+                  id: i.id,
+                  description: i.description,
+                  isCompleted: done,
+                  completedByName: done ? 'Ana Pérez' : null,
+                ),
+      ],
+    );
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<Job> cancelJob({
+    required String clientId,
+    required String jobId,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    if (j.status == JobStatus.completed) {
+      throw const ServerFailure('jobs.already_completed', statusCode: 409);
+    }
+    writes.add('cancel:$jobId');
+    final next = _copy(j, status: JobStatus.cancelled);
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<void> deleteJob({
+    required String clientId,
+    required String jobId,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    if (!j.canDelete) {
+      throw const ServerFailure(
+        'jobs.only_scheduled_deletable',
+        statusCode: 409,
+      );
+    }
+    writes.add('delete:$jobId');
+    byClient[clientId] = [
+      for (final x in _jobs(clientId))
+        if (x.id != jobId) x,
+    ];
   }
 }
 
@@ -1710,15 +1935,21 @@ Job job(
   String clientId, {
   String? title,
   int hour = 9,
+  int day = 23,
   JobStatus status = JobStatus.scheduled,
+  List<JobAssignee> assignees = const [],
+  List<ChecklistItem> checklist = const [],
 }) => Job(
   id: id,
   clientId: clientId,
   title: title ?? 'Job $id',
   status: status,
-  scheduledStart: DateTime(2026, 9, 23, hour),
-  scheduledEnd: DateTime(2026, 9, 23, hour + 2),
+  scheduledStart: DateTime(2026, 9, day, hour),
+  scheduledEnd: DateTime(2026, 9, day, hour + 2),
+  locationId: 'l1',
   location: const JobLocation(name: 'Main office'),
+  assignees: assignees,
+  checklist: checklist,
 );
 
 /// Pumps the whole app on a phone-sized screen with fakes behind the domain.

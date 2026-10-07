@@ -5,32 +5,63 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/design/design.dart';
 import '../../../../core/l10n/formatting.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../access/domain/entities/account_access.dart';
+import '../../../access/presentation/controllers/account_access_provider.dart';
 import '../../domain/entities/job.dart';
+import '../../domain/usecases/job_usecases.dart';
 import '../controllers/jobs_providers.dart';
 import '../widgets/job_row.dart';
 
-/// One account's jobs for the next 7 days, grouped by day.
-class AccountJobsScreen extends ConsumerWidget {
+/// One account's jobs grouped by day: upcoming (from today on) or the past
+/// 30 days, latest first. New ones come from the dock's "+" (`jobs.edit`)
+/// or from a calendar event.
+class AccountJobsScreen extends ConsumerStatefulWidget {
   const AccountJobsScreen({super.key, required this.clientId});
+
+  /// Path segment under `/accounts/:clientId`.
+  static const route = 'jobs';
 
   final String clientId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AccountJobsScreen> createState() => _AccountJobsScreenState();
+}
+
+class _AccountJobsScreenState extends ConsumerState<AccountJobsScreen> {
+  JobPeriod _period = JobPeriod.upcoming;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final jobs = ref.watch(accountJobsProvider(clientId));
+    final query = JobQuery(
+      clientId: widget.clientId,
+      period: _period,
+      today: ref.watch(clockProvider)(),
+    );
+    final jobs = ref.watch(accountJobsProvider(query));
+    final canEdit =
+        ref
+            .watch(accountAccessProvider(widget.clientId))
+            .value
+            ?.can(Permissions.jobsEdit) ??
+        false;
     final here = GoRouterState.of(context).matchedLocation;
-    Future<void> refresh() => ref.refresh(accountJobsProvider(clientId).future);
+    Future<void> refresh() => ref.refresh(accountJobsProvider(query).future);
 
     return SpacePage(
       title: l10n.moduleJobs,
       onRefresh: refresh,
       slivers: [
         PageBox(
-          top: 0,
-          child: Text(
-            l10n.jobsNextDays,
-            style: Theme.of(context).textTheme.bodyMedium,
+          top: 4,
+          child: PillToggle<JobPeriod>(
+            semanticLabel: l10n.jobsPeriodLabel,
+            options: {
+              JobPeriod.upcoming: l10n.jobsUpcoming,
+              JobPeriod.past: l10n.jobsPast,
+            },
+            selected: _period,
+            onChanged: (v) => setState(() => _period = v),
           ),
         ),
         AsyncSlivers(
@@ -38,10 +69,17 @@ class AccountJobsScreen extends ConsumerWidget {
           onRetry: refresh,
           builder: (list) {
             if (list.isEmpty) {
-              return MessageSliver(
-                icon: Icons.event_available_outlined,
-                title: l10n.noJobsAhead,
-              );
+              return switch (_period) {
+                JobPeriod.upcoming => MessageSliver(
+                  icon: Icons.event_available_outlined,
+                  title: l10n.noJobsAhead,
+                  hint: canEdit ? l10n.noJobsAheadHint : null,
+                ),
+                JobPeriod.past => MessageSliver(
+                  icon: Icons.history_rounded,
+                  title: l10n.noPastJobs,
+                ),
+              };
             }
             final days = <DateTime, List<Job>>{};
             for (final job in list) {

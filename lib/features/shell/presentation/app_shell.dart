@@ -14,6 +14,9 @@ import '../../clients/domain/usecases/manage_clients.dart';
 import '../../clients/presentation/screens/accounts_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
+import '../../jobs/presentation/screens/account_jobs_screen.dart';
+import '../../jobs/presentation/screens/job_checklist_screen.dart';
+import '../../jobs/presentation/screens/job_crew_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../scopes/presentation/screens/scopes_screen.dart';
@@ -103,6 +106,13 @@ final _byPage = <String, List<_PlusOption>>{
       ServiceCatalogPolicy.canManage,
     ),
   ],
+  '${AccountsScreen.path}/:clientId/${AccountJobsScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${AccountJobsScreen.route}/new',
+      (l10n) => l10n.newJobTitle,
+      Permissions.jobsEdit,
+    ),
+  ],
   '${AccountsScreen.path}/:clientId/${ProposalsScreen.route}': [
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ProposalsScreen.route}/new',
@@ -168,6 +178,8 @@ bool _noPlus(String route) =>
     route.endsWith('/reschedule') ||
     route.endsWith('/item') ||
     route.endsWith('/window') ||
+    route.endsWith('/${JobCrewScreen.route}') ||
+    route.endsWith('/${JobChecklistScreen.route}') ||
     route == '/me/password' ||
     route == '/me/settings' ||
     route.endsWith('/login') ||

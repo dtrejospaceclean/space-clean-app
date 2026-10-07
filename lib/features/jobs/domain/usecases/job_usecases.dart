@@ -68,49 +68,246 @@ class GetDayJobs implements UseCase<DayJobs, GetDayJobsParams> {
   }
 }
 
-class GetAccountJobsParams {
-  const GetAccountJobsParams({
-    required this.clientId,
-    required this.from,
-    required this.to,
-  });
+/// Which of an account's jobs a list shows.
+enum JobPeriod {
+  /// From today on, soonest first.
+  upcoming,
 
-  final String clientId;
-  final DateTime from;
-  final DateTime to;
+  /// The [JobQuery.pastDays] days before today, latest first.
+  past,
 }
 
-/// One account's jobs in a date range, soonest first.
-class GetAccountJobs implements UseCase<List<Job>, GetAccountJobsParams> {
+class JobQuery {
+  const JobQuery({
+    required this.clientId,
+    required this.period,
+    required this.today,
+  });
+
+  /// How far back [JobPeriod.past] reaches.
+  static const pastDays = 30;
+
+  final String clientId;
+  final JobPeriod period;
+
+  /// Any time on the current (local) day.
+  final DateTime today;
+
+  DateTime get _startOfToday => DateTime(today.year, today.month, today.day);
+
+  @override
+  bool operator ==(Object other) =>
+      other is JobQuery &&
+      other.clientId == clientId &&
+      other.period == period &&
+      other._startOfToday == _startOfToday;
+
+  @override
+  int get hashCode => Object.hash(clientId, period, _startOfToday);
+}
+
+/// One account's jobs for a [JobPeriod]: upcoming soonest first, past
+/// latest first.
+class GetAccountJobs implements UseCase<List<Job>, JobQuery> {
   const GetAccountJobs(this._repository);
 
   final JobsRepository _repository;
 
   @override
-  Future<List<Job>> call(GetAccountJobsParams params) async {
-    final jobs = await _repository.getJobs(
-      clientId: params.clientId,
-      from: params.from,
-      to: params.to,
-    );
-    return [...jobs]
+  Future<List<Job>> call(JobQuery q) async {
+    final today = q._startOfToday;
+    final jobs = switch (q.period) {
+      JobPeriod.upcoming => await _repository.getJobs(
+        clientId: q.clientId,
+        from: today,
+      ),
+      JobPeriod.past => await _repository.getJobs(
+        clientId: q.clientId,
+        from: DateTime(today.year, today.month, today.day - JobQuery.pastDays),
+        // The API's `to` is inclusive.
+        to: today.subtract(const Duration(milliseconds: 1)),
+      ),
+    };
+    final sorted = [...jobs]
       ..sort((a, b) => a.scheduledStart.compareTo(b.scheduledStart));
+    return q.period == JobPeriod.past ? sorted.reversed.toList() : sorted;
   }
 }
 
-class GetJobParams {
-  const GetJobParams({required this.clientId, required this.jobId});
+class JobRef {
+  const JobRef({required this.clientId, required this.jobId});
 
   final String clientId;
   final String jobId;
 }
 
-class GetJob implements UseCase<Job, GetJobParams> {
+class GetJob implements UseCase<Job, JobRef> {
   const GetJob(this._repository);
 
   final JobsRepository _repository;
 
   @override
-  Future<Job> call(GetJobParams params) =>
-      _repository.getJob(clientId: params.clientId, jobId: params.jobId);
+  Future<Job> call(JobRef p) =>
+      _repository.getJob(clientId: p.clientId, jobId: p.jobId);
+}
+
+class SaveJobParams {
+  const SaveJobParams({
+    required this.clientId,
+    required this.draft,
+    this.jobId,
+  });
+
+  final String clientId;
+
+  /// The job edited; null to create.
+  final String? jobId;
+  final JobDraft draft;
+}
+
+class SaveJob implements UseCase<Job, SaveJobParams> {
+  const SaveJob(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(SaveJobParams p) => switch (p.jobId) {
+    null => _repository.createJob(clientId: p.clientId, draft: p.draft),
+    final id => _repository.updateJob(
+      clientId: p.clientId,
+      jobId: id,
+      draft: p.draft,
+    ),
+  };
+}
+
+class ConvertEventParams {
+  const ConvertEventParams({
+    required this.clientId,
+    required this.eventId,
+    this.assignedToId,
+  });
+
+  final String clientId;
+  final String eventId;
+
+  /// The event's assignee, who becomes the job's first crew member.
+  final String? assignedToId;
+}
+
+/// "Create job" on a calendar event.
+class ConvertEventToJob implements UseCase<Job, ConvertEventParams> {
+  const ConvertEventToJob(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(ConvertEventParams p) => _repository.createFromEvent(
+    clientId: p.clientId,
+    eventId: p.eventId,
+    crew: [if (p.assignedToId case final id?) CrewMember(userId: id)],
+  );
+}
+
+class SetCrewParams {
+  const SetCrewParams({
+    required this.clientId,
+    required this.jobId,
+    required this.crew,
+  });
+
+  final String clientId;
+  final String jobId;
+  final List<CrewMember> crew;
+}
+
+class SetJobCrew implements UseCase<Job, SetCrewParams> {
+  const SetJobCrew(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(SetCrewParams p) =>
+      _repository.setCrew(clientId: p.clientId, jobId: p.jobId, crew: p.crew);
+}
+
+class SetChecklistParams {
+  const SetChecklistParams({
+    required this.clientId,
+    required this.jobId,
+    required this.items,
+  });
+
+  final String clientId;
+  final String jobId;
+  final List<String> items;
+}
+
+/// Saves the items in order, trimmed; blank ones are dropped.
+class SetJobChecklist implements UseCase<Job, SetChecklistParams> {
+  const SetJobChecklist(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(SetChecklistParams p) => _repository.setChecklist(
+    clientId: p.clientId,
+    jobId: p.jobId,
+    items: [
+      for (final item in p.items)
+        if (item.trim() case final text when text.isNotEmpty) text,
+    ],
+  );
+}
+
+class TickChecklistItemParams {
+  const TickChecklistItemParams({
+    required this.clientId,
+    required this.jobId,
+    required this.itemId,
+    required this.done,
+  });
+
+  final String clientId;
+  final String jobId;
+  final String itemId;
+
+  /// True ticks it off; false reopens it.
+  final bool done;
+}
+
+/// Ticks a checklist item off, or reopens it, as the signed-in user.
+class TickChecklistItem implements UseCase<Job, TickChecklistItemParams> {
+  const TickChecklistItem(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(TickChecklistItemParams p) =>
+      _repository.setChecklistItemDone(
+        clientId: p.clientId,
+        jobId: p.jobId,
+        itemId: p.itemId,
+        done: p.done,
+      );
+}
+
+class CancelJob implements UseCase<Job, JobRef> {
+  const CancelJob(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(JobRef p) =>
+      _repository.cancelJob(clientId: p.clientId, jobId: p.jobId);
+}
+
+class DeleteJob implements UseCase<void, JobRef> {
+  const DeleteJob(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<void> call(JobRef p) =>
+      _repository.deleteJob(clientId: p.clientId, jobId: p.jobId);
 }

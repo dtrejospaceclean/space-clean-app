@@ -5,6 +5,7 @@ import '../../access/domain/entities/account_access.dart';
 import '../../calendar/presentation/screens/calendar_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
+import '../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../scopes/presentation/screens/scopes_screen.dart';
@@ -50,7 +51,7 @@ final accountModules = <AccountModule>[
     icon: Icons.cleaning_services_outlined,
     label: (l10n) => l10n.moduleJobs,
     description: (l10n) => l10n.moduleJobsHint,
-    route: 'jobs',
+    route: AccountJobsScreen.route,
   ),
   AccountModule(
     section: AccountSection.work,

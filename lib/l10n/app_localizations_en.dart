@@ -304,10 +304,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Drag the handles to set the order. It\'s the same in every account.';
 
   @override
-  String get jobsNextDays => 'Next 7 days';
-
-  @override
-  String get noJobsAhead => 'No jobs in the next 7 days';
+  String get noJobsAhead => 'No upcoming jobs';
 
   @override
   String get jobStatusScheduled => 'Scheduled';
@@ -2217,4 +2214,207 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get deleteGeneratedEventConfirmBody =>
       'It will be removed from the calendar and won\'t come back when the month is filled from its scope again. This can\'t be undone.';
+
+  @override
+  String get jobsPeriodLabel => 'Which jobs';
+
+  @override
+  String get jobsUpcoming => 'Upcoming';
+
+  @override
+  String get jobsPast => 'Past 30 days';
+
+  @override
+  String get noJobsAheadHint =>
+      'Add one with +, or create one from a calendar event.';
+
+  @override
+  String get noPastJobs => 'No jobs in the past 30 days';
+
+  @override
+  String get newJobTitle => 'New job';
+
+  @override
+  String get editJob => 'Edit job';
+
+  @override
+  String get deleteJob => 'Delete job';
+
+  @override
+  String get keepJob => 'Keep it';
+
+  @override
+  String get deleteJobConfirmTitle => 'Delete this job?';
+
+  @override
+  String get deleteJobConfirmBody =>
+      'It will be removed with its crew and checklist. This can\'t be undone.';
+
+  @override
+  String get cancelJob => 'Cancel job';
+
+  @override
+  String get cancelJobConfirmTitle => 'Cancel this job?';
+
+  @override
+  String get cancelJobConfirmBody =>
+      'It stays in the list as cancelled and can\'t be changed again.';
+
+  @override
+  String get jobCancelledNotice =>
+      'This job was cancelled, so it can\'t change.';
+
+  @override
+  String get editButton => 'Edit';
+
+  @override
+  String get noChecklistItems => 'No checklist yet';
+
+  @override
+  String checkedInAt(String time) {
+    return 'In $time';
+  }
+
+  @override
+  String checkedOutAt(String time) {
+    return 'Out $time';
+  }
+
+  @override
+  String get jobTypeLabel => 'Type';
+
+  @override
+  String get jobTypeRecurring => 'Recurring';
+
+  @override
+  String get jobTypeSpecial => 'One-off';
+
+  @override
+  String doneAtBy(String time, String name) {
+    return '$time by $name';
+  }
+
+  @override
+  String get jobStartedLabel => 'Started';
+
+  @override
+  String get jobCompletedLabel => 'Completed';
+
+  @override
+  String get qualityScoreLabel => 'Quality score';
+
+  @override
+  String qualityScoreValue(String score) {
+    return '$score of 5';
+  }
+
+  @override
+  String get clientSignoffLabel => 'Client sign-off';
+
+  @override
+  String get cleanerNotesLabel => 'Crew notes';
+
+  @override
+  String get checklistItemDone => 'Done';
+
+  @override
+  String get checklistItemOpen => 'Not done';
+
+  @override
+  String get editCrewTitle => 'Edit crew';
+
+  @override
+  String get editCrewHelp =>
+      'Active team members of this account. People who stay keep their check-in times.';
+
+  @override
+  String get editChecklistTitle => 'Edit checklist';
+
+  @override
+  String get addChecklistItem => 'Add checklist item';
+
+  @override
+  String get addChecklistItemShort => 'Item';
+
+  @override
+  String checklistResetWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items are ticked. Saving a change clears the ticks.',
+      one: '1 item is ticked. Saving a change clears the tick.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String checklistFull(int max) {
+    return 'A checklist holds up to $max items.';
+  }
+
+  @override
+  String get checklistEmptyHint => 'No items yet. Add them with +.';
+
+  @override
+  String checklistItemLabel(int number) {
+    return 'Item $number';
+  }
+
+  @override
+  String get checklistEditHelp =>
+      'The crew ticks these off on site, in this order. Blank items are left out.';
+
+  @override
+  String get jobNameLabel => 'Title';
+
+  @override
+  String get jobNameHint => 'e.g. Nightly clean';
+
+  @override
+  String endsNextDay(String time) {
+    return '$time (next day)';
+  }
+
+  @override
+  String get jobEndHelp => 'An end before the start is on the next day.';
+
+  @override
+  String get jobInstructionsHint => 'e.g. Alarm code is at the front desk';
+
+  @override
+  String get openJob => 'Open job';
+
+  @override
+  String get createJobFromEvent => 'Create job';
+
+  @override
+  String get jobsNotFound => 'This job no longer exists.';
+
+  @override
+  String get jobsNotAssigned => 'You\'re not on this job\'s crew.';
+
+  @override
+  String get jobsAssigneeNotActive =>
+      'Someone picked for the crew is no longer active.';
+
+  @override
+  String get jobsLocationRequired =>
+      'This event has no location. Add one before creating a job.';
+
+  @override
+  String get jobsClosed =>
+      'This job is completed or cancelled, so it can\'t change.';
+
+  @override
+  String get jobsAlreadyCompleted => 'This job is already completed.';
+
+  @override
+  String get jobsOnlyScheduledDeletable =>
+      'Only a job that hasn\'t started can be deleted.';
+
+  @override
+  String get tickChecklistItem => 'Tick off';
+
+  @override
+  String get reopenChecklistItem => 'Reopen';
 }

@@ -16,23 +16,20 @@ final todayJobsProvider = FutureProvider.autoDispose<DayJobs>((ref) async {
   );
 });
 
-/// One account's jobs from today through the next 7 days.
+/// One account's upcoming or past jobs.
 final accountJobsProvider = FutureProvider.autoDispose
-    .family<List<Job>, String>((ref, clientId) {
-      final now = ref.watch(clockProvider)();
-      final from = DateTime(now.year, now.month, now.day);
-      return ref.watch(getAccountJobsProvider)(
-        GetAccountJobsParams(
-          clientId: clientId,
-          from: from,
-          to: from.add(const Duration(days: 8)),
-        ),
-      );
-    });
-
-final jobProvider =
-    FutureProvider.family<Job, ({String clientId, String jobId})>(
-      (ref, key) => ref.watch(getJobProvider)(
-        GetJobParams(clientId: key.clientId, jobId: key.jobId),
-      ),
+    .family<List<Job>, JobQuery>(
+      (ref, query) => ref.watch(getAccountJobsProvider)(query),
     );
+
+/// One job: `(clientId, jobId)`.
+final jobProvider = FutureProvider.autoDispose.family<Job, (String, String)>(
+  (ref, key) =>
+      ref.watch(getJobProvider)(JobRef(clientId: key.$1, jobId: key.$2)),
+);
+
+/// Drops cached jobs after any write.
+void invalidateJobs(WidgetRef ref) => ref
+  ..invalidate(todayJobsProvider)
+  ..invalidate(accountJobsProvider)
+  ..invalidate(jobProvider);
