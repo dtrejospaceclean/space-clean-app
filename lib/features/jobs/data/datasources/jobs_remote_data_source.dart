@@ -116,6 +116,23 @@ class JobsRemoteDataSource {
     clientId,
   );
 
+  /// Takes no body; acts for the signed-in user. [action] is `check-in`,
+  /// `check-out` or `start`.
+  Future<Job> fieldAction(String clientId, String jobId, String action) async =>
+      _one(await _api.post('${_path(clientId)}/$jobId/$action'), clientId);
+
+  Future<Job> completeJob(
+    String clientId,
+    String jobId,
+    JobCompletion completion,
+  ) async => _one(
+    await _api.post(
+      '${_path(clientId)}/$jobId/complete',
+      body: JobModel.completionToJson(completion),
+    ),
+    clientId,
+  );
+
   /// Takes no body.
   Future<Job> cancelJob(String clientId, String jobId) async =>
       _one(await _api.post('${_path(clientId)}/$jobId/cancel'), clientId);

@@ -16,6 +16,7 @@ import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../jobs/presentation/screens/job_checklist_screen.dart';
+import '../../jobs/presentation/screens/job_complete_screen.dart';
 import '../../jobs/presentation/screens/job_crew_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
@@ -180,6 +181,7 @@ bool _noPlus(String route) =>
     route.endsWith('/window') ||
     route.endsWith('/${JobCrewScreen.route}') ||
     route.endsWith('/${JobChecklistScreen.route}') ||
+    route.endsWith('/${JobCompleteScreen.route}') ||
     route == '/me/password' ||
     route == '/me/settings' ||
     route.endsWith('/login') ||

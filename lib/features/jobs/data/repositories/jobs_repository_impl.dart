@@ -76,6 +76,25 @@ class JobsRepositoryImpl implements JobsRepository {
   );
 
   @override
+  Future<Job> checkIn({required String clientId, required String jobId}) =>
+      _guard(() => _remote.fieldAction(clientId, jobId, 'check-in'));
+
+  @override
+  Future<Job> checkOut({required String clientId, required String jobId}) =>
+      _guard(() => _remote.fieldAction(clientId, jobId, 'check-out'));
+
+  @override
+  Future<Job> startJob({required String clientId, required String jobId}) =>
+      _guard(() => _remote.fieldAction(clientId, jobId, 'start'));
+
+  @override
+  Future<Job> completeJob({
+    required String clientId,
+    required String jobId,
+    required JobCompletion completion,
+  }) => _guard(() => _remote.completeJob(clientId, jobId, completion));
+
+  @override
   Future<Job> cancelJob({required String clientId, required String jobId}) =>
       _guard(() => _remote.cancelJob(clientId, jobId));
 

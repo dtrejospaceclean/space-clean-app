@@ -108,6 +108,20 @@ void main() {
     });
   });
 
+  test('a completion leaves empty fields out', () {
+    expect(
+      JobModel.completionToJson(
+        const JobCompletion(
+          qualityScore: 4.5,
+          cleanerNotes: '  ',
+          clientSignoffName: ' María López ',
+        ),
+      ),
+      {'qualityScore': 4.5, 'clientSignoffName': 'María López'},
+    );
+    expect(JobModel.completionToJson(const JobCompletion()), isEmpty);
+  });
+
   test('crew sends a role only when there is one; checklist keeps order', () {
     expect(
       JobModel.crewToJson(const [

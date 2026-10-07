@@ -292,6 +292,61 @@ class TickChecklistItem implements UseCase<Job, TickChecklistItemParams> {
       );
 }
 
+class CheckIn implements UseCase<Job, JobRef> {
+  const CheckIn(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(JobRef p) =>
+      _repository.checkIn(clientId: p.clientId, jobId: p.jobId);
+}
+
+class CheckOut implements UseCase<Job, JobRef> {
+  const CheckOut(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(JobRef p) =>
+      _repository.checkOut(clientId: p.clientId, jobId: p.jobId);
+}
+
+class StartJob implements UseCase<Job, JobRef> {
+  const StartJob(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(JobRef p) =>
+      _repository.startJob(clientId: p.clientId, jobId: p.jobId);
+}
+
+class CompleteJobParams {
+  const CompleteJobParams({
+    required this.clientId,
+    required this.jobId,
+    required this.completion,
+  });
+
+  final String clientId;
+  final String jobId;
+  final JobCompletion completion;
+}
+
+class CompleteJob implements UseCase<Job, CompleteJobParams> {
+  const CompleteJob(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<Job> call(CompleteJobParams p) => _repository.completeJob(
+    clientId: p.clientId,
+    jobId: p.jobId,
+    completion: p.completion,
+  );
+}
+
 class CancelJob implements UseCase<Job, JobRef> {
   const CancelJob(this._repository);
 

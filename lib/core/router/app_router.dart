@@ -37,6 +37,7 @@ import '../../features/scopes/presentation/screens/scope_screen.dart';
 import '../../features/scopes/presentation/screens/scopes_screen.dart';
 import '../../features/scopes/presentation/screens/time_window_screen.dart';
 import '../../features/jobs/presentation/screens/job_checklist_screen.dart';
+import '../../features/jobs/presentation/screens/job_complete_screen.dart';
 import '../../features/jobs/presentation/screens/job_crew_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
 import '../../features/jobs/presentation/screens/job_form_screen.dart';
@@ -625,6 +626,13 @@ final _jobRoutes = [
   SlideRoute(
     path: JobCrewScreen.route,
     builder: (_, state) => JobCrewScreen(
+      clientId: state.pathParameters['clientId']!,
+      jobId: state.pathParameters['jobId']!,
+    ),
+  ),
+  SlideRoute(
+    path: JobCompleteScreen.route,
+    builder: (_, state) => JobCompleteScreen(
       clientId: state.pathParameters['clientId']!,
       jobId: state.pathParameters['jobId']!,
     ),

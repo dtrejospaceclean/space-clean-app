@@ -2417,4 +2417,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reopenChecklistItem => 'Reopen';
+
+  @override
+  String get checkIn => 'Check in';
+
+  @override
+  String get checkOut => 'Check out';
+
+  @override
+  String get startJob => 'Start job';
+
+  @override
+  String get completeJob => 'Complete job';
+
+  @override
+  String get completeJobTitle => 'Complete job';
+
+  @override
+  String youCheckedIn(String time) {
+    return 'You checked in at $time.';
+  }
+
+  @override
+  String youCheckedInOut(String inTime, String outTime) {
+    return 'You checked in at $inTime and out at $outTime.';
+  }
+
+  @override
+  String checklistStillOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count checklist items aren\'t ticked yet.',
+      one: '1 checklist item isn\'t ticked yet.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get qualityScoreHelp =>
+      'Optional. 5 is the best. Tap the score again to clear it.';
+
+  @override
+  String get cleanerNotesHint => 'e.g. Restroom faucet is leaking';
+
+  @override
+  String get clientSignoffHint => 'e.g. María López';
+
+  @override
+  String get clientSignoffHelp =>
+      'Optional. The client\'s name, if they checked the work on site.';
+
+  @override
+  String get jobsNotScheduled =>
+      'Only a scheduled job can be started. It may have started already.';
+
+  @override
+  String get jobsNotInProgress =>
+      'Only a job in progress can be completed. Start it first.';
+
+  @override
+  String get jobsAlreadyCheckedIn => 'You already checked in to this job.';
+
+  @override
+  String get jobsNotCheckedIn => 'Check in before checking out.';
+
+  @override
+  String get jobsChecklistItemNotFound =>
+      'That checklist item no longer exists.';
 }

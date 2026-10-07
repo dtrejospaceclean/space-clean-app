@@ -2440,4 +2440,72 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reopenChecklistItem => 'Reabrir';
+
+  @override
+  String get checkIn => 'Registrar entrada';
+
+  @override
+  String get checkOut => 'Registrar salida';
+
+  @override
+  String get startJob => 'Iniciar trabajo';
+
+  @override
+  String get completeJob => 'Terminar trabajo';
+
+  @override
+  String get completeJobTitle => 'Terminar trabajo';
+
+  @override
+  String youCheckedIn(String time) {
+    return 'Registraste tu entrada a las $time.';
+  }
+
+  @override
+  String youCheckedInOut(String inTime, String outTime) {
+    return 'Registraste tu entrada a las $inTime y tu salida a las $outTime.';
+  }
+
+  @override
+  String checklistStillOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tareas de la lista aún no están marcadas.',
+      one: '1 tarea de la lista aún no está marcada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get qualityScoreHelp =>
+      'Opcional. 5 es lo mejor. Toca la calificación otra vez para quitarla.';
+
+  @override
+  String get cleanerNotesHint => 'p. ej. La llave del baño gotea';
+
+  @override
+  String get clientSignoffHint => 'p. ej. María López';
+
+  @override
+  String get clientSignoffHelp =>
+      'Opcional. El nombre del cliente, si revisó el trabajo en el sitio.';
+
+  @override
+  String get jobsNotScheduled =>
+      'Solo se puede iniciar un trabajo programado. Puede que ya haya empezado.';
+
+  @override
+  String get jobsNotInProgress =>
+      'Solo se puede terminar un trabajo en curso. Inícialo primero.';
+
+  @override
+  String get jobsAlreadyCheckedIn =>
+      'Ya registraste tu entrada a este trabajo.';
+
+  @override
+  String get jobsNotCheckedIn => 'Registra tu entrada antes de la salida.';
+
+  @override
+  String get jobsChecklistItemNotFound => 'Esa tarea de la lista ya no existe.';
 }

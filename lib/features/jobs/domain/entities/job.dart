@@ -142,6 +142,10 @@ class Job {
   /// Whether [userId] is on the crew.
   bool hasCrewMember(String userId) => assignees.any((a) => a.userId == userId);
 
+  /// [userId]'s place on the crew, if they're on it.
+  JobAssignee? crewMember(String userId) =>
+      assignees.where((a) => a.userId == userId).firstOrNull;
+
   /// Anything not finished yet (`jobs.already_completed`).
   bool get canCancel => isOpen;
 }
@@ -174,6 +178,22 @@ class JobDraft {
   final DateTime? scheduledEnd;
   final String? scopeId;
   final String? instructions;
+}
+
+/// What the crew reports when they finish. Everything is optional.
+class JobCompletion {
+  const JobCompletion({
+    this.qualityScore,
+    this.cleanerNotes,
+    this.clientSignoffName,
+  });
+
+  /// 0 to 5.
+  final num? qualityScore;
+  final String? cleanerNotes;
+
+  /// Who signed off on site, when the client is there.
+  final String? clientSignoffName;
 }
 
 /// Who goes on a job, and as what.

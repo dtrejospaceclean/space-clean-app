@@ -19,15 +19,19 @@ import '../../domain/usecases/job_usecases.dart';
 import '../controllers/jobs_providers.dart';
 import '../widgets/job_status_label.dart';
 import 'job_checklist_screen.dart';
+import 'job_complete_screen.dart';
 import 'job_crew_screen.dart';
 import 'today_screen.dart';
 
 /// One job: when and where, its checklist, crew and instructions. While
 /// it's open (scheduled or in progress), `jobs.edit` edits it and its
 /// checklist and cancels it, and `jobs.assign` changes the crew; until it
-/// starts, `jobs.edit` can delete it. While it's open, its crew and
-/// `jobs.edit` tick checklist items off (and reopen them). The other field
-/// actions (check-in, start, complete) come with the crew job flow.
+/// starts, `jobs.edit` can delete it.
+///
+/// On site, the crew works it top to bottom: check in, start, tick the
+/// checklist, complete (on its own page), check out. Checking in and out is
+/// for the crew only; starting, ticking and completing are for the crew and
+/// `jobs.edit`. The next step is the primary button.
 class JobDetailScreen extends ConsumerStatefulWidget {
   const JobDetailScreen({
     super.key,
@@ -43,7 +47,7 @@ class JobDetailScreen extends ConsumerStatefulWidget {
 }
 
 /// What's in flight: nothing else on the page starts until it settles.
-enum _Busy { delete, cancel }
+enum _Busy { delete, cancel, checkIn, start, checkOut }
 
 class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   _Busy? _busy;
@@ -140,6 +144,96 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     }
   }
 
+  /// Runs a field action ([kind]) and shows the job as saved.
+  Future<void> _act(_Busy kind, Future<Job> Function(JobRef job) action) async {
+    setState(() => _busy = kind);
+    try {
+      await action(_ref);
+      invalidateJobs(ref);
+      // Keep the button busy until the page shows the change.
+      await ref.read(jobProvider((widget.clientId, widget.jobId)).future);
+    } on Failure catch (f) {
+      if (mounted) await _showFailure(f);
+    } finally {
+      if (mounted) setState(() => _busy = null);
+    }
+  }
+
+  /// The crew's next steps on site, in order: check in, start, complete,
+  /// check out. The first one offered is the primary button.
+  List<Widget> _fieldActions(
+    Job job, {
+    required String? me,
+    required bool canEdit,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    final here = GoRouterState.of(context).matchedLocation;
+    final busy = _busy != null;
+    final mine = me == null ? null : job.crewMember(me);
+    final canRun = canEdit || mine != null;
+    final actions = <(String, IconData, _Busy?, VoidCallback)>[
+      if (mine != null && mine.checkInTime == null && job.isOpen)
+        (
+          l10n.checkIn,
+          Icons.login_rounded,
+          _Busy.checkIn,
+          () => _act(_Busy.checkIn, ref.read(checkInProvider).call),
+        ),
+      if (canRun && job.status == JobStatus.scheduled)
+        (
+          l10n.startJob,
+          Icons.play_arrow_rounded,
+          _Busy.start,
+          () => _act(_Busy.start, ref.read(startJobProvider).call),
+        ),
+      if (canRun && job.status == JobStatus.inProgress)
+        (
+          l10n.completeJob,
+          Icons.check_rounded,
+          null,
+          () => context.push('$here/${JobCompleteScreen.route}'),
+        ),
+      if (mine?.checkInTime != null && mine?.checkOutTime == null)
+        (
+          l10n.checkOut,
+          Icons.logout_rounded,
+          _Busy.checkOut,
+          () => _act(_Busy.checkOut, ref.read(checkOutProvider).call),
+        ),
+    ];
+    return [
+      if (mine?.checkInTime case final t?)
+        PageBox(
+          child: Notice(
+            message: switch (mine?.checkOutTime) {
+              final out? => l10n.youCheckedInOut(
+                context.formatTime(t),
+                context.formatTime(out),
+              ),
+              null => l10n.youCheckedIn(context.formatTime(t)),
+            },
+            tone: NoticeTone.success,
+          ),
+        ),
+      for (final (i, (label, icon, kind, onPressed)) in actions.indexed)
+        PageBox(
+          top: i == 0 ? 16 : SpaceSpace.gap,
+          child: i == 0
+              ? PrimaryButton(
+                  label: label,
+                  icon: icon,
+                  busy: kind != null && _busy == kind,
+                  onPressed: busy ? null : onPressed,
+                )
+              : SecondaryButton(
+                  label: label,
+                  icon: icon,
+                  onPressed: busy ? null : onPressed,
+                ),
+        ),
+    ];
+  }
+
   /// Ticks [item] off, or reopens it, then shows the job as saved.
   Future<void> _tick(ChecklistItem item) async {
     setState(() => _ticking.add(item.id));
@@ -228,6 +322,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                         tone: NoticeTone.info,
                       ),
                     ),
+                  ..._fieldActions(job, me: me, canEdit: canEdit),
                   if (job.checklistTotal > 0)
                     PageBox(
                       top: SpaceSpace.gap,

@@ -35,6 +35,18 @@ final setJobChecklistProvider = Provider(
 final tickChecklistItemProvider = Provider(
   (ref) => TickChecklistItem(ref.watch(jobsRepositoryProvider)),
 );
+final checkInProvider = Provider(
+  (ref) => CheckIn(ref.watch(jobsRepositoryProvider)),
+);
+final checkOutProvider = Provider(
+  (ref) => CheckOut(ref.watch(jobsRepositoryProvider)),
+);
+final startJobProvider = Provider(
+  (ref) => StartJob(ref.watch(jobsRepositoryProvider)),
+);
+final completeJobProvider = Provider(
+  (ref) => CompleteJob(ref.watch(jobsRepositoryProvider)),
+);
 final cancelJobProvider = Provider(
   (ref) => CancelJob(ref.watch(jobsRepositoryProvider)),
 );

@@ -692,5 +692,22 @@
   "jobsAlreadyCompleted": "Este trabajo ya está terminado.",
   "jobsOnlyScheduledDeletable": "Solo se puede eliminar un trabajo que no ha empezado.",
   "tickChecklistItem": "Marcar como hecha",
-  "reopenChecklistItem": "Reabrir"
+  "reopenChecklistItem": "Reabrir",
+  "checkIn": "Registrar entrada",
+  "checkOut": "Registrar salida",
+  "startJob": "Iniciar trabajo",
+  "completeJob": "Terminar trabajo",
+  "completeJobTitle": "Terminar trabajo",
+  "youCheckedIn": "Registraste tu entrada a las {time}.",
+  "youCheckedInOut": "Registraste tu entrada a las {inTime} y tu salida a las {outTime}.",
+  "checklistStillOpen": "{count, plural, =1{1 tarea de la lista aún no está marcada.} other{{count} tareas de la lista aún no están marcadas.}}",
+  "qualityScoreHelp": "Opcional. 5 es lo mejor. Toca la calificación otra vez para quitarla.",
+  "cleanerNotesHint": "p. ej. La llave del baño gotea",
+  "clientSignoffHint": "p. ej. María López",
+  "clientSignoffHelp": "Opcional. El nombre del cliente, si revisó el trabajo en el sitio.",
+  "jobsNotScheduled": "Solo se puede iniciar un trabajo programado. Puede que ya haya empezado.",
+  "jobsNotInProgress": "Solo se puede terminar un trabajo en curso. Inícialo primero.",
+  "jobsAlreadyCheckedIn": "Ya registraste tu entrada a este trabajo.",
+  "jobsNotCheckedIn": "Registra tu entrada antes de la salida.",
+  "jobsChecklistItemNotFound": "Esa tarea de la lista ya no existe."
 }

@@ -105,6 +105,15 @@ abstract final class JobModel {
       },
   ];
 
+  /// Empty fields are left out.
+  static Map<String, dynamic> completionToJson(JobCompletion c) => {
+    'qualityScore': ?c.qualityScore,
+    if (c.cleanerNotes?.trim() case final notes? when notes.isNotEmpty)
+      'cleanerNotes': notes,
+    if (c.clientSignoffName?.trim() case final name? when name.isNotEmpty)
+      'clientSignoffName': name,
+  };
+
   /// Ordered as given.
   static List<Map<String, dynamic>> checklistToJson(List<String> items) => [
     for (final (i, description) in items.indexed)

@@ -61,6 +61,26 @@ abstract interface class JobsRepository {
     required bool done,
   });
 
+  /// Records when the signed-in user arrived. Only someone on the crew,
+  /// once (`jobs.already_checked_in`).
+  Future<Job> checkIn({required String clientId, required String jobId});
+
+  /// Records when the signed-in user left; only after checking in
+  /// (`jobs.not_checked_in`).
+  Future<Job> checkOut({required String clientId, required String jobId});
+
+  /// Scheduled → in progress (`jobs.not_scheduled` otherwise). Crew only on
+  /// their own jobs.
+  Future<Job> startJob({required String clientId, required String jobId});
+
+  /// In progress → completed (`jobs.not_in_progress` otherwise). Crew only
+  /// on their own jobs.
+  Future<Job> completeJob({
+    required String clientId,
+    required String jobId,
+    required JobCompletion completion,
+  });
+
   /// Refused once completed. Needs `jobs.edit`.
   Future<Job> cancelJob({required String clientId, required String jobId});
 

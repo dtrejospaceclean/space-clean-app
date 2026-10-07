@@ -330,6 +330,8 @@ void main() {
     expect(repo.writes, ['tick:m1']);
 
     // Not on this one's crew: the rows don't react.
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, 2000));
+    await tester.pumpAndSettle();
     await tester.pageBack();
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nightly clean'));
@@ -338,6 +340,110 @@ void main() {
     await tester.tap(find.text('Mop floors'));
     await tester.pumpAndSettle();
     expect(repo.writes, ['tick:m1']);
+  });
+
+  testWidgets('crew check in, start, tick, complete and check out', (
+    tester,
+  ) async {
+    final repo = FakeJobsRepository({
+      'c1': [
+        job(
+          'j-mine',
+          'c1',
+          title: 'My shift',
+          hour: 10,
+          assignees: const [JobAssignee(userId: 'u1', name: 'Ana Pérez')],
+          checklist: const [
+            ChecklistItem(id: 'm1', description: 'Dust desks'),
+            ChecklistItem(id: 'm2', description: 'Mop floors'),
+          ],
+        ),
+      ],
+    });
+    await pumpApp(
+      tester,
+      auth: FakeAuthRepository(sessionUser: ana),
+      clients: FakeClientsRepository([_tower]),
+      jobs: repo,
+      access: FakeAccessRepository({
+        'c1': const AccountAccess(
+          clientId: 'c1',
+          baseRole: 'crew',
+          permissions: _viewer,
+        ),
+      }),
+    );
+    // From Today, like on site.
+    await tester.tap(find.text('My shift'));
+    await tester.pumpAndSettle();
+    expect(button('Check in'), findsOneWidget);
+    expect(find.text('Start job'), findsOneWidget);
+    expect(find.text('Check out'), findsNothing);
+
+    await tester.tap(button('Check in'));
+    await tester.pumpAndSettle();
+    expect(find.text('You checked in at 8:00 AM.'), findsOneWidget);
+    expect(button('Start job'), findsOneWidget);
+    expect(find.text('Check out'), findsOneWidget);
+
+    await tester.tap(button('Start job'));
+    await tester.pumpAndSettle();
+    expect(find.text('In progress'), findsOneWidget);
+    expect(button('Complete job'), findsOneWidget);
+
+    await revealBelow(tester, find.text('Dust desks'));
+    await tester.tap(find.text('Dust desks'));
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, 2000));
+    await tester.pumpAndSettle();
+    await tester.tap(button('Complete job'));
+    await tester.pumpAndSettle();
+    // One item is still open: said, not blocking.
+    expect(find.text("1 checklist item isn't ticked yet."), findsOneWidget);
+    await tester.tap(find.text('4'));
+    await tester.enterText(field('Crew notes'), 'Faucet leaks');
+    await tester.enterText(field('Client sign-off'), 'María López');
+    await tester.tap(button('Complete job'));
+    await tester.pumpAndSettle();
+
+    final done = repo.completions.single;
+    expect(
+      (done.qualityScore, done.cleanerNotes, done.clientSignoffName),
+      (4, 'Faucet leaks', 'María López'),
+    );
+    expect(find.text('Completed'), findsWidgets);
+    // Last, leaving the site.
+    expect(button('Check out'), findsOneWidget);
+    await tester.tap(button('Check out'));
+    await tester.pumpAndSettle();
+
+    expect(repo.writes, [
+      'check-in:j-mine',
+      'start:j-mine',
+      'tick:m1',
+      'complete:j-mine',
+      'check-out:j-mine',
+    ]);
+    expect(
+      find.text('You checked in at 8:00 AM and out at 10:00 AM.'),
+      findsOneWidget,
+    );
+    expect(find.text('Check out'), findsNothing);
+    await revealBelow(tester, find.text('4 of 5'));
+    expect(find.text('María López'), findsOneWidget);
+  });
+
+  testWidgets('an editor off the crew starts a job but does not check in', (
+    tester,
+  ) async {
+    await openJobs(tester, permissions: _editor);
+    await tester.tap(find.text('Nightly clean'));
+    await tester.pumpAndSettle();
+
+    expect(button('Start job'), findsOneWidget);
+    expect(find.text('Check in'), findsNothing);
+    expect(find.text('Check out'), findsNothing);
   });
 
   testWidgets('an editor cancels a job, which turns read-only', (tester) async {

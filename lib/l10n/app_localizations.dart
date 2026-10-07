@@ -4255,6 +4255,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reopen'**
   String get reopenChecklistItem;
+
+  /// No description provided for @checkIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in'**
+  String get checkIn;
+
+  /// No description provided for @checkOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out'**
+  String get checkOut;
+
+  /// No description provided for @startJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Start job'**
+  String get startJob;
+
+  /// No description provided for @completeJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete job'**
+  String get completeJob;
+
+  /// No description provided for @completeJobTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete job'**
+  String get completeJobTitle;
+
+  /// No description provided for @youCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You checked in at {time}.'**
+  String youCheckedIn(String time);
+
+  /// No description provided for @youCheckedInOut.
+  ///
+  /// In en, this message translates to:
+  /// **'You checked in at {inTime} and out at {outTime}.'**
+  String youCheckedInOut(String inTime, String outTime);
+
+  /// No description provided for @checklistStillOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 checklist item isn\'t ticked yet.} other{{count} checklist items aren\'t ticked yet.}}'**
+  String checklistStillOpen(int count);
+
+  /// No description provided for @qualityScoreHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. 5 is the best. Tap the score again to clear it.'**
+  String get qualityScoreHelp;
+
+  /// No description provided for @cleanerNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Restroom faucet is leaking'**
+  String get cleanerNotesHint;
+
+  /// No description provided for @clientSignoffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. María López'**
+  String get clientSignoffHint;
+
+  /// No description provided for @clientSignoffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. The client\'s name, if they checked the work on site.'**
+  String get clientSignoffHelp;
+
+  /// No description provided for @jobsNotScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a scheduled job can be started. It may have started already.'**
+  String get jobsNotScheduled;
+
+  /// No description provided for @jobsNotInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a job in progress can be completed. Start it first.'**
+  String get jobsNotInProgress;
+
+  /// No description provided for @jobsAlreadyCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You already checked in to this job.'**
+  String get jobsAlreadyCheckedIn;
+
+  /// No description provided for @jobsNotCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in before checking out.'**
+  String get jobsNotCheckedIn;
+
+  /// No description provided for @jobsChecklistItemNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'That checklist item no longer exists.'**
+  String get jobsChecklistItemNotFound;
 }
 
 class _AppLocalizationsDelegate

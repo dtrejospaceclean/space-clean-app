@@ -1462,9 +1462,22 @@ class FakeJobsRepository implements JobsRepository {
     JobStatus? status,
     List<JobAssignee>? assignees,
     List<ChecklistItem>? checklist,
+    DateTime? actualStart,
+    String? startedByName,
+    DateTime? actualEnd,
+    String? completedByName,
+    JobCompletion? completion,
   }) {
     String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
     return Job(
+      actualStart: actualStart ?? j.actualStart,
+      startedByName: startedByName ?? j.startedByName,
+      actualEnd: actualEnd ?? j.actualEnd,
+      completedByName: completedByName ?? j.completedByName,
+      qualityScore: completion?.qualityScore ?? j.qualityScore,
+      cleanerNotes: text(completion?.cleanerNotes) ?? j.cleanerNotes,
+      clientSignoffName:
+          text(completion?.clientSignoffName) ?? j.clientSignoffName,
       id: j.id,
       clientId: j.clientId,
       title: draft?.title.trim() ?? j.title,
@@ -1605,6 +1618,110 @@ class FakeJobsRepository implements JobsRepository {
                   completedByName: done ? 'Ana Pérez' : null,
                 ),
       ],
+    );
+    _replace(clientId, next);
+    return next;
+  }
+
+  /// The signed-in user the field actions act for ([ana]).
+  String me = 'u1';
+
+  JobAssignee _mine(Job j) =>
+      j.crewMember(me) ??
+      (throw const ServerFailure('jobs.not_assigned', statusCode: 403));
+
+  Job _withMine(Job j, JobAssignee mine) => _copy(
+    j,
+    assignees: [for (final a in j.assignees) a.userId == me ? mine : a],
+  );
+
+  @override
+  Future<Job> checkIn({required String clientId, required String jobId}) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    final mine = _mine(j);
+    if (mine.checkInTime != null) {
+      throw const ServerFailure('jobs.already_checked_in', statusCode: 409);
+    }
+    writes.add('check-in:$jobId');
+    final next = _withMine(
+      j,
+      JobAssignee(
+        userId: mine.userId,
+        name: mine.name,
+        roleOnJob: mine.roleOnJob,
+        checkInTime: testNow,
+      ),
+    );
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<Job> checkOut({
+    required String clientId,
+    required String jobId,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    final mine = _mine(j);
+    if (mine.checkInTime == null) {
+      throw const ServerFailure('jobs.not_checked_in', statusCode: 409);
+    }
+    writes.add('check-out:$jobId');
+    final next = _withMine(
+      j,
+      JobAssignee(
+        userId: mine.userId,
+        name: mine.name,
+        roleOnJob: mine.roleOnJob,
+        checkInTime: mine.checkInTime,
+        checkOutTime: testNow.add(const Duration(hours: 2)),
+      ),
+    );
+    _replace(clientId, next);
+    return next;
+  }
+
+  @override
+  Future<Job> startJob({
+    required String clientId,
+    required String jobId,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    if (j.status != JobStatus.scheduled) {
+      throw const ServerFailure('jobs.not_scheduled', statusCode: 409);
+    }
+    writes.add('start:$jobId');
+    final next = _copy(
+      j,
+      status: JobStatus.inProgress,
+      actualStart: testNow,
+      startedByName: 'Ana Pérez',
+    );
+    _replace(clientId, next);
+    return next;
+  }
+
+  /// Every completion sent.
+  final completions = <JobCompletion>[];
+
+  @override
+  Future<Job> completeJob({
+    required String clientId,
+    required String jobId,
+    required JobCompletion completion,
+  }) async {
+    final j = await getJob(clientId: clientId, jobId: jobId);
+    if (j.status != JobStatus.inProgress) {
+      throw const ServerFailure('jobs.not_in_progress', statusCode: 409);
+    }
+    writes.add('complete:$jobId');
+    completions.add(completion);
+    final next = _copy(
+      j,
+      status: JobStatus.completed,
+      actualEnd: testNow.add(const Duration(hours: 1)),
+      completedByName: 'Ana Pérez',
+      completion: completion,
     );
     _replace(clientId, next);
     return next;
