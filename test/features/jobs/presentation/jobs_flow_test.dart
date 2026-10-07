@@ -144,7 +144,9 @@ void main() {
     expect(find.text('Empty trash'), findsOneWidget);
     expect(find.text('Mop floors'), findsOneWidget);
     await revealBelow(tester, find.text('Carlos Medina'));
-    expect(find.text('lead · In 5:55 PM'), findsOneWidget);
+    // The role under the name, the check-in at the right.
+    expect(find.text('lead'), findsOneWidget);
+    expect(find.text('In 5:55 PM'), findsOneWidget);
     expect(find.byTooltip('Edit job'), findsNothing);
     expect(find.byTooltip('Delete job'), findsNothing);
     expect(find.text('Edit'), findsNothing);

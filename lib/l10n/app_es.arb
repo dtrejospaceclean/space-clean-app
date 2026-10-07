@@ -709,5 +709,15 @@
   "jobsNotInProgress": "Solo se puede terminar un trabajo en curso. Inícialo primero.",
   "jobsAlreadyCheckedIn": "Ya registraste tu entrada a este trabajo.",
   "jobsNotCheckedIn": "Registra tu entrada antes de la salida.",
-  "jobsChecklistItemNotFound": "Esa tarea de la lista ya no existe."
+  "jobsChecklistItemNotFound": "Esa tarea de la lista ya no existe.",
+  "jobProgressCompleted": "Tareas completadas",
+  "jobProgressActive": "Progreso actual",
+  "checklistProgressPercent": "{done} de {total} hechas ({percent} %)",
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "jobsOnDay": "{count, plural, =0{Nada programado} =1{1 trabajo programado} other{{count} trabajos programados}}",
+  "jobsFilter": "Filtrar por estado",
+  "jobsFilterOn": "Filtrado: {status}",
+  "noJobsOnDay": "No hay trabajos este día",
+  "noJobsMatchFilter": "No hay trabajos con este estado este día",
+  "dayHasJobs": "tiene trabajos"
 }

@@ -37,8 +37,8 @@ void main() {
     final first = tester.getTopLeft(find.text('Exam rooms')).dy;
     final second = tester.getTopLeft(find.text('Lobby deep clean')).dy;
     expect(first, lessThan(second));
-    expect(find.text('Bayou Clinic · Main office'), findsOneWidget);
-    expect(find.text('Tower · Main office'), findsOneWidget);
+    expect(find.text('Bayou Clinic • Main office'), findsOneWidget);
+    expect(find.text('Tower • Main office'), findsOneWidget);
   });
 
   testWidgets('Today says which accounts could not load', (tester) async {

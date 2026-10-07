@@ -697,6 +697,61 @@ void main() {
     ]);
   });
 
+  testWidgets('job', (tester) async {
+    Future<void> scroll(WidgetTester tester, Finder phone) =>
+        tester.drag(inPhoneScroll(phone), const Offset(0, -560));
+    await _sheet(tester, 'job', TargetPlatform.iOS, [
+      Phone('Jobs list', signedIn: true, location: '/accounts/c1/jobs'),
+      Phone(
+        'Jobs list, dark',
+        signedIn: true,
+        dark: true,
+        location: '/accounts/c1/jobs',
+      ),
+      Phone(
+        'Jobs list, Spanish 200%',
+        signedIn: true,
+        spanish: true,
+        textScale: 2,
+        location: '/accounts/c1/jobs',
+      ),
+      Phone('1 · Scheduled', signedIn: true, location: '/today/job/c1/j2'),
+      Phone(
+        '2 · Scheduled (scrolled)',
+        signedIn: true,
+        location: '/today/job/c1/j2',
+        act: scroll,
+      ),
+      Phone('3 · In progress', signedIn: true, location: '/today/job/c2/j3'),
+      Phone(
+        '4 · In progress (scrolled)',
+        signedIn: true,
+        location: '/today/job/c2/j3',
+        act: scroll,
+      ),
+      Phone('5 · Completed', signedIn: true, location: '/today/job/c1/j1'),
+      Phone(
+        '6 · Completed (scrolled)',
+        signedIn: true,
+        location: '/today/job/c1/j1',
+        act: scroll,
+      ),
+      Phone(
+        '7 · Dark',
+        signedIn: true,
+        dark: true,
+        location: '/today/job/c2/j3',
+      ),
+      Phone(
+        '8 · Spanish, 200% text',
+        signedIn: true,
+        spanish: true,
+        textScale: 2,
+        location: '/today/job/c2/j3',
+      ),
+    ]);
+  });
+
   testWidgets('admin dark', (tester) async {
     await _sheet(
       tester,
@@ -787,32 +842,63 @@ Job _demoJob(
   int hour,
   String place, {
   JobStatus status = JobStatus.scheduled,
-}) => Job(
-  id: id,
-  clientId: clientId,
-  title: title,
-  status: status,
-  scheduledStart: DateTime(2026, 9, 23, hour),
-  scheduledEnd: DateTime(2026, 9, 23, hour + 2),
-  location: JobLocation(
-    name: place,
-    address: '1980 Post Oak Blvd',
-    city: 'Houston',
-  ),
-  assignees: const [
-    JobAssignee(userId: 'u1', name: 'Ana Pérez'),
-    JobAssignee(userId: 'u2', name: 'Luis Gómez'),
-  ],
-  checklist: [
-    for (final (i, task) in _demoTasks.indexed)
-      ChecklistItem(
-        id: 'i$i',
-        description: task,
-        isCompleted: status == JobStatus.completed || i < 3,
+}) {
+  DateTime at(int h, int m) => DateTime(2026, 9, 23, h, m);
+  final started = status != JobStatus.scheduled;
+  final done = status == JobStatus.completed;
+  return Job(
+    id: id,
+    clientId: clientId,
+    title: title,
+    status: status,
+    scheduledStart: at(hour, 0),
+    scheduledEnd: at(hour + 2, 0),
+    location: JobLocation(
+      name: place,
+      address: '1980 Post Oak Blvd',
+      city: 'Houston',
+    ),
+    assignees: [
+      JobAssignee(
+        userId: 'u1',
+        name: 'Ana Pérez',
+        roleOnJob: 'Lead',
+        checkInTime: started ? at(hour - 1, 55) : null,
+        checkOutTime: done ? at(hour + 2, 5) : null,
       ),
-  ],
-  instructions: 'Badge in at the loading dock. Floors 3–5 only.',
-);
+      JobAssignee(
+        userId: 'u2',
+        name: 'Luis Gómez',
+        roleOnJob: 'Helper',
+        checkInTime: started ? at(hour, 2) : null,
+        checkOutTime: done ? at(hour + 1, 58) : null,
+      ),
+    ],
+    checklist: [
+      for (final (i, task) in _demoTasks.indexed)
+        if (done || i < 3)
+          ChecklistItem(
+            id: 'i$i',
+            description: task,
+            isCompleted: true,
+            completedByName: i.isEven ? 'Ana Pérez' : 'Luis Gómez',
+            completedAt: at(hour, 10 + i * 12),
+          )
+        else
+          ChecklistItem(id: 'i$i', description: task),
+    ],
+    instructions: 'Badge in at the loading dock. Floors 3–5 only.',
+    scopeId: started ? 's1' : null,
+    scopeArea: started ? 'Exam rooms' : null,
+    actualStart: started ? at(hour, 3) : null,
+    startedByName: started ? 'Ana Pérez' : null,
+    actualEnd: done ? at(hour + 1, 55) : null,
+    completedByName: done ? 'Ana Pérez' : null,
+    qualityScore: done ? 4.5 : null,
+    cleanerNotes: done ? 'Restroom faucet on floor 4 is leaking.' : null,
+    clientSignoffName: done ? 'María López' : null,
+  );
+}
 
 final _demoJobs = <String, Object>{
   'c1': [

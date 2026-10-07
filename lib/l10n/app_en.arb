@@ -1198,5 +1198,52 @@
   "jobsNotInProgress": "Only a job in progress can be completed. Start it first.",
   "jobsAlreadyCheckedIn": "You already checked in to this job.",
   "jobsNotCheckedIn": "Check in before checking out.",
-  "jobsChecklistItemNotFound": "That checklist item no longer exists."
+  "jobsChecklistItemNotFound": "That checklist item no longer exists.",
+  "jobProgressCompleted": "Task completion",
+  "jobProgressActive": "Active progress",
+  "checklistProgressPercent": "{done} of {total} done ({percent}%)",
+  "@checklistProgressPercent": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}h {minutes}m",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "jobsOnDay": "{count, plural, =0{Nothing scheduled} =1{1 job scheduled} other{{count} jobs scheduled}}",
+  "@jobsOnDay": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jobsFilter": "Filter by status",
+  "jobsFilterOn": "Filtered: {status}",
+  "@jobsFilterOn": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "noJobsOnDay": "No jobs this day",
+  "noJobsMatchFilter": "No jobs with this status this day",
+  "dayHasJobs": "has jobs"
 }

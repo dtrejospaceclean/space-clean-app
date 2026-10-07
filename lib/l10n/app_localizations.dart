@@ -4357,6 +4357,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That checklist item no longer exists.'**
   String get jobsChecklistItemNotFound;
+
+  /// No description provided for @jobProgressCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Task completion'**
+  String get jobProgressCompleted;
+
+  /// No description provided for @jobProgressActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active progress'**
+  String get jobProgressActive;
+
+  /// No description provided for @checklistProgressPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done ({percent}%)'**
+  String checklistProgressPercent(int done, int total, int percent);
+
+  /// No description provided for @durationHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String durationHoursMinutes(int hours, String minutes);
+
+  /// No description provided for @jobsOnDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing scheduled} =1{1 job scheduled} other{{count} jobs scheduled}}'**
+  String jobsOnDay(int count);
+
+  /// No description provided for @jobsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by status'**
+  String get jobsFilter;
+
+  /// No description provided for @jobsFilterOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered: {status}'**
+  String jobsFilterOn(String status);
+
+  /// No description provided for @noJobsOnDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs this day'**
+  String get noJobsOnDay;
+
+  /// No description provided for @noJobsMatchFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No jobs with this status this day'**
+  String get noJobsMatchFilter;
+
+  /// No description provided for @dayHasJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'has jobs'**
+  String get dayHasJobs;
 }
 
 class _AppLocalizationsDelegate

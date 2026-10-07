@@ -12,6 +12,7 @@ import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../clients/presentation/screens/accounts_screen.dart';
+import '../../../proposals/presentation/widgets/line_item_row.dart';
 import '../../../scopes/presentation/screens/scopes_screen.dart';
 import '../../di/jobs_providers.dart';
 import '../../domain/entities/job.dart';
@@ -314,23 +315,9 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
               onRetry: refresh,
               builder: (job) => SliverMainAxisGroup(
                 slivers: [
-                  PageBox(top: 8, child: _WhenCard(job: job)),
-                  if (job.status == JobStatus.cancelled)
-                    PageBox(
-                      child: Notice(
-                        message: l10n.jobCancelledNotice,
-                        tone: NoticeTone.info,
-                      ),
-                    ),
-                  ..._fieldActions(job, me: me, canEdit: canEdit),
-                  if (job.checklistTotal > 0)
-                    PageBox(
-                      top: SpaceSpace.gap,
-                      child: _ChecklistCard(job: job),
-                    ),
                   PageBox(
-                    top: SpaceSpace.gap,
-                    child: _Facts(
+                    top: 8,
+                    child: _SummaryCard(
                       job: job,
                       onScope: switch (job.scopeId) {
                         final scopeId? when canViewScopes && fromAccount =>
@@ -342,6 +329,30 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                       },
                     ),
                   ),
+                  if (job.status == JobStatus.cancelled)
+                    PageBox(
+                      child: Notice(
+                        message: l10n.jobCancelledNotice,
+                        tone: NoticeTone.info,
+                      ),
+                    ),
+                  ..._fieldActions(job, me: me, canEdit: canEdit),
+                  if (job.instructions?.trim() case final text?
+                      when text.isNotEmpty)
+                    PageBox(
+                      top: SpaceSpace.gap,
+                      child: ListCard(
+                        children: [
+                          ListRow(
+                            leading: const IconBadge(
+                              icon: Icons.info_outline_rounded,
+                            ),
+                            title: text,
+                            subtitle: l10n.jobInstructions,
+                          ),
+                        ],
+                      ),
+                    ),
                   if (job.status == JobStatus.completed)
                     PageBox(
                       top: SpaceSpace.gap,
@@ -404,30 +415,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                           ListRow(title: l10n.noCrewAssigned, muted: true)
                         else
                           for (final person in job.assignees)
-                            ListRow(
-                              leading: InitialsAvatar(name: person.name),
-                              title: person.name,
-                              subtitle: _crewDetails(context, person),
-                            ),
+                            _CrewRow(person: person),
                       ],
                     ),
                   ),
-                  if (job.instructions case final text?
-                      when text.trim().isNotEmpty) ...[
-                    PageBox(
-                      top: 12,
-                      child: SectionHeader(title: l10n.jobInstructions),
-                    ),
-                    PageBox(
-                      top: 0,
-                      child: SpaceCard(
-                        child: Text(
-                          text,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                    ),
-                  ],
                   if (canEdit && job.canCancel)
                     PageBox(
                       top: 24,
@@ -446,153 +437,151 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       ),
     );
   }
-
-  /// "Lead · In 7:02 AM · Out 9:15 AM", or null when there's nothing to say.
-  String? _crewDetails(BuildContext context, JobAssignee person) {
-    final l10n = AppLocalizations.of(context);
-    final parts = [
-      if (person.roleOnJob case final role? when role.trim().isNotEmpty)
-        role.trim(),
-      if (person.checkInTime case final t?)
-        l10n.checkedInAt(context.formatTime(t)),
-      if (person.checkOutTime case final t?)
-        l10n.checkedOutAt(context.formatTime(t)),
-    ];
-    return parts.isEmpty ? null : parts.join(' · ');
-  }
 }
 
-/// The time big, the day under it, status on the right.
-class _WhenCard extends StatelessWidget {
-  const _WhenCard({required this.job});
+/// The head of the job: the time big across the card, the day and the kind
+/// of job under it with the status at their right, then where (the
+/// location and its address) and the scope it's for, and the checklist's
+/// progress across the bottom, its count on the right. At large text the
+/// pill moves above the time.
+class _SummaryCard extends StatelessWidget {
+  const _SummaryCard({required this.job, this.onScope});
 
   final Job job;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
-    return SpaceCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(l10n.jobWhen, style: theme.textTheme.bodyMedium),
-              ),
-              JobStatusLabel(status: job.status),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            context.formatTimeRange(job.scheduledStart, job.scheduledEnd),
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              fontFeatures: const [FontFeature.tabularFigures()],
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            context.formatDayLong(job.scheduledStart),
-            style: theme.textTheme.bodyMedium,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Checklist progress with a navy banner, like a savings goal.
-class _ChecklistCard extends StatelessWidget {
-  const _ChecklistCard({required this.job});
-
-  final Job job;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
-    return SpaceCard(
-      footer: AccentBanner(
-        text: l10n.checklistProgress(job.checklistDone, job.checklistTotal),
-        trailing: Icon(
-          Icons.checklist_rounded,
-          color: context.colors.onAccent,
-          size: 20,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.jobChecklist, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 6),
-          Text(
-            '${job.checklistDone}/${job.checklistTotal}',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SpaceProgressBar(
-            value: job.checklistDone / job.checklistTotal,
-            semanticsLabel: l10n.jobChecklist,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Where, from which scope, and what kind of job.
-class _Facts extends StatelessWidget {
-  const _Facts({required this.job, this.onScope});
-
-  final Job job;
+  /// Opens the scope; null when it can't be opened from here.
   final VoidCallback? onScope;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final place = [
+    final colors = context.colors;
+    final recurring = job.jobType == JobType.recurring;
+    final large = isLargeText(context);
+    final time = Text(
+      context.formatTimeRange(job.scheduledStart, job.scheduledEnd),
+      style: theme.textTheme.headlineMedium?.copyWith(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      ),
+    );
+    final pill = JobStatusLabel(status: job.status);
+    final kind = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          recurring ? Icons.repeat_rounded : Icons.looks_one_outlined,
+          size: 16,
+          color: colors.inkMuted,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          recurring ? l10n.jobTypeRecurring : l10n.jobTypeSpecial,
+          style: theme.textTheme.bodyMedium,
+        ),
+      ],
+    );
+    final day = Text(
+      context.formatDayLong(job.scheduledStart),
+      style: theme.textTheme.bodyMedium,
+    );
+    final address = [
       job.location?.address,
       job.location?.city,
     ].whereType<String>().join(', ');
-    return ListCard(
-      children: [
-        ListRow(
-          leading: const IconBadge(icon: Icons.place_outlined),
-          title: job.location?.name ?? l10n.notSet,
-          subtitle: place.isEmpty ? l10n.locationLabel : place,
-          muted: job.location == null,
-        ),
-        if (job.scopeId != null)
-          ListRow(
-            leading: const IconBadge(icon: Icons.checklist_rtl_rounded),
-            title: job.scopeArea ?? l10n.scopeWholeSite,
-            subtitle: l10n.scopeTitle,
-            onTap: onScope,
+
+    return SpaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (large) ...[
+            Align(alignment: Alignment.centerLeft, child: pill),
+            const SizedBox(height: 10),
+            time,
+            const SizedBox(height: 4),
+            day,
+            const SizedBox(height: 4),
+            Align(alignment: Alignment.centerLeft, child: kind),
+          ] else ...[
+            // The time keeps the full width so it never wraps; the status
+            // sits beside the day and the kind of job.
+            time,
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [day, const SizedBox(height: 4), kind],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                pill,
+              ],
+            ),
+          ],
+          const SizedBox(height: 14),
+          _HeadLine(
+            icon: Icons.place_outlined,
+            title: job.location?.name ?? l10n.notSet,
+            detail: address.isEmpty ? l10n.locationLabel : address,
+            label: l10n.locationLabel,
           ),
-        ListRow(
-          leading: IconBadge(
-            icon: job.jobType == JobType.recurring
-                ? Icons.repeat_rounded
-                : Icons.looks_one_outlined,
-          ),
-          title: job.jobType == JobType.recurring
-              ? l10n.jobTypeRecurring
-              : l10n.jobTypeSpecial,
-          subtitle: l10n.jobTypeLabel,
-        ),
-      ],
+          if (job.scopeId != null)
+            _HeadLine(
+              icon: Icons.checklist_rtl_rounded,
+              title: job.scopeArea ?? l10n.scopeWholeSite,
+              detail: l10n.scopeTitle,
+              label: l10n.scopeTitle,
+              onTap: onScope,
+            ),
+          if (job.checklistTotal > 0) ...[
+            const SizedBox(height: 14),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.jobChecklist,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Semantics(
+                  label: l10n.checklistProgress(
+                    job.checklistDone,
+                    job.checklistTotal,
+                  ),
+                  excludeSemantics: true,
+                  child: Text(
+                    '${job.checklistDone}/${job.checklistTotal}',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SpaceProgressBar(
+              value: job.checklistDone / job.checklistTotal,
+              semanticsLabel: l10n.jobChecklist,
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
 
-/// Who started and finished it, the score, the crew's notes and the
-/// client's sign-off.
+/// The crew's report once it's done: who started and finished it (when, at
+/// the right; under the name at large text), the score, the client's
+/// sign-off and the crew's notes.
 class _CompletionCard extends StatelessWidget {
   const _CompletionCard({required this.job});
 
@@ -601,41 +590,49 @@ class _CompletionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    String? at(DateTime? time, String? name) => switch ((time, name)) {
-      (final t?, final n?) => l10n.doneAtBy(context.formatTime(t), n),
-      (final t?, null) => context.formatTime(t),
-      (null, final n?) => n,
-      _ => null,
-    };
+    final large = isLargeText(context);
+    ListRow? step(IconData icon, String label, DateTime? at, String? by) {
+      if (at == null && by == null) return null;
+      final time = at == null ? null : context.formatTime(at);
+      return ListRow(
+        leading: IconBadge(icon: icon),
+        title: by ?? time!,
+        subtitle: [label, if (large && by != null) ?time].join(' · '),
+        trailing: !large && by != null && time != null
+            ? Text(time, style: moneyStyle)
+            : null,
+      );
+    }
+
     final rows = [
-      if (at(job.actualStart, job.startedByName) case final v?)
-        ListRow(
-          leading: const IconBadge(icon: Icons.play_arrow_rounded),
-          title: v,
-          subtitle: l10n.jobStartedLabel,
-        ),
-      if (at(job.actualEnd, job.completedByName) case final v?)
-        ListRow(
-          leading: const IconBadge(icon: Icons.check_rounded),
-          title: v,
-          subtitle: l10n.jobCompletedLabel,
-        ),
+      ?step(
+        Icons.play_arrow_rounded,
+        l10n.jobStartedLabel,
+        job.actualStart,
+        job.startedByName,
+      ),
+      ?step(
+        Icons.check_rounded,
+        l10n.jobCompletedLabel,
+        job.actualEnd,
+        job.completedByName,
+      ),
       if (job.qualityScore case final score?)
         ListRow(
           leading: const IconBadge(icon: Icons.star_outline_rounded),
           title: l10n.qualityScoreValue(context.formatNumber('$score')),
           subtitle: l10n.qualityScoreLabel,
         ),
-      if (job.clientSignoffName case final name? when name.trim().isNotEmpty)
+      if (job.clientSignoffName?.trim() case final name? when name.isNotEmpty)
         ListRow(
           leading: const IconBadge(icon: Icons.draw_outlined),
           title: name,
           subtitle: l10n.clientSignoffLabel,
         ),
-      if (job.cleanerNotes case final notes? when notes.trim().isNotEmpty)
+      if (job.cleanerNotes?.trim() case final notes? when notes.isNotEmpty)
         ListRow(
           leading: const IconBadge(icon: Icons.sticky_note_2_outlined),
-          title: notes.trim(),
+          title: notes,
           subtitle: l10n.cleanerNotesLabel,
         ),
     ];
@@ -659,6 +656,7 @@ class _ChecklistRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final colors = context.colors;
+    final large = isLargeText(context);
     return Semantics(
       checked: item.isCompleted,
       onTapHint: onTap == null
@@ -685,15 +683,121 @@ class _ChecklistRow extends StatelessWidget {
                 ),
         ),
         title: item.description,
+        // Who ticked it under the item; when, at the right (under it too at
+        // large text).
         subtitle: switch ((item.completedAt, item.completedByName)) {
-          (final t?, final n?) => l10n.doneAtBy(context.formatTime(t), n),
-          (null, final n?) => n,
-          (final t?, null) => context.formatTime(t),
+          (final t?, final n?) when large => l10n.doneAtBy(
+            context.formatTime(t),
+            n,
+          ),
+          (final t?, null) when large => context.formatTime(t),
+          (_, final n?) => n,
+          _ => null,
+        },
+        trailing: switch (item.completedAt) {
+          final t? when !large => Text(
+            context.formatTime(t),
+            style: moneyStyle,
+          ),
           _ => null,
         },
         // Acts in place: no chevron.
         chevron: false,
         onTap: busy ? null : onTap,
+      ),
+    );
+  }
+}
+
+/// Someone on the crew: their role under the name, and when they were on
+/// site at the right ("In 5:55 PM", or "5:55 PM – 8:10 PM" once out). At
+/// large text the times go under the name instead.
+class _CrewRow extends StatelessWidget {
+  const _CrewRow({required this.person});
+
+  final JobAssignee person;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final large = isLargeText(context);
+    final times = switch ((person.checkInTime, person.checkOutTime)) {
+      (final inAt?, final outAt?) => context.formatTimeRange(inAt, outAt),
+      (final inAt?, null) => l10n.checkedInAt(context.formatTime(inAt)),
+      (null, final outAt?) => l10n.checkedOutAt(context.formatTime(outAt)),
+      _ => null,
+    };
+    final role = switch (person.roleOnJob?.trim()) {
+      final r? when r.isNotEmpty => r,
+      _ => null,
+    };
+    final details = [?role, if (large) ?times];
+    return ListRow(
+      leading: InitialsAvatar(name: person.name),
+      title: person.name,
+      subtitle: details.isEmpty ? null : details.join(' · '),
+      trailing: times != null && !large ? Text(times, style: moneyStyle) : null,
+    );
+  }
+}
+
+/// A fact in the job's head card: an icon, the value, and a muted line
+/// under it. With [onTap] the whole line opens it, with a chevron.
+class _HeadLine extends StatelessWidget {
+  const _HeadLine({
+    required this.icon,
+    required this.title,
+    required this.detail,
+    required this.label,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String detail;
+
+  /// What it is, for screen readers ("Location").
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = context.colors;
+    return Semantics(
+      button: onTap != null,
+      label: '$label: $title, $detail',
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(SpaceRadius.inner),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              children: [
+                Icon(icon, size: 20, color: colors.inkMuted),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(title, style: theme.textTheme.titleMedium),
+                      const SizedBox(height: 2),
+                      Text(detail, style: theme.textTheme.bodyMedium),
+                    ],
+                  ),
+                ),
+                if (onTap != null) ...[
+                  const SizedBox(width: 8),
+                  Icon(Icons.chevron_right_rounded, color: colors.inkSoft),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

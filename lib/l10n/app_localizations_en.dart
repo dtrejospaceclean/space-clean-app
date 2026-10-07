@@ -2485,4 +2485,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get jobsChecklistItemNotFound =>
       'That checklist item no longer exists.';
+
+  @override
+  String get jobProgressCompleted => 'Task completion';
+
+  @override
+  String get jobProgressActive => 'Active progress';
+
+  @override
+  String checklistProgressPercent(int done, int total, int percent) {
+    return '$done of $total done ($percent%)';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, String minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String jobsOnDay(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jobs scheduled',
+      one: '1 job scheduled',
+      zero: 'Nothing scheduled',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get jobsFilter => 'Filter by status';
+
+  @override
+  String jobsFilterOn(String status) {
+    return 'Filtered: $status';
+  }
+
+  @override
+  String get noJobsOnDay => 'No jobs this day';
+
+  @override
+  String get noJobsMatchFilter => 'No jobs with this status this day';
+
+  @override
+  String get dayHasJobs => 'has jobs';
 }

@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 
 import '../tokens.dart';
 
-/// Rounded progress: navy fill on a light navy track.
+/// Rounded progress: navy fill on a light navy track, or a status's own
+/// [color] on a neutral track (a job's progress in its status color).
 class SpaceProgressBar extends StatelessWidget {
   const SpaceProgressBar({
     super.key,
     required this.value,
     this.height = 10,
     this.semanticsLabel,
+    this.color,
   });
 
   /// 0–1.
   final double value;
   final double height;
   final String? semanticsLabel;
+
+  /// The fill; defaults to navy. With a color the track turns sunken.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +34,17 @@ class SpaceProgressBar extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              ColoredBox(color: context.colors.accentSoft),
+              ColoredBox(
+                color: color == null
+                    ? context.colors.accentSoft
+                    : context.colors.sunken,
+              ),
               FractionallySizedBox(
                 alignment: Alignment.centerLeft,
                 widthFactor: v,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: context.colors.accent,
+                    color: color ?? context.colors.accent,
                     borderRadius: BorderRadius.circular(SpaceRadius.pill),
                   ),
                 ),
