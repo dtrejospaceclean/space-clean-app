@@ -12,6 +12,7 @@ import '../../../settings/presentation/controllers/language_controller.dart';
 import '../../../settings/presentation/controllers/theme_mode_controller.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../admin_modules.dart';
+import '../widgets/profile_photo_button.dart';
 import 'change_password_screen.dart';
 import 'edit_profile_screen.dart';
 
@@ -75,12 +76,7 @@ class ProfileScreen extends ConsumerWidget {
           child: SpaceCard(
             child: Row(
               children: [
-                InitialsAvatar(
-                  name: user.name,
-                  size: 56,
-                  background: context.colors.accent,
-                  foreground: context.colors.onAccent,
-                ),
+                ProfilePhotoButton(user: user),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(

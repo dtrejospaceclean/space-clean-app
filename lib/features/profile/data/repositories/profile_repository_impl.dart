@@ -1,11 +1,14 @@
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../domain/entities/profile_draft.dart';
+import '../../domain/entities/profile_photo.dart';
 import '../../domain/repositories/profile_repository.dart';
 
-/// `PATCH /auth/me` and `POST /auth/change-password`.
+/// `PATCH /auth/me`, `/auth/me/photo` and `POST /auth/change-password`.
 class ProfileRepositoryImpl implements ProfileRepository {
   const ProfileRepositoryImpl(this._api);
 
@@ -24,8 +27,24 @@ class ProfileRepositoryImpl implements ProfileRepository {
         'emergencyContactPhone': optional(draft.emergencyContactPhone),
       },
     );
-    return UserModel.fromJson((data! as Map).cast<String, dynamic>());
+    return _user(data);
   });
+
+  // Dio sets the multipart Content-Type, boundary included.
+  @override
+  Future<User> setPhoto(ProfilePhoto photo) => _guard(() async {
+    final form = FormData.fromMap({
+      'photo': await MultipartFile.fromFile(photo.path),
+    });
+    return _user(await _api.put('/auth/me/photo', body: form));
+  });
+
+  @override
+  Future<User> removePhoto() =>
+      _guard(() async => _user(await _api.delete('/auth/me/photo')));
+
+  static User _user(Object? data) =>
+      UserModel.fromJson((data! as Map).cast<String, dynamic>());
 
   @override
   Future<void> changePassword({

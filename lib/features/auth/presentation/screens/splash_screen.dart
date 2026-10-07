@@ -17,7 +17,8 @@ class SplashScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authControllerProvider);
-    final failed = auth.hasError && !auth.isLoading;
+    // A retry keeps the message up, with the button busy, until it ends.
+    final failed = auth.hasError;
 
     return Scaffold(
       backgroundColor: context.colors.ground,
@@ -44,9 +45,10 @@ class SplashScreen extends ConsumerWidget {
                       }}',
                 ),
                 const SizedBox(height: 16),
-                PrimaryButton(
-                  label: l10n.retryButton,
-                  onPressed: () => ref.invalidate(authControllerProvider),
+                RetryButton(
+                  primary: true,
+                  loading: auth.isLoading,
+                  onRetry: () => ref.invalidate(authControllerProvider),
                 ),
               ] else
                 const SizedBox(

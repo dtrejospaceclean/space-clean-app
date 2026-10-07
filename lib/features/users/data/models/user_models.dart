@@ -30,6 +30,7 @@ abstract final class ManagedUserModel {
     },
     emergencyContactName: json['emergencyContactName'] as String?,
     emergencyContactPhone: json['emergencyContactPhone'] as String?,
+    photoUrl: json['photoUrl'] as String?,
   );
 }
 

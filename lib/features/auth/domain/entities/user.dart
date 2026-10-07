@@ -28,6 +28,7 @@ class User {
     this.phoneNumber,
     this.emergencyContactName,
     this.emergencyContactPhone,
+    this.photoUrl,
   });
 
   final String id;
@@ -43,6 +44,10 @@ class User {
   final String? phoneNumber;
   final String? emergencyContactName;
   final String? emergencyContactPhone;
+
+  /// Public CDN link to the profile photo; `null` shows initials. A new
+  /// photo gets a new URL, so caching by URL is safe.
+  final String? photoUrl;
 
   bool hasRole(String role) => roles.any((r) => r.name == role);
 

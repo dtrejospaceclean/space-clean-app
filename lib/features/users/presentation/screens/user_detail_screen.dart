@@ -123,6 +123,7 @@ class UserDetailScreen extends ConsumerWidget {
                     children: [
                       InitialsAvatar(
                         name: user.name,
+                        photoUrl: user.photoUrl,
                         size: 56,
                         background: user.isActive
                             ? context.colors.accent

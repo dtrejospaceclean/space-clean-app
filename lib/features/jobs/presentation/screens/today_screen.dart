@@ -44,7 +44,10 @@ class TodayScreen extends ConsumerWidget {
       showBack: false,
       title: l10n.todayTitle,
       onRefresh: refresh,
-      actions: [if (user != null) _ProfileButton(name: user.name)],
+      actions: [
+        if (user != null)
+          _ProfileButton(name: user.name, photoUrl: user.photoUrl),
+      ],
       slivers: [
         PageBox(
           top: 4,
@@ -141,9 +144,10 @@ class TodayScreen extends ConsumerWidget {
 /// The user's avatar, which opens Me (profile, administration, settings),
 /// with the unread notifications counted on it.
 class _ProfileButton extends ConsumerWidget {
-  const _ProfileButton({required this.name});
+  const _ProfileButton({required this.name, this.photoUrl});
 
   final String name;
+  final String? photoUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -171,6 +175,7 @@ class _ProfileButton extends ConsumerWidget {
                   onTap: () => context.go(ProfileScreen.path),
                   child: InitialsAvatar(
                     name: name,
+                    photoUrl: photoUrl,
                     background: context.colors.surface,
                   ),
                 ),

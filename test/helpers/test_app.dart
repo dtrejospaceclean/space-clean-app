@@ -39,7 +39,9 @@ import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.d
 import 'package:sp_cln_app/features/password_reset/domain/repositories/password_reset_repository.dart';
 import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
+import 'package:sp_cln_app/features/profile/domain/entities/profile_photo.dart';
 import 'package:sp_cln_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:sp_cln_app/features/profile/presentation/photo_picker.dart';
 import 'package:sp_cln_app/features/proposals/di/proposals_providers.dart';
 import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
 import 'package:sp_cln_app/features/proposals/domain/repositories/proposals_repository.dart';
@@ -1452,6 +1454,38 @@ class FakeProfileRepository implements ProfileRepository {
       phoneNumber: text(draft.phoneNumber),
       emergencyContactName: text(draft.emergencyContactName),
       emergencyContactPhone: text(draft.emergencyContactPhone),
+      photoUrl: user.photoUrl,
+    );
+  }
+
+  @override
+  Future<User> setPhoto(ProfilePhoto photo) async {
+    writes.add('photo ${photo.path}');
+    return auth.sessionUser = _withPhoto(
+      'https://cdn.example.com/profile_photos/${auth.sessionUser!.id}/'
+      '${writes.length}.webp',
+    );
+  }
+
+  @override
+  Future<User> removePhoto() async {
+    writes.add('remove photo');
+    return auth.sessionUser = _withPhoto(null);
+  }
+
+  User _withPhoto(String? url) {
+    final user = auth.sessionUser!;
+    return User(
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      userType: user.userType,
+      isActive: user.isActive,
+      roles: user.roles,
+      phoneNumber: user.phoneNumber,
+      emergencyContactName: user.emergencyContactName,
+      emergencyContactPhone: user.emergencyContactPhone,
+      photoUrl: url,
     );
   }
 
@@ -1465,6 +1499,23 @@ class FakeProfileRepository implements ProfileRepository {
     }
     writes.add('password');
     password = newPassword;
+  }
+}
+
+/// Hands back [next] (or nothing, as when the user backs out) instead of
+/// opening the camera or the library; [sources] records what was asked.
+class FakePhotoPicker implements PhotoPicker {
+  FakePhotoPicker([this.next]);
+
+  ProfilePhoto? next;
+  Object? error;
+  final sources = <PhotoSource>[];
+
+  @override
+  Future<ProfilePhoto?> pick(PhotoSource source) async {
+    sources.add(source);
+    if (error case final e?) throw e;
+    return next;
   }
 }
 
@@ -1681,6 +1732,7 @@ Future<SharedPreferences> pumpApp(
   UsersRepository? users,
   RolesRepository? roles,
   ProfileRepository? profile,
+  PhotoPicker? photoPicker,
   ServiceCatalogRepository? services,
   ContactsRepository? contacts,
   LocationsRepository? locations,
@@ -1721,6 +1773,7 @@ Future<SharedPreferences> pumpApp(
         profileRepositoryProvider.overrideWithValue(
           profile ?? FakeProfileRepository(auth),
         ),
+        photoPickerProvider.overrideWithValue(photoPicker ?? FakePhotoPicker()),
         serviceCatalogRepositoryProvider.overrideWithValue(
           services ?? FakeServiceCatalogRepository(),
         ),

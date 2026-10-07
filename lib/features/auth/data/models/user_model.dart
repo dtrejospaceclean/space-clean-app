@@ -17,5 +17,6 @@ abstract final class UserModel {
     phoneNumber: json['phoneNumber'] as String?,
     emergencyContactName: json['emergencyContactName'] as String?,
     emergencyContactPhone: json['emergencyContactPhone'] as String?,
+    photoUrl: json['photoUrl'] as String?,
   );
 }

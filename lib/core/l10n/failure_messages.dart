@@ -20,6 +20,9 @@ extension FailureMessages on AppLocalizations {
     'users.email_taken' => usersEmailTaken,
     'users.not_found' => usersNotFound,
     'users.cannot_deactivate_self' => usersCannotDeactivateSelf,
+    'users.photo_required' => usersPhotoRequired,
+    'users.photo_invalid_type' => usersPhotoInvalidType,
+    'users.photo_too_large' => usersPhotoTooLarge,
     'roles.still_assigned' => rolesStillAssigned,
     'roles.system_role_not_renamable' ||
     'roles.system_role_not_deletable' => rolesSystemRole,

@@ -46,17 +46,21 @@ class IconBadge extends StatelessWidget {
   }
 }
 
-/// Initials in a circle ("WJ"), for people and accounts.
+/// Initials in a circle ("WJ"), for people and accounts, or the person's
+/// photo when there's a [photoUrl]. The initials show while the photo loads
+/// and stay if it can't.
 class InitialsAvatar extends StatelessWidget {
   const InitialsAvatar({
     super.key,
     required this.name,
+    this.photoUrl,
     this.size = 44,
     this.background,
     this.foreground,
   });
 
   final String name;
+  final String? photoUrl;
   final double size;
 
   /// Default to the sunken tone with ink initials.
@@ -76,8 +80,8 @@ class InitialsAvatar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => ExcludeSemantics(
-    child: Container(
+  Widget build(BuildContext context) {
+    final initials = Container(
       width: size,
       height: size,
       alignment: Alignment.center,
@@ -94,8 +98,27 @@ class InitialsAvatar extends StatelessWidget {
           fontSize: size * 0.34,
         ),
       ),
-    ),
-  );
+    );
+    final url = photoUrl;
+    if (url == null || url.isEmpty) return ExcludeSemantics(child: initials);
+    // Decoded at the size shown, not the stored 512 px square.
+    final pixels = (size * MediaQuery.devicePixelRatioOf(context)).round();
+    return ExcludeSemantics(
+      child: ClipOval(
+        child: Image.network(
+          url,
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+          cacheWidth: pixels,
+          gaplessPlayback: true,
+          frameBuilder: (context, child, frame, synchronous) =>
+              synchronous || frame != null ? child : initials,
+          errorBuilder: (context, error, stack) => initials,
+        ),
+      ),
+    );
+  }
 }
 
 /// Small rounded label with a colored dot or icon: status, tags.

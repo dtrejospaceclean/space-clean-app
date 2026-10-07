@@ -1,13 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sp_cln_app/features/profile/domain/entities/profile_photo.dart';
+import 'package:sp_cln_app/features/profile/presentation/photo_picker.dart';
 
 import '../../../helpers/test_app.dart';
 
 Future<FakeProfileRepository> openMe(
   WidgetTester tester,
-  FakeAuthRepository auth,
-) async {
+  FakeAuthRepository auth, {
+  PhotoPicker? photoPicker,
+}) async {
   final profile = FakeProfileRepository(auth);
-  await pumpApp(tester, auth: auth, profile: profile);
+  await pumpApp(tester, auth: auth, profile: profile, photoPicker: photoPicker);
   await tester.tap(find.byTooltip('Me'));
   await tester.pumpAndSettle();
   return profile;
@@ -55,6 +58,94 @@ void main() {
 
     expect(profile.writes, isEmpty);
     expect(find.text('This field is required.'), findsOneWidget);
+  });
+
+  group('profile photo', () {
+    const picked = ProfilePhoto(path: '/tmp/me.jpg', sizeInBytes: 800000);
+
+    Future<void> openPhotoMenu(WidgetTester tester) async {
+      await tester.tap(find.byTooltip('Change profile photo'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('sets a photo from the library, then removes it', (
+      tester,
+    ) async {
+      final auth = FakeAuthRepository(sessionUser: ana);
+      final picker = FakePhotoPicker(picked);
+      final profile = await openMe(tester, auth, photoPicker: picker);
+
+      await openPhotoMenu(tester);
+      // Nothing to remove yet.
+      expect(find.text('Take photo'), findsOneWidget);
+      expect(find.text('Remove photo'), findsNothing);
+      await tester.tap(find.text('Choose from library'));
+      await tester.pumpAndSettle();
+
+      expect(picker.sources, [PhotoSource.library]);
+      expect(profile.writes, ['photo /tmp/me.jpg']);
+      expect(auth.sessionUser!.photoUrl, isNotNull);
+
+      await openPhotoMenu(tester);
+      await tester.tap(find.text('Remove photo'));
+      await tester.pumpAndSettle();
+
+      expect(profile.writes.last, 'remove photo');
+      expect(auth.sessionUser!.photoUrl, isNull);
+    });
+
+    testWidgets('backing out of the camera changes nothing', (tester) async {
+      final auth = FakeAuthRepository(sessionUser: ana);
+      final picker = FakePhotoPicker();
+      final profile = await openMe(tester, auth, photoPicker: picker);
+
+      await openPhotoMenu(tester);
+      await tester.tap(find.text('Take photo'));
+      await tester.pumpAndSettle();
+
+      expect(picker.sources, [PhotoSource.camera]);
+      expect(profile.writes, isEmpty);
+    });
+
+    testWidgets('a photo over 5 MB is refused before uploading', (
+      tester,
+    ) async {
+      final auth = FakeAuthRepository(sessionUser: ana);
+      final profile = await openMe(
+        tester,
+        auth,
+        photoPicker: FakePhotoPicker(
+          const ProfilePhoto(
+            path: '/tmp/huge.png',
+            sizeInBytes: ProfilePhoto.maxBytes + 1,
+          ),
+        ),
+      );
+
+      await openPhotoMenu(tester);
+      await tester.tap(find.text('Choose from library'));
+      await tester.pumpAndSettle();
+
+      expect(profile.writes, isEmpty);
+      expect(
+        find.text('That photo is over 5 MB. Choose a smaller one.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('says how to allow access when the camera is denied', (
+      tester,
+    ) async {
+      final auth = FakeAuthRepository(sessionUser: ana);
+      final picker = FakePhotoPicker()..error = const PhotoAccessDenied();
+      await openMe(tester, auth, photoPicker: picker);
+
+      await openPhotoMenu(tester);
+      await tester.tap(find.text('Take photo'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Allow access in Settings'), findsOneWidget);
+    });
   });
 
   group('change password', () {

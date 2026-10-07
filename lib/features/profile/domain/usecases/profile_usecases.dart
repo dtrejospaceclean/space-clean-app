@@ -1,6 +1,8 @@
+import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../entities/profile_draft.dart';
+import '../entities/profile_photo.dart';
 import '../repositories/profile_repository.dart';
 
 class UpdateMyProfile implements UseCase<User, ProfileDraft> {
@@ -10,6 +12,31 @@ class UpdateMyProfile implements UseCase<User, ProfileDraft> {
 
   @override
   Future<User> call(ProfileDraft params) => _repository.updateProfile(params);
+}
+
+/// Throws `RuleFailure` `users.photo_too_large` without uploading when the
+/// file is over the server's limit.
+class SetMyPhoto implements UseCase<User, ProfilePhoto> {
+  const SetMyPhoto(this._repository);
+
+  final ProfileRepository _repository;
+
+  static const tooLargeKey = 'users.photo_too_large';
+
+  @override
+  Future<User> call(ProfilePhoto params) async {
+    if (params.isTooLarge) throw const RuleFailure(tooLargeKey);
+    return _repository.setPhoto(params);
+  }
+}
+
+class RemoveMyPhoto implements UseCase<User, NoParams> {
+  const RemoveMyPhoto(this._repository);
+
+  final ProfileRepository _repository;
+
+  @override
+  Future<User> call(NoParams params) => _repository.removePhoto();
 }
 
 class ChangePasswordParams {

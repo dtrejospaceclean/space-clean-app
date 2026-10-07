@@ -10,11 +10,13 @@ import '../../widgets/adaptive.dart';
 /// Lets the user pick one of [options]; returns the chosen value, or `null`
 /// when dismissed. [allowClear] adds a "Not set" choice returning `''`.
 /// [title] is optional: a menu whose options name themselves needs none.
+/// Keys in [destructive] show in the platform's destructive red.
 Future<String?> showAppChoice(
   BuildContext context, {
   String? title,
   required Map<String, String> options,
   bool allowClear = true,
+  Set<String> destructive = const {},
 }) {
   final l10n = AppLocalizations.of(context);
   if (useCupertino(context)) {
@@ -25,6 +27,7 @@ Future<String?> showAppChoice(
         actions: [
           for (final MapEntry(:key, :value) in options.entries)
             CupertinoActionSheetAction(
+              isDestructiveAction: destructive.contains(key),
               onPressed: () => Navigator.of(context).pop(key),
               child: Text(value),
             ),
@@ -59,6 +62,9 @@ Future<String?> showAppChoice(
           for (final MapEntry(:key, :value) in options.entries)
             ListTile(
               title: Text(value),
+              textColor: destructive.contains(key)
+                  ? Theme.of(context).colorScheme.error
+                  : null,
               onTap: () => Navigator.of(context).pop(key),
             ),
           if (allowClear)

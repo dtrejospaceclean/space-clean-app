@@ -766,6 +766,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editProfile => 'Editar perfil';
 
   @override
+  String get changePhoto => 'Cambiar foto de perfil';
+
+  @override
+  String get takePhoto => 'Tomar foto';
+
+  @override
+  String get chooseFromLibrary => 'Elegir de la galería';
+
+  @override
+  String get removePhoto => 'Quitar foto';
+
+  @override
+  String get photoAccessDenied =>
+      'Space Clean no puede usar la cámara ni tus fotos. Permite el acceso en Ajustes e inténtalo de nuevo.';
+
+  @override
+  String get photoPickFailed => 'No se pudo abrir esa foto. Prueba con otra.';
+
+  @override
+  String get usersPhotoRequired =>
+      'No se recibió ninguna foto. Inténtalo de nuevo.';
+
+  @override
+  String get usersPhotoInvalidType => 'Usa una foto JPEG, PNG o WebP.';
+
+  @override
+  String get usersPhotoTooLarge =>
+      'Esa foto pesa más de 5 MB. Elige una más pequeña.';
+
+  @override
   String get appearanceLabel => 'Apariencia';
 
   @override

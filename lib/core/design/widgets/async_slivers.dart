@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,9 +7,11 @@ import '../../error/failures.dart';
 import '../../l10n/failure_messages.dart';
 import '../../../l10n/app_localizations.dart';
 import '../tokens.dart';
+import 'buttons.dart';
 
 /// Loading, error and data states of an [AsyncValue] as slivers. Keeps the
-/// previous data on screen while a refresh is running.
+/// previous data on screen while a refresh is running, and the error (with a
+/// busy Retry) while a retry is.
 class AsyncSlivers<T> extends StatelessWidget {
   const AsyncSlivers({
     super.key,
@@ -31,12 +35,73 @@ class AsyncSlivers<T> extends StatelessWidget {
           final Failure failure => l10n.failureMessage(failure),
           _ => l10n.errorsUnknown,
         },
-        action: TextButton(onPressed: onRetry, child: Text(l10n.retryButton)),
+        action: RetryButton(onRetry: onRetry, loading: value.isLoading),
       );
     }
     return const SliverFillRemaining(
       hasScrollBody: false,
       child: Center(child: CircularProgressIndicator.adaptive()),
+    );
+  }
+}
+
+/// "Try again" for a failed load. Shows a spinner while [loading] and for a
+/// moment after every tap, so a retry that fails again at once (offline)
+/// still visibly ran. [primary] makes it the screen's main button.
+class RetryButton extends StatefulWidget {
+  const RetryButton({
+    super.key,
+    required this.onRetry,
+    this.loading = false,
+    this.primary = false,
+  });
+
+  final VoidCallback onRetry;
+  final bool loading;
+  final bool primary;
+
+  @override
+  State<RetryButton> createState() => _RetryButtonState();
+}
+
+class _RetryButtonState extends State<RetryButton> {
+  static const _minBusy = Duration(milliseconds: 700);
+
+  Timer? _timer;
+
+  bool get _busy => widget.loading || (_timer?.isActive ?? false);
+
+  void _retry() {
+    setState(() => _timer = Timer(_minBusy, () => setState(() {})));
+    widget.onRetry();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final label = AppLocalizations.of(context).retryButton;
+    if (widget.primary) {
+      return PrimaryButton(label: label, busy: _busy, onPressed: _retry);
+    }
+    return Semantics(
+      button: true,
+      enabled: !_busy,
+      label: label,
+      excludeSemantics: true,
+      child: TextButton(
+        onPressed: _busy ? null : _retry,
+        child: _busy
+            ? SizedBox.square(
+                dimension: 20,
+                child: CircularProgressIndicator.adaptive(strokeWidth: 2.5),
+              )
+            : Text(label),
+      ),
     );
   }
 }

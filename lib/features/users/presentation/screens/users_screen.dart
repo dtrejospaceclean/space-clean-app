@@ -87,7 +87,10 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                 children: [
                   for (final user in list)
                     ListRow(
-                      leading: InitialsAvatar(name: user.name),
+                      leading: InitialsAvatar(
+                        name: user.name,
+                        photoUrl: user.photoUrl,
+                      ),
                       title: user.name,
                       // Deactivated people recede; the icon says which.
                       muted: !user.isActive,

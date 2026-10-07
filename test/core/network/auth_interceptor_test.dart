@@ -129,6 +129,23 @@ void main() {
     expect(refreshCalls, 1);
   });
 
+  test('replays a multipart upload with a fresh body', () async {
+    setUpClient(backend);
+    final form = FormData.fromMap({
+      'photo': MultipartFile.fromBytes([1, 2, 3], filename: 'me.jpg'),
+    });
+
+    final data = await api.put('/auth/me/photo', body: form);
+
+    expect(data, {'id': 'u1'});
+    // A sent FormData can't be sent again, so the replay carries a copy.
+    final uploads = adapter.requests.where((r) => r.path == '/auth/me/photo');
+    expect(uploads, hasLength(2));
+    final last = uploads.last;
+    expect((last.data as FormData).files.single.key, 'photo');
+    expect(last.contentType, startsWith('multipart/form-data; boundary='));
+  });
+
   test('a rejected refresh clears the session', () async {
     setUpClient(
       (options) async => options.path == '/auth/refresh'
@@ -158,9 +175,55 @@ void main() {
       return fail(401, 'auth.invalid_access_token');
     });
 
-    await expectLater(api.get('/auth/me'), throwsA(isA<ApiException>()));
+    // Reported as offline, not as an expired session.
+    await expectLater(
+      api.get('/auth/me'),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'status', 0)),
+    );
     expect(sessionExpiredCalls, 0);
     expect(await tokenStorage.read(), isNotNull);
+  });
+
+  test('a server error during refresh keeps the session', () async {
+    setUpClient(
+      (options) async => options.path == '/auth/refresh'
+          ? fail(503, 'common.service_unavailable')
+          : fail(401, 'auth.invalid_access_token'),
+    );
+
+    await expectLater(
+      api.get('/auth/me'),
+      throwsA(isA<ApiException>().having((e) => e.statusCode, 'status', 503)),
+    );
+    expect(sessionExpiredCalls, 0);
+    expect(await tokenStorage.read(), isNotNull);
+  });
+
+  test('any other refused refresh ends the session', () async {
+    setUpClient(
+      (options) async => options.path == '/auth/refresh'
+          ? fail(400, 'validation.failed')
+          : fail(401, 'auth.invalid_access_token'),
+    );
+
+    await expectLater(api.get('/auth/me'), throwsA(isA<ApiException>()));
+    await Future<void>.delayed(Duration.zero);
+    expect(sessionExpiredCalls, 1);
+    expect(await tokenStorage.read(), isNull);
+  });
+
+  test('a request refused even after refreshing ends the session', () async {
+    setUpClient(
+      (options) async => options.path == '/auth/refresh'
+          ? ok({'accessToken': 'new-access', 'refreshToken': 'new-refresh'})
+          : fail(401, 'auth.invalid_access_token'),
+    );
+
+    await expectLater(api.get('/auth/me'), throwsA(isA<ApiException>()));
+    await Future<void>.delayed(Duration.zero);
+    expect(refreshCalls, 1);
+    expect(sessionExpiredCalls, 1);
+    expect(await tokenStorage.read(), isNull);
   });
 
   test('public requests skip the token and never refresh', () async {

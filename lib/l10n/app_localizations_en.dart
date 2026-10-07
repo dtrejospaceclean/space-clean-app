@@ -759,6 +759,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editProfile => 'Edit profile';
 
   @override
+  String get changePhoto => 'Change profile photo';
+
+  @override
+  String get takePhoto => 'Take photo';
+
+  @override
+  String get chooseFromLibrary => 'Choose from library';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get photoAccessDenied =>
+      'Space Clean can\'t use the camera or your photos. Allow access in Settings and try again.';
+
+  @override
+  String get photoPickFailed =>
+      'That photo couldn\'t be opened. Try another one.';
+
+  @override
+  String get usersPhotoRequired => 'No photo was received. Try again.';
+
+  @override
+  String get usersPhotoInvalidType => 'Use a JPEG, PNG or WebP photo.';
+
+  @override
+  String get usersPhotoTooLarge =>
+      'That photo is over 5 MB. Choose a smaller one.';
+
+  @override
   String get appearanceLabel => 'Appearance';
 
   @override

@@ -16,3 +16,11 @@ final updateMyProfileProvider = Provider<UpdateMyProfile>(
 final changePasswordProvider = Provider<ChangePassword>(
   (ref) => ChangePassword(ref.watch(profileRepositoryProvider)),
 );
+
+final setMyPhotoProvider = Provider<SetMyPhoto>(
+  (ref) => SetMyPhoto(ref.watch(profileRepositoryProvider)),
+);
+
+final removeMyPhotoProvider = Provider<RemoveMyPhoto>(
+  (ref) => RemoveMyPhoto(ref.watch(profileRepositoryProvider)),
+);

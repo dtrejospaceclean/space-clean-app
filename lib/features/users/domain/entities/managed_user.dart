@@ -17,6 +17,7 @@ class ManagedUser {
     this.hireDate,
     this.emergencyContactName,
     this.emergencyContactPhone,
+    this.photoUrl,
   });
 
   final String id;
@@ -38,6 +39,9 @@ class ManagedUser {
   final DateTime? hireDate;
   final String? emergencyContactName;
   final String? emergencyContactPhone;
+
+  /// Only the user sets their own photo; administration just shows it.
+  final String? photoUrl;
 }
 
 /// Values the app offers for `employmentType`. The server accepts any text,

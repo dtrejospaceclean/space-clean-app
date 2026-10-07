@@ -1412,6 +1412,60 @@ abstract class AppLocalizations {
   /// **'Edit profile'**
   String get editProfile;
 
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change profile photo'**
+  String get changePhoto;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from library'**
+  String get chooseFromLibrary;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @photoAccessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Clean can\'t use the camera or your photos. Allow access in Settings and try again.'**
+  String get photoAccessDenied;
+
+  /// No description provided for @photoPickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That photo couldn\'t be opened. Try another one.'**
+  String get photoPickFailed;
+
+  /// No description provided for @usersPhotoRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'No photo was received. Try again.'**
+  String get usersPhotoRequired;
+
+  /// No description provided for @usersPhotoInvalidType.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a JPEG, PNG or WebP photo.'**
+  String get usersPhotoInvalidType;
+
+  /// No description provided for @usersPhotoTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'That photo is over 5 MB. Choose a smaller one.'**
+  String get usersPhotoTooLarge;
+
   /// No description provided for @appearanceLabel.
   ///
   /// In en, this message translates to:

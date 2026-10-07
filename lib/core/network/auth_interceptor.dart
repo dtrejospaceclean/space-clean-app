@@ -18,7 +18,7 @@ class AuthInterceptor extends Interceptor {
   final Dio _refreshDio;
   final TokenStorage _tokenStorage;
 
-  Future<AuthTokens?>? _refreshing;
+  Future<_Refresh>? _refreshing;
 
   static const _retriedKey = 'authRetried';
   static const _refreshableKeys = {
@@ -57,26 +57,52 @@ class AuthInterceptor extends Interceptor {
 
     // Another request may already have refreshed while this one was in flight.
     final current = await _tokenStorage.read();
+    // Signed out meanwhile: nothing to refresh, and nothing to end.
+    if (current == null) return handler.next(err);
     final sentHeader = options.headers['Authorization'];
-    final alreadyRefreshed =
-        current != null && sentHeader != 'Bearer ${current.accessToken}';
-    final tokens = alreadyRefreshed ? current : await _refresh();
-    if (tokens == null) return handler.next(err);
+    final _Refresh result = sentHeader != 'Bearer ${current.accessToken}'
+        ? _Refreshed(current)
+        : await _refresh();
 
-    try {
-      options.extra[_retriedKey] = true;
-      handler.resolve(await _dio.fetch<Object?>(options));
-    } on DioException catch (e) {
-      handler.next(e);
+    switch (result) {
+      case _Refreshed():
+        try {
+          options.extra[_retriedKey] = true;
+          // A FormData body is spent once sent; replay a fresh copy.
+          if (options.data case final FormData form) {
+            options.data = form.clone();
+          }
+          handler.resolve(await _dio.fetch<Object?>(options));
+        } on DioException catch (e) {
+          // Refused even with fresh tokens: they're no good either.
+          if (e.response?.statusCode == 401) {
+            await _tokenStorage.expireSession();
+          }
+          handler.next(e);
+        }
+      case _Rejected():
+        // The session ended in [_doRefresh]; the router goes to sign-in.
+        handler.next(err);
+      case _Unreachable(:final error):
+        // The session is kept. Report why the refresh failed (offline, server
+        // down) rather than the 401, which would read "session expired".
+        handler.next(
+          DioException(
+            requestOptions: options,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
+        );
     }
   }
 
-  Future<AuthTokens?> _refresh() =>
+  Future<_Refresh> _refresh() =>
       _refreshing ??= _doRefresh().whenComplete(() => _refreshing = null);
 
-  Future<AuthTokens?> _doRefresh() async {
+  Future<_Refresh> _doRefresh() async {
     final current = await _tokenStorage.read();
-    if (current == null) return null;
+    if (current == null) return const _Rejected();
     try {
       final response = await _refreshDio.post<Object?>(
         '/auth/refresh',
@@ -85,13 +111,37 @@ class AuthInterceptor extends Interceptor {
       final data = unwrapEnvelope(response.data) as Map;
       final tokens = AuthTokens.fromJson(data.cast<String, dynamic>());
       await _tokenStorage.save(tokens);
-      return tokens;
+      return _Refreshed(tokens);
     } on DioException catch (e) {
-      // A network failure leaves the session alone; only a rejected refresh ends it.
-      if (e.response?.statusCode == 401) {
-        await _tokenStorage.expireSession();
-      }
-      return null;
+      // Offline, a timeout, the server down or busy: try again later with
+      // the same session. Any other refusal means the refresh token is dead.
+      final status = e.response?.statusCode;
+      final temporary =
+          status == null || status >= 500 || status == 408 || status == 429;
+      if (temporary) return _Unreachable(e);
+      await _tokenStorage.expireSession();
+      return const _Rejected();
     }
   }
+}
+
+sealed class _Refresh {
+  const _Refresh();
+}
+
+final class _Refreshed extends _Refresh {
+  const _Refreshed(this.tokens);
+  final AuthTokens tokens;
+}
+
+/// The session is over: the server refused the refresh token (and it was
+/// ended), or there was none left.
+final class _Rejected extends _Refresh {
+  const _Rejected();
+}
+
+/// The refresh didn't get an answer about the token.
+final class _Unreachable extends _Refresh {
+  const _Unreachable(this.error);
+  final DioException error;
 }
