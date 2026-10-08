@@ -20,3 +20,4 @@ export 'widgets/progress_bar.dart';
 export 'widgets/space_page.dart';
 export 'widgets/switch.dart';
 export 'widgets/text_blocks.dart';
+export 'widgets/web_frame.dart';

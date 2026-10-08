@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
 import 'core/design/theme.dart';
+import 'core/design/widgets/web_frame.dart';
 import 'features/settings/presentation/controllers/language_controller.dart';
 import 'features/settings/presentation/controllers/theme_mode_controller.dart';
 import 'l10n/app_localizations.dart';
@@ -22,7 +23,8 @@ class App extends ConsumerWidget {
       theme: SpaceTheme.light(),
       darkTheme: SpaceTheme.dark(),
       themeMode: ref.watch(themeModeControllerProvider).material,
-      builder: SpaceTheme.scaleText,
+      builder: (context, child) =>
+          WebFrame(child: SpaceTheme.scaleText(context, child)),
     );
   }
 }

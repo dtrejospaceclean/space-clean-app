@@ -1,12 +1,12 @@
 {
-    "name": "sp_cln_app",
-    "short_name": "sp_cln_app",
+    "name": "Space Clean",
+    "short_name": "Space Clean",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#EEF2F6",
+    "theme_color": "#D14702",
+    "description": "Accounts, schedules and jobs for the Space Clean team.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

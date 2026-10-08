@@ -48,7 +48,7 @@ class DevicePhotoPicker implements PhotoPicker {
       rethrow;
     }
     if (file == null) return null;
-    return ProfilePhoto(path: file.path, sizeInBytes: await file.length());
+    return ProfilePhoto(bytes: await file.readAsBytes(), name: file.name);
   }
 }
 

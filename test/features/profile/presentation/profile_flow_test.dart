@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_photo.dart';
 import 'package:sp_cln_app/features/profile/presentation/photo_picker.dart';
@@ -61,7 +63,7 @@ void main() {
   });
 
   group('profile photo', () {
-    const picked = ProfilePhoto(path: '/tmp/me.jpg', sizeInBytes: 800000);
+    final picked = ProfilePhoto(bytes: Uint8List(800000), name: 'me.jpg');
 
     Future<void> openPhotoMenu(WidgetTester tester) async {
       await tester.tap(find.byTooltip('Change profile photo'));
@@ -83,7 +85,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(picker.sources, [PhotoSource.library]);
-      expect(profile.writes, ['photo /tmp/me.jpg']);
+      expect(profile.writes, ['photo me.jpg']);
       expect(auth.sessionUser!.photoUrl, isNotNull);
 
       await openPhotoMenu(tester);
@@ -115,9 +117,9 @@ void main() {
         tester,
         auth,
         photoPicker: FakePhotoPicker(
-          const ProfilePhoto(
-            path: '/tmp/huge.png',
-            sizeInBytes: ProfilePhoto.maxBytes + 1,
+          ProfilePhoto(
+            bytes: Uint8List(ProfilePhoto.maxBytes + 1),
+            name: 'huge.png',
           ),
         ),
       );

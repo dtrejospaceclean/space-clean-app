@@ -125,7 +125,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
-# Android launcher icon: the logo's planet mark on white. Adaptive (8+) with
+# Android and browser icons: the logo's planet mark on white. Adaptive (8+) with
 # a themed monochrome layer (13+), plus a legacy full-square icon.
 # Regenerate with: flutter test --update-goldens tool/brand && dart run flutter_launcher_icons
 flutter_launcher_icons:
@@ -138,6 +138,12 @@ flutter_launcher_icons:
   # The PNGs already keep the mark inside the safe zone.
   adaptive_icon_foreground_inset: 0
   min_sdk_android: 21
+  # Browser favicon, home-screen and PWA icons (web/icons, web/favicon.png).
+  web:
+    generate: true
+    image_path: assets/brand/launcher_icon.png
+    background_color: "#EEF2F6"
+    theme_color: "#D14702"
 
 # Native launch screen: matches the Flutter splash. Light: blue-gray ground,
 # color logo. Dark (phone in dark mode): night navy ground, white logo.

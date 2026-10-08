@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,7 +39,8 @@ class _ProfilePhotoButtonState extends ConsumerState<ProfilePhotoButton> {
       title: l10n.changePhoto,
       allowClear: false,
       options: {
-        _camera: l10n.takePhoto,
+        // A browser's camera option only opens the file chooser again.
+        if (!kIsWeb) _camera: l10n.takePhoto,
         _library: l10n.chooseFromLibrary,
         if (widget.user.photoUrl != null) _remove: l10n.removePhoto,
       },

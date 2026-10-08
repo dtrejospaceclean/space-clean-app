@@ -1802,7 +1802,7 @@ class FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<User> setPhoto(ProfilePhoto photo) async {
-    writes.add('photo ${photo.path}');
+    writes.add('photo ${photo.name}');
     return auth.sessionUser = _withPhoto(
       'https://cdn.example.com/profile_photos/${auth.sessionUser!.id}/'
       '${writes.length}.webp',

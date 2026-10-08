@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-`sp_cln_app` is a Flutter **mobile** app (Android and iOS only; Dart SDK `^3.13.4`) for a REST backend documented in `docs/frontend-api.md` (endpoints, envelope, permission model) and `docs/api-message-keys.md` (every translation key the API can return). `docs/` is git-ignored, so read those files locally before building a feature against an endpoint. The backend source (NestJS + Prisma) is at `D:\DevProjects\sp_cln_be`. Its DTOs (`src/**/dto/*.ts`) are the exact request contract (unknown fields are rejected), and they cover details the docs leave out, such as which fields `PATCH` accepts.
+`sp_cln_app` is a Flutter app for Android, iOS and the browser (Dart SDK `^3.13.4`) for a REST backend documented in `docs/frontend-api.md` (endpoints, envelope, permission model) and `docs/api-message-keys.md` (every translation key the API can return). `docs/` is git-ignored, so read those files locally before building a feature against an endpoint. The backend source (NestJS + Prisma) is at `D:\DevProjects\sp_cln_be`. Its DTOs (`src/**/dto/*.ts`) are the exact request contract (unknown fields are rejected), and they cover details the docs leave out, such as which fields `PATCH` accepts.
 
 Stack: Riverpod 3 (no codegen), Dio, go_router, flutter_secure_storage, shared_preferences, flutter_svg, gen-l10n (English + Spanish).
 
@@ -31,7 +31,7 @@ dart run flutter_launcher_icons                 # regenerate the Android launche
 
 On a Windows dev machine, building with plugins requires Developer Mode (symlink support).
 
-The app is mobile only. Don't add web or desktop code paths (`kIsWeb`, desktop-only plugins). The backend also doesn't send CORS headers, so a web build couldn't reach it.
+The app runs on phones and in the browser (`flutter build web --release` → `build/web`), not as a desktop app: don't add desktop-only plugins or code paths. Keep `kIsWeb` checks rare and in presentation or core (today: `WebFrame` and the photo menu's camera option). Nothing may read the file system (`dart:io`, `MultipartFile.fromFile`, file paths): pass bytes, as `ProfilePhoto` does. In a window wider than a tablet, `WebFrame` (`core/design/widgets/web_frame.dart`, in `App`'s builder) keeps the app in a centered 1024 px column, and everything below it sees that width as the screen's. The browser can reach the API only from origins listed in the backend's `CORS_ORIGINS` (comma-separated; unset means no CORS headers at all). In the browser, `flutter_secure_storage` keeps the tokens in browser storage, which is weaker than the phone's keychain.
 
 ## Architecture: Clean Architecture, feature-first
 

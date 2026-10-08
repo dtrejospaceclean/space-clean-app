@@ -34,7 +34,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<User> setPhoto(ProfilePhoto photo) => _guard(() async {
     final form = FormData.fromMap({
-      'photo': await MultipartFile.fromFile(photo.path),
+      'photo': MultipartFile.fromBytes(photo.bytes, filename: photo.name),
     });
     return _user(await _api.put('/auth/me/photo', body: form));
   });
