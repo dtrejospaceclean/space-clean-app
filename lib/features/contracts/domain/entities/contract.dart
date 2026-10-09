@@ -95,6 +95,49 @@ class Contract {
       status == ContractStatus.draft &&
       scopeOfWorkCount == 0 &&
       invoiceCount == 0;
+
+  /// How long it runs, start to expiration, in the largest whole unit:
+  /// years or months when the end falls on the start's day of the month
+  /// (Jan 15 – Jul 15 is 6 months), days otherwise. Null without an end
+  /// after the start.
+  ContractTerm? get term {
+    final end = expirationDate;
+    if (end == null) return null;
+    final months =
+        (end.year - startDate.year) * 12 + end.month - startDate.month;
+    if (end.day == startDate.day && months > 0) {
+      return months % 12 == 0
+          ? ContractTerm(months ~/ 12, TermUnit.years)
+          : ContractTerm(months, TermUnit.months);
+    }
+    // In UTC, so a daylight-saving change doesn't lose a day.
+    final days = DateTime.utc(end.year, end.month, end.day)
+        .difference(
+          DateTime.utc(startDate.year, startDate.month, startDate.day),
+        )
+        .inDays;
+    return days > 0 ? ContractTerm(days, TermUnit.days) : null;
+  }
+}
+
+enum TermUnit { days, months, years }
+
+/// A contract's length: [count] of [unit].
+class ContractTerm {
+  const ContractTerm(this.count, this.unit);
+
+  final int count;
+  final TermUnit unit;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ContractTerm && other.count == count && other.unit == unit;
+
+  @override
+  int get hashCode => Object.hash(count, unit);
+
+  @override
+  String toString() => '$count ${unit.name}';
 }
 
 /// The editable fields of a contract, as typed. Empty optional fields clear

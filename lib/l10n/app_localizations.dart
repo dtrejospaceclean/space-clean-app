@@ -3050,6 +3050,42 @@ abstract class AppLocalizations {
   /// **'This contract is cancelled. It\'s kept as history and can\'t change.'**
   String get cancelledContractNotice;
 
+  /// No description provided for @contractTermLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Term: {length}'**
+  String contractTermLength(String length);
+
+  /// No description provided for @yearsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 year} other{{count} years}}'**
+  String yearsCount(int count);
+
+  /// No description provided for @monthsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month} other{{count} months}}'**
+  String monthsCount(int count);
+
+  /// No description provided for @contractScheduleSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract schedule & terms'**
+  String get contractScheduleSection;
+
+  /// No description provided for @contractExecutionSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Execution & documents'**
+  String get contractExecutionSection;
+
+  /// No description provided for @contractSignedMark.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed'**
+  String get contractSignedMark;
+
   /// No description provided for @contractValueLabel.
   ///
   /// In en, this message translates to:

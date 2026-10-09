@@ -20,8 +20,8 @@ import '../controllers/contracts_providers.dart';
 import '../widgets/contract_status_label.dart';
 import 'contracts_screen.dart';
 
-/// One contract: its value, term and terms, who signed it, and the
-/// proposal it came from. With `contract.edit` it can be edited, signed
+/// One contract: a value card (status, term, Edit), its schedule and terms,
+/// then who signed it, its scopes and the proposal it came from. With `contract.edit` it can be edited, signed
 /// (once) and cancelled until it's cancelled; an untouched draft can be
 /// deleted.
 class ContractScreen extends ConsumerStatefulWidget {
@@ -156,8 +156,6 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
     final canEdit = access?.can(Permissions.contractEdit) ?? false;
     final canViewProposals = access?.can(Permissions.proposalView) ?? false;
     final canViewScopes = access?.can(Permissions.scopeView) ?? false;
-    final c = contract.value;
-    final editable = canEdit && (c?.isEditable ?? false);
     final here = GoRouterState.of(context).matchedLocation;
     final list = here.substring(0, here.lastIndexOf('/'));
     final account = list.substring(0, list.lastIndexOf('/'));
@@ -171,42 +169,34 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
         child: SpacePage(
           title: l10n.contractTitle,
           onRefresh: busy ? null : refresh,
-          actions: [
-            if (canEdit && (c?.canDelete ?? false))
-              CircleButton.light(
-                icon: Icons.delete_outline_rounded,
-                tooltip: l10n.deleteContract,
-                busy: _busy == _Busy.delete,
-                onPressed: () => _delete(list),
-              ),
-            if (editable)
-              CircleButton.dark(
-                icon: Icons.edit_outlined,
-                tooltip: l10n.editContract,
-                onPressed: busy ? null : () => context.push('$here/edit'),
-              ),
-          ],
           slivers: [
             AsyncSlivers(
               value: contract,
               onRetry: refresh,
               builder: (c) {
-                ListRow fact(
-                  IconData icon,
-                  String label,
-                  String? value, {
-                  VoidCallback? onTap,
-                }) => ListRow(
-                  leading: IconBadge(icon: icon),
-                  title: value ?? l10n.notSet,
-                  subtitle: label,
-                  muted: value == null,
-                  onTap: onTap,
-                );
+                final editable = canEdit && c.isEditable;
+                final signature = switch ((c.signedByName, c.signedDate)) {
+                  (final name?, final date?) => l10n.contractSignedBy(
+                    name,
+                    context.formatDate(date),
+                  ),
+                  (_, final date?) => l10n.contractSignedOn(
+                    context.formatDate(date),
+                  ),
+                  _ => null,
+                };
 
                 return SliverMainAxisGroup(
                   slivers: [
-                    PageBox(top: 4, child: _ValueCard(contract: c)),
+                    PageBox(
+                      top: 4,
+                      child: _ValueCard(
+                        contract: c,
+                        onEdit: editable
+                            ? () => context.push('$here/edit')
+                            : null,
+                      ),
+                    ),
                     if (c.isCancelled)
                       PageBox(
                         child: Notice(
@@ -215,70 +205,70 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                         ),
                       ),
                     PageBox(
+                      top: 16,
+                      child: _CapsHeader(l10n.contractScheduleSection),
+                    ),
+                    PageBox(
+                      top: 0,
+                      child: _FactCard(
+                        rows: [
+                          [
+                            (
+                              l10n.contractStartLabel,
+                              context.formatDate(c.startDate),
+                            ),
+                            (
+                              l10n.contractExpirationLabel,
+                              switch (c.expirationDate) {
+                                final day? => context.formatDate(day),
+                                null => null,
+                              },
+                            ),
+                          ],
+                          [
+                            (l10n.paymentTermsLabel, c.paymentTerms),
+                            (
+                              l10n.cancellationNoticeLabel,
+                              switch (c.cancellationNoticeDays) {
+                                final days? => l10n.daysCount(days),
+                                null => null,
+                              },
+                            ),
+                          ],
+                          [
+                            (
+                              l10n.autoRenewLabel,
+                              c.autoRenew
+                                  ? l10n.autoRenewOn
+                                  : l10n.autoRenewOff,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    PageBox(
+                      top: 16,
+                      child: _CapsHeader(l10n.contractExecutionSection),
+                    ),
+                    PageBox(
+                      top: 0,
                       child: ListCard(
                         children: [
-                          fact(
-                            Icons.event_outlined,
-                            l10n.contractStartLabel,
-                            context.formatDate(c.startDate),
-                          ),
-                          fact(
-                            Icons.event_busy_outlined,
-                            l10n.contractExpirationLabel,
-                            switch (c.expirationDate) {
-                              final day? => context.formatDate(day),
-                              null => null,
-                            },
-                          ),
-                          fact(
-                            Icons.payments_outlined,
-                            l10n.paymentTermsLabel,
-                            c.paymentTerms,
-                          ),
-                          fact(
-                            Icons.autorenew_rounded,
-                            l10n.autoRenewLabel,
-                            c.autoRenew ? l10n.autoRenewOn : l10n.autoRenewOff,
-                          ),
-                          fact(
-                            Icons.notifications_none_rounded,
-                            l10n.cancellationNoticeLabel,
-                            switch (c.cancellationNoticeDays) {
-                              final days? => l10n.daysCount(days),
-                              null => null,
-                            },
-                          ),
-                          fact(
-                            Icons.draw_outlined,
-                            l10n.signatureLabel,
-                            switch ((c.signedByName, c.signedDate)) {
-                              (final name?, final date?) =>
-                                l10n.contractSignedBy(
-                                  name,
-                                  context.formatDate(date),
-                                ),
-                              (_, final date?) => l10n.contractSignedOn(
-                                context.formatDate(date),
-                              ),
-                              _ => l10n.contractNotSigned,
-                            },
-                          ),
+                          _Signature(text: signature),
                           // The work agreed under it, area by area.
                           if (canViewScopes)
-                            fact(
-                              Icons.checklist_rtl_rounded,
-                              l10n.moduleScope,
-                              l10n.scopeOfWorkCount(c.scopeOfWorkCount),
+                            _LinkRow(
+                              label: l10n.moduleScope,
+                              value: l10n.scopeOfWorkCount(c.scopeOfWorkCount),
                               onTap: () => context.push(
                                 '$account/${ScopesScreen.route}'
                                 '?contract=${c.id}',
                               ),
                             ),
                           if (c.proposalId case final proposalId?)
-                            fact(
-                              Icons.request_quote_outlined,
-                              l10n.contractProposalLabel,
-                              switch (c.proposalVersion) {
+                            _LinkRow(
+                              label: l10n.contractProposalLabel,
+                              value: switch (c.proposalVersion) {
                                 final v? => l10n.contractFromProposal(v),
                                 null => l10n.proposalTitle,
                               },
@@ -303,46 +293,57 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                               : () => context.push('$here/sign'),
                         ),
                       ),
-                    if (editable)
+                    // Quiet actions at the foot: closing out a contract that
+                    // ran its course, cancelling, and deleting a draft.
+                    if ((canEdit && c.canMarkExpired) ||
+                        editable ||
+                        (canEdit && c.canDelete))
                       PageBox(
-                        top: c.canSign ? 12 : 24,
-                        child: SecondaryButton(
-                          label: l10n.cancelContract,
-                          icon: Icons.block_rounded,
-                          destructive: true,
-                          onPressed: busy
-                              ? null
-                              : () => _changeStatus(
-                                  _Busy.cancel,
-                                  title: l10n.cancelContractConfirmTitle,
-                                  body: l10n.cancelContractConfirmBody,
-                                  action: l10n.cancelContract,
-                                  run: () =>
-                                      ref.read(cancelContractProvider)(_ref),
-                                ),
-                        ),
-                      ),
-                    // A quieter action than cancelling: closing out a
-                    // contract that ran its course.
-                    if (canEdit && c.canMarkExpired)
-                      PageBox(
-                        top: 8,
-                        child: Center(
-                          child: LinkButton(
-                            label: l10n.markExpired,
-                            onPressed: busy
-                                ? null
-                                : () => _changeStatus(
-                                    _Busy.expire,
-                                    title: l10n.markExpiredConfirmTitle,
-                                    body: l10n.markExpiredConfirmBody,
-                                    action: l10n.markExpired,
-                                    destructive: false,
-                                    run: () => ref.read(
-                                      markContractExpiredProvider,
-                                    )(_ref),
-                                  ),
-                          ),
+                        top: c.canSign && canEdit ? 12 : 20,
+                        child: Column(
+                          children: [
+                            if (canEdit && c.canMarkExpired)
+                              LinkButton(
+                                label: l10n.markExpired,
+                                icon: Icons.event_busy_outlined,
+                                onPressed: busy
+                                    ? null
+                                    : () => _changeStatus(
+                                        _Busy.expire,
+                                        title: l10n.markExpiredConfirmTitle,
+                                        body: l10n.markExpiredConfirmBody,
+                                        action: l10n.markExpired,
+                                        destructive: false,
+                                        run: () => ref.read(
+                                          markContractExpiredProvider,
+                                        )(_ref),
+                                      ),
+                              ),
+                            if (editable)
+                              LinkButton(
+                                label: l10n.cancelContract,
+                                icon: Icons.block_rounded,
+                                destructive: true,
+                                onPressed: busy
+                                    ? null
+                                    : () => _changeStatus(
+                                        _Busy.cancel,
+                                        title: l10n.cancelContractConfirmTitle,
+                                        body: l10n.cancelContractConfirmBody,
+                                        action: l10n.cancelContract,
+                                        run: () => ref.read(
+                                          cancelContractProvider,
+                                        )(_ref),
+                                      ),
+                              ),
+                            if (canEdit && c.canDelete)
+                              LinkButton(
+                                label: l10n.deleteContract,
+                                icon: Icons.delete_outline_rounded,
+                                destructive: true,
+                                onPressed: busy ? null : () => _delete(list),
+                              ),
+                          ],
                         ),
                       ),
                   ],
@@ -356,25 +357,79 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
   }
 }
 
-/// The head of the page: the value beside the status, then the term and
-/// how long is left. At large text everything stacks.
+/// The head of the page: the value with the status under it and Edit at
+/// the corner, then the term ("Oct 4 – Oct 5, 2026 · Term: 1 day") and how
+/// long is left.
 class _ValueCard extends StatelessWidget {
-  const _ValueCard({required this.contract});
+  const _ValueCard({required this.contract, required this.onEdit});
 
   final Contract contract;
+
+  /// Null hides Edit.
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final c = contract;
+    final large = isLargeText(context);
     final amount = Text(
       context.formatMoney(c.contractValue),
       style: theme.textTheme.headlineSmall
-          ?.copyWith(fontSize: 28, fontWeight: FontWeight.w800)
+          ?.copyWith(fontSize: 32, fontWeight: FontWeight.w800)
           .merge(moneyStyle),
     );
-    final status = ContractStatusLabel(contract: c);
+    final edit = switch (onEdit) {
+      final onEdit? => PillButton(
+        label: l10n.editButton,
+        icon: Icons.edit_outlined,
+        tooltip: l10n.editContract,
+        onPressed: onEdit,
+      ),
+      null => null,
+    };
+    final term = switch (c.term) {
+      final t? => l10n.contractTermLength(switch (t.unit) {
+        TermUnit.days => l10n.daysCount(t.count),
+        TermUnit.months => l10n.monthsCount(t.count),
+        TermUnit.years => l10n.yearsCount(t.count),
+      }),
+      null => null,
+    };
+    final range = Row(
+      children: [
+        // A bullet beside one line; at large text the range wraps, so it
+        // would float beside two.
+        if (!large) ...[
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: context.colors.inkFaint,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 10),
+        ],
+        Expanded(
+          child: Text(
+            contractTerm(context, c),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: context.colors.ink,
+            ),
+          ),
+        ),
+      ],
+    );
+    final termText = term == null
+        ? null
+        : Text(
+            term,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: context.colors.inkMuted,
+            ),
+          );
     // How long is left while it runs: orange when soon, red once past the
     // end while still active, each with an icon so it isn't color alone.
     final remaining = switch ((c.daysUntilExpiration, c.expirationDate)) {
@@ -404,26 +459,254 @@ class _ValueCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (isLargeText(context)) ...[
-            Align(alignment: Alignment.centerLeft, child: status),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: amount),
+              if (edit != null && !large) ...[const SizedBox(width: 12), edit],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ContractStatusLabel(contract: c),
+          ),
+          const SizedBox(height: 12),
+          _CapsHeader(l10n.contractValueLabel, header: false),
+          if (edit != null && large) ...[
             const SizedBox(height: 12),
-            amount,
+            Align(alignment: Alignment.centerLeft, child: edit),
+          ],
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 14),
+            child: Divider(),
+          ),
+          if (termText == null)
+            range
+          else if (large) ...[
+            range,
+            const SizedBox(height: 4),
+            termText,
           ] else
             Row(
               children: [
-                Expanded(child: amount),
+                Expanded(child: range),
                 const SizedBox(width: 12),
-                status,
+                termText,
               ],
             ),
-          Text(l10n.contractValueLabel, style: theme.textTheme.bodyMedium),
-          const SizedBox(height: 14),
-          Text(contractTerm(context, c), style: theme.textTheme.bodySmall),
-          if (remaining != null) ...[const SizedBox(height: 6), remaining],
+          if (remaining != null) ...[const SizedBox(height: 8), remaining],
         ],
       ),
     );
   }
+}
+
+/// A small, letter-spaced capitals label: a section's title, or the line
+/// under the value.
+class _CapsHeader extends StatelessWidget {
+  const _CapsHeader(this.text, {this.header = true});
+
+  final String text;
+
+  /// A section title, read out as a heading; else a plain label.
+  final bool header;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = Text(
+      text.toUpperCase(),
+      style: TextStyle(
+        fontFamily: 'Manrope',
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1,
+        color: context.colors.inkMuted,
+      ),
+    );
+    if (!header) return label;
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 6, bottom: 10),
+      child: Semantics(header: true, child: label),
+    );
+  }
+}
+
+/// Facts in a card, label over value, up to two to a row with hairlines
+/// between rows. One to a row at large text. Missing values say "Not set",
+/// muted.
+class _FactCard extends StatelessWidget {
+  const _FactCard({required this.rows});
+
+  /// Each row's facts: label and value (null when not set).
+  final List<List<(String, String?)>> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final cells = isLargeText(context)
+        ? [
+            for (final row in rows)
+              for (final fact in row) [fact],
+          ]
+        : rows;
+    return ListCard(
+      children: [
+        for (final row in cells)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpaceSpace.card,
+              vertical: 12,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final (i, (label, value)) in row.indexed) ...[
+                  if (i > 0) const SizedBox(width: 16),
+                  Expanded(
+                    child: _Fact(label: label, value: value),
+                  ),
+                ],
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// A label over its value.
+class _Fact extends StatelessWidget {
+  const _Fact({required this.label, required this.value});
+
+  final String label;
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final value = this.value;
+    return MergeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: context.colors.inkMuted,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value ?? AppLocalizations.of(context).notSet,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: value == null ? FontWeight.w500 : FontWeight.w700,
+              color: value == null ? context.colors.inkMuted : null,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Who signed and when, with a green check; "Not signed yet", muted,
+/// before.
+class _Signature extends StatelessWidget {
+  const _Signature({required this.text});
+
+  /// Null until signed.
+  final String? text;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final text = this.text;
+    return MergeSemantics(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 60,
+          minWidth: double.infinity,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpaceSpace.card,
+            vertical: 12,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                text ?? l10n.contractNotSigned,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: text == null ? FontWeight.w500 : FontWeight.w700,
+                  color: text == null ? context.colors.inkMuted : null,
+                ),
+              ),
+              if (text != null) ...[
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.check_rounded,
+                      size: 18,
+                      color: context.colors.successInk,
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        l10n.contractSignedMark,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: context.colors.successInk,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A row that opens a related page: label over value, and a chevron when
+/// it can be opened.
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({required this.label, required this.value, this.onTap});
+
+  final String label;
+  final String value;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 60),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpaceSpace.card,
+          vertical: 12,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: _Fact(label: label, value: value),
+            ),
+            if (onTap != null) ...[
+              const SizedBox(width: 8),
+              Icon(Icons.chevron_right_rounded, color: context.colors.inkSoft),
+            ],
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 /// A line with an icon about how long the contract has left.

@@ -226,7 +226,7 @@ void main() {
     expect(find.text('Active'), findsOneWidget);
     expect(button('Sign contract'), findsNothing);
     // No longer a draft, so it can't be deleted.
-    expect(find.byTooltip('Delete contract'), findsNothing);
+    expect(find.text('Delete contract'), findsNothing);
   });
 
   testWidgets('an editor cancels a contract, which turns read-only', (
@@ -283,7 +283,8 @@ void main() {
     expect(find.text(r'$950.00'), findsOneWidget);
     expect(find.text('15 days'), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Delete contract'));
+    await revealBelow(tester, find.text('Delete contract'));
+    await tester.tap(find.text('Delete contract'));
     await tester.pumpAndSettle();
     expect(find.text('Delete this draft?'), findsOneWidget);
     await tester.tap(find.text('Delete'));

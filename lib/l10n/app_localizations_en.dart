@@ -1715,6 +1715,42 @@ class AppLocalizationsEn extends AppLocalizations {
       'This contract is cancelled. It\'s kept as history and can\'t change.';
 
   @override
+  String contractTermLength(String length) {
+    return 'Term: $length';
+  }
+
+  @override
+  String yearsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years',
+      one: '1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String monthsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contractScheduleSection => 'Contract schedule & terms';
+
+  @override
+  String get contractExecutionSection => 'Execution & documents';
+
+  @override
+  String get contractSignedMark => 'Signed';
+
+  @override
   String get contractValueLabel => 'Contract value';
 
   @override

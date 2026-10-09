@@ -19,6 +19,7 @@ import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
 import 'package:sp_cln_app/features/calendar/di/calendar_providers.dart';
 import 'package:sp_cln_app/features/calendar/domain/entities/calendar_event.dart';
 import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
+import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
 import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
 import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
@@ -151,7 +152,7 @@ Future<void> _sheet(
         ),
         calendarRepositoryProvider.overrideWithValue(_demoCalendar()),
         contractsRepositoryProvider.overrideWithValue(
-          FakeContractsRepository(),
+          FakeContractsRepository(_demoContracts),
         ),
         scopesRepositoryProvider.overrideWithValue(FakeScopesRepository()),
         locationsRepositoryProvider.overrideWithValue(
@@ -663,6 +664,31 @@ void main() {
     ]);
   });
 
+  // A contract: signed and running, a draft, dark, and Spanish at 200%.
+  testWidgets('contract', (tester) async {
+    const base = '/accounts/c1/contracts';
+    await _sheet(tester, 'contract', TargetPlatform.iOS, [
+      Phone('1 · Active', asOwner: true, location: '$base/k1'),
+      Phone(
+        '2 · Active (scrolled)',
+        asOwner: true,
+        location: '$base/k1',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -600));
+        },
+      ),
+      Phone('3 · Draft', asOwner: true, location: '$base/k2'),
+      Phone('4 · Dark', asOwner: true, dark: true, location: '$base/k1'),
+      Phone(
+        '5 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/k1',
+      ),
+    ]);
+  });
+
   testWidgets('calendar', (tester) async {
     const base = '/accounts/c1/calendar';
     await _sheet(tester, 'calendar', TargetPlatform.iOS, [
@@ -800,6 +826,35 @@ List<Phone> _tablets(Size portrait) {
 }
 
 // Synthetic demo data for the signed-in sheets (not real customers).
+final _demoContracts = [
+  // Signed and running, from a proposal, one scope.
+  Contract(
+    id: 'k1',
+    clientId: 'c1',
+    contractValue: '1800',
+    startDate: DateTime(2026, 1, 15),
+    expirationDate: DateTime(2027, 1, 15),
+    paymentTerms: 'Net 30',
+    cancellationNoticeDays: 30,
+    autoRenew: true,
+    status: ContractStatus.active,
+    signedByName: 'Carlos Medina',
+    signedDate: DateTime(2026, 1, 12),
+    proposalId: 'p5',
+    proposalVersion: 1,
+    scopeOfWorkCount: 1,
+    daysUntilExpiration: 98,
+  ),
+  // A new draft: not signed, nothing built on it, so it can be deleted.
+  Contract(
+    id: 'k2',
+    clientId: 'c1',
+    contractValue: '950.50',
+    startDate: DateTime(2026, 11, 1),
+    status: ContractStatus.draft,
+  ),
+];
+
 const _demoClients = [
   Client(
     id: 'c1',

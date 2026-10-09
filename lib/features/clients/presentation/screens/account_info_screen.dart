@@ -144,8 +144,9 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             // Beside the name it would squeeze it at large text sizes, so
             // it moves under the status there.
             final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-            final edit = _EditPill(
+            final edit = PillButton(
               label: l10n.editButton,
+              icon: Icons.edit_outlined,
               tooltip: l10n.editAccount,
               onPressed: () => context.push('$here/edit'),
             );
@@ -243,14 +244,11 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                   PageBox(
                     top: 20,
                     child: Center(
-                      child: TextButton.icon(
+                      child: LinkButton(
+                        label: l10n.deleteAccount,
+                        icon: Icons.delete_outline_rounded,
+                        destructive: true,
                         onPressed: _deleting ? null : () => _delete(c),
-                        style: TextButton.styleFrom(
-                          foregroundColor: context.colors.danger,
-                          disabledForegroundColor: context.colors.inkFaint,
-                        ),
-                        icon: const Icon(Icons.delete_outline_rounded),
-                        label: Text(l10n.deleteAccount),
                       ),
                     ),
                   ),
@@ -261,42 +259,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
       ],
     );
   }
-}
-
-/// A small sunken pill with a pencil, at the overview card's corner.
-class _EditPill extends StatelessWidget {
-  const _EditPill({
-    required this.label,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  final String label;
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) => Tooltip(
-    message: tooltip,
-    excludeFromSemantics: true,
-    child: Semantics(
-      button: true,
-      label: tooltip,
-      excludeSemantics: true,
-      child: TextButton.icon(
-        onPressed: onPressed,
-        style: TextButton.styleFrom(
-          backgroundColor: context.colors.sunken,
-          foregroundColor: context.colors.ink,
-          minimumSize: const Size(0, 40),
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          shape: const StadiumBorder(),
-        ),
-        icon: const Icon(Icons.edit_outlined, size: 18),
-        label: Text(label),
-      ),
-    ),
-  );
 }
 
 /// Facts two to a row, each its value over a muted label. One column at
