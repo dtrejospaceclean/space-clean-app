@@ -3440,6 +3440,18 @@ abstract class AppLocalizations {
   /// **'This scope already produced jobs, so it can\'t be deleted. Pause its time windows instead.'**
   String get scopeHasJobsNote;
 
+  /// No description provided for @scopeWorkSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Work details'**
+  String get scopeWorkSection;
+
+  /// No description provided for @contractTermLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Term'**
+  String get contractTermLabel;
+
   /// No description provided for @sectionTimeWindows.
   ///
   /// In en, this message translates to:

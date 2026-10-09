@@ -1962,6 +1962,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'This scope already produced jobs, so it can\'t be deleted. Pause its time windows instead.';
 
   @override
+  String get scopeWorkSection => 'Work details';
+
+  @override
+  String get contractTermLabel => 'Term';
+
+  @override
   String get sectionTimeWindows => 'Time windows';
 
   @override

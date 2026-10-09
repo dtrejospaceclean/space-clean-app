@@ -10,6 +10,7 @@ export 'widgets/bottom_bar.dart';
 export 'widgets/buttons.dart';
 export 'widgets/cards.dart';
 export 'widgets/circle_button.dart';
+export 'widgets/facts.dart';
 export 'widgets/fields.dart';
 export 'widgets/list_card.dart';
 export 'widgets/logo.dart';

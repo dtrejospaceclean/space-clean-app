@@ -206,11 +206,11 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                       ),
                     PageBox(
                       top: 16,
-                      child: _CapsHeader(l10n.contractScheduleSection),
+                      child: CapsHeader(l10n.contractScheduleSection),
                     ),
                     PageBox(
                       top: 0,
-                      child: _FactCard(
+                      child: FactCard(
                         rows: [
                           [
                             (
@@ -248,7 +248,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                     ),
                     PageBox(
                       top: 16,
-                      child: _CapsHeader(l10n.contractExecutionSection),
+                      child: CapsHeader(l10n.contractExecutionSection),
                     ),
                     PageBox(
                       top: 0,
@@ -257,7 +257,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                           _Signature(text: signature),
                           // The work agreed under it, area by area.
                           if (canViewScopes)
-                            _LinkRow(
+                            FactRow(
                               label: l10n.moduleScope,
                               value: l10n.scopeOfWorkCount(c.scopeOfWorkCount),
                               onTap: () => context.push(
@@ -266,7 +266,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                               ),
                             ),
                           if (c.proposalId case final proposalId?)
-                            _LinkRow(
+                            FactRow(
                               label: l10n.contractProposalLabel,
                               value: switch (c.proposalVersion) {
                                 final v? => l10n.contractFromProposal(v),
@@ -472,7 +472,7 @@ class _ValueCard extends StatelessWidget {
             child: ContractStatusLabel(contract: c),
           ),
           const SizedBox(height: 12),
-          _CapsHeader(l10n.contractValueLabel, header: false),
+          CapsHeader(l10n.contractValueLabel, header: false),
           if (edit != null && large) ...[
             const SizedBox(height: 12),
             Align(alignment: Alignment.centerLeft, child: edit),
@@ -496,113 +496,6 @@ class _ValueCard extends StatelessWidget {
               ],
             ),
           if (remaining != null) ...[const SizedBox(height: 8), remaining],
-        ],
-      ),
-    );
-  }
-}
-
-/// A small, letter-spaced capitals label: a section's title, or the line
-/// under the value.
-class _CapsHeader extends StatelessWidget {
-  const _CapsHeader(this.text, {this.header = true});
-
-  final String text;
-
-  /// A section title, read out as a heading; else a plain label.
-  final bool header;
-
-  @override
-  Widget build(BuildContext context) {
-    final label = Text(
-      text.toUpperCase(),
-      style: TextStyle(
-        fontFamily: 'Manrope',
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1,
-        color: context.colors.inkMuted,
-      ),
-    );
-    if (!header) return label;
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, top: 6, bottom: 10),
-      child: Semantics(header: true, child: label),
-    );
-  }
-}
-
-/// Facts in a card, label over value, up to two to a row with hairlines
-/// between rows. One to a row at large text. Missing values say "Not set",
-/// muted.
-class _FactCard extends StatelessWidget {
-  const _FactCard({required this.rows});
-
-  /// Each row's facts: label and value (null when not set).
-  final List<List<(String, String?)>> rows;
-
-  @override
-  Widget build(BuildContext context) {
-    final cells = isLargeText(context)
-        ? [
-            for (final row in rows)
-              for (final fact in row) [fact],
-          ]
-        : rows;
-    return ListCard(
-      children: [
-        for (final row in cells)
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpaceSpace.card,
-              vertical: 12,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final (i, (label, value)) in row.indexed) ...[
-                  if (i > 0) const SizedBox(width: 16),
-                  Expanded(
-                    child: _Fact(label: label, value: value),
-                  ),
-                ],
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-/// A label over its value.
-class _Fact extends StatelessWidget {
-  const _Fact({required this.label, required this.value});
-
-  final String label;
-  final String? value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final value = this.value;
-    return MergeSemantics(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: context.colors.inkMuted,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value ?? AppLocalizations.of(context).notSet,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: value == null ? FontWeight.w500 : FontWeight.w700,
-              color: value == null ? context.colors.inkMuted : null,
-            ),
-          ),
         ],
       ),
     );
@@ -672,41 +565,6 @@ class _Signature extends StatelessWidget {
       ),
     );
   }
-}
-
-/// A row that opens a related page: label over value, and a chevron when
-/// it can be opened.
-class _LinkRow extends StatelessWidget {
-  const _LinkRow({required this.label, required this.value, this.onTap});
-
-  final String label;
-  final String value;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 60),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: SpaceSpace.card,
-          vertical: 12,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _Fact(label: label, value: value),
-            ),
-            if (onTap != null) ...[
-              const SizedBox(width: 8),
-              Icon(Icons.chevron_right_rounded, color: context.colors.inkSoft),
-            ],
-          ],
-        ),
-      ),
-    ),
-  );
 }
 
 /// A line with an icon about how long the contract has left.

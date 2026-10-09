@@ -154,7 +154,9 @@ Future<void> _sheet(
         contractsRepositoryProvider.overrideWithValue(
           FakeContractsRepository(_demoContracts),
         ),
-        scopesRepositoryProvider.overrideWithValue(FakeScopesRepository()),
+        scopesRepositoryProvider.overrideWithValue(
+          FakeScopesRepository(_demoScopes),
+        ),
         locationsRepositoryProvider.overrideWithValue(
           FakeLocationsRepository(),
         ),
@@ -689,6 +691,31 @@ void main() {
     ]);
   });
 
+  // A scope of work: one with jobs, one that can go, dark, Spanish at 200%.
+  testWidgets('scope', (tester) async {
+    const base = '/accounts/c1/scopes';
+    await _sheet(tester, 'scope', TargetPlatform.iOS, [
+      Phone('1 · With jobs', asOwner: true, location: '$base/s1'),
+      Phone(
+        '2 · With jobs (scrolled)',
+        asOwner: true,
+        location: '$base/s1',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -600));
+        },
+      ),
+      Phone('3 · No jobs yet', asOwner: true, location: '$base/s2'),
+      Phone('4 · Dark', asOwner: true, dark: true, location: '$base/s1'),
+      Phone(
+        '5 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/s1',
+      ),
+    ]);
+  });
+
   testWidgets('calendar', (tester) async {
     const base = '/accounts/c1/calendar';
     await _sheet(tester, 'calendar', TargetPlatform.iOS, [
@@ -826,6 +853,49 @@ List<Phone> _tablets(Size portrait) {
 }
 
 // Synthetic demo data for the signed-in sheets (not real customers).
+final _demoScopes = [
+  // Weekly offices with a paused evening window; already made jobs.
+  Scope(
+    id: 's1',
+    contractId: 'k1',
+    contractStart: DateTime(2026, 1, 15),
+    contractEnd: DateTime(2027, 1, 15),
+    locationId: 'l1',
+    locationName: 'Post Oak Tower',
+    locationCity: 'Houston',
+    serviceName: 'Janitorial',
+    areaName: 'Open offices, floor 3',
+    frequency: ScopeFrequency.weekly,
+    instructions: 'Empty bins, vacuum, wipe desks. Lock the side door.',
+    exclusions: 'Server room',
+    estimatedDurationMinutes: 90,
+    jobCount: 12,
+    schedules: const [
+      ScopeSchedule(
+        daysOfWeek: [1, 3, 5],
+        startTime: ClockTime(19, 0),
+        endTime: ClockTime(21, 0),
+      ),
+      ScopeSchedule(
+        daysOfWeek: [6],
+        startTime: ClockTime(8, 0),
+        isActive: false,
+      ),
+    ],
+  ),
+  // Daily restrooms, no jobs yet, so it can be deleted.
+  Scope(
+    id: 's2',
+    contractId: 'k1',
+    contractStart: DateTime(2026, 1, 15),
+    locationId: 'l1',
+    locationName: 'Post Oak Tower',
+    areaName: 'Restrooms',
+    frequency: ScopeFrequency.daily,
+    schedules: const [ScopeSchedule(startTime: ClockTime(12, 0))],
+  ),
+];
+
 final _demoContracts = [
   // Signed and running, from a proposal, one scope.
   Contract(

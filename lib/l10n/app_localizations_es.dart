@@ -1980,6 +1980,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Este alcance ya generó trabajos, así que no se puede eliminar. Pausa sus horarios en su lugar.';
 
   @override
+  String get scopeWorkSection => 'Detalles del trabajo';
+
+  @override
+  String get contractTermLabel => 'Vigencia';
+
+  @override
   String get sectionTimeWindows => 'Horarios';
 
   @override

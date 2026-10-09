@@ -151,7 +151,7 @@ void main() {
     expect(find.text('From Mar 1, 2026'), findsOneWidget);
     expect(find.text('12 jobs'), findsOneWidget);
     expect(find.byTooltip('Edit scope'), findsNothing);
-    expect(find.byTooltip('Delete scope'), findsNothing);
+    expect(find.text('Delete scope'), findsNothing);
     expect(scopes.writes, isEmpty);
   });
 
@@ -200,7 +200,8 @@ void main() {
     expect(find.text('Scope of work'), findsOneWidget);
     expect(find.text('Lobby'), findsOneWidget);
     // No jobs yet, so it can be deleted.
-    expect(find.byTooltip('Delete scope'), findsOneWidget);
+    await revealBelow(tester, find.text('Delete scope'));
+    expect(find.text('Delete scope'), findsOneWidget);
   });
 
   testWidgets('an edit sends the windows only when they changed', (
@@ -210,8 +211,8 @@ void main() {
     await tester.tap(find.text('Offices'));
     await tester.pumpAndSettle();
     // It made jobs, so it stays; the page says what to do instead.
-    expect(find.byTooltip('Delete scope'), findsNothing);
     await revealBelow(tester, find.textContaining('Pause its time windows'));
+    expect(find.text('Delete scope'), findsNothing);
     await tester.scrollUntilVisible(
       find.byTooltip('Edit scope'),
       -200,
@@ -253,7 +254,8 @@ void main() {
     await tester.tap(find.text('Restrooms'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Delete scope'));
+    await revealBelow(tester, find.text('Delete scope'));
+    await tester.tap(find.text('Delete scope'));
     await tester.pumpAndSettle();
     expect(find.text('Delete this scope?'), findsOneWidget);
     await tester.tap(find.text('Delete'));

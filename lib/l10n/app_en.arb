@@ -922,6 +922,8 @@
   "deleteScopeConfirmTitle": "Delete this scope?",
   "deleteScopeConfirmBody": "The scope and its time windows will be deleted. This can't be undone.",
   "scopeHasJobsNote": "This scope already produced jobs, so it can't be deleted. Pause its time windows instead.",
+  "scopeWorkSection": "Work details",
+  "contractTermLabel": "Term",
   "sectionTimeWindows": "Time windows",
   "sectionSchedule": "Schedule",
   "sectionDetails": "Details",

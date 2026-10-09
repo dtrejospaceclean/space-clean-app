@@ -557,6 +557,8 @@
   "deleteScopeConfirmTitle": "¿Eliminar este alcance?",
   "deleteScopeConfirmBody": "Se eliminarán el alcance y sus horarios. Esto no se puede deshacer.",
   "scopeHasJobsNote": "Este alcance ya generó trabajos, así que no se puede eliminar. Pausa sus horarios en su lugar.",
+  "scopeWorkSection": "Detalles del trabajo",
+  "contractTermLabel": "Vigencia",
   "sectionTimeWindows": "Horarios",
   "sectionSchedule": "Programación",
   "sectionDetails": "Detalles",

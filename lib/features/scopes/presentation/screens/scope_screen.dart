@@ -19,9 +19,10 @@ import '../../domain/usecases/scope_usecases.dart';
 import '../controllers/scopes_providers.dart';
 import '../widgets/scope_labels.dart';
 
-/// One scope of work: where, what and how often, its time windows, and
-/// the contract it falls under. With `scope.edit` it can be edited, and
-/// deleted until it produces jobs.
+/// One scope of work: a head card (area, frequency, where, Edit), then
+/// capitals-titled cards for its time windows, the work details and the
+/// contract it falls under. With `scope.edit` it can be edited, and deleted
+/// (the link at the foot) until it produces jobs.
 class ScopeScreen extends ConsumerStatefulWidget {
   const ScopeScreen({super.key, required this.clientId, required this.scopeId});
 
@@ -111,38 +112,11 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
         child: SpacePage(
           title: l10n.scopeTitle,
           onRefresh: _deleting ? null : refresh,
-          actions: [
-            if (canEdit && (scope.value?.canDelete ?? false))
-              CircleButton.light(
-                icon: Icons.delete_outline_rounded,
-                tooltip: l10n.deleteScope,
-                busy: _deleting,
-                onPressed: () => _delete(list),
-              ),
-            if (canEdit && scope.hasValue)
-              CircleButton.dark(
-                icon: Icons.edit_outlined,
-                tooltip: l10n.editScope,
-                onPressed: _deleting ? null : () => context.push('$here/edit'),
-              ),
-          ],
           slivers: [
             AsyncSlivers(
               value: scope,
               onRetry: refresh,
               builder: (s) {
-                ListRow fact(
-                  IconData icon,
-                  String label,
-                  String? value, {
-                  VoidCallback? onTap,
-                }) => ListRow(
-                  leading: IconBadge(icon: icon),
-                  title: value ?? l10n.notSet,
-                  subtitle: label,
-                  muted: value == null,
-                  onTap: onTap,
-                );
                 String? text(String? v) =>
                     v == null || v.trim().isEmpty ? null : v.trim();
                 final contractTerm = switch ((s.contractStart, s.contractEnd)) {
@@ -156,9 +130,18 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
 
                 return SliverMainAxisGroup(
                   slivers: [
-                    PageBox(top: 4, child: _HeadCard(scope: s)),
                     PageBox(
-                      child: SectionHeader(title: l10n.sectionTimeWindows),
+                      top: 4,
+                      child: _HeadCard(
+                        scope: s,
+                        onEdit: canEdit
+                            ? () => context.push('$here/edit')
+                            : null,
+                      ),
+                    ),
+                    PageBox(
+                      top: 16,
+                      child: CapsHeader(l10n.sectionTimeWindows),
                     ),
                     PageBox(
                       top: 0,
@@ -168,9 +151,6 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
                             ListRow(title: l10n.noTimeWindows, muted: true),
                           for (final w in s.schedules)
                             ListRow(
-                              leading: const IconBadge(
-                                icon: Icons.schedule_rounded,
-                              ),
                               title: scheduleTimes(context, w),
                               subtitle:
                                   s.frequency.needsDays &&
@@ -185,37 +165,41 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
                         ],
                       ),
                     ),
+                    PageBox(top: 16, child: CapsHeader(l10n.scopeWorkSection)),
                     PageBox(
-                      top: 24,
+                      top: 0,
+                      child: FactCard(
+                        rows: [
+                          [
+                            (
+                              l10n.estimatedDurationLabel,
+                              switch (s.estimatedDurationMinutes) {
+                                final m? => l10n.minutesCount(m),
+                                null => null,
+                              },
+                            ),
+                            (l10n.moduleJobs, l10n.jobCount(s.jobCount)),
+                          ],
+                          // Free text: each on a row of its own.
+                          [(l10n.instructionsLabel, text(s.instructions))],
+                          [(l10n.exclusionsLabel, text(s.exclusions))],
+                          [
+                            (
+                              l10n.requiredSuppliesLabel,
+                              text(s.requiredSupplies),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    PageBox(top: 16, child: CapsHeader(l10n.contractTitle)),
+                    PageBox(
+                      top: 0,
                       child: ListCard(
                         children: [
-                          fact(
-                            Icons.timer_outlined,
-                            l10n.estimatedDurationLabel,
-                            switch (s.estimatedDurationMinutes) {
-                              final m? => l10n.minutesCount(m),
-                              null => null,
-                            },
-                          ),
-                          fact(
-                            Icons.assignment_outlined,
-                            l10n.instructionsLabel,
-                            text(s.instructions),
-                          ),
-                          fact(
-                            Icons.do_not_disturb_on_outlined,
-                            l10n.exclusionsLabel,
-                            text(s.exclusions),
-                          ),
-                          fact(
-                            Icons.inventory_2_outlined,
-                            l10n.requiredSuppliesLabel,
-                            text(s.requiredSupplies),
-                          ),
-                          fact(
-                            Icons.history_edu_outlined,
-                            l10n.contractTitle,
-                            contractTerm,
+                          FactRow(
+                            label: l10n.contractTermLabel,
+                            value: contractTerm,
                             onTap: canViewContracts
                                 ? () => context.push(
                                     '$account/${ContractsScreen.route}/'
@@ -223,14 +207,21 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
                                   )
                                 : null,
                           ),
-                          fact(
-                            Icons.cleaning_services_outlined,
-                            l10n.moduleJobs,
-                            l10n.jobCount(s.jobCount),
-                          ),
                         ],
                       ),
                     ),
+                    if (canEdit && s.canDelete)
+                      PageBox(
+                        top: 20,
+                        child: Center(
+                          child: LinkButton(
+                            label: l10n.deleteScope,
+                            icon: Icons.delete_outline_rounded,
+                            destructive: true,
+                            onPressed: _deleting ? null : () => _delete(list),
+                          ),
+                        ),
+                      ),
                     if (canEdit && !s.canDelete)
                       PageBox(
                         top: 16,
@@ -250,24 +241,32 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
   }
 }
 
-/// The head of the page: the area beside the frequency, then the location
-/// and the service. At large text the pill moves above the title.
+/// The head of the page: the area with Edit at the corner, the frequency
+/// under it, then the location and the service. At large text Edit moves
+/// under the frequency.
 class _HeadCard extends StatelessWidget {
-  const _HeadCard({required this.scope});
+  const _HeadCard({required this.scope, required this.onEdit});
 
   final Scope scope;
+
+  /// Null hides Edit.
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final s = scope;
-    final title = Text(
-      scopeTitle(l10n, s),
-      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-    );
-    final pill = FrequencyLabel(frequency: s.frequency);
     final large = isLargeText(context);
+    final edit = switch (onEdit) {
+      final onEdit? => PillButton(
+        label: l10n.editButton,
+        icon: Icons.edit_outlined,
+        tooltip: l10n.editScope,
+        onPressed: onEdit,
+      ),
+      null => null,
+    };
     Widget line(IconData icon, String value) => Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Row(
@@ -287,19 +286,33 @@ class _HeadCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (large) ...[
-            Align(alignment: Alignment.centerLeft, child: pill),
-            const SizedBox(height: 10),
-            title,
-          ] else
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: title),
-                const SizedBox(width: 12),
-                pill,
-              ],
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  scopeTitle(l10n, s),
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              if (edit != null && !large) ...[const SizedBox(width: 12), edit],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FrequencyLabel(frequency: s.frequency),
+          ),
+          if (edit != null && large) ...[
+            const SizedBox(height: 12),
+            Align(alignment: Alignment.centerLeft, child: edit),
+          ],
+          const Padding(
+            padding: EdgeInsets.only(top: 14, bottom: 6),
+            child: Divider(),
+          ),
           line(
             Icons.location_on_outlined,
             [
