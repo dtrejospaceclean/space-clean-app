@@ -128,7 +128,8 @@ void main() {
     await openAccounts(tester, owner, clients: clients);
     await openDetails(tester);
 
-    await tester.tap(find.byTooltip('Delete account'));
+    await revealBelow(tester, find.text('Delete account'));
+    await tester.tap(find.text('Delete account'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();
@@ -151,7 +152,8 @@ void main() {
     await openAccounts(tester, owner, clients: clients);
     await openDetails(tester);
 
-    await tester.tap(find.byTooltip('Delete account'));
+    await revealBelow(tester, find.text('Delete account'));
+    await tester.tap(find.text('Delete account'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();
@@ -185,7 +187,8 @@ void main() {
     final clients = await openAccounts(tester, owner);
     await openDetails(tester);
 
-    await tester.tap(find.byTooltip('Delete account'));
+    await revealBelow(tester, find.text('Delete account'));
+    await tester.tap(find.text('Delete account'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();

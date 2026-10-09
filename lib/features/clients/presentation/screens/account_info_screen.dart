@@ -16,9 +16,9 @@ import '../widgets/client_labels.dart';
 import 'accounts_screen.dart';
 import 'purge_account_screen.dart';
 
-/// An account's details: names, status, billing and the people in charge.
-/// Editing needs `info.edit`; deleting (the header's trash button) is for
-/// global owners.
+/// An account's details: an overview card (names, status, billing facts)
+/// and the people in charge. Editing needs `info.edit` (the overview's Edit
+/// pill); deleting is for global owners (the link at the bottom).
 class AccountInfoScreen extends ConsumerStatefulWidget {
   const AccountInfoScreen({super.key, required this.clientId});
 
@@ -109,21 +109,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
     return SpacePage(
       title: l10n.moduleInfo,
       onRefresh: refresh,
-      actions: [
-        if (client.value case final c? when canDelete)
-          CircleButton.light(
-            icon: Icons.delete_outline_rounded,
-            tooltip: l10n.deleteAccount,
-            busy: _deleting,
-            onPressed: () => _delete(c),
-          ),
-        if (canEdit && client.hasValue)
-          CircleButton.dark(
-            icon: Icons.edit_outlined,
-            tooltip: l10n.editAccount,
-            onPressed: () => context.push('$here/edit'),
-          ),
-      ],
       slivers: [
         AsyncSlivers(
           value: client,
@@ -138,15 +123,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
               orNull(c.billingAddress),
               [orNull(c.billingCity), orNull(region)].nonNulls.join(', '),
             ].map(orNull).nonNulls.join('\n');
-
-            /// A fact: its value as the title, what it is underneath.
-            /// Missing values say so, muted, instead of posing as data.
-            ListRow fact(IconData icon, String label, String? value) => ListRow(
-              leading: IconBadge(icon: icon),
-              title: orNull(value) ?? l10n.notSet,
-              subtitle: label,
-              muted: orNull(value) == null,
-            );
 
             final status = switch (c.status) {
               ClientStatus.active => (
@@ -165,84 +141,79 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
               ClientStatus.unknown => null,
             };
 
+            // Beside the name it would squeeze it at large text sizes, so
+            // it moves under the status there.
+            final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+            final edit = _EditPill(
+              label: l10n.editButton,
+              tooltip: l10n.editAccount,
+              onPressed: () => context.push('$here/edit'),
+            );
+
             return SliverMainAxisGroup(
               slivers: [
                 PageBox(
                   top: 4,
                   child: SpaceCard(
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        InitialsAvatar(
-                          name: c.displayName,
-                          size: 56,
-                          background: context.colors.accentSoft,
-                          foreground: context.colors.accent,
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                c.displayName,
-                                style: theme.textTheme.titleLarge,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InitialsAvatar(name: c.displayName, size: 64),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    c.displayName,
+                                    style: theme.textTheme.titleLarge,
+                                  ),
+                                  if (c.displayName != c.legalName) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      c.legalName.toUpperCase(),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(letterSpacing: 0.6),
+                                    ),
+                                  ],
+                                  if (status case (final fg, final bg)) ...[
+                                    const SizedBox(height: 10),
+                                    StatusPill(
+                                      label: l10n.clientStatusLabel(c.status),
+                                      color: fg,
+                                      background: bg,
+                                    ),
+                                  ],
+                                  if (canEdit && largeText) ...[
+                                    const SizedBox(height: 10),
+                                    edit,
+                                  ],
+                                ],
                               ),
-                              if (c.displayName != c.legalName)
-                                Text(
-                                  c.legalName,
-                                  style: theme.textTheme.bodyMedium,
-                                ),
-                              if (status case (final fg, final bg)) ...[
-                                const SizedBox(height: 8),
-                                StatusPill(
-                                  label: l10n.clientStatusLabel(c.status),
-                                  color: fg,
-                                  background: bg,
-                                ),
-                              ],
+                            ),
+                            if (canEdit && !largeText) ...[
+                              const SizedBox(width: 8),
+                              edit,
                             ],
-                          ),
+                          ],
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 18),
+                          child: Divider(),
+                        ),
+                        _FactGrid(
+                          facts: [
+                            (l10n.taxIdLabel, orNull(c.taxId)),
+                            (l10n.industryLabel, orNull(c.industry)),
+                            (l10n.serviceTypeLabel, orNull(c.serviceType)),
+                            (l10n.billingAddressLabel, orNull(address)),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                ),
-                PageBox(
-                  top: 12,
-                  child: SectionHeader(title: l10n.sectionGeneral),
-                ),
-                PageBox(
-                  top: 0,
-                  child: ListCard(
-                    children: [
-                      fact(
-                        Icons.domain_rounded,
-                        l10n.industryLabel,
-                        c.industry,
-                      ),
-                      fact(
-                        Icons.cleaning_services_outlined,
-                        l10n.serviceTypeLabel,
-                        c.serviceType,
-                      ),
-                    ],
-                  ),
-                ),
-                PageBox(
-                  top: 12,
-                  child: SectionHeader(title: l10n.sectionBilling),
-                ),
-                PageBox(
-                  top: 0,
-                  child: ListCard(
-                    children: [
-                      fact(Icons.badge_outlined, l10n.taxIdLabel, c.taxId),
-                      fact(
-                        Icons.location_on_outlined,
-                        l10n.billingAddressLabel,
-                        address,
-                      ),
-                    ],
                   ),
                 ),
                 PageBox(
@@ -258,15 +229,144 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                         (l10n.roleSupervisor, c.supervisor),
                         (l10n.salespersonLabel, c.salesperson),
                       ])
-                        fact(Icons.person_outline_rounded, role, who?.name),
+                        ListRow(
+                          // Missing people say so, muted, instead of posing
+                          // as data.
+                          title: orNull(who?.name) ?? l10n.notSet,
+                          muted: orNull(who?.name) == null,
+                          subtitle: role,
+                        ),
                     ],
                   ),
                 ),
+                if (canDelete)
+                  PageBox(
+                    top: 20,
+                    child: Center(
+                      child: TextButton.icon(
+                        onPressed: _deleting ? null : () => _delete(c),
+                        style: TextButton.styleFrom(
+                          foregroundColor: context.colors.danger,
+                          disabledForegroundColor: context.colors.inkFaint,
+                        ),
+                        icon: const Icon(Icons.delete_outline_rounded),
+                        label: Text(l10n.deleteAccount),
+                      ),
+                    ),
+                  ),
               ],
             );
           },
         ),
       ],
+    );
+  }
+}
+
+/// A small sunken pill with a pencil, at the overview card's corner.
+class _EditPill extends StatelessWidget {
+  const _EditPill({
+    required this.label,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  final String label;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => Tooltip(
+    message: tooltip,
+    excludeFromSemantics: true,
+    child: Semantics(
+      button: true,
+      label: tooltip,
+      excludeSemantics: true,
+      child: TextButton.icon(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          backgroundColor: context.colors.sunken,
+          foregroundColor: context.colors.ink,
+          minimumSize: const Size(0, 40),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          shape: const StadiumBorder(),
+        ),
+        icon: const Icon(Icons.edit_outlined, size: 18),
+        label: Text(label),
+      ),
+    ),
+  );
+}
+
+/// Facts two to a row, each its value over a muted label. One column at
+/// large text sizes (150% and up), so long values such as an address don't
+/// wrap word by word.
+class _FactGrid extends StatelessWidget {
+  const _FactGrid({required this.facts});
+
+  /// Label and value; a null value isn't set.
+  final List<(String, String?)> facts;
+
+  @override
+  Widget build(BuildContext context) {
+    final columns = MediaQuery.textScalerOf(context).scale(1) >= 1.5 ? 1 : 2;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < facts.length; i += columns) ...[
+          if (i > 0) const SizedBox(height: 18),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var j = i; j < i + columns; j++) ...[
+                if (j > i) const SizedBox(width: 16),
+                Expanded(
+                  child: j < facts.length
+                      ? _Fact(facts[j].$1, facts[j].$2)
+                      : const SizedBox(),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// A value over its label. A missing value says "Not set", muted, instead
+/// of posing as data.
+class _Fact extends StatelessWidget {
+  const _Fact(this.label, this.value);
+
+  final String label;
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final value = this.value;
+    return MergeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value ?? AppLocalizations.of(context).notSet,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: value == null ? context.colors.inkMuted : null,
+              fontWeight: value == null ? FontWeight.w500 : null,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: context.colors.inkMuted,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
