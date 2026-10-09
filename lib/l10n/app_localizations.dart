@@ -1307,7 +1307,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAccountConfirmBody.
   ///
   /// In en, this message translates to:
-  /// **'Only accounts that were never used can be deleted. This can\'t be undone.'**
+  /// **'This can\'t be undone. If the account has history, you\'ll see everything that would go with it before anything is deleted.'**
   String get deleteAccountConfirmBody;
 
   /// No description provided for @accountCreatedTitle.
@@ -1321,6 +1321,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To open it, ask an owner to add you to its team.'**
   String get accountCreatedNotMember;
+
+  /// No description provided for @purgeAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete everything'**
+  String get purgeAccountTitle;
+
+  /// No description provided for @purgeAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes {name} and everything in it: proposals, contracts, scopes of work, calendar, locations, jobs, complaints, tasks, invoices, payments, contacts and team. Its client logins are turned off. This can\'t be undone. To keep the history, set the account to Inactive instead.'**
+  String purgeAccountWarning(String name);
+
+  /// No description provided for @purgeAccountConfirmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the legal name to confirm'**
+  String get purgeAccountConfirmLabel;
+
+  /// No description provided for @purgeAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account and history'**
+  String get purgeAccountButton;
 
   /// No description provided for @clientsHasRelatedRecords.
   ///

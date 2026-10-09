@@ -117,7 +117,9 @@ void main() {
     expect(find.text('Healthcare'), findsOneWidget);
   });
 
-  testWidgets('an account with history can\'t be deleted', (tester) async {
+  testWidgets('deleting an account with history asks to delete everything', (
+    tester,
+  ) async {
     final clients = FakeClientsRepository([_tower])
       ..deleteError = const ServerFailure(
         'clients.has_related_records',
@@ -126,22 +128,64 @@ void main() {
     await openAccounts(tester, owner, clients: clients);
     await openDetails(tester);
 
-    await revealBelow(tester, find.text('Delete account'));
-    await tester.tap(find.text('Delete account'));
+    await tester.tap(find.byTooltip('Delete account'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Set its status to Inactive'), findsOneWidget);
+    // Nothing is gone yet: the purge page explains first.
+    expect(find.text('Delete everything'), findsOneWidget);
+    expect(find.textContaining('set the account to Inactive'), findsOneWidget);
+    expect(clients.writes, isEmpty);
     expect(clients.clients, hasLength(1));
+  });
+
+  testWidgets('an owner purges an account with history after typing its name', (
+    tester,
+  ) async {
+    final clients = FakeClientsRepository([_tower])
+      ..deleteError = const ServerFailure(
+        'clients.has_related_records',
+        statusCode: 409,
+      );
+    await openAccounts(tester, owner, clients: clients);
+    await openDetails(tester);
+
+    await tester.tap(find.byTooltip('Delete account'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining("This can't be undone"), findsOneWidget);
+    final purge = find.widgetWithText(
+      FilledButton,
+      'Delete account and history',
+    );
+    // Disabled until the legal name is typed; a trade name isn't enough.
+    await tester.enterText(
+      field('Type the legal name to confirm'),
+      'Torre Norte',
+    );
+    await tester.pump();
+    expect(tester.widget<FilledButton>(purge).onPressed, isNull);
+
+    await tester.enterText(
+      field('Type the legal name to confirm'),
+      ' torre norte s.a. ',
+    );
+    await tester.pump();
+    await tester.tap(purge);
+    await tester.pumpAndSettle();
+
+    expect(clients.writes, ['purge:c1']);
+    expect(find.text('No accounts yet'), findsWidgets);
   });
 
   testWidgets('an owner deletes an unused account', (tester) async {
     final clients = await openAccounts(tester, owner);
     await openDetails(tester);
 
-    await revealBelow(tester, find.text('Delete account'));
-    await tester.tap(find.text('Delete account'));
+    await tester.tap(find.byTooltip('Delete account'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();

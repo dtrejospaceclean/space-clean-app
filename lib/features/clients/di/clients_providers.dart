@@ -34,6 +34,9 @@ final updateClientProvider = Provider(
 final deleteClientProvider = Provider(
   (ref) => DeleteClient(ref.watch(clientsRepositoryProvider)),
 );
+final purgeClientProvider = Provider(
+  (ref) => PurgeClient(ref.watch(clientsRepositoryProvider)),
+);
 
 final moduleOrderRepositoryProvider = Provider<ModuleOrderRepository>(
   (ref) => ModuleOrderRepositoryImpl(ref.watch(sharedPreferencesProvider)),

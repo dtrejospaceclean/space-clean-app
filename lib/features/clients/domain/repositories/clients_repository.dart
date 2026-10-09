@@ -19,4 +19,9 @@ abstract interface class ClientsRepository {
   /// Global `owner` only, and only for accounts without history
   /// (`clients.has_related_records` otherwise).
   Future<void> deleteClient(String id);
+
+  /// Deletes the account with all of its history (proposals, contracts,
+  /// scopes, calendar, locations, jobs, invoices, contacts, memberships) and
+  /// deactivates its client logins. Global `owner` only; can't be undone.
+  Future<void> purgeClient(String id);
 }

@@ -700,7 +700,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountConfirmBody =>
-      'Only accounts that were never used can be deleted. This can\'t be undone.';
+      'This can\'t be undone. If the account has history, you\'ll see everything that would go with it before anything is deleted.';
 
   @override
   String get accountCreatedTitle => 'Account created';
@@ -708,6 +708,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountCreatedNotMember =>
       'To open it, ask an owner to add you to its team.';
+
+  @override
+  String get purgeAccountTitle => 'Delete everything';
+
+  @override
+  String purgeAccountWarning(String name) {
+    return 'This deletes $name and everything in it: proposals, contracts, scopes of work, calendar, locations, jobs, complaints, tasks, invoices, payments, contacts and team. Its client logins are turned off. This can\'t be undone. To keep the history, set the account to Inactive instead.';
+  }
+
+  @override
+  String get purgeAccountConfirmLabel => 'Type the legal name to confirm';
+
+  @override
+  String get purgeAccountButton => 'Delete account and history';
 
   @override
   String get clientsHasRelatedRecords =>

@@ -10,6 +10,7 @@ import '../../features/calendar/presentation/screens/event_form_screen.dart';
 import '../../features/calendar/presentation/screens/event_screen.dart';
 import '../../features/calendar/presentation/screens/reschedule_event_screen.dart';
 import '../../features/clients/presentation/screens/account_form_screen.dart';
+import '../../features/clients/presentation/screens/purge_account_screen.dart';
 import '../../features/clients/presentation/screens/account_info_screen.dart';
 import '../../features/clients/presentation/screens/account_screen.dart';
 import '../../features/clients/presentation/screens/accounts_screen.dart';
@@ -179,6 +180,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                             path: 'edit',
                             builder: (_, state) => AccountFormScreen(
                               clientId: state.pathParameters['clientId'],
+                            ),
+                          ),
+                          SlideRoute(
+                            path: PurgeAccountScreen.route,
+                            builder: (_, state) => PurgeAccountScreen(
+                              clientId: state.pathParameters['clientId']!,
                             ),
                           ),
                         ],

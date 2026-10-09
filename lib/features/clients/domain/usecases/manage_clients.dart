@@ -11,6 +11,11 @@ abstract final class AccountAdminPolicy {
 
   static bool canDelete(User user) => user.hasRole(GlobalRole.owner);
 
+  /// Purging an account with its history: the same owners, after typing the
+  /// legal name (spaces around it and letter case don't matter).
+  static bool confirmsPurge(String typed, String legalName) =>
+      typed.trim().toLowerCase() == legalName.trim().toLowerCase();
+
   /// Global owners see every account, so they can open one they just made.
   /// Anyone else needs a membership first.
   static bool seesAllAccounts(User user) => user.hasRole(GlobalRole.owner);
@@ -58,4 +63,13 @@ class DeleteClient implements UseCase<void, String> {
 
   @override
   Future<void> call(String id) => _repository.deleteClient(id);
+}
+
+class PurgeClient implements UseCase<void, String> {
+  const PurgeClient(this._repository);
+
+  final ClientsRepository _repository;
+
+  @override
+  Future<void> call(String id) => _repository.purgeClient(id);
 }

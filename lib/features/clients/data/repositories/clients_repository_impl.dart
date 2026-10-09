@@ -34,4 +34,7 @@ class ClientsRepositoryImpl implements ClientsRepository {
   @override
   Future<void> deleteClient(String id) =>
       _guard(() => _remote.deleteClient(id));
+
+  @override
+  Future<void> purgeClient(String id) => _guard(() => _remote.purgeClient(id));
 }

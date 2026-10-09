@@ -372,6 +372,12 @@ class FakeClientsRepository implements ClientsRepository {
     writes.add('delete:$id');
     clients = clients.where((c) => c.id != id).toList();
   }
+
+  @override
+  Future<void> purgeClient(String id) async {
+    writes.add('purge:$id');
+    clients = clients.where((c) => c.id != id).toList();
+  }
 }
 
 /// In-memory contacts, kept like the API: primary first, at most one

@@ -706,7 +706,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get deleteAccountConfirmBody =>
-      'Solo se pueden eliminar cuentas que nunca se usaron. Esto no se puede deshacer.';
+      'Esto no se puede deshacer. Si la cuenta tiene historial, verás todo lo que se eliminaría con ella antes de borrar nada.';
 
   @override
   String get accountCreatedTitle => 'Cuenta creada';
@@ -714,6 +714,21 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get accountCreatedNotMember =>
       'Para abrirla, pide a un propietario que te añada a su equipo.';
+
+  @override
+  String get purgeAccountTitle => 'Eliminar todo';
+
+  @override
+  String purgeAccountWarning(String name) {
+    return 'Esto elimina $name y todo lo que contiene: propuestas, contratos, alcances de trabajo, calendario, ubicaciones, trabajos, quejas, tareas, facturas, pagos, contactos y equipo. Sus accesos de cliente se desactivan. Esto no se puede deshacer. Para conservar el historial, cambia la cuenta a Inactiva.';
+  }
+
+  @override
+  String get purgeAccountConfirmLabel =>
+      'Escribe la razón social para confirmar';
+
+  @override
+  String get purgeAccountButton => 'Eliminar cuenta e historial';
 
   @override
   String get clientsHasRelatedRecords =>

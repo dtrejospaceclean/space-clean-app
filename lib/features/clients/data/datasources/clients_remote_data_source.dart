@@ -40,6 +40,9 @@ class ClientsRemoteDataSource {
 
   Future<void> deleteClient(String id) async => _api.delete('/clients/$id');
 
+  Future<void> purgeClient(String id) async =>
+      _api.delete('/clients/$id/purge');
+
   static Map<String, dynamic> _map(Object? data) =>
       (data! as Map).cast<String, dynamic>();
 }

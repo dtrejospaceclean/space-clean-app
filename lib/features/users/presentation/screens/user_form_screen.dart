@@ -112,6 +112,7 @@ class _UserFormState extends ConsumerState<_UserForm> {
   };
 
   bool _saving = false;
+  bool _obscure = true;
   Failure? _failure;
 
   bool get _creating => widget.initial == null;
@@ -326,8 +327,19 @@ class _UserFormState extends ConsumerState<_UserForm> {
                           : l10n.newPasswordOptionalLabel,
                       controller: _password,
                       enabled: !_saving,
-                      obscureText: true,
+                      obscureText: _obscure,
                       autofillHints: const [AutofillHints.newPassword],
+                      suffix: IconButton(
+                        tooltip: _obscure
+                            ? l10n.showPassword
+                            : l10n.hidePassword,
+                        icon: Icon(
+                          _obscure
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(() => _obscure = !_obscure),
+                      ),
                       helper: _creating
                           ? l10n.passwordHelpCreate
                           : l10n.passwordHelpEdit,

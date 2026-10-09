@@ -14,15 +14,28 @@ import '../../domain/entities/client.dart';
 import '../controllers/clients_providers.dart';
 import '../widgets/client_labels.dart';
 import 'accounts_screen.dart';
+import 'purge_account_screen.dart';
 
 /// An account's details: names, status, billing and the people in charge.
-/// Editing needs `info.edit`; deleting is for global owners.
-class AccountInfoScreen extends ConsumerWidget {
+/// Editing needs `info.edit`; deleting (the header's trash button) is for
+/// global owners.
+class AccountInfoScreen extends ConsumerStatefulWidget {
   const AccountInfoScreen({super.key, required this.clientId});
 
   final String clientId;
 
-  Future<void> _delete(BuildContext context, WidgetRef ref, Client c) async {
+  @override
+  ConsumerState<AccountInfoScreen> createState() => _AccountInfoScreenState();
+}
+
+class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
+  bool _deleting = false;
+
+  String get clientId => widget.clientId;
+
+  /// Deletes an unused account. One with history goes straight to the purge
+  /// page, which asks for the legal name.
+  Future<void> _delete(Client c) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showAdaptiveDialog<bool>(
       context: context,
@@ -44,32 +57,39 @@ class AccountInfoScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
+    setState(() => _deleting = true);
     try {
       await ref.read(deleteClientProvider)(c.id);
       ref.invalidate(myClientsProvider);
-      if (context.mounted) context.go(AccountsScreen.path);
+      if (mounted) context.go(AccountsScreen.path);
     } on Failure catch (f) {
-      if (context.mounted) {
-        await showAdaptiveDialog<void>(
-          context: context,
-          builder: (context) => AlertDialog.adaptive(
-            content: Text(l10n.failureMessage(f)),
-            actions: [
-              adaptiveAction(
-                context,
-                label: l10n.doneButton,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        );
+      if (!mounted) return;
+      if (f.messageKey == 'clients.has_related_records') {
+        final here = GoRouterState.of(context).matchedLocation;
+        context.push('$here/${PurgeAccountScreen.route}');
+        return;
       }
+      await showAdaptiveDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog.adaptive(
+          content: Text(l10n.failureMessage(f)),
+          actions: [
+            adaptiveAction(
+              context,
+              label: l10n.doneButton,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _deleting = false);
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final client = ref.watch(clientDetailProvider(clientId));
@@ -90,6 +110,13 @@ class AccountInfoScreen extends ConsumerWidget {
       title: l10n.moduleInfo,
       onRefresh: refresh,
       actions: [
+        if (client.value case final c? when canDelete)
+          CircleButton.light(
+            icon: Icons.delete_outline_rounded,
+            tooltip: l10n.deleteAccount,
+            busy: _deleting,
+            onPressed: () => _delete(c),
+          ),
         if (canEdit && client.hasValue)
           CircleButton.dark(
             icon: Icons.edit_outlined,
@@ -235,16 +262,6 @@ class AccountInfoScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                if (canDelete)
-                  PageBox(
-                    top: 24,
-                    child: SecondaryButton(
-                      label: l10n.deleteAccount,
-                      icon: Icons.delete_outline_rounded,
-                      destructive: true,
-                      onPressed: () => _delete(context, ref, c),
-                    ),
-                  ),
               ],
             );
           },
