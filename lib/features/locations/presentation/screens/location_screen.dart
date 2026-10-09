@@ -15,8 +15,8 @@ import '../../domain/entities/location.dart';
 import '../../domain/usecases/location_usecases.dart';
 import '../controllers/locations_providers.dart';
 
-/// One site: where it is, how to get in, what the crew should know, and
-/// what uses it. Editing and deleting need `info.edit`; a location used by
+/// One site: a head card (name, address, Edit), then capitals-titled cards
+/// for how to get in and what the crew should know, and what uses it. Editing and deleting need `info.edit`; a location used by
 /// scopes of work or jobs can't be deleted.
 class LocationScreen extends ConsumerWidget {
   const LocationScreen({
@@ -99,26 +99,22 @@ class LocationScreen extends ConsumerWidget {
     return SpacePage(
       title: l10n.locationTitle,
       onRefresh: refresh,
-      actions: [
-        if (canEdit && location.hasValue)
-          CircleButton.dark(
-            icon: Icons.edit_outlined,
-            tooltip: l10n.editLocation,
-            onPressed: () => context.push('$here/edit'),
-          ),
-      ],
       slivers: [
         AsyncSlivers(
           value: location,
           onRetry: refresh,
           builder: (l) {
-            /// A fact: its value as the title, what it is underneath.
-            ListRow fact(IconData icon, String label, String? value) => ListRow(
-              leading: IconBadge(icon: icon),
-              title: orNull(value) ?? l10n.notSet,
-              subtitle: label,
-              muted: orNull(value) == null,
-            );
+            // Beside the name it would squeeze it at large text sizes, so
+            // it moves under the address there.
+            final large = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+            final edit = canEdit
+                ? PillButton(
+                    label: l10n.editButton,
+                    icon: Icons.edit_outlined,
+                    tooltip: l10n.editLocation,
+                    onPressed: () => context.push('$here/edit'),
+                  )
+                : null;
 
             return SliverMainAxisGroup(
               slivers: [
@@ -126,10 +122,11 @@ class LocationScreen extends ConsumerWidget {
                   top: 4,
                   child: SpaceCard(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconBadge.strong(
+                        const IconBadge.strong(
                           icon: Icons.location_on_outlined,
-                          size: 56,
+                          size: 64,
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -140,84 +137,67 @@ class LocationScreen extends ConsumerWidget {
                               for (final line in [l.address, l.cityLine])
                                 if (orNull(line) case final line?)
                                   Text(line, style: theme.textTheme.bodyMedium),
+                              if (edit != null && large) ...[
+                                const SizedBox(height: 10),
+                                edit,
+                              ],
                             ],
                           ),
                         ),
+                        if (edit != null && !large) ...[
+                          const SizedBox(width: 8),
+                          edit,
+                        ],
                       ],
                     ),
                   ),
                 ),
-                PageBox(
-                  top: 12,
-                  child: SectionHeader(title: l10n.sectionSiteDetails),
-                ),
+                PageBox(top: 16, child: CapsHeader(l10n.sectionSiteDetails)),
                 PageBox(
                   top: 0,
-                  child: ListCard(
-                    children: [
-                      fact(
-                        Icons.square_foot_rounded,
-                        l10n.squareFootageLabel,
-                        switch (l.squareFootage) {
-                          final sqft? => l10n.squareFootageValue(
-                            context.formatNumber(sqft),
-                          ),
-                          null => null,
-                        },
-                      ),
-                      fact(
-                        Icons.layers_outlined,
-                        l10n.floorCountLabel,
-                        l.floorCount?.toString(),
-                      ),
-                      fact(
-                        Icons.key_outlined,
-                        l10n.accessCodesLabel,
-                        l.accessCodes,
-                      ),
+                  child: FactCard(
+                    rows: [
+                      [
+                        (
+                          l10n.squareFootageLabel,
+                          switch (l.squareFootage) {
+                            final sqft? => l10n.squareFootageValue(
+                              context.formatNumber(sqft),
+                            ),
+                            null => null,
+                          },
+                        ),
+                        (l10n.floorCountLabel, l.floorCount?.toString()),
+                      ],
+                      // Free text: each on a row of its own.
+                      [(l10n.accessCodesLabel, orNull(l.accessCodes))],
+                      [
+                        (
+                          l10n.specialInstructionsLabel,
+                          orNull(l.specialInstructions),
+                        ),
+                      ],
                     ],
                   ),
                 ),
-                if (orNull(l.specialInstructions) case final notes?) ...[
-                  PageBox(
-                    top: 12,
-                    child: SectionHeader(title: l10n.specialInstructionsLabel),
-                  ),
-                  PageBox(
-                    top: 0,
-                    child: SpaceCard(
-                      child: Text(notes, style: theme.textTheme.bodyLarge),
-                    ),
-                  ),
-                ],
-                PageBox(
-                  top: 12,
-                  child: SectionHeader(title: l10n.sectionUsedBy),
-                ),
+                PageBox(top: 16, child: CapsHeader(l10n.sectionUsedBy)),
                 PageBox(
                   top: 0,
-                  child: ListCard(
-                    children: [
-                      ListRow(
-                        leading: const IconBadge(
-                          icon: Icons.assignment_outlined,
+                  child: FactCard(
+                    rows: [
+                      [
+                        (
+                          l10n.moduleScope,
+                          l10n.scopeOfWorkCount(l.scopeOfWorkCount),
                         ),
-                        title: l10n.scopeOfWorkCount(l.scopeOfWorkCount),
-                        muted: l.scopeOfWorkCount == 0,
-                      ),
-                      ListRow(
-                        leading: const IconBadge(
-                          icon: Icons.cleaning_services_outlined,
-                        ),
-                        title: l10n.jobCount(l.jobCount),
-                        muted: l.jobCount == 0,
-                      ),
+                        (l10n.moduleJobs, l10n.jobCount(l.jobCount)),
+                      ],
                     ],
                   ),
                 ),
                 if (canEdit)
                   PageBox(
-                    top: 24,
+                    top: 20,
                     // Only unused locations can be deleted (the API refuses
                     // otherwise); used ones say why.
                     child: l.isInUse
@@ -225,11 +205,13 @@ class LocationScreen extends ConsumerWidget {
                             l10n.locationInUse,
                             style: theme.textTheme.bodySmall,
                           )
-                        : SecondaryButton(
-                            label: l10n.deleteLocation,
-                            icon: Icons.delete_outline_rounded,
-                            destructive: true,
-                            onPressed: () => _delete(context, ref, l),
+                        : Center(
+                            child: LinkButton(
+                              label: l10n.deleteLocation,
+                              icon: Icons.delete_outline_rounded,
+                              destructive: true,
+                              onPressed: () => _delete(context, ref, l),
+                            ),
                           ),
                   ),
               ],

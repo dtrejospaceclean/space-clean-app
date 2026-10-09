@@ -15,8 +15,8 @@ import '../../domain/usecases/contact_usecases.dart';
 import '../controllers/contacts_providers.dart';
 import '../../../../core/widgets/us_phone.dart';
 
-/// One contact: how to reach them, their role at the account and whether
-/// they can sign in. Editing and deleting need `info.edit`; giving them a
+/// One contact: a head card (name, title, tags, Edit), then capitals-titled
+/// cards for how to reach them and whether they can sign in. Editing and deleting need `info.edit`; giving them a
 /// login is for global owners.
 class ContactScreen extends ConsumerWidget {
   const ContactScreen({
@@ -104,48 +104,40 @@ class ContactScreen extends ConsumerWidget {
     return SpacePage(
       title: l10n.contactTitle,
       onRefresh: refresh,
-      actions: [
-        if (canEdit && contact.hasValue)
-          CircleButton.dark(
-            icon: Icons.edit_outlined,
-            tooltip: l10n.editContact,
-            onPressed: () => context.push('$here/edit'),
-          ),
-      ],
       slivers: [
         AsyncSlivers(
           value: contact,
           onRetry: refresh,
           builder: (c) {
-            /// A fact: its value as the title, what it is underneath.
-            ListRow fact(IconData icon, String label, String? value) => ListRow(
-              leading: IconBadge(icon: icon),
-              title: orNull(value) ?? l10n.notSet,
-              subtitle: label,
-              muted: orNull(value) == null,
-            );
-
             final Widget? signIn = switch (c) {
               Contact(hasLogin: true) => ListRow(
-                leading: const IconBadge(icon: Icons.key_outlined),
                 title: l10n.contactHasLogin,
                 subtitle: l10n.contactHasLoginHint,
               ),
               // A login is made from the contact's email.
               _ when !canGiveLogin => null,
               Contact(:final email?) when email.trim().isNotEmpty => ListRow(
-                leading: const IconBadge(icon: Icons.key_outlined),
                 title: l10n.giveLogin,
                 subtitle: l10n.signsInWith(email),
                 onTap: () => context.push('$here/login'),
               ),
               _ => ListRow(
-                leading: const IconBadge(icon: Icons.key_outlined),
                 title: l10n.giveLogin,
                 subtitle: l10n.giveLoginNeedsEmail,
                 muted: true,
               ),
             };
+            // Beside the name it would squeeze it at large text sizes, so
+            // it moves under the tags there.
+            final large = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+            final edit = canEdit
+                ? PillButton(
+                    label: l10n.editButton,
+                    icon: Icons.edit_outlined,
+                    tooltip: l10n.editContact,
+                    onPressed: () => context.push('$here/edit'),
+                  )
+                : null;
 
             return SliverMainAxisGroup(
               slivers: [
@@ -153,13 +145,9 @@ class ContactScreen extends ConsumerWidget {
                   top: 4,
                   child: SpaceCard(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InitialsAvatar(
-                          name: c.fullName,
-                          size: 56,
-                          background: context.colors.accentSoft,
-                          foreground: context.colors.accent,
-                        ),
+                        InitialsAvatar(name: c.fullName, size: 64),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
@@ -169,10 +157,17 @@ class ContactScreen extends ConsumerWidget {
                                 c.fullName,
                                 style: theme.textTheme.titleLarge,
                               ),
-                              if (orNull(c.title) case final title?)
-                                Text(title, style: theme.textTheme.bodyMedium),
+                              if (orNull(c.title) case final title?) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  title.toUpperCase(),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    letterSpacing: 0.6,
+                                  ),
+                                ),
+                              ],
                               if (c.isPrimary || c.isBillingContact) ...[
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 10),
                                 Wrap(
                                   spacing: 6,
                                   runSpacing: 6,
@@ -193,61 +188,47 @@ class ContactScreen extends ConsumerWidget {
                                   ],
                                 ),
                               ],
+                              if (edit != null && large) ...[
+                                const SizedBox(height: 10),
+                                edit,
+                              ],
                             ],
                           ),
                         ),
+                        if (edit != null && !large) ...[
+                          const SizedBox(width: 8),
+                          edit,
+                        ],
                       ],
                     ),
                   ),
                 ),
-                PageBox(
-                  top: 12,
-                  child: SectionHeader(title: l10n.sectionContact),
-                ),
+                PageBox(top: 16, child: CapsHeader(l10n.sectionContact)),
                 PageBox(
                   top: 0,
-                  child: ListCard(
-                    children: [
-                      fact(
-                        Icons.mail_outline_rounded,
-                        l10n.emailLabel,
-                        c.email,
-                      ),
-                      fact(
-                        Icons.phone_outlined,
-                        l10n.phoneLabel,
-                        UsPhone.format(c.phone),
-                      ),
+                  child: FactCard(
+                    rows: [
+                      [(l10n.emailLabel, orNull(c.email))],
+                      [(l10n.phoneLabel, orNull(UsPhone.format(c.phone)))],
+                      if (orNull(c.notes) case final notes?)
+                        [(l10n.notesLabel, notes)],
                     ],
                   ),
                 ),
-                if (orNull(c.notes) case final notes?) ...[
-                  PageBox(
-                    top: 12,
-                    child: SectionHeader(title: l10n.notesLabel),
-                  ),
-                  PageBox(
-                    top: 0,
-                    child: SpaceCard(
-                      child: Text(notes, style: theme.textTheme.bodyLarge),
-                    ),
-                  ),
-                ],
                 if (signIn != null) ...[
-                  PageBox(
-                    top: 12,
-                    child: SectionHeader(title: l10n.sectionSignIn),
-                  ),
+                  PageBox(top: 16, child: CapsHeader(l10n.sectionSignIn)),
                   PageBox(top: 0, child: ListCard(children: [signIn])),
                 ],
                 if (canEdit)
                   PageBox(
-                    top: 24,
-                    child: SecondaryButton(
-                      label: l10n.deleteContact,
-                      icon: Icons.delete_outline_rounded,
-                      destructive: true,
-                      onPressed: () => _delete(context, ref, c),
+                    top: 20,
+                    child: Center(
+                      child: LinkButton(
+                        label: l10n.deleteContact,
+                        icon: Icons.delete_outline_rounded,
+                        destructive: true,
+                        onPressed: () => _delete(context, ref, c),
+                      ),
                     ),
                   ),
               ],

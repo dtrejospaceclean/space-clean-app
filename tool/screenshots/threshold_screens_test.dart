@@ -18,6 +18,9 @@ import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
 import 'package:sp_cln_app/features/calendar/di/calendar_providers.dart';
 import 'package:sp_cln_app/features/calendar/domain/entities/calendar_event.dart';
+import 'package:sp_cln_app/features/contacts/di/contacts_providers.dart';
+import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
+import 'package:sp_cln_app/features/locations/domain/entities/location.dart';
 import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
@@ -158,7 +161,10 @@ Future<void> _sheet(
           FakeScopesRepository(_demoScopes),
         ),
         locationsRepositoryProvider.overrideWithValue(
-          FakeLocationsRepository(),
+          FakeLocationsRepository(_demoLocations),
+        ),
+        contactsRepositoryProvider.overrideWithValue(
+          FakeContactsRepository(_demoContacts),
         ),
         teamRepositoryProvider.overrideWithValue(FakeTeamRepository()),
         clockProvider.overrideWithValue(() => testNow),
@@ -716,6 +722,38 @@ void main() {
     ]);
   });
 
+  // A contact and a location: full, sparse, dark, and Spanish at 200%.
+  testWidgets('contact and location', (tester) async {
+    const base = '/accounts/c1';
+    await _sheet(tester, 'contact_location', TargetPlatform.iOS, [
+      Phone('1 · Contact', asOwner: true, location: '$base/contacts/ct1'),
+      Phone(
+        '2 · Sparse contact',
+        asOwner: true,
+        location: '$base/contacts/ct2',
+      ),
+      Phone('3 · Location', asOwner: true, location: '$base/locations/l1'),
+      Phone(
+        '4 · Unused location',
+        asOwner: true,
+        location: '$base/locations/l2',
+      ),
+      Phone(
+        '5 · Dark',
+        asOwner: true,
+        dark: true,
+        location: '$base/contacts/ct1',
+      ),
+      Phone(
+        '6 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/locations/l1',
+      ),
+    ]);
+  });
+
   testWidgets('calendar', (tester) async {
     const base = '/accounts/c1/calendar';
     await _sheet(tester, 'calendar', TargetPlatform.iOS, [
@@ -853,6 +891,60 @@ List<Phone> _tablets(Size portrait) {
 }
 
 // Synthetic demo data for the signed-in sheets (not real customers).
+const _demoContacts = [
+  // The primary and billing contact, with a login.
+  Contact(
+    id: 'ct1',
+    clientId: 'c1',
+    firstName: 'Carlos',
+    lastName: 'Medina',
+    title: 'Facilities manager',
+    email: 'carlos.medina@postoak.com',
+    phone: '7135550142',
+    isPrimary: true,
+    isBillingContact: true,
+    notes: 'Prefers calls before 10 AM. Ask for him at the front desk.',
+    userId: 'u9',
+  ),
+  // No email, so no login can be given yet.
+  Contact(
+    id: 'ct2',
+    clientId: 'c1',
+    firstName: 'Lucía',
+    lastName: 'Ramos',
+    title: 'Front desk',
+  ),
+];
+
+const _demoLocations = [
+  // In use: scopes and jobs, so it can't be deleted.
+  Location(
+    id: 'l1',
+    clientId: 'c1',
+    name: 'Post Oak Tower',
+    address: '1980 Post Oak Blvd, Suite 400',
+    city: 'Houston',
+    state: 'TX',
+    zipCode: '77056',
+    squareFootage: '48000',
+    floorCount: 12,
+    accessCodes: 'Side door 4512#, alarm 0907',
+    specialInstructions: 'Badge in at the loading dock after 6 PM.',
+    scopeOfWorkCount: 2,
+    jobCount: 12,
+  ),
+  // New and unused: it can be deleted.
+  Location(
+    id: 'l2',
+    clientId: 'c1',
+    name: 'Galleria annex',
+    address: '5085 Westheimer Rd',
+    city: 'Houston',
+    state: 'TX',
+    zipCode: '77056',
+  ),
+];
+
 final _demoScopes = [
   // Weekly offices with a paused evening window; already made jobs.
   Scope(
