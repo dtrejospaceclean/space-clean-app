@@ -12,6 +12,16 @@ class GetTasks implements UseCase<List<Task>, String> {
   Future<List<Task>> call(String clientId) => _repository.getTasks(clientId);
 }
 
+/// The signed-in user's overdue tasks, across all their accounts.
+class GetMyOverdueTasks implements UseCase<List<Task>, NoParams> {
+  const GetMyOverdueTasks(this._repository);
+
+  final TasksRepository _repository;
+
+  @override
+  Future<List<Task>> call(NoParams params) => _repository.getMyOverdueTasks();
+}
+
 class TaskRef {
   const TaskRef({required this.clientId, required this.taskId});
 

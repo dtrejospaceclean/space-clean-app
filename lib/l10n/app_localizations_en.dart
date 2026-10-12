@@ -2950,4 +2950,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tasksAssigneeNotActive =>
       'The person assigned must be an active user.';
+
+  @override
+  String get otherJobsToday => 'Other jobs today';
+
+  @override
+  String get overdueTasks => 'Overdue tasks';
+
+  @override
+  String get noJobsForYouToday => 'Nothing assigned to you today';
 }

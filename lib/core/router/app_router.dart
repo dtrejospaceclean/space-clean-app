@@ -156,6 +156,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                     ),
                     routes: _jobRoutes,
                   ),
+                  // An overdue task from Today, in Today's own stack.
+                  SlideRoute(
+                    path: 'task/:clientId/:taskId',
+                    builder: (_, state) => TaskScreen(
+                      clientId: state.pathParameters['clientId']!,
+                      taskId: state.pathParameters['taskId']!,
+                      leaveTo: TodayScreen.path,
+                    ),
+                    routes: [
+                      SlideRoute(
+                        path: 'edit',
+                        builder: (_, state) => TaskFormScreen(
+                          clientId: state.pathParameters['clientId']!,
+                          taskId: state.pathParameters['taskId'],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ],

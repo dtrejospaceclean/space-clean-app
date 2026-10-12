@@ -11,6 +11,11 @@ abstract interface class JobsRepository {
     DateTime? to,
   });
 
+  /// The jobs the signed-in user is on the crew of, across every account
+  /// where they have `jobs.view`, scheduled from [from] (up to [to]),
+  /// soonest first. One request, whatever the number of accounts.
+  Future<List<AccountJob>> getMyJobs({required DateTime from, DateTime? to});
+
   /// Needs `jobs.view`.
   Future<Job> getJob({required String clientId, required String jobId});
 

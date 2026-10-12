@@ -5089,6 +5089,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The person assigned must be an active user.'**
   String get tasksAssigneeNotActive;
+
+  /// No description provided for @otherJobsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Other jobs today'**
+  String get otherJobsToday;
+
+  /// No description provided for @overdueTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue tasks'**
+  String get overdueTasks;
+
+  /// No description provided for @noJobsForYouToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing assigned to you today'**
+  String get noJobsForYouToday;
 }
 
 class _AppLocalizationsDelegate

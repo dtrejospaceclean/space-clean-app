@@ -68,6 +68,23 @@ class GetDayJobs implements UseCase<DayJobs, GetDayJobsParams> {
   }
 }
 
+/// The signed-in user's own jobs on one day (any time on it, local),
+/// across all their accounts, soonest first.
+class GetMyDayJobs implements UseCase<List<AccountJob>, DateTime> {
+  const GetMyDayJobs(this._repository);
+
+  final JobsRepository _repository;
+
+  @override
+  Future<List<AccountJob>> call(DateTime day) {
+    final from = DateTime(day.year, day.month, day.day);
+    return _repository.getMyJobs(
+      from: from,
+      to: from.add(const Duration(days: 1)),
+    );
+  }
+}
+
 /// Which of an account's jobs a list shows.
 enum JobPeriod {
   /// From today on, soonest first.

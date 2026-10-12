@@ -19,6 +19,13 @@ class TasksRemoteDataSource {
     _path(clientId),
   )).map(TaskModel.fromJson).toList();
 
+  /// `GET /me/tasks?overdue=true`: each row names its account.
+  Future<List<Task>> getMyOverdueTasks() async => (await fetchAllPages(
+    _api,
+    '/me/tasks',
+    query: {'overdue': 'true'},
+  )).map(TaskModel.fromJson).toList();
+
   Future<Task> getTask(String clientId, String taskId) async =>
       _one(await _api.get('${_path(clientId)}/$taskId'));
 

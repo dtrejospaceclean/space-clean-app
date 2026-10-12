@@ -917,6 +917,16 @@ class FakeTasksRepository implements TasksRepository {
   /// User ids refused as assignees.
   final inactive = <String>{};
 
+  /// Who `GET /me/tasks` answers for: [ana] unless a test says otherwise.
+  String me = 'u1';
+
+  /// The open, late tasks assigned to [me], soonest due first.
+  @override
+  Future<List<Task>> getMyOverdueTasks() async => [
+    for (final t in tasks)
+      if (t.assignedToId == me && t.isOverdue) t,
+  ]..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
+
   @override
   Future<List<Task>> getTasks(String clientId) async =>
       tasks.where((t) => t.clientId == clientId).toList();
@@ -1781,6 +1791,10 @@ class FakeJobsRepository implements JobsRepository {
   final writes = <String>[];
   final drafts = <JobDraft>[];
   final crews = <List<CrewMember>>[];
+
+  /// Accounts by id, to name them on the user's own jobs; [pumpApp] fills
+  /// it from the clients fake.
+  Map<String, Client> accounts = {};
   final checklists = <List<String>>[];
 
   List<Job> _jobs(String clientId) => switch (byClient[clientId]) {
@@ -1793,17 +1807,44 @@ class FakeJobsRepository implements JobsRepository {
     for (final j in _jobs(clientId)) j.id == next.id ? next : j,
   ];
 
+  /// The accounts whose jobs were listed, in order (one per request).
+  final listed = <String>[];
+
   @override
   Future<List<Job>> getJobs({
     required String clientId,
     required DateTime from,
     DateTime? to,
+  }) async {
+    listed.add(clientId);
+    return [
+      for (final j in _jobs(clientId))
+        if (!j.scheduledStart.isBefore(from) &&
+            (to == null || !j.scheduledStart.isAfter(to)))
+          j,
+    ];
+  }
+
+  /// The jobs [me] is on the crew of, in every account that loads (an
+  /// account set to fail is left out, as one the user can't view would be).
+  @override
+  Future<List<AccountJob>> getMyJobs({
+    required DateTime from,
+    DateTime? to,
   }) async => [
-    for (final j in _jobs(clientId))
-      if (!j.scheduledStart.isBefore(from) &&
-          (to == null || !j.scheduledStart.isAfter(to)))
-        j,
-  ];
+    for (final MapEntry(key: clientId, value: jobs) in byClient.entries)
+      if (jobs is List<Job>)
+        for (final j in jobs)
+          if (j.assignees.any((a) => a.userId == me) &&
+              !j.scheduledStart.isBefore(from) &&
+              (to == null || !j.scheduledStart.isAfter(to)))
+            AccountJob(
+              job: j,
+              client:
+                  accounts[clientId] ??
+                  Client(id: clientId, legalName: clientId),
+            ),
+  ]..sort((a, b) => a.job.scheduledStart.compareTo(b.job.scheduledStart));
 
   @override
   Future<Job> getJob({required String clientId, required String jobId}) async {
@@ -1997,7 +2038,8 @@ class FakeJobsRepository implements JobsRepository {
     return next;
   }
 
-  /// The signed-in user the field actions act for ([ana]).
+  /// The signed-in user the field actions and `GET /me/jobs` act for
+  /// ([ana]).
   String me = 'u1';
 
   JobAssignee _mine(Job j) =>
@@ -2443,6 +2485,17 @@ Job job(
   checklist: checklist,
 );
 
+extension on JobsRepository {
+  /// Lets a jobs fake name the accounts from a clients fake.
+  void nameAccounts(ClientsRepository? clients) {
+    if (this case final FakeJobsRepository jobs) {
+      if (clients case final FakeClientsRepository fake) {
+        jobs.accounts = {for (final c in fake.clients) c.id: c};
+      }
+    }
+  }
+}
+
 /// Pumps the whole app on a phone-sized screen with fakes behind the domain.
 Future<SharedPreferences> pumpApp(
   WidgetTester tester, {
@@ -2484,7 +2537,9 @@ Future<SharedPreferences> pumpApp(
         clientsRepositoryProvider.overrideWithValue(
           clients ?? FakeClientsRepository(),
         ),
-        jobsRepositoryProvider.overrideWithValue(jobs ?? FakeJobsRepository()),
+        jobsRepositoryProvider.overrideWithValue(
+          (jobs ?? FakeJobsRepository())..nameAccounts(clients),
+        ),
         accessRepositoryProvider.overrideWithValue(
           access ?? FakeAccessRepository(),
         ),

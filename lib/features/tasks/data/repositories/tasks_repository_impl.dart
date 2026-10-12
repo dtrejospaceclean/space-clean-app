@@ -21,6 +21,10 @@ class TasksRepositoryImpl implements TasksRepository {
       _guard(() => _remote.getTasks(clientId));
 
   @override
+  Future<List<Task>> getMyOverdueTasks() =>
+      _guard(() => _remote.getMyOverdueTasks());
+
+  @override
   Future<Task> getTask(String clientId, String taskId) =>
       _guard(() => _remote.getTask(clientId, taskId));
 

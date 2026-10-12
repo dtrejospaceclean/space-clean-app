@@ -39,6 +39,7 @@ class Task {
     this.dueDate,
     this.isOverdue = false,
     this.daysUntilDue,
+    this.accountName,
   });
 
   final String id;
@@ -59,6 +60,10 @@ class Task {
 
   /// Days from today to [dueDate] (negative once past); null without one.
   final int? daysUntilDue;
+
+  /// The account's name, on lists that span accounts (the user's own
+  /// tasks); null on an account's own list.
+  final String? accountName;
 
   /// Still needs someone: pending or in progress.
   bool get isOpen =>

@@ -16,6 +16,11 @@ final todayJobsProvider = FutureProvider.autoDispose<DayJobs>((ref) async {
   );
 });
 
+/// The user's own jobs today, from `GET /me/jobs`: one request.
+final myDayJobsProvider = FutureProvider.autoDispose<List<AccountJob>>(
+  (ref) => ref.watch(getMyDayJobsProvider)(ref.watch(clockProvider)()),
+);
+
 /// One account's upcoming or past jobs.
 final accountJobsProvider = FutureProvider.autoDispose
     .family<List<Job>, JobQuery>(
@@ -31,5 +36,6 @@ final jobProvider = FutureProvider.autoDispose.family<Job, (String, String)>(
 /// Drops cached jobs after any write.
 void invalidateJobs(WidgetRef ref) => ref
   ..invalidate(todayJobsProvider)
+  ..invalidate(myDayJobsProvider)
   ..invalidate(accountJobsProvider)
   ..invalidate(jobProvider);

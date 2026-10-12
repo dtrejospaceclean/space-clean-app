@@ -147,7 +147,10 @@ Future<void> _sheet(
         clientsRepositoryProvider.overrideWithValue(
           FakeClientsRepository(_demoClients),
         ),
-        jobsRepositoryProvider.overrideWithValue(FakeJobsRepository(_demoJobs)),
+        jobsRepositoryProvider.overrideWithValue(
+          FakeJobsRepository(_demoJobs)
+            ..accounts = {for (final c in _demoClients) c.id: c},
+        ),
         accessRepositoryProvider.overrideWithValue(
           FakeAccessRepository(_demoAccess),
         ),
@@ -979,11 +982,13 @@ final _demoTasksList = [
         'cleaning or nightly. Include window washing as an extra.',
     priority: Priority.high,
     status: TaskStatus.pending,
-    assignedToId: 'u-ana',
+    // The signed-in demo user's, so Today lists it as overdue.
+    assignedToId: 'u1',
     assignedToName: 'Ana Pérez',
     dueDate: DateTime(2026, 9, 20),
     isOverdue: true,
     daysUntilDue: -3,
+    accountName: 'Post Oak Tower',
   ),
   Task(
     id: 't2',

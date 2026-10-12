@@ -11,6 +11,9 @@ final jobsRepositoryProvider = Provider<JobsRepository>(
       JobsRepositoryImpl(JobsRemoteDataSource(ref.watch(apiClientProvider))),
 );
 
+final getMyDayJobsProvider = Provider(
+  (ref) => GetMyDayJobs(ref.watch(jobsRepositoryProvider)),
+);
 final getDayJobsProvider = Provider<GetDayJobs>(
   (ref) => GetDayJobs(ref.watch(jobsRepositoryProvider)),
 );

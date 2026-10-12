@@ -24,6 +24,10 @@ class JobsRepositoryImpl implements JobsRepository {
   }) => _guard(() => _remote.getJobs(clientId, from: from, to: to));
 
   @override
+  Future<List<AccountJob>> getMyJobs({required DateTime from, DateTime? to}) =>
+      _guard(() => _remote.getMyJobs(from: from, to: to));
+
+  @override
   Future<Job> getJob({required String clientId, required String jobId}) =>
       _guard(() => _remote.getJob(clientId, jobId));
 

@@ -22,6 +22,11 @@ abstract final class TaskModel {
     dueDate: _day(json['dueDate']),
     isOverdue: json['isOverdue'] as bool? ?? false,
     daysUntilDue: (json['daysUntilDue'] as num?)?.toInt(),
+    accountName: switch (json['clientAccount']) {
+      {'dba': final String dba} when dba.trim().isNotEmpty => dba,
+      {'legalName': final String legalName} => legalName,
+      _ => null,
+    },
   );
 }
 

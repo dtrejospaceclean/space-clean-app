@@ -6,6 +6,10 @@ abstract interface class TasksRepository {
   /// `tasks.view`.
   Future<List<Task>> getTasks(String clientId);
 
+  /// The signed-in user's open tasks past their due date, across every
+  /// account where they have `tasks.view`, each with its account's name.
+  Future<List<Task>> getMyOverdueTasks();
+
   /// Needs `tasks.view`.
   Future<Task> getTask(String clientId, String taskId);
 

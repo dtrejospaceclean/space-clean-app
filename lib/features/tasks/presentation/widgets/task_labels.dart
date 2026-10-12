@@ -91,7 +91,8 @@ Widget? taskDueLabel(BuildContext context, Task t) {
   );
 }
 
-/// A task as a list row: its title, who has it and the due day, then pills
+/// A task as a list row: its title, who has it (or, across accounts, which
+/// account) and the due day, then pills
 /// for status, priority and how soon it's due. Done ones are muted and keep
 /// only their status.
 class TaskRow extends StatelessWidget {
@@ -109,7 +110,8 @@ class TaskRow extends StatelessWidget {
       leading: const IconBadge(icon: Icons.task_alt_rounded),
       title: t.title,
       subtitle: [
-        t.assignedToName ?? l10n.unassigned,
+        // On the user's own list, which account; else who has it.
+        t.accountName ?? t.assignedToName ?? l10n.unassigned,
         if (t.dueDate case final day?) context.formatDate(day),
       ].join(' · '),
       muted: !t.isOpen,

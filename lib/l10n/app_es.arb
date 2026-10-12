@@ -831,5 +831,8 @@
   "tasksNotFound": "Esta tarea ya no existe.",
   "tasksAlreadyCompleted": "Esta tarea está completada. Reábrela primero para cambiarla.",
   "tasksAlreadyOpen": "Solo se puede reabrir una tarea completada o cancelada.",
-  "tasksAssigneeNotActive": "La persona asignada debe ser un usuario activo."
+  "tasksAssigneeNotActive": "La persona asignada debe ser un usuario activo.",
+  "otherJobsToday": "Otros trabajos de hoy",
+  "overdueTasks": "Tareas atrasadas",
+  "noJobsForYouToday": "Nada asignado a ti hoy"
 }

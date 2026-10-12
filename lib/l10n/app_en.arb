@@ -1392,5 +1392,8 @@
   "tasksNotFound": "This task no longer exists.",
   "tasksAlreadyCompleted": "This task is completed. Reopen it first to change it.",
   "tasksAlreadyOpen": "Only a completed or cancelled task can be reopened.",
-  "tasksAssigneeNotActive": "The person assigned must be an active user."
+  "tasksAssigneeNotActive": "The person assigned must be an active user.",
+  "otherJobsToday": "Other jobs today",
+  "overdueTasks": "Overdue tasks",
+  "noJobsForYouToday": "Nothing assigned to you today"
 }

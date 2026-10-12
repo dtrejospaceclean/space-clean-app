@@ -1,5 +1,6 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/paginated.dart';
+import '../../../clients/domain/entities/client.dart';
 import '../../domain/entities/job.dart';
 import '../models/job_model.dart';
 
@@ -31,6 +32,36 @@ class JobsRemoteDataSource {
       },
     );
     return [for (final j in items) JobModel.fromJson(j, clientId: clientId)];
+  }
+
+  /// `GET /me/jobs`: each row names its account (`clientAccount`).
+  Future<List<AccountJob>> getMyJobs({
+    required DateTime from,
+    DateTime? to,
+  }) async {
+    final items = await fetchAllPages(
+      _api,
+      '/me/jobs',
+      query: {
+        'from': from.toUtc().toIso8601String(),
+        if (to != null) 'to': to.toUtc().toIso8601String(),
+      },
+    );
+    return [
+      for (final j in items)
+        if (j['clientAccount'] case {
+          'id': final String id,
+          'legalName': final String legalName,
+        })
+          AccountJob(
+            job: JobModel.fromJson(j, clientId: id),
+            client: Client(
+              id: id,
+              legalName: legalName,
+              dba: (j['clientAccount'] as Map)['dba'] as String?,
+            ),
+          ),
+    ];
   }
 
   Future<Job> getJob(String clientId, String jobId) async =>

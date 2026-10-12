@@ -23,10 +23,19 @@ import '../widgets/task_labels.dart';
 /// open task is completed, started or cancelled; a done one reopened; and
 /// any one deleted.
 class TaskScreen extends ConsumerStatefulWidget {
-  const TaskScreen({super.key, required this.clientId, required this.taskId});
+  const TaskScreen({
+    super.key,
+    required this.clientId,
+    required this.taskId,
+    this.leaveTo,
+  });
 
   final String clientId;
   final String taskId;
+
+  /// Where deleting it goes; null for the list it was opened from (its
+  /// parent route).
+  final String? leaveTo;
 
   @override
   ConsumerState<TaskScreen> createState() => _TaskScreenState();
@@ -150,7 +159,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
             ?.can(Permissions.tasksEdit) ??
         false;
     final here = GoRouterState.of(context).matchedLocation;
-    final list = here.substring(0, here.lastIndexOf('/'));
+    final list = widget.leaveTo ?? here.substring(0, here.lastIndexOf('/'));
     final busy = _busy != null;
     Future<void> refresh() => ref.refresh(taskProvider(key).future);
 

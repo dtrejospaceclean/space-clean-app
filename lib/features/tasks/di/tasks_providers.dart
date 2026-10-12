@@ -14,6 +14,9 @@ final tasksRepositoryProvider = Provider<TasksRepository>(
 final getTasksProvider = Provider(
   (ref) => GetTasks(ref.watch(tasksRepositoryProvider)),
 );
+final getMyOverdueTasksProvider = Provider(
+  (ref) => GetMyOverdueTasks(ref.watch(tasksRepositoryProvider)),
+);
 final getTaskProvider = Provider(
   (ref) => GetTask(ref.watch(tasksRepositoryProvider)),
 );
