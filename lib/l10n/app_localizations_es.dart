@@ -129,7 +129,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String codeIntro(String email) {
-    return 'Enviamos un código de 6 dígitos a $email. Puede tardar un minuto en llegar.';
+    return 'Enviamos un código de 6 dígitos a $email. Puede tardar un minuto en llegar y vale por 10 minutos.';
   }
 
   @override
@@ -196,7 +196,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorsFeatureUnavailable =>
-      'Aún no se puede restablecer la contraseña desde la app. Pide a tu supervisor o administrador que la restablezca.';
+      'Esto aún no está disponible en la app.';
 
   @override
   String get tabToday => 'Hoy';
@@ -3307,4 +3307,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get invoicesPaymentAlreadyVoided => 'Ese pago ya está anulado.';
+
+  @override
+  String get authInvalidPin =>
+      'Ese código es incorrecto o ya venció. Después de 5 intentos, pide un código nuevo.';
+
+  @override
+  String get authInvalidResetToken =>
+      'El restablecimiento tardó demasiado o ya se usó. Pide un código nuevo para empezar de nuevo.';
 }

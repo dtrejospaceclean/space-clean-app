@@ -45,6 +45,7 @@ import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
 import 'package:sp_cln_app/features/locations/domain/entities/location.dart';
 import 'package:sp_cln_app/features/locations/domain/repositories/locations_repository.dart';
 import 'package:sp_cln_app/features/password_reset/di/password_reset_providers.dart';
+import 'package:sp_cln_app/features/password_reset/domain/entities/password_policy.dart';
 import 'package:sp_cln_app/features/password_reset/domain/repositories/password_reset_repository.dart';
 import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
@@ -284,25 +285,37 @@ class FakeAuthRepository implements AuthRepository {
   Stream<void> get sessionExpired => expiry.stream;
 }
 
+/// The reset endpoints: every code is accepted (unless [verifyError]) and
+/// buys token `t-<code>`, valid 15 minutes from [testNow].
 class FakePasswordResetRepository implements PasswordResetRepository {
   final calls = <String>[];
   Failure? verifyError;
+  Failure? resetError;
 
   @override
   Future<void> requestCode(String email) async => calls.add('request:$email');
 
   @override
-  Future<void> verifyCode({required String email, required String code}) async {
+  Future<ResetToken> verifyCode({
+    required String email,
+    required String code,
+  }) async {
     calls.add('verify:$code');
     if (verifyError case final error?) throw error;
+    return ResetToken(
+      token: 't-$code',
+      expiresAt: testNow.add(const Duration(minutes: 15)),
+    );
   }
 
   @override
   Future<void> resetPassword({
-    required String email,
-    required String code,
+    required String resetToken,
     required String newPassword,
-  }) async => calls.add('reset:$code');
+  }) async {
+    calls.add('reset:$resetToken');
+    if (resetError case final error?) throw error;
+  }
 }
 
 /// In-memory accounts; records every write.
@@ -2809,8 +2822,9 @@ Future<SharedPreferences> pumpApp(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         authRepositoryProvider.overrideWithValue(auth),
-        if (passwordReset != null)
-          passwordResetRepositoryProvider.overrideWithValue(passwordReset),
+        passwordResetRepositoryProvider.overrideWithValue(
+          passwordReset ?? FakePasswordResetRepository(),
+        ),
         clientsRepositoryProvider.overrideWithValue(
           clients ?? FakeClientsRepository(),
         ),

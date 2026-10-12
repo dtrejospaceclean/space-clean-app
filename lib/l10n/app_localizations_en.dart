@@ -127,7 +127,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String codeIntro(String email) {
-    return 'We sent a 6-digit code to $email. It may take a minute to arrive.';
+    return 'We sent a 6-digit code to $email. It may take a minute to arrive and works for 10 minutes.';
   }
 
   @override
@@ -193,7 +193,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorsFeatureUnavailable =>
-      'Password reset isn\'t available in the app yet. Ask your supervisor or admin to reset your password.';
+      'This isn\'t available in the app yet.';
 
   @override
   String get tabToday => 'Today';
@@ -3278,4 +3278,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invoicesPaymentAlreadyVoided => 'That payment is already voided.';
+
+  @override
+  String get authInvalidPin =>
+      'That code is wrong or has expired. After 5 tries, send a new code.';
+
+  @override
+  String get authInvalidResetToken =>
+      'This reset took too long or was already used. Send a new code to start again.';
 }

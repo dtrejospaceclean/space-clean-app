@@ -14,6 +14,8 @@ extension FailureMessages on AppLocalizations {
     'auth.insufficient_permission' => authInsufficientPermission,
     'auth.insufficient_role' => authInsufficientRole,
     'auth.wrong_current_password' => authWrongCurrentPassword,
+    'auth.invalid_pin' => authInvalidPin,
+    'auth.invalid_reset_token' => authInvalidResetToken,
     'validation.failed' => validationFailed,
     NetworkFailure.key => errorsNetwork,
     UnavailableFailure.key => errorsFeatureUnavailable,

@@ -29,6 +29,7 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
   final _confirmFocus = FocusNode();
   bool _obscure = true;
   bool _submitting = false;
+  bool _resending = false;
   Failure? _failure;
 
   @override
@@ -67,10 +68,25 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
     }
   }
 
+  /// The token is spent or too old: sends a new code and goes back to
+  /// enter it.
+  Future<void> _startOver() async {
+    setState(() => _resending = true);
+    try {
+      await ref.read(passwordResetControllerProvider.notifier).resendCode();
+      if (mounted) context.pop(true);
+    } on Failure catch (f) {
+      if (mounted) setState(() => _failure = f);
+    } finally {
+      if (mounted) setState(() => _resending = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final failure = _failure;
+    final tokenSpent = failure?.messageKey == 'auth.invalid_reset_token';
     final passwordError = switch (failure) {
       ValidationFailure(:final fieldErrors) =>
         switch (fieldErrors['newPassword'] ?? fieldErrors['password']) {
@@ -100,6 +116,13 @@ class _NewPasswordScreenState extends ConsumerState<NewPasswordScreen> {
             children: [
               if (failure != null && failure is! ValidationFailure) ...[
                 Notice(message: l10n.failureMessage(failure)),
+                if (tokenSpent)
+                  Center(
+                    child: LinkButton(
+                      label: l10n.resendCode,
+                      onPressed: _resending || _submitting ? null : _startOver,
+                    ),
+                  ),
                 const SizedBox(height: 12),
               ],
               SpaceTextField(

@@ -68,7 +68,6 @@ class Phone {
     this.keyboard = 0,
     this.textScale = 1,
     this.loginError,
-    this.resetAvailable = true,
     this.restoring = false,
     this.signedIn = false,
     this.asOwner = false,
@@ -84,7 +83,6 @@ class Phone {
   final double keyboard;
   final double textScale;
   final Failure? loginError;
-  final bool resetAvailable;
 
   /// Holds the app on the splash, restoring a session.
   final bool restoring;
@@ -186,10 +184,9 @@ Future<void> _sheet(
         ),
         teamRepositoryProvider.overrideWithValue(FakeTeamRepository()),
         clockProvider.overrideWithValue(() => testNow),
-        if (phone.resetAvailable)
-          passwordResetRepositoryProvider.overrideWithValue(
-            FakePasswordResetRepository(),
-          ),
+        passwordResetRepositoryProvider.overrideWithValue(
+          FakePasswordResetRepository(),
+        ),
       ],
       retry: (_, _) => null,
     );
@@ -385,11 +382,8 @@ void main() {
     await _sheet(tester, 'threshold_ios', TargetPlatform.iOS, [
       Phone('1 · Returning'),
       Phone(
-        '2 · Reset unavailable',
+        '2 · Forgot password',
         location: '/login/forgot?email=ana.perez@spacecleanllc.com',
-        resetAvailable: false,
-        act: (tester, phone) async =>
-            tester.tap(_in(phone, find.text('Send code'))),
       ),
       Phone(
         '3 · iPhone SE, text 160%',

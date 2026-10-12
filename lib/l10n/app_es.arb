@@ -35,7 +35,7 @@
   "resetEmailIntro": "Ingresa el correo con el que inicias sesión. Te enviaremos un código de 6 dígitos.",
   "sendCodeButton": "Enviar código",
   "codeTitle": "Ingresa el código",
-  "codeIntro": "Enviamos un código de 6 dígitos a {email}. Puede tardar un minuto en llegar.",
+  "codeIntro": "Enviamos un código de 6 dígitos a {email}. Puede tardar un minuto en llegar y vale por 10 minutos.",
   "codeLabel": "Código de 6 dígitos",
   "codeIncomplete": "Ingresa los 6 dígitos.",
   "continueButton": "Continuar",
@@ -55,7 +55,7 @@
   "resetDoneTitle": "Contraseña actualizada",
   "resetDoneBody": "Inicia sesión con tu contraseña nueva.",
   "backToSignIn": "Volver a iniciar sesión",
-  "errorsFeatureUnavailable": "Aún no se puede restablecer la contraseña desde la app. Pide a tu supervisor o administrador que la restablezca.",
+  "errorsFeatureUnavailable": "Esto aún no está disponible en la app.",
   "tabToday": "Hoy",
   "tabAccounts": "Cuentas",
   "unreadNotifications": "{count, plural, =1{1 notificación sin leer} other{{count} notificaciones sin leer}}",
@@ -923,5 +923,7 @@
   "invoicesNotPayable": "Solo se registran pagos en facturas emitidas o con pago parcial.",
   "invoicesOverpayment": "Es más que el saldo pendiente.",
   "invoicesPaymentNotFound": "Ese pago ya no existe.",
-  "invoicesPaymentAlreadyVoided": "Ese pago ya está anulado."
+  "invoicesPaymentAlreadyVoided": "Ese pago ya está anulado.",
+  "authInvalidPin": "Ese código es incorrecto o ya venció. Después de 5 intentos, pide un código nuevo.",
+  "authInvalidResetToken": "El restablecimiento tardó demasiado o ya se usó. Pide un código nuevo para empezar de nuevo."
 }

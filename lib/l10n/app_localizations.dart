@@ -311,7 +311,7 @@ abstract class AppLocalizations {
   /// No description provided for @codeIntro.
   ///
   /// In en, this message translates to:
-  /// **'We sent a 6-digit code to {email}. It may take a minute to arrive.'**
+  /// **'We sent a 6-digit code to {email}. It may take a minute to arrive and works for 10 minutes.'**
   String codeIntro(String email);
 
   /// No description provided for @codeLabel.
@@ -431,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorsFeatureUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'Password reset isn\'t available in the app yet. Ask your supervisor or admin to reset your password.'**
+  /// **'This isn\'t available in the app yet.'**
   String get errorsFeatureUnavailable;
 
   /// No description provided for @tabToday.
@@ -5641,6 +5641,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That payment is already voided.'**
   String get invoicesPaymentAlreadyVoided;
+
+  /// No description provided for @authInvalidPin.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is wrong or has expired. After 5 tries, send a new code.'**
+  String get authInvalidPin;
+
+  /// No description provided for @authInvalidResetToken.
+  ///
+  /// In en, this message translates to:
+  /// **'This reset took too long or was already used. Send a new code to start again.'**
+  String get authInvalidResetToken;
 }
 
 class _AppLocalizationsDelegate

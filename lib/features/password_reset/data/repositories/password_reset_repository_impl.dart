@@ -1,26 +1,37 @@
-import '../../../../core/error/failures.dart';
+import '../../../../core/network/api_exception.dart';
+import '../../domain/entities/password_policy.dart';
 import '../../domain/repositories/password_reset_repository.dart';
+import '../datasources/password_reset_remote_data_source.dart';
 
-/// The backend has no reset endpoints yet, so every step reports the feature
-/// as unavailable. Replace with a remote data source once the API contract
-/// (paths, bodies, error keys, code expiry) is defined; don't guess it.
 class PasswordResetRepositoryImpl implements PasswordResetRepository {
-  const PasswordResetRepositoryImpl();
+  const PasswordResetRepositoryImpl(this._remote);
+
+  final PasswordResetRemoteDataSource _remote;
+
+  Future<T> _guard<T>(Future<T> Function() action) async {
+    try {
+      return await action();
+    } on ApiException catch (e) {
+      throw e.toFailure();
+    }
+  }
 
   @override
-  Future<void> requestCode(String email) async =>
-      throw const UnavailableFailure();
+  Future<void> requestCode(String email) =>
+      _guard(() => _remote.requestCode(email));
 
   @override
-  Future<void> verifyCode({
+  Future<ResetToken> verifyCode({
     required String email,
     required String code,
-  }) async => throw const UnavailableFailure();
+  }) => _guard(() => _remote.verifyCode(email: email, code: code));
 
   @override
   Future<void> resetPassword({
-    required String email,
-    required String code,
+    required String resetToken,
     required String newPassword,
-  }) async => throw const UnavailableFailure();
+  }) => _guard(
+    () =>
+        _remote.resetPassword(resetToken: resetToken, newPassword: newPassword),
+  );
 }

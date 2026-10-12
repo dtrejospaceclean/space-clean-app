@@ -6,7 +6,7 @@ import '../../../helpers/test_app.dart';
 
 Future<void> openCodeStep(
   WidgetTester tester,
-  FakePasswordResetRepository? reset,
+  FakePasswordResetRepository reset,
 ) async {
   await pumpApp(
     tester,
@@ -30,6 +30,7 @@ void main() {
       find.textContaining('We sent a 6-digit code to ana@example.com'),
       findsOneWidget,
     );
+    expect(find.textContaining('works for 10 minutes'), findsOneWidget);
     expect(find.text('New code in 60 s'), findsOneWidget);
 
     // Completing the sixth digit submits on its own.
@@ -52,10 +53,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ana@example.com'), findsOneWidget);
+    // The code buys a token, and the token sets the password.
     expect(reset.calls, [
       'request:ana@example.com',
       'verify:482913',
-      'reset:482913',
+      'reset:t-482913',
     ]);
   });
 
@@ -75,32 +77,60 @@ void main() {
     expect(reset.calls.where((c) => c.startsWith('reset')), isEmpty);
   });
 
-  testWidgets('shows a rejected code under the code boxes', (tester) async {
+  testWidgets('a refused code shows under the boxes, which empty', (
+    tester,
+  ) async {
     final reset = FakePasswordResetRepository()
-      ..verifyError = const ValidationFailure('validation.failed', {
-        'code': [
-          FieldError(key: 'validation.x', fallbackMessage: 'code is invalid'),
-        ],
-      });
+      ..verifyError = const ServerFailure('auth.invalid_pin', statusCode: 400);
     await openCodeStep(tester, reset);
 
     await tester.enterText(find.byType(TextField), '000000');
     await tester.pumpAndSettle();
 
-    expect(find.text('code is invalid'), findsOneWidget);
-    expect(find.text('Enter the code'), findsOneWidget);
-  });
-
-  testWidgets('explains that reset is not available yet', (tester) async {
-    // No override: the real repository, whose endpoints don't exist yet.
-    await openCodeStep(tester, null);
-
     expect(
       find.text(
-        'Password reset isn\'t available in the app yet. '
-        'Ask your supervisor or admin to reset your password.',
+        'That code is wrong or has expired. After 5 tries, send a new code.',
       ),
       findsOneWidget,
     );
+    expect(find.text('Enter the code'), findsOneWidget);
+    final input = tester.widget<TextField>(find.byType(TextField));
+    expect(input.controller!.text, isEmpty);
+  });
+
+  testWidgets('a spent reset sends a new code and goes back to enter it', (
+    tester,
+  ) async {
+    final reset = FakePasswordResetRepository()
+      ..resetError = const ServerFailure(
+        'auth.invalid_reset_token',
+        statusCode: 400,
+      );
+    await openCodeStep(tester, reset);
+    await tester.enterText(find.byType(TextField), '482913');
+    await tester.pumpAndSettle();
+    await tester.enterText(field('New password'), 'a-long-new-secret');
+    await tester.enterText(field('Repeat new password'), 'a-long-new-secret');
+    await tester.tap(button('Save password'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'This reset took too long or was already used. '
+        'Send a new code to start again.',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Send a new code'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Enter the code'), findsOneWidget);
+    expect(find.text('We sent a new code.'), findsOneWidget);
+    expect(reset.calls, [
+      'request:ana@example.com',
+      'verify:482913',
+      'reset:t-482913',
+      'request:ana@example.com',
+    ]);
   });
 }

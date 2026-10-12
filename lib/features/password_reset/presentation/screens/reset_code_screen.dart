@@ -66,14 +66,26 @@ class _ResetCodeScreenState extends ConsumerState<ResetCodeScreen> {
     setState(() => _submitting = true);
     try {
       await ref.read(passwordResetControllerProvider.notifier).verifyCode(code);
-      if (mounted) context.push(NewPasswordScreen.path);
+      if (!mounted) return;
+      setState(() => _submitting = false);
+      // True when the token ran out there and a new code was sent.
+      final resent = await context.push<bool>(NewPasswordScreen.path);
+      if (resent == true && mounted) {
+        _codeController.clear();
+        setState(() => _resent = true);
+      }
     } on Failure catch (f) {
       HapticFeedback.mediumImpact();
       if (!mounted) return;
       setState(() {
         if (f case ValidationFailure(:final fieldErrors)
-            when fieldErrors['code']?.isNotEmpty ?? false) {
-          _codeError = l10n.fieldError(fieldErrors['code']!.first);
+            when fieldErrors['pin']?.isNotEmpty ?? false) {
+          _codeError = l10n.fieldError(fieldErrors['pin']!.first);
+        } else if (f.messageKey == 'auth.invalid_pin') {
+          // Wrong, expired or out of tries: say so where it was typed, and
+          // empty the boxes for the next try.
+          _codeError = l10n.failureMessage(f);
+          _codeController.clear();
         } else {
           _failure = f;
         }
@@ -88,6 +100,7 @@ class _ResetCodeScreenState extends ConsumerState<ResetCodeScreen> {
       _resending = true;
       _resent = false;
       _failure = null;
+      _codeError = null;
     });
     try {
       await ref.read(passwordResetControllerProvider.notifier).resendCode();

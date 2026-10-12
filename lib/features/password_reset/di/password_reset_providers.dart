@@ -1,11 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/di/network_providers.dart';
+import '../data/datasources/password_reset_remote_data_source.dart';
 import '../data/repositories/password_reset_repository_impl.dart';
 import '../domain/repositories/password_reset_repository.dart';
 import '../domain/usecases/password_reset_usecases.dart';
 
 final passwordResetRepositoryProvider = Provider<PasswordResetRepository>(
-  (ref) => const PasswordResetRepositoryImpl(),
+  (ref) => PasswordResetRepositoryImpl(
+    PasswordResetRemoteDataSource(ref.watch(apiClientProvider)),
+  ),
 );
 
 final requestResetCodeProvider = Provider<RequestResetCode>(
