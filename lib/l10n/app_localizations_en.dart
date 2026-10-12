@@ -2631,4 +2631,172 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get moduleComplaintsHint => 'Issues reported and how they were solved';
+
+  @override
+  String get complaintTitle => 'Complaint';
+
+  @override
+  String get newComplaintTitle => 'New complaint';
+
+  @override
+  String get editComplaint => 'Edit complaint';
+
+  @override
+  String get complaintStatusOpen => 'Open';
+
+  @override
+  String get complaintStatusInProgress => 'In progress';
+
+  @override
+  String get complaintStatusResolved => 'Resolved';
+
+  @override
+  String get complaintStatusUnknown => 'Other status';
+
+  @override
+  String get priorityLabel => 'Priority';
+
+  @override
+  String get priorityHigh => 'High';
+
+  @override
+  String get priorityMedium => 'Medium';
+
+  @override
+  String get priorityLow => 'Low';
+
+  @override
+  String get priorityUnknown => 'Other';
+
+  @override
+  String complaintsFilterOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Open ($count)',
+      zero: 'Open',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get complaintsFilterResolved => 'Resolved';
+
+  @override
+  String get noComplaintsYet => 'No complaints';
+
+  @override
+  String get noComplaintsYetHint =>
+      'Complaints reported for this account show up here.';
+
+  @override
+  String get noOpenComplaints => 'Nothing open';
+
+  @override
+  String get noOpenComplaintsHint => 'Every complaint is resolved.';
+
+  @override
+  String get noResolvedComplaints => 'Nothing resolved yet';
+
+  @override
+  String get complaintTitleLabel => 'Title';
+
+  @override
+  String get complaintTitleHint => 'Restrooms out of paper';
+
+  @override
+  String get complaintDescriptionLabel => 'Description';
+
+  @override
+  String get complaintDescriptionHint => 'What the client said, in detail';
+
+  @override
+  String get complaintAreaHint => 'Restrooms, floor 3';
+
+  @override
+  String get complaintJobLabel => 'Job';
+
+  @override
+  String get complaintNoJobs => 'This account had no jobs in the last 30 days.';
+
+  @override
+  String get sectionWhere => 'Where';
+
+  @override
+  String complaintReported(String date) {
+    return 'Reported $date';
+  }
+
+  @override
+  String complaintReportedBy(String date, String name) {
+    return 'Reported $date by $name';
+  }
+
+  @override
+  String get complaintResolutionSection => 'Resolution';
+
+  @override
+  String get resolvedByLabel => 'Resolved by';
+
+  @override
+  String get resolutionTimeLabel => 'Time to resolve';
+
+  @override
+  String resolutionHoursValue(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String get resolutionNotesLabel => 'What was done';
+
+  @override
+  String get resolveComplaint => 'Resolve';
+
+  @override
+  String get resolveComplaintTitle => 'Resolve complaint';
+
+  @override
+  String get resolveComplaintHelp =>
+      'Say what was done, so the account\'s history shows how it was solved.';
+
+  @override
+  String get reopenComplaint => 'Reopen';
+
+  @override
+  String get reopenComplaintConfirmTitle => 'Reopen this complaint?';
+
+  @override
+  String get reopenComplaintConfirmBody =>
+      'It goes back to being worked on, so it can be edited and assigned again. The notes on what was done are kept.';
+
+  @override
+  String get keepResolved => 'Keep it resolved';
+
+  @override
+  String get resolvedComplaintNotice =>
+      'Resolved complaints can\'t change. Reopen it to edit or reassign it.';
+
+  @override
+  String get complaintsNotFound => 'This complaint no longer exists.';
+
+  @override
+  String get complaintsAlreadyResolved =>
+      'This complaint is resolved. Reopen it first to change it.';
+
+  @override
+  String get complaintsNotResolved =>
+      'Only a resolved complaint can be reopened.';
+
+  @override
+  String get complaintsAssigneeNotActive =>
+      'The person assigned must be an active user.';
+
+  @override
+  String get noJobComplaints => 'No complaints about this job';
+
+  @override
+  String get reportComplaint => 'Report';
 }

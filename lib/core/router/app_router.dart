@@ -18,6 +18,10 @@ import '../../features/contacts/presentation/screens/contact_form_screen.dart';
 import '../../features/contacts/presentation/screens/contact_login_screen.dart';
 import '../../features/contacts/presentation/screens/contact_screen.dart';
 import '../../features/contacts/presentation/screens/contacts_screen.dart';
+import '../../features/complaints/presentation/screens/complaint_form_screen.dart';
+import '../../features/complaints/presentation/screens/complaint_screen.dart';
+import '../../features/complaints/presentation/screens/complaints_screen.dart';
+import '../../features/complaints/presentation/screens/resolve_complaint_screen.dart';
 import '../../features/contracts/presentation/screens/contract_form_screen.dart';
 import '../../features/contracts/presentation/screens/contract_screen.dart';
 import '../../features/contracts/presentation/screens/contracts_screen.dart';
@@ -238,6 +242,48 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   clientId: state.pathParameters['clientId']!,
                                   proposalId:
                                       state.pathParameters['proposalId']!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SlideRoute(
+                        path: ComplaintsScreen.route,
+                        builder: (_, state) => ComplaintsScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':complaintId' so "new" isn't read as an id.
+                          // `?job=` reports it about that job.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => ComplaintFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              jobId: state.uri.queryParameters['job'],
+                            ),
+                          ),
+                          SlideRoute(
+                            path: ':complaintId',
+                            builder: (_, state) => ComplaintScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              complaintId: state.pathParameters['complaintId']!,
+                            ),
+                            routes: [
+                              SlideRoute(
+                                path: 'edit',
+                                builder: (_, state) => ComplaintFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  complaintId:
+                                      state.pathParameters['complaintId'],
+                                ),
+                              ),
+                              SlideRoute(
+                                path: ResolveComplaintScreen.route,
+                                builder: (_, state) => ResolveComplaintScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  complaintId:
+                                      state.pathParameters['complaintId']!,
                                 ),
                               ),
                             ],

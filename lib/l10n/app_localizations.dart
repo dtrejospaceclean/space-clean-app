@@ -4555,6 +4555,300 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 event} other{{count} events}}'**
   String activityCount(int count);
+
+  /// No description provided for @moduleComplaintsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Issues reported and how they were solved'**
+  String get moduleComplaintsHint;
+
+  /// No description provided for @complaintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaint'**
+  String get complaintTitle;
+
+  /// No description provided for @newComplaintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New complaint'**
+  String get newComplaintTitle;
+
+  /// No description provided for @editComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit complaint'**
+  String get editComplaint;
+
+  /// No description provided for @complaintStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get complaintStatusOpen;
+
+  /// No description provided for @complaintStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get complaintStatusInProgress;
+
+  /// No description provided for @complaintStatusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get complaintStatusResolved;
+
+  /// No description provided for @complaintStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other status'**
+  String get complaintStatusUnknown;
+
+  /// No description provided for @priorityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get priorityLabel;
+
+  /// No description provided for @priorityHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get priorityHigh;
+
+  /// No description provided for @priorityMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get priorityMedium;
+
+  /// No description provided for @priorityLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get priorityLow;
+
+  /// No description provided for @priorityUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get priorityUnknown;
+
+  /// No description provided for @complaintsFilterOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Open} other{Open ({count})}}'**
+  String complaintsFilterOpen(int count);
+
+  /// No description provided for @complaintsFilterResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get complaintsFilterResolved;
+
+  /// No description provided for @noComplaintsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No complaints'**
+  String get noComplaintsYet;
+
+  /// No description provided for @noComplaintsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Complaints reported for this account show up here.'**
+  String get noComplaintsYetHint;
+
+  /// No description provided for @noOpenComplaints.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing open'**
+  String get noOpenComplaints;
+
+  /// No description provided for @noOpenComplaintsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every complaint is resolved.'**
+  String get noOpenComplaintsHint;
+
+  /// No description provided for @noResolvedComplaints.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing resolved yet'**
+  String get noResolvedComplaints;
+
+  /// No description provided for @complaintTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get complaintTitleLabel;
+
+  /// No description provided for @complaintTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrooms out of paper'**
+  String get complaintTitleHint;
+
+  /// No description provided for @complaintDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get complaintDescriptionLabel;
+
+  /// No description provided for @complaintDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What the client said, in detail'**
+  String get complaintDescriptionHint;
+
+  /// No description provided for @complaintAreaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrooms, floor 3'**
+  String get complaintAreaHint;
+
+  /// No description provided for @complaintJobLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get complaintJobLabel;
+
+  /// No description provided for @complaintNoJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'This account had no jobs in the last 30 days.'**
+  String get complaintNoJobs;
+
+  /// No description provided for @sectionWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where'**
+  String get sectionWhere;
+
+  /// No description provided for @complaintReported.
+  ///
+  /// In en, this message translates to:
+  /// **'Reported {date}'**
+  String complaintReported(String date);
+
+  /// No description provided for @complaintReportedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Reported {date} by {name}'**
+  String complaintReportedBy(String date, String name);
+
+  /// No description provided for @complaintResolutionSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution'**
+  String get complaintResolutionSection;
+
+  /// No description provided for @resolvedByLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved by'**
+  String get resolvedByLabel;
+
+  /// No description provided for @resolutionTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to resolve'**
+  String get resolutionTimeLabel;
+
+  /// No description provided for @resolutionHoursValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h'**
+  String resolutionHoursValue(String hours);
+
+  /// No description provided for @resolutionNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What was done'**
+  String get resolutionNotesLabel;
+
+  /// No description provided for @resolveComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve'**
+  String get resolveComplaint;
+
+  /// No description provided for @resolveComplaintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve complaint'**
+  String get resolveComplaintTitle;
+
+  /// No description provided for @resolveComplaintHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Say what was done, so the account\'s history shows how it was solved.'**
+  String get resolveComplaintHelp;
+
+  /// No description provided for @reopenComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get reopenComplaint;
+
+  /// No description provided for @reopenComplaintConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen this complaint?'**
+  String get reopenComplaintConfirmTitle;
+
+  /// No description provided for @reopenComplaintConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It goes back to being worked on, so it can be edited and assigned again. The notes on what was done are kept.'**
+  String get reopenComplaintConfirmBody;
+
+  /// No description provided for @keepResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it resolved'**
+  String get keepResolved;
+
+  /// No description provided for @resolvedComplaintNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved complaints can\'t change. Reopen it to edit or reassign it.'**
+  String get resolvedComplaintNotice;
+
+  /// No description provided for @complaintsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This complaint no longer exists.'**
+  String get complaintsNotFound;
+
+  /// No description provided for @complaintsAlreadyResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'This complaint is resolved. Reopen it first to change it.'**
+  String get complaintsAlreadyResolved;
+
+  /// No description provided for @complaintsNotResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a resolved complaint can be reopened.'**
+  String get complaintsNotResolved;
+
+  /// No description provided for @complaintsAssigneeNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'The person assigned must be an active user.'**
+  String get complaintsAssigneeNotActive;
+
+  /// No description provided for @noJobComplaints.
+  ///
+  /// In en, this message translates to:
+  /// **'No complaints about this job'**
+  String get noJobComplaints;
+
+  /// No description provided for @reportComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportComplaint;
 }
 
 class _AppLocalizationsDelegate

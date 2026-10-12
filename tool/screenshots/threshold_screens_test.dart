@@ -18,6 +18,8 @@ import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/di/auth_providers.dart';
 import 'package:sp_cln_app/features/calendar/di/calendar_providers.dart';
 import 'package:sp_cln_app/features/calendar/domain/entities/calendar_event.dart';
+import 'package:sp_cln_app/features/complaints/di/complaints_providers.dart';
+import 'package:sp_cln_app/features/complaints/domain/entities/complaint.dart';
 import 'package:sp_cln_app/features/contacts/di/contacts_providers.dart';
 import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/locations/domain/entities/location.dart';
@@ -165,6 +167,9 @@ Future<void> _sheet(
         ),
         contactsRepositoryProvider.overrideWithValue(
           FakeContactsRepository(_demoContacts),
+        ),
+        complaintsRepositoryProvider.overrideWithValue(
+          FakeComplaintsRepository(_demoComplaints),
         ),
         teamRepositoryProvider.overrideWithValue(FakeTeamRepository()),
         clockProvider.overrideWithValue(() => testNow),
@@ -754,6 +759,43 @@ void main() {
     ]);
   });
 
+  // Complaints: the open list, a case, a resolved one, the form, resolving,
+  // dark, and Spanish at 200%.
+  testWidgets('complaints', (tester) async {
+    const base = '/accounts/c1/complaints';
+    await _sheet(tester, 'complaints', TargetPlatform.iOS, [
+      Phone('1 · Open', asOwner: true, location: base),
+      Phone('2 · Open case', asOwner: true, location: '$base/q1'),
+      Phone(
+        '3 · Open case (scrolled)',
+        asOwner: true,
+        location: '$base/q1',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -600));
+        },
+      ),
+      Phone('4 · Resolved', asOwner: true, location: '$base/q3'),
+      Phone('5 · New', asOwner: true, location: '$base/new'),
+      Phone('6 · Resolve', asOwner: true, location: '$base/q2/resolve'),
+      Phone('7 · Dark', asOwner: true, dark: true, location: '$base/q2'),
+      Phone(
+        '7b · On its job (scrolled)',
+        asOwner: true,
+        location: '/accounts/c1/jobs/j1',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -2000));
+        },
+      ),
+      Phone(
+        '8 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/q1',
+      ),
+    ]);
+  });
+
   testWidgets('calendar', (tester) async {
     const base = '/accounts/c1/calendar';
     await _sheet(tester, 'calendar', TargetPlatform.iOS, [
@@ -891,6 +933,65 @@ List<Phone> _tablets(Size portrait) {
 }
 
 // Synthetic demo data for the signed-in sheets (not real customers).
+final _demoComplaints = [
+  // High, open, from a job last night.
+  Complaint(
+    id: 'q1',
+    clientId: 'c1',
+    title: 'Restrooms out of paper',
+    description:
+        'Floor 3 restrooms had no paper towels or toilet paper this '
+        'morning. Two tenants called the front desk.',
+    priority: ComplaintPriority.high,
+    status: ComplaintStatus.open,
+    reportedDate: DateTime(2026, 9, 23, 7, 40),
+    locationId: 'l1',
+    locationName: 'Post Oak Tower',
+    area: 'Restrooms, floor 3',
+    jobId: 'j1',
+    jobTitle: 'Lobby and elevators',
+    jobStart: DateTime(2026, 9, 23, 6),
+    reportedByName: 'Carlos Medina',
+  ),
+  // Assigned, so in progress.
+  Complaint(
+    id: 'q2',
+    clientId: 'c1',
+    title: 'Lobby glass streaked',
+    description: 'Streaks on the entrance doors, inside and out.',
+    priority: ComplaintPriority.medium,
+    status: ComplaintStatus.inProgress,
+    reportedDate: DateTime(2026, 9, 21, 16, 5),
+    locationId: 'l1',
+    locationName: 'Post Oak Tower',
+    area: 'Lobby',
+    assignedToId: 'u-ana',
+    assignedToName: 'Ana Pérez',
+    reportedByName: 'Lucía Ramos',
+  ),
+  // Resolved in an afternoon.
+  Complaint(
+    id: 'q3',
+    clientId: 'c1',
+    title: 'Coffee stains by the elevators',
+    description: 'Carpet by the elevator bank on floor 7.',
+    priority: ComplaintPriority.low,
+    status: ComplaintStatus.resolved,
+    reportedDate: DateTime(2026, 9, 10, 9),
+    locationId: 'l1',
+    locationName: 'Post Oak Tower',
+    area: 'Floor 7',
+    assignedToId: 'u-ana',
+    assignedToName: 'Ana Pérez',
+    reportedByName: 'Carlos Medina',
+    resolvedByName: 'Ana Pérez',
+    resolutionTime: DateTime(2026, 9, 10, 13, 30),
+    resolutionHours: 4.5,
+    resolutionNotes:
+        'Shampooed the carpet and added a mat by the coffee point.',
+  ),
+];
+
 const _demoContacts = [
   // The primary and billing contact, with a login.
   Contact(

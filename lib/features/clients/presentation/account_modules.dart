@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../access/domain/entities/account_access.dart';
 import '../../calendar/presentation/screens/calendar_screen.dart';
+import '../../complaints/presentation/screens/complaints_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../jobs/presentation/screens/account_jobs_screen.dart';
@@ -84,6 +85,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleCalendar,
     description: (l10n) => l10n.moduleCalendarHint,
     route: CalendarScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.work,
+    permission: Permissions.complaintsView,
+    icon: Icons.report_outlined,
+    label: (l10n) => l10n.moduleComplaints,
+    description: (l10n) => l10n.moduleComplaintsHint,
+    route: ComplaintsScreen.route,
   ),
   AccountModule(
     section: AccountSection.account,

@@ -2655,4 +2655,174 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get moduleComplaintsHint =>
+      'Problemas reportados y cómo se resolvieron';
+
+  @override
+  String get complaintTitle => 'Queja';
+
+  @override
+  String get newComplaintTitle => 'Nueva queja';
+
+  @override
+  String get editComplaint => 'Editar queja';
+
+  @override
+  String get complaintStatusOpen => 'Abierta';
+
+  @override
+  String get complaintStatusInProgress => 'En curso';
+
+  @override
+  String get complaintStatusResolved => 'Resuelta';
+
+  @override
+  String get complaintStatusUnknown => 'Otro estado';
+
+  @override
+  String get priorityLabel => 'Prioridad';
+
+  @override
+  String get priorityHigh => 'Alta';
+
+  @override
+  String get priorityMedium => 'Media';
+
+  @override
+  String get priorityLow => 'Baja';
+
+  @override
+  String get priorityUnknown => 'Otra';
+
+  @override
+  String complaintsFilterOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Abiertas ($count)',
+      zero: 'Abiertas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get complaintsFilterResolved => 'Resueltas';
+
+  @override
+  String get noComplaintsYet => 'Sin quejas';
+
+  @override
+  String get noComplaintsYetHint =>
+      'Aquí aparecen las quejas reportadas de esta cuenta.';
+
+  @override
+  String get noOpenComplaints => 'Nada abierto';
+
+  @override
+  String get noOpenComplaintsHint => 'Todas las quejas están resueltas.';
+
+  @override
+  String get noResolvedComplaints => 'Nada resuelto todavía';
+
+  @override
+  String get complaintTitleLabel => 'Título';
+
+  @override
+  String get complaintTitleHint => 'Baños sin papel';
+
+  @override
+  String get complaintDescriptionLabel => 'Descripción';
+
+  @override
+  String get complaintDescriptionHint => 'Lo que dijo el cliente, en detalle';
+
+  @override
+  String get complaintAreaHint => 'Baños, piso 3';
+
+  @override
+  String get complaintJobLabel => 'Trabajo';
+
+  @override
+  String get complaintNoJobs =>
+      'Esta cuenta no tuvo trabajos en los últimos 30 días.';
+
+  @override
+  String get sectionWhere => 'Dónde';
+
+  @override
+  String complaintReported(String date) {
+    return 'Reportada el $date';
+  }
+
+  @override
+  String complaintReportedBy(String date, String name) {
+    return 'Reportada el $date por $name';
+  }
+
+  @override
+  String get complaintResolutionSection => 'Resolución';
+
+  @override
+  String get resolvedByLabel => 'Resuelta por';
+
+  @override
+  String get resolutionTimeLabel => 'Tiempo de resolución';
+
+  @override
+  String resolutionHoursValue(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String get resolutionNotesLabel => 'Qué se hizo';
+
+  @override
+  String get resolveComplaint => 'Resolver';
+
+  @override
+  String get resolveComplaintTitle => 'Resolver queja';
+
+  @override
+  String get resolveComplaintHelp =>
+      'Explica qué se hizo, para que el historial de la cuenta muestre cómo se resolvió.';
+
+  @override
+  String get reopenComplaint => 'Reabrir';
+
+  @override
+  String get reopenComplaintConfirmTitle => '¿Reabrir esta queja?';
+
+  @override
+  String get reopenComplaintConfirmBody =>
+      'Vuelve a estar en curso, así que se puede editar y asignar de nuevo. Las notas de lo que se hizo se conservan.';
+
+  @override
+  String get keepResolved => 'Dejarla resuelta';
+
+  @override
+  String get resolvedComplaintNotice =>
+      'Las quejas resueltas no se pueden cambiar. Reábrela para editarla o reasignarla.';
+
+  @override
+  String get complaintsNotFound => 'Esta queja ya no existe.';
+
+  @override
+  String get complaintsAlreadyResolved =>
+      'Esta queja está resuelta. Reábrela primero para cambiarla.';
+
+  @override
+  String get complaintsNotResolved =>
+      'Solo se puede reabrir una queja resuelta.';
+
+  @override
+  String get complaintsAssigneeNotActive =>
+      'La persona asignada debe ser un usuario activo.';
+
+  @override
+  String get noJobComplaints => 'Sin quejas sobre este trabajo';
+
+  @override
+  String get reportComplaint => 'Reportar';
 }

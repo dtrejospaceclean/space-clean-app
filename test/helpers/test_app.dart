@@ -25,6 +25,9 @@ import 'package:sp_cln_app/features/clients/domain/repositories/clients_reposito
 import 'package:sp_cln_app/features/contacts/di/contacts_providers.dart';
 import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/contacts/domain/repositories/contacts_repository.dart';
+import 'package:sp_cln_app/features/complaints/di/complaints_providers.dart';
+import 'package:sp_cln_app/features/complaints/domain/entities/complaint.dart';
+import 'package:sp_cln_app/features/complaints/domain/repositories/complaints_repository.dart';
 import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repository.dart';
@@ -891,6 +894,210 @@ class FakeScopesRepository implements ScopesRepository {
     }
     writes.add('delete:$scopeId');
     scopes = scopes.where((x) => x.id != scopeId).toList();
+  }
+}
+
+/// In-memory complaints with the API's rules: a resolved complaint is
+/// read-only until reopened, assigning moves an open one to in progress, and
+/// reopening goes back to in progress or open. Records every write and
+/// draft; [members] names assignees, and [inactive] users are refused.
+class FakeComplaintsRepository implements ComplaintsRepository {
+  FakeComplaintsRepository([List<Complaint> complaints = const []])
+    : complaints = [...complaints];
+
+  List<Complaint> complaints;
+  final writes = <String>[];
+  final drafts = <ComplaintDraft>[];
+
+  /// User ids to names, for who's assigned.
+  Map<String, String> members = const {'u-ana': 'Ana Pérez'};
+
+  /// User ids refused as assignees.
+  final inactive = <String>{};
+
+  @override
+  Future<List<Complaint>> getComplaints(
+    String clientId, {
+    String? jobId,
+  }) async => complaints
+      .where(
+        (c) => c.clientId == clientId && (jobId == null || c.jobId == jobId),
+      )
+      .toList();
+
+  @override
+  Future<Complaint> getComplaint(String clientId, String complaintId) async {
+    for (final c in complaints) {
+      if (c.id == complaintId) return c;
+    }
+    throw const ServerFailure('complaints.not_found', statusCode: 404);
+  }
+
+  Complaint _with(
+    Complaint c, {
+    ComplaintDraft? draft,
+    ComplaintStatus? status,
+    String? assignedToId,
+    String? resolutionNotes,
+    bool resolved = false,
+    bool reopened = false,
+  }) {
+    String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
+    final assignee = assignedToId ?? c.assignedToId;
+    return Complaint(
+      id: c.id,
+      clientId: c.clientId,
+      title: draft?.title.trim() ?? c.title,
+      description: draft?.description.trim() ?? c.description,
+      priority: draft?.priority ?? c.priority,
+      status: status ?? c.status,
+      reportedDate: c.reportedDate,
+      locationId: draft == null ? c.locationId : draft.locationId,
+      locationName: draft == null || draft.locationId == c.locationId
+          ? c.locationName
+          : null,
+      area: draft == null ? c.area : text(draft.area),
+      jobId: draft == null ? c.jobId : draft.jobId,
+      jobTitle: draft == null || draft.jobId == c.jobId ? c.jobTitle : null,
+      jobStart: draft == null || draft.jobId == c.jobId ? c.jobStart : null,
+      assignedToId: assignee,
+      assignedToName: members[assignee] ?? c.assignedToName,
+      reportedByName: c.reportedByName,
+      resolvedByName: resolved
+          ? 'Ana Pérez'
+          : reopened
+          ? null
+          : c.resolvedByName,
+      resolutionTime: resolved
+          ? testNow
+          : reopened
+          ? null
+          : c.resolutionTime,
+      resolutionNotes: resolutionNotes ?? c.resolutionNotes,
+      resolutionHours: resolved
+          ? 2
+          : reopened
+          ? null
+          : c.resolutionHours,
+    );
+  }
+
+  void _replace(Complaint next) =>
+      complaints = [for (final c in complaints) c.id == next.id ? next : c];
+
+  Future<Complaint> _open(String clientId, String complaintId) async {
+    final c = await getComplaint(clientId, complaintId);
+    if (c.isResolved) {
+      throw const ServerFailure('complaints.already_resolved', statusCode: 409);
+    }
+    return c;
+  }
+
+  void _checkActive(String? userId) {
+    if (userId != null && inactive.contains(userId)) {
+      throw const ServerFailure(
+        'complaints.assignee_not_active',
+        statusCode: 400,
+      );
+    }
+  }
+
+  @override
+  Future<Complaint> createComplaint(
+    String clientId,
+    ComplaintDraft draft,
+  ) async {
+    _checkActive(draft.assignedToId);
+    writes.add('create:${draft.title.trim()}');
+    drafts.add(draft);
+    final created = _with(
+      Complaint(
+        id: 'q${complaints.length + 1}',
+        clientId: clientId,
+        title: draft.title,
+        description: draft.description,
+        priority: draft.priority,
+        status: draft.assignedToId == null
+            ? ComplaintStatus.open
+            : ComplaintStatus.inProgress,
+        reportedDate: testNow,
+        reportedByName: 'Ana Pérez',
+      ),
+      draft: draft,
+      assignedToId: draft.assignedToId,
+    );
+    complaints = [created, ...complaints];
+    return created;
+  }
+
+  @override
+  Future<Complaint> updateComplaint(
+    String clientId,
+    String complaintId,
+    ComplaintDraft draft,
+  ) async {
+    final c = await _open(clientId, complaintId);
+    writes.add('update:$complaintId');
+    drafts.add(draft);
+    final next = _with(c, draft: draft);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Complaint> assignComplaint(
+    String clientId,
+    String complaintId,
+    String userId,
+  ) async {
+    final c = await _open(clientId, complaintId);
+    _checkActive(userId);
+    writes.add('assign:$complaintId:$userId');
+    final next = _with(
+      c,
+      assignedToId: userId,
+      status: c.status == ComplaintStatus.open
+          ? ComplaintStatus.inProgress
+          : c.status,
+    );
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Complaint> resolveComplaint(
+    String clientId,
+    String complaintId,
+    String notes,
+  ) async {
+    final c = await _open(clientId, complaintId);
+    writes.add('resolve:$complaintId');
+    final next = _with(
+      c,
+      status: ComplaintStatus.resolved,
+      resolutionNotes: notes,
+      resolved: true,
+    );
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Complaint> reopenComplaint(String clientId, String complaintId) async {
+    final c = await getComplaint(clientId, complaintId);
+    if (!c.isResolved) {
+      throw const ServerFailure('complaints.not_resolved', statusCode: 409);
+    }
+    writes.add('reopen:$complaintId');
+    final next = _with(
+      c,
+      status: c.assignedToId == null
+          ? ComplaintStatus.open
+          : ComplaintStatus.inProgress,
+      reopened: true,
+    );
+    _replace(next);
+    return next;
   }
 }
 
@@ -2093,6 +2300,7 @@ Future<SharedPreferences> pumpApp(
   TeamRepository? team,
   ProposalsRepository? proposals,
   ContractsRepository? contracts,
+  ComplaintsRepository? complaints,
   ScopesRepository? scopes,
   CalendarRepository? calendar,
   NotificationsRepository? notifications,
@@ -2143,6 +2351,9 @@ Future<SharedPreferences> pumpApp(
         ),
         contractsRepositoryProvider.overrideWithValue(
           contracts ?? FakeContractsRepository(),
+        ),
+        complaintsRepositoryProvider.overrideWithValue(
+          complaints ?? FakeComplaintsRepository(),
         ),
         scopesRepositoryProvider.overrideWithValue(
           scopes ?? FakeScopesRepository(),

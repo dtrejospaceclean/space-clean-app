@@ -15,6 +15,9 @@ import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../clients/presentation/screens/accounts_screen.dart';
+import '../../../complaints/presentation/controllers/complaints_providers.dart';
+import '../../../complaints/presentation/screens/complaints_screen.dart';
+import '../../../complaints/presentation/widgets/complaint_labels.dart';
 import '../../../locations/presentation/screens/locations_screen.dart';
 import '../../../proposals/presentation/widgets/line_item_row.dart';
 import '../../../scopes/presentation/screens/scopes_screen.dart';
@@ -324,6 +327,11 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final canAssign = access?.can(Permissions.jobsAssign) ?? false;
     final canViewScopes = access?.can(Permissions.scopeView) ?? false;
     final canViewInfo = access?.can(Permissions.infoView) ?? false;
+    final canViewComplaints = access?.can(Permissions.complaintsView) ?? false;
+    final canReportComplaint = access?.can(Permissions.complaintsEdit) ?? false;
+    final complaints = canViewComplaints
+        ? ref.watch(jobComplaintsProvider(key)).value
+        : null;
     final me = switch (ref.watch(authControllerProvider).value) {
       Authenticated(:final user) => user.id,
       _ => null,
@@ -343,7 +351,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       if (canEdit && (j?.canCancel ?? false)) _MenuAction.cancel,
       if (canEdit && (j?.canDelete ?? false)) _MenuAction.delete,
     };
-    Future<void> refresh() => ref.refresh(jobProvider(key).future);
+    Future<void> refresh() {
+      if (canViewComplaints) ref.invalidate(jobComplaintsProvider(key));
+      return ref.refresh(jobProvider(key).future);
+    }
 
     return PopScope(
       canPop: !busy,
@@ -466,6 +477,47 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                       ],
                     ),
                   ),
+                  // What the client said about this job. Like the location
+                  // and scope, they open only within the account's stack.
+                  if (complaints != null &&
+                      (complaints.isNotEmpty ||
+                          (canReportComplaint && fromAccount))) ...[
+                    PageBox(
+                      top: 12,
+                      child: SectionHeader(
+                        title: l10n.moduleComplaints,
+                        actionLabel: canReportComplaint && fromAccount
+                            ? l10n.reportComplaint
+                            : null,
+                        onAction: busy
+                            ? null
+                            : () => context.push(
+                                '$account/${ComplaintsScreen.route}/new'
+                                '?job=${job.id}',
+                              ),
+                      ),
+                    ),
+                    PageBox(
+                      top: 0,
+                      child: ListCard(
+                        children: [
+                          if (complaints.isEmpty)
+                            ListRow(title: l10n.noJobComplaints, muted: true)
+                          else
+                            for (final c in complaints)
+                              ComplaintRow(
+                                complaint: c,
+                                onTap: fromAccount
+                                    ? () => context.push(
+                                        '$account/${ComplaintsScreen.route}/'
+                                        '${c.id}',
+                                      )
+                                    : null,
+                              ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -12,6 +12,8 @@ abstract final class Permissions {
   static const jobsEdit = 'jobs.edit';
   static const jobsAssign = 'jobs.assign';
   static const complaintsView = 'complaints.view';
+  static const complaintsEdit = 'complaints.edit';
+  static const complaintsAssign = 'complaints.assign';
   static const calendarView = 'calendar.view';
   static const calendarEdit = 'calendar.edit';
   static const tasksView = 'tasks.view';
