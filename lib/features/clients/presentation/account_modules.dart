@@ -10,6 +10,7 @@ import '../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../scopes/presentation/screens/scopes_screen.dart';
+import '../../tasks/presentation/screens/tasks_screen.dart';
 import '../../team/presentation/screens/team_screen.dart';
 
 /// How an account's modules are ordered until the user sets their own
@@ -93,6 +94,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleComplaints,
     description: (l10n) => l10n.moduleComplaintsHint,
     route: ComplaintsScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.work,
+    permission: Permissions.tasksView,
+    icon: Icons.task_alt_rounded,
+    label: (l10n) => l10n.moduleTasks,
+    description: (l10n) => l10n.moduleTasksHint,
+    route: TasksScreen.route,
   ),
   AccountModule(
     section: AccountSection.account,

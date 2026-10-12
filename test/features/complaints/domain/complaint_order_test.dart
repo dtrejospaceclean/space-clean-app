@@ -3,7 +3,7 @@ import 'package:sp_cln_app/features/complaints/domain/entities/complaint.dart';
 
 Complaint _complaint(
   String id, {
-  ComplaintPriority priority = ComplaintPriority.medium,
+  Priority priority = Priority.medium,
   ComplaintStatus status = ComplaintStatus.open,
   required int reportedDay,
   int? resolvedDay,
@@ -20,12 +20,12 @@ Complaint _complaint(
 
 void main() {
   final all = [
-    _complaint('old-low', priority: ComplaintPriority.low, reportedDay: 1),
+    _complaint('old-low', priority: Priority.low, reportedDay: 1),
     _complaint('new-medium', reportedDay: 20),
-    _complaint('old-high', priority: ComplaintPriority.high, reportedDay: 2),
+    _complaint('old-high', priority: Priority.high, reportedDay: 2),
     _complaint(
       'busy-high',
-      priority: ComplaintPriority.high,
+      priority: Priority.high,
       status: ComplaintStatus.inProgress,
       reportedDay: 15,
     ),

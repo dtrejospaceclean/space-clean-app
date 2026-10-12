@@ -17,6 +17,7 @@ abstract final class Permissions {
   static const calendarView = 'calendar.view';
   static const calendarEdit = 'calendar.edit';
   static const tasksView = 'tasks.view';
+  static const tasksEdit = 'tasks.edit';
   static const filesView = 'files.view';
   static const teamView = 'team.view';
 }

@@ -29,6 +29,9 @@ import 'package:sp_cln_app/features/complaints/di/complaints_providers.dart';
 import 'package:sp_cln_app/features/complaints/domain/entities/complaint.dart';
 import 'package:sp_cln_app/features/complaints/domain/repositories/complaints_repository.dart';
 import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
+import 'package:sp_cln_app/features/tasks/di/tasks_providers.dart';
+import 'package:sp_cln_app/features/tasks/domain/entities/task.dart';
+import 'package:sp_cln_app/features/tasks/domain/repositories/tasks_repository.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repository.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
@@ -894,6 +897,164 @@ class FakeScopesRepository implements ScopesRepository {
     }
     writes.add('delete:$scopeId');
     scopes = scopes.where((x) => x.id != scopeId).toList();
+  }
+}
+
+/// In-memory tasks with the API's rules: a completed task can't change,
+/// only a completed or cancelled one reopens (to pending), and the due-date
+/// fields are worked out from [testNow]. Records every write and draft;
+/// [members] names assignees, and [inactive] users are refused.
+class FakeTasksRepository implements TasksRepository {
+  FakeTasksRepository([List<Task> tasks = const []]) : tasks = [...tasks];
+
+  List<Task> tasks;
+  final writes = <String>[];
+  final drafts = <TaskDraft>[];
+
+  /// User ids to names, for who's assigned.
+  Map<String, String> members = const {'u-ana': 'Ana Pérez'};
+
+  /// User ids refused as assignees.
+  final inactive = <String>{};
+
+  @override
+  Future<List<Task>> getTasks(String clientId) async =>
+      tasks.where((t) => t.clientId == clientId).toList();
+
+  @override
+  Future<Task> getTask(String clientId, String taskId) async {
+    for (final t in tasks) {
+      if (t.id == taskId) return t;
+    }
+    throw const ServerFailure('tasks.not_found', statusCode: 404);
+  }
+
+  /// [t] with the server's derived fields worked out again.
+  Task _derive(Task t) {
+    final today = DateTime(testNow.year, testNow.month, testNow.day);
+    final days = t.dueDate?.difference(today).inDays;
+    return Task(
+      id: t.id,
+      clientId: t.clientId,
+      title: t.title,
+      description: t.description,
+      priority: t.priority,
+      status: t.status,
+      assignedToId: t.assignedToId,
+      assignedToName: members[t.assignedToId] ?? t.assignedToName,
+      dueDate: t.dueDate,
+      daysUntilDue: days,
+      isOverdue: t.isOpen && days != null && days < 0,
+    );
+  }
+
+  Task _with(Task t, {TaskDraft? draft, TaskStatus? status}) {
+    String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
+    return _derive(
+      Task(
+        id: t.id,
+        clientId: t.clientId,
+        title: draft?.title.trim() ?? t.title,
+        description: draft == null ? t.description : text(draft.description),
+        priority: draft?.priority ?? t.priority,
+        status: status ?? t.status,
+        assignedToId: draft == null ? t.assignedToId : draft.assignedToId,
+        assignedToName: draft == null ? t.assignedToName : null,
+        dueDate: draft == null ? t.dueDate : draft.dueDate,
+      ),
+    );
+  }
+
+  void _replace(Task next) =>
+      tasks = [for (final t in tasks) t.id == next.id ? next : t];
+
+  void _checkActive(String? userId) {
+    if (userId != null && inactive.contains(userId)) {
+      throw const ServerFailure('tasks.assignee_not_active', statusCode: 400);
+    }
+  }
+
+  Future<Task> _notCompleted(String clientId, String taskId) async {
+    final t = await getTask(clientId, taskId);
+    if (t.status == TaskStatus.completed) {
+      throw const ServerFailure('tasks.already_completed', statusCode: 409);
+    }
+    return t;
+  }
+
+  @override
+  Future<Task> createTask(String clientId, TaskDraft draft) async {
+    _checkActive(draft.assignedToId);
+    writes.add('create:${draft.title.trim()}');
+    drafts.add(draft);
+    final created = _with(
+      Task(
+        id: 't${tasks.length + 1}',
+        clientId: clientId,
+        title: draft.title,
+        priority: draft.priority,
+        status: TaskStatus.pending,
+      ),
+      draft: draft,
+    );
+    tasks = [...tasks, created];
+    return created;
+  }
+
+  @override
+  Future<Task> updateTask(
+    String clientId,
+    String taskId,
+    TaskDraft draft,
+  ) async {
+    final t = await _notCompleted(clientId, taskId);
+    _checkActive(draft.assignedToId);
+    writes.add('update:$taskId');
+    drafts.add(draft);
+    final next = _with(t, draft: draft);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Task> setTaskStatus(
+    String clientId,
+    String taskId,
+    TaskStatus status,
+  ) async {
+    final t = await _notCompleted(clientId, taskId);
+    writes.add('status:$taskId:${status.wire}');
+    final next = _with(t, status: status);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Task> completeTask(String clientId, String taskId) async {
+    final t = await _notCompleted(clientId, taskId);
+    writes.add('complete:$taskId');
+    final next = _with(t, status: TaskStatus.completed);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Task> reopenTask(String clientId, String taskId) async {
+    final t = await getTask(clientId, taskId);
+    if (t.isOpen) {
+      throw const ServerFailure('tasks.already_open', statusCode: 409);
+    }
+    writes.add('reopen:$taskId');
+    final next = _with(t, status: TaskStatus.pending);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<void> deleteTask(String clientId, String taskId) async {
+    await getTask(clientId, taskId);
+    writes.add('delete:$taskId');
+    tasks = tasks.where((t) => t.id != taskId).toList();
   }
 }
 
@@ -2301,6 +2462,7 @@ Future<SharedPreferences> pumpApp(
   ProposalsRepository? proposals,
   ContractsRepository? contracts,
   ComplaintsRepository? complaints,
+  TasksRepository? tasks,
   ScopesRepository? scopes,
   CalendarRepository? calendar,
   NotificationsRepository? notifications,
@@ -2354,6 +2516,9 @@ Future<SharedPreferences> pumpApp(
         ),
         complaintsRepositoryProvider.overrideWithValue(
           complaints ?? FakeComplaintsRepository(),
+        ),
+        tasksRepositoryProvider.overrideWithValue(
+          tasks ?? FakeTasksRepository(),
         ),
         scopesRepositoryProvider.overrideWithValue(
           scopes ?? FakeScopesRepository(),

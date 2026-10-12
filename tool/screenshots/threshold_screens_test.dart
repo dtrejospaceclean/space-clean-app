@@ -21,6 +21,8 @@ import 'package:sp_cln_app/features/calendar/domain/entities/calendar_event.dart
 import 'package:sp_cln_app/features/complaints/di/complaints_providers.dart';
 import 'package:sp_cln_app/features/complaints/domain/entities/complaint.dart';
 import 'package:sp_cln_app/features/contacts/di/contacts_providers.dart';
+import 'package:sp_cln_app/features/tasks/domain/entities/task.dart';
+import 'package:sp_cln_app/features/tasks/di/tasks_providers.dart';
 import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/locations/domain/entities/location.dart';
 import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
@@ -170,6 +172,9 @@ Future<void> _sheet(
         ),
         complaintsRepositoryProvider.overrideWithValue(
           FakeComplaintsRepository(_demoComplaints),
+        ),
+        tasksRepositoryProvider.overrideWithValue(
+          FakeTasksRepository(_demoTasksList),
         ),
         teamRepositoryProvider.overrideWithValue(FakeTeamRepository()),
         clockProvider.overrideWithValue(() => testNow),
@@ -759,6 +764,36 @@ void main() {
     ]);
   });
 
+  // Tasks: the open list, the done list, an overdue task, a done one, the
+  // form, dark, and Spanish at 200%.
+  testWidgets('tasks', (tester) async {
+    const base = '/accounts/c1/tasks';
+    await _sheet(tester, 'tasks', TargetPlatform.iOS, [
+      Phone('1 · Open', asOwner: true, location: base),
+      Phone(
+        '2 · Done',
+        asOwner: true,
+        location: base,
+        act: (tester, phone) async {
+          await tester.tap(
+            find.descendant(of: phone, matching: find.text('Done')),
+          );
+        },
+      ),
+      Phone('3 · Overdue task', asOwner: true, location: '$base/t1'),
+      Phone('4 · Completed', asOwner: true, location: '$base/t5'),
+      Phone('5 · New', asOwner: true, location: '$base/new'),
+      Phone('6 · Dark', asOwner: true, dark: true, location: '$base/t2'),
+      Phone(
+        '7 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: base,
+      ),
+    ]);
+  });
+
   // Complaints: the open list, a case, a resolved one, the form, resolving,
   // dark, and Spanish at 200%.
   testWidgets('complaints', (tester) async {
@@ -933,6 +968,63 @@ List<Phone> _tablets(Size portrait) {
 }
 
 // Synthetic demo data for the signed-in sheets (not real customers).
+// The test clock is Sep 23, 2026; in the server's order (soonest due first).
+final _demoTasksList = [
+  Task(
+    id: 't1',
+    clientId: 'c1',
+    title: 'Send the floor 3 quote',
+    description:
+        'Two options for the new tenant on floor 3: weekly day '
+        'cleaning or nightly. Include window washing as an extra.',
+    priority: Priority.high,
+    status: TaskStatus.pending,
+    assignedToId: 'u-ana',
+    assignedToName: 'Ana Pérez',
+    dueDate: DateTime(2026, 9, 20),
+    isOverdue: true,
+    daysUntilDue: -3,
+  ),
+  Task(
+    id: 't2',
+    clientId: 'c1',
+    title: 'Order restroom supplies',
+    priority: Priority.medium,
+    status: TaskStatus.inProgress,
+    assignedToId: 'u-luis',
+    assignedToName: 'Luis Gómez',
+    dueDate: DateTime(2026, 9, 24),
+    daysUntilDue: 1,
+  ),
+  Task(
+    id: 't3',
+    clientId: 'c1',
+    title: 'Book the carpet shampoo',
+    priority: Priority.low,
+    status: TaskStatus.pending,
+    dueDate: DateTime(2026, 10, 2),
+    daysUntilDue: 9,
+  ),
+  const Task(
+    id: 't4',
+    clientId: 'c1',
+    title: 'File the permits',
+    priority: Priority.medium,
+    status: TaskStatus.pending,
+  ),
+  Task(
+    id: 't5',
+    clientId: 'c1',
+    title: 'Walk the site with the client',
+    priority: Priority.medium,
+    status: TaskStatus.completed,
+    assignedToId: 'u-ana',
+    assignedToName: 'Ana Pérez',
+    dueDate: DateTime(2026, 9, 15),
+    daysUntilDue: -8,
+  ),
+];
+
 final _demoComplaints = [
   // High, open, from a job last night.
   Complaint(
@@ -942,7 +1034,7 @@ final _demoComplaints = [
     description:
         'Floor 3 restrooms had no paper towels or toilet paper this '
         'morning. Two tenants called the front desk.',
-    priority: ComplaintPriority.high,
+    priority: Priority.high,
     status: ComplaintStatus.open,
     reportedDate: DateTime(2026, 9, 23, 7, 40),
     locationId: 'l1',
@@ -959,7 +1051,7 @@ final _demoComplaints = [
     clientId: 'c1',
     title: 'Lobby glass streaked',
     description: 'Streaks on the entrance doors, inside and out.',
-    priority: ComplaintPriority.medium,
+    priority: Priority.medium,
     status: ComplaintStatus.inProgress,
     reportedDate: DateTime(2026, 9, 21, 16, 5),
     locationId: 'l1',
@@ -975,7 +1067,7 @@ final _demoComplaints = [
     clientId: 'c1',
     title: 'Coffee stains by the elevators',
     description: 'Carpet by the elevator bank on floor 7.',
-    priority: ComplaintPriority.low,
+    priority: Priority.low,
     status: ComplaintStatus.resolved,
     reportedDate: DateTime(2026, 9, 10, 9),
     locationId: 'l1',

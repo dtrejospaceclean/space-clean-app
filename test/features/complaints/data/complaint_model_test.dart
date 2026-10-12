@@ -34,7 +34,7 @@ void main() {
     });
 
     expect(c.title, 'Baños sin papel');
-    expect(c.priority, ComplaintPriority.high);
+    expect(c.priority, Priority.high);
     expect(c.status, ComplaintStatus.resolved);
     expect(c.isResolved, isTrue);
     expect(c.isEditable, isFalse);
@@ -73,14 +73,14 @@ void main() {
 
   test('unknown statuses and priorities are kept as unknown', () {
     expect(ComplaintStatus.fromWire('escalated'), ComplaintStatus.unknown);
-    expect(ComplaintPriority.fromWire('urgent'), ComplaintPriority.unknown);
+    expect(Priority.fromWire('urgent'), Priority.unknown);
   });
 
   group('ComplaintDraftModel', () {
     const draft = ComplaintDraft(
       title: '  Restrooms out of paper ',
       description: ' Since this morning. ',
-      priority: ComplaintPriority.high,
+      priority: Priority.high,
       area: '   ',
       assignedToId: 'u3',
     );

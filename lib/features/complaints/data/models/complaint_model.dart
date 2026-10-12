@@ -18,7 +18,7 @@ abstract final class ComplaintModel {
     clientId: json['clientAccountId'] as String? ?? '',
     title: json['title'] as String? ?? '',
     description: json['description'] as String? ?? '',
-    priority: ComplaintPriority.fromWire(json['priority'] as String?),
+    priority: Priority.fromWire(json['priority'] as String?),
     status: ComplaintStatus.fromWire(json['status'] as String?),
     reportedDate: _instant(json['reportedDate']) ?? DateTime(1970),
     locationId: json['locationId'] as String?,
@@ -59,7 +59,7 @@ abstract final class ComplaintDraftModel {
     return {
       'title': d.title.trim(),
       'description': d.description.trim(),
-      if (d.priority != ComplaintPriority.unknown) 'priority': d.priority.wire,
+      if (d.priority != Priority.unknown) 'priority': d.priority.wire,
       ...optional,
     };
   }

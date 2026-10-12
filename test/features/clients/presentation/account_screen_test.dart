@@ -120,7 +120,7 @@ void main() {
       'Contacts',
     ]);
     // Hidden modules keep their places: Contracts, Scope of work,
-    // Calendar and Complaints third to sixth, Team at the end.
+    // Calendar, Complaints and Tasks third to seventh, Team at the end.
     expect(prefs.getStringList('accounts.module_order'), [
       'locations',
       'jobs',
@@ -128,6 +128,7 @@ void main() {
       'scopes',
       'calendar',
       'complaints',
+      'tasks',
       'proposals',
       'info',
       'contacts',

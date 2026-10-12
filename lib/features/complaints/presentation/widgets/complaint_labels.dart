@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/design/design.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/complaint.dart';
 
@@ -11,13 +12,6 @@ extension ComplaintNames on AppLocalizations {
     ComplaintStatus.inProgress => complaintStatusInProgress,
     ComplaintStatus.resolved => complaintStatusResolved,
     ComplaintStatus.unknown => complaintStatusUnknown,
-  };
-
-  String complaintPriority(ComplaintPriority priority) => switch (priority) {
-    ComplaintPriority.high => priorityHigh,
-    ComplaintPriority.medium => priorityMedium,
-    ComplaintPriority.low => priorityLow,
-    ComplaintPriority.unknown => priorityUnknown,
   };
 }
 
@@ -55,47 +49,6 @@ class ComplaintStatusLabel extends StatelessWidget {
     };
     return StatusPill(
       label: AppLocalizations.of(context).complaintStatus(status),
-      icon: icon,
-      color: color,
-      background: background,
-    );
-  }
-}
-
-/// The priority as a pill: high in red with an up arrow, the rest muted
-/// with their own arrows, so it reads without color.
-class PriorityLabel extends StatelessWidget {
-  const PriorityLabel({super.key, required this.priority});
-
-  final ComplaintPriority priority;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    final (IconData icon, Color color, Color background) = switch (priority) {
-      ComplaintPriority.high => (
-        Icons.keyboard_double_arrow_up_rounded,
-        c.danger,
-        c.dangerSoft,
-      ),
-      ComplaintPriority.medium => (
-        Icons.drag_handle_rounded,
-        c.inkSoft,
-        c.sunken,
-      ),
-      ComplaintPriority.low => (
-        Icons.keyboard_arrow_down_rounded,
-        c.inkMuted,
-        c.sunken,
-      ),
-      ComplaintPriority.unknown => (
-        Icons.help_outline_rounded,
-        c.inkMuted,
-        c.sunken,
-      ),
-    };
-    return StatusPill(
-      label: AppLocalizations.of(context).complaintPriority(priority),
       icon: icon,
       color: color,
       background: background,

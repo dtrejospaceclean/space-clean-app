@@ -2825,4 +2825,155 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reportComplaint => 'Reportar';
+
+  @override
+  String get moduleTasksHint => 'Pendientes con fecha y responsable';
+
+  @override
+  String get taskTitle => 'Tarea';
+
+  @override
+  String get newTaskTitle => 'Nueva tarea';
+
+  @override
+  String get editTask => 'Editar tarea';
+
+  @override
+  String get taskStatusPending => 'Pendiente';
+
+  @override
+  String get taskStatusInProgress => 'En curso';
+
+  @override
+  String get taskStatusCompleted => 'Completada';
+
+  @override
+  String get taskStatusCancelled => 'Cancelada';
+
+  @override
+  String get taskStatusUnknown => 'Otro estado';
+
+  @override
+  String tasksFilterOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Abiertas ($count)',
+      zero: 'Abiertas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tasksFilterDone => 'Hechas';
+
+  @override
+  String get noTasksYet => 'Sin tareas';
+
+  @override
+  String get noTasksYetHint => 'Agrega pendientes de esta cuenta con el \"+\".';
+
+  @override
+  String get noOpenTasks => 'Nada pendiente';
+
+  @override
+  String get noOpenTasksHint => 'Todas las tareas están hechas.';
+
+  @override
+  String get noDoneTasks => 'Nada hecho todavía';
+
+  @override
+  String taskDueIn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Vence en $count días',
+      one: 'Vence mañana',
+      zero: 'Vence hoy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String taskOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count días de retraso',
+      one: '1 día de retraso',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get taskTitleLabel => 'Título';
+
+  @override
+  String get taskTitleHint => 'Enviar la cotización del piso 3';
+
+  @override
+  String get taskDescriptionLabel => 'Descripción';
+
+  @override
+  String get taskDueDateLabel => 'Fecha límite';
+
+  @override
+  String get noDueDate => 'Sin fecha límite';
+
+  @override
+  String get unassigned => 'Sin asignar';
+
+  @override
+  String get noDescription => 'Sin descripción';
+
+  @override
+  String get startTask => 'Empezar';
+
+  @override
+  String get completeTask => 'Completar';
+
+  @override
+  String get cancelTask => 'Cancelar tarea';
+
+  @override
+  String get cancelTaskConfirmTitle => '¿Cancelar esta tarea?';
+
+  @override
+  String get cancelTaskConfirmBody =>
+      'Se queda en la lista como cancelada y se puede reabrir después.';
+
+  @override
+  String get keepTask => 'Conservarla';
+
+  @override
+  String get reopenTask => 'Reabrir';
+
+  @override
+  String get deleteTask => 'Eliminar tarea';
+
+  @override
+  String get deleteTaskConfirmTitle => '¿Eliminar esta tarea?';
+
+  @override
+  String get deleteTaskConfirmBody =>
+      'Se elimina para siempre. Para conservar un registro, cancélala.';
+
+  @override
+  String get closedTaskNotice =>
+      'Esta tarea está cerrada. Reábrela para cambiarla.';
+
+  @override
+  String get tasksNotFound => 'Esta tarea ya no existe.';
+
+  @override
+  String get tasksAlreadyCompleted =>
+      'Esta tarea está completada. Reábrela primero para cambiarla.';
+
+  @override
+  String get tasksAlreadyOpen =>
+      'Solo se puede reabrir una tarea completada o cancelada.';
+
+  @override
+  String get tasksAssigneeNotActive =>
+      'La persona asignada debe ser un usuario activo.';
 }

@@ -23,6 +23,7 @@ import '../../jobs/presentation/screens/job_crew_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
 import '../../scopes/presentation/screens/scopes_screen.dart';
+import '../../tasks/presentation/screens/tasks_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
 import '../../team/domain/usecases/team_usecases.dart';
 import '../../team/presentation/screens/team_screen.dart';
@@ -149,6 +150,13 @@ final _byPage = <String, List<_PlusOption>>{
       '${AccountsScreen.path}/:clientId/${ComplaintsScreen.route}/new',
       (l10n) => l10n.newComplaintTitle,
       Permissions.complaintsEdit,
+    ),
+  ],
+  '${AccountsScreen.path}/:clientId/${TasksScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${TasksScreen.route}/new',
+      (l10n) => l10n.newTaskTitle,
+      Permissions.tasksEdit,
     ),
   ],
   '${AccountsScreen.path}/:clientId/${ContactsScreen.route}': [

@@ -4849,6 +4849,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report'**
   String get reportComplaint;
+
+  /// No description provided for @moduleTasksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To-dos with a due date and an owner'**
+  String get moduleTasksHint;
+
+  /// No description provided for @taskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get taskTitle;
+
+  /// No description provided for @newTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New task'**
+  String get newTaskTitle;
+
+  /// No description provided for @editTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit task'**
+  String get editTask;
+
+  /// No description provided for @taskStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get taskStatusPending;
+
+  /// No description provided for @taskStatusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get taskStatusInProgress;
+
+  /// No description provided for @taskStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get taskStatusCompleted;
+
+  /// No description provided for @taskStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get taskStatusCancelled;
+
+  /// No description provided for @taskStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other status'**
+  String get taskStatusUnknown;
+
+  /// No description provided for @tasksFilterOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Open} other{Open ({count})}}'**
+  String tasksFilterOpen(int count);
+
+  /// No description provided for @tasksFilterDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get tasksFilterDone;
+
+  /// No description provided for @noTasksYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks'**
+  String get noTasksYet;
+
+  /// No description provided for @noTasksYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to-dos for this account with the \"+\".'**
+  String get noTasksYetHint;
+
+  /// No description provided for @noOpenTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to do'**
+  String get noOpenTasks;
+
+  /// No description provided for @noOpenTasksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every task is done.'**
+  String get noOpenTasksHint;
+
+  /// No description provided for @noDoneTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing done yet'**
+  String get noDoneTasks;
+
+  /// No description provided for @taskDueIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Due today} =1{Due tomorrow} other{Due in {count} days}}'**
+  String taskDueIn(int count);
+
+  /// No description provided for @taskOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day overdue} other{{count} days overdue}}'**
+  String taskOverdue(int count);
+
+  /// No description provided for @taskTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get taskTitleLabel;
+
+  /// No description provided for @taskTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the floor 3 quote'**
+  String get taskTitleHint;
+
+  /// No description provided for @taskDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get taskDescriptionLabel;
+
+  /// No description provided for @taskDueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get taskDueDateLabel;
+
+  /// No description provided for @noDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'No due date'**
+  String get noDueDate;
+
+  /// No description provided for @unassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get unassigned;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description'**
+  String get noDescription;
+
+  /// No description provided for @startTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get startTask;
+
+  /// No description provided for @completeTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get completeTask;
+
+  /// No description provided for @cancelTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel task'**
+  String get cancelTask;
+
+  /// No description provided for @cancelTaskConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this task?'**
+  String get cancelTaskConfirmTitle;
+
+  /// No description provided for @cancelTaskConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in the list as cancelled, and can be reopened later.'**
+  String get cancelTaskConfirmBody;
+
+  /// No description provided for @keepTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepTask;
+
+  /// No description provided for @reopenTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get reopenTask;
+
+  /// No description provided for @deleteTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete task'**
+  String get deleteTask;
+
+  /// No description provided for @deleteTaskConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this task?'**
+  String get deleteTaskConfirmTitle;
+
+  /// No description provided for @deleteTaskConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s removed for good. To keep a record, cancel it instead.'**
+  String get deleteTaskConfirmBody;
+
+  /// No description provided for @closedTaskNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This task is done with. Reopen it to change it.'**
+  String get closedTaskNotice;
+
+  /// No description provided for @tasksNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This task no longer exists.'**
+  String get tasksNotFound;
+
+  /// No description provided for @tasksAlreadyCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This task is completed. Reopen it first to change it.'**
+  String get tasksAlreadyCompleted;
+
+  /// No description provided for @tasksAlreadyOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a completed or cancelled task can be reopened.'**
+  String get tasksAlreadyOpen;
+
+  /// No description provided for @tasksAssigneeNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'The person assigned must be an active user.'**
+  String get tasksAssigneeNotActive;
 }
 
 class _AppLocalizationsDelegate

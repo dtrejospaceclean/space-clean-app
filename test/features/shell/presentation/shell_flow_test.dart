@@ -79,7 +79,11 @@ void main() {
         'c1': const AccountAccess(
           clientId: 'c1',
           baseRole: 'crew',
-          permissions: {Permissions.jobsView, Permissions.tasksView},
+          permissions: {
+            Permissions.jobsView,
+            Permissions.tasksView,
+            Permissions.filesView,
+          },
         ),
       },
     );
@@ -96,10 +100,11 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Jobs'), findsOneWidget);
+    expect(find.text('Tasks'), findsOneWidget);
     // No info.view, so no Account details.
     expect(find.text('Account details'), findsNothing);
-    // Allowed, but not built yet: nothing is shown for it.
-    expect(find.text('Tasks'), findsNothing);
+    // Files are allowed, but not built yet: nothing is shown for them.
+    expect(find.text('Files'), findsNothing);
     expect(find.text('Coming soon'), findsNothing);
   });
 

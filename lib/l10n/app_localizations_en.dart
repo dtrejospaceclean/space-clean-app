@@ -2799,4 +2799,155 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportComplaint => 'Report';
+
+  @override
+  String get moduleTasksHint => 'To-dos with a due date and an owner';
+
+  @override
+  String get taskTitle => 'Task';
+
+  @override
+  String get newTaskTitle => 'New task';
+
+  @override
+  String get editTask => 'Edit task';
+
+  @override
+  String get taskStatusPending => 'Pending';
+
+  @override
+  String get taskStatusInProgress => 'In progress';
+
+  @override
+  String get taskStatusCompleted => 'Completed';
+
+  @override
+  String get taskStatusCancelled => 'Cancelled';
+
+  @override
+  String get taskStatusUnknown => 'Other status';
+
+  @override
+  String tasksFilterOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Open ($count)',
+      zero: 'Open',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tasksFilterDone => 'Done';
+
+  @override
+  String get noTasksYet => 'No tasks';
+
+  @override
+  String get noTasksYetHint => 'Add to-dos for this account with the \"+\".';
+
+  @override
+  String get noOpenTasks => 'Nothing to do';
+
+  @override
+  String get noOpenTasksHint => 'Every task is done.';
+
+  @override
+  String get noDoneTasks => 'Nothing done yet';
+
+  @override
+  String taskDueIn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Due in $count days',
+      one: 'Due tomorrow',
+      zero: 'Due today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String taskOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days overdue',
+      one: '1 day overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get taskTitleLabel => 'Title';
+
+  @override
+  String get taskTitleHint => 'Send the floor 3 quote';
+
+  @override
+  String get taskDescriptionLabel => 'Description';
+
+  @override
+  String get taskDueDateLabel => 'Due date';
+
+  @override
+  String get noDueDate => 'No due date';
+
+  @override
+  String get unassigned => 'Unassigned';
+
+  @override
+  String get noDescription => 'No description';
+
+  @override
+  String get startTask => 'Start';
+
+  @override
+  String get completeTask => 'Complete';
+
+  @override
+  String get cancelTask => 'Cancel task';
+
+  @override
+  String get cancelTaskConfirmTitle => 'Cancel this task?';
+
+  @override
+  String get cancelTaskConfirmBody =>
+      'It stays in the list as cancelled, and can be reopened later.';
+
+  @override
+  String get keepTask => 'Keep it';
+
+  @override
+  String get reopenTask => 'Reopen';
+
+  @override
+  String get deleteTask => 'Delete task';
+
+  @override
+  String get deleteTaskConfirmTitle => 'Delete this task?';
+
+  @override
+  String get deleteTaskConfirmBody =>
+      'It\'s removed for good. To keep a record, cancel it instead.';
+
+  @override
+  String get closedTaskNotice =>
+      'This task is done with. Reopen it to change it.';
+
+  @override
+  String get tasksNotFound => 'This task no longer exists.';
+
+  @override
+  String get tasksAlreadyCompleted =>
+      'This task is completed. Reopen it first to change it.';
+
+  @override
+  String get tasksAlreadyOpen =>
+      'Only a completed or cancelled task can be reopened.';
+
+  @override
+  String get tasksAssigneeNotActive =>
+      'The person assigned must be an active user.';
 }

@@ -7,6 +7,7 @@ import '../../../../core/design/design.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -22,7 +23,6 @@ import '../../di/complaints_providers.dart';
 import '../../domain/entities/complaint.dart';
 import '../../domain/usecases/complaint_usecases.dart';
 import '../controllers/complaints_providers.dart';
-import '../widgets/complaint_labels.dart';
 import 'complaints_screen.dart';
 
 /// A new complaint ([complaintId] null) or an edit of one that isn't
@@ -97,9 +97,9 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
     text: widget.initial?.description,
   );
   late final _area = TextEditingController(text: widget.initial?.area);
-  late ComplaintPriority _priority = switch (widget.initial?.priority) {
-    final p? when p != ComplaintPriority.unknown => p,
-    _ => ComplaintPriority.medium,
+  late Priority _priority = switch (widget.initial?.priority) {
+    final p? when p != Priority.unknown => p,
+    _ => Priority.medium,
   };
   late String? _locationId = widget.initial?.locationId;
   late String? _jobId = widget.initial?.jobId ?? widget.jobId;
@@ -362,10 +362,10 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       FieldLabel(l10n.priorityLabel),
-                      ChoicePills<ComplaintPriority>(
+                      ChoicePills<Priority>(
                         options: {
-                          for (final p in ComplaintPriority.choices)
-                            p: l10n.complaintPriority(p),
+                          for (final p in Priority.choices)
+                            p: l10n.priorityName(p),
                         },
                         selected: {_priority},
                         onToggle: _saving

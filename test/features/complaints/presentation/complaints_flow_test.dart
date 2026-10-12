@@ -22,7 +22,7 @@ final _paper = Complaint(
   clientId: 'c1',
   title: 'Restrooms out of paper',
   description: 'No paper on floor 3 since this morning.',
-  priority: ComplaintPriority.high,
+  priority: Priority.high,
   status: ComplaintStatus.open,
   reportedDate: DateTime(2026, 9, 22, 9),
   locationId: 'l1',
@@ -40,7 +40,7 @@ final _bins = Complaint(
   clientId: 'c1',
   title: 'Bins not emptied',
   description: 'Lobby bins were full on Monday.',
-  priority: ComplaintPriority.low,
+  priority: Priority.low,
   status: ComplaintStatus.open,
   reportedDate: DateTime(2026, 9, 23, 7),
 );
@@ -51,7 +51,7 @@ final _carpet = Complaint(
   clientId: 'c1',
   title: 'Carpet stains',
   description: 'Coffee stains by the elevators.',
-  priority: ComplaintPriority.medium,
+  priority: Priority.medium,
   status: ComplaintStatus.resolved,
   reportedDate: DateTime(2026, 9, 10, 9),
   assignedToId: 'u-ana',
@@ -213,7 +213,7 @@ void main() {
 
     expect(complaints.writes, ['create:Windows streaked']);
     final draft = complaints.drafts.single;
-    expect(draft.priority, ComplaintPriority.high);
+    expect(draft.priority, Priority.high);
     expect(draft.locationId, 'l1');
     expect(draft.assignedToId, 'u-ana');
     // Its own page: assigned, so already in progress.

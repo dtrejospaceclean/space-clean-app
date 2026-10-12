@@ -23,6 +23,9 @@ import '../../features/complaints/presentation/screens/complaint_screen.dart';
 import '../../features/complaints/presentation/screens/complaints_screen.dart';
 import '../../features/complaints/presentation/screens/resolve_complaint_screen.dart';
 import '../../features/contracts/presentation/screens/contract_form_screen.dart';
+import '../../features/tasks/presentation/screens/task_form_screen.dart';
+import '../../features/tasks/presentation/screens/task_screen.dart';
+import '../../features/tasks/presentation/screens/tasks_screen.dart';
 import '../../features/contracts/presentation/screens/contract_screen.dart';
 import '../../features/contracts/presentation/screens/contracts_screen.dart';
 import '../../features/contracts/presentation/screens/sign_contract_screen.dart';
@@ -242,6 +245,37 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   clientId: state.pathParameters['clientId']!,
                                   proposalId:
                                       state.pathParameters['proposalId']!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SlideRoute(
+                        path: TasksScreen.route,
+                        builder: (_, state) => TasksScreen(
+                          clientId: state.pathParameters['clientId']!,
+                        ),
+                        routes: [
+                          // Before ':taskId' so "new" isn't read as an id.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => TaskFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                          ),
+                          SlideRoute(
+                            path: ':taskId',
+                            builder: (_, state) => TaskScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              taskId: state.pathParameters['taskId']!,
+                            ),
+                            routes: [
+                              SlideRoute(
+                                path: 'edit',
+                                builder: (_, state) => TaskFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  taskId: state.pathParameters['taskId'],
                                 ),
                               ),
                             ],
