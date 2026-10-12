@@ -5107,6 +5107,540 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing assigned to you today'**
   String get noJobsForYouToday;
+
+  /// No description provided for @moduleInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices'**
+  String get moduleInvoices;
+
+  /// No description provided for @moduleInvoicesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing, payments and what\'s overdue'**
+  String get moduleInvoicesHint;
+
+  /// No description provided for @invoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice'**
+  String get invoiceTitle;
+
+  /// No description provided for @newInvoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New invoice'**
+  String get newInvoiceTitle;
+
+  /// No description provided for @editInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit invoice'**
+  String get editInvoice;
+
+  /// No description provided for @invoiceStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get invoiceStatusDraft;
+
+  /// No description provided for @invoiceStatusIssued.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued'**
+  String get invoiceStatusIssued;
+
+  /// No description provided for @invoiceStatusPartiallyPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Partly paid'**
+  String get invoiceStatusPartiallyPaid;
+
+  /// No description provided for @invoiceStatusPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get invoiceStatusPaid;
+
+  /// No description provided for @invoiceStatusVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'Void'**
+  String get invoiceStatusVoid;
+
+  /// No description provided for @invoiceStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other status'**
+  String get invoiceStatusUnknown;
+
+  /// No description provided for @invoiceStatusOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get invoiceStatusOverdue;
+
+  /// No description provided for @invoiceDaysOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day overdue} other{{count} days overdue}}'**
+  String invoiceDaysOverdue(int count);
+
+  /// No description provided for @invoicesFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Which invoices'**
+  String get invoicesFilterLabel;
+
+  /// No description provided for @invoicesFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get invoicesFilterAll;
+
+  /// No description provided for @invoicesFilterOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Overdue} other{Overdue ({count})}}'**
+  String invoicesFilterOverdue(int count);
+
+  /// No description provided for @noInvoicesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoices'**
+  String get noInvoicesYet;
+
+  /// No description provided for @noInvoicesYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill this account with the \"+\".'**
+  String get noInvoicesYetHint;
+
+  /// No description provided for @noInvoicesOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing overdue'**
+  String get noInvoicesOverdue;
+
+  /// No description provided for @noInvoicesOverdueHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every issued invoice is paid or not due yet.'**
+  String get noInvoicesOverdueHint;
+
+  /// No description provided for @invoicesOfOneContract.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing one contract\'s invoices.'**
+  String get invoicesOfOneContract;
+
+  /// No description provided for @invoiceDueOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Due {date}'**
+  String invoiceDueOn(String date);
+
+  /// No description provided for @invoiceBalanceOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} due'**
+  String invoiceBalanceOf(String amount);
+
+  /// No description provided for @invoiceTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice total'**
+  String get invoiceTotalLabel;
+
+  /// No description provided for @invoiceBalanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance due'**
+  String get invoiceBalanceLabel;
+
+  /// No description provided for @invoicePaidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get invoicePaidLabel;
+
+  /// No description provided for @invoicePaidOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{paid} paid of {total}'**
+  String invoicePaidOf(String paid, String total);
+
+  /// No description provided for @invoicePaidInFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid in full'**
+  String get invoicePaidInFull;
+
+  /// No description provided for @invoiceIssueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue date'**
+  String get invoiceIssueDateLabel;
+
+  /// No description provided for @invoiceDueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get invoiceDueDateLabel;
+
+  /// No description provided for @invoiceDueDateHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the due date empty to use the contract\'s payment terms.'**
+  String get invoiceDueDateHelp;
+
+  /// No description provided for @invoiceDueBeforeIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a day on or after the issue date.'**
+  String get invoiceDueBeforeIssue;
+
+  /// No description provided for @invoiceNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice number'**
+  String get invoiceNumberLabel;
+
+  /// No description provided for @invoiceNumberHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it empty to number it automatically.'**
+  String get invoiceNumberHelp;
+
+  /// No description provided for @invoiceNumberTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That invoice number is already used.'**
+  String get invoiceNumberTaken;
+
+  /// No description provided for @invoiceContractLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get invoiceContractLabel;
+
+  /// No description provided for @invoiceNoContracts.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no contracts.'**
+  String get invoiceNoContracts;
+
+  /// No description provided for @invoiceLineJobLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get invoiceLineJobLabel;
+
+  /// No description provided for @invoiceLineNoJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'This account had no jobs in the last 30 days.'**
+  String get invoiceLineNoJobs;
+
+  /// No description provided for @invoiceLineJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Job: {title}'**
+  String invoiceLineJob(String title);
+
+  /// No description provided for @sectionPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get sectionPayments;
+
+  /// No description provided for @noPaymentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No payments yet'**
+  String get noPaymentsYet;
+
+  /// No description provided for @paymentVoidedTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Voided'**
+  String get paymentVoidedTag;
+
+  /// No description provided for @issueInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue invoice'**
+  String get issueInvoice;
+
+  /// No description provided for @issueInvoiceConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue this invoice?'**
+  String get issueInvoiceConfirmTitle;
+
+  /// No description provided for @issueInvoiceConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its lines and amounts can\'t change after this. To fix a mistake later, void it and make a new one.'**
+  String get issueInvoiceConfirmBody;
+
+  /// No description provided for @invoiceEmptyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add line items to issue it.'**
+  String get invoiceEmptyNotice;
+
+  /// No description provided for @notYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get notYet;
+
+  /// No description provided for @keepInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepInvoice;
+
+  /// No description provided for @keepPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepPayment;
+
+  /// No description provided for @recordPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Record payment'**
+  String get recordPayment;
+
+  /// No description provided for @paymentAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get paymentAmountLabel;
+
+  /// No description provided for @paymentAmountHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance due: {amount}'**
+  String paymentAmountHelp(String amount);
+
+  /// No description provided for @paymentOverBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s more than the balance due ({amount}).'**
+  String paymentOverBalance(String amount);
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount above zero, like 250 or 99.50.'**
+  String get invalidAmount;
+
+  /// No description provided for @paymentMethodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Method'**
+  String get paymentMethodLabel;
+
+  /// No description provided for @paymentMethodCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get paymentMethodCash;
+
+  /// No description provided for @paymentMethodCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check'**
+  String get paymentMethodCheck;
+
+  /// No description provided for @paymentMethodCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get paymentMethodCard;
+
+  /// No description provided for @paymentMethodBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get paymentMethodBankTransfer;
+
+  /// No description provided for @paymentMethodOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get paymentMethodOther;
+
+  /// No description provided for @paymentMethodUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other method'**
+  String get paymentMethodUnknown;
+
+  /// No description provided for @paymentMethodRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick how it was paid.'**
+  String get paymentMethodRequired;
+
+  /// No description provided for @paymentDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date received'**
+  String get paymentDateLabel;
+
+  /// No description provided for @paymentReferenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get paymentReferenceLabel;
+
+  /// No description provided for @paymentReferenceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check number, authorization, transfer ID'**
+  String get paymentReferenceHint;
+
+  /// No description provided for @voidPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Void payment'**
+  String get voidPayment;
+
+  /// No description provided for @voidPaymentConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Void this payment?'**
+  String get voidPaymentConfirmTitle;
+
+  /// No description provided for @voidPaymentConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For a bounced check or a refund. It stays on record but no longer counts, and the balance goes back up.'**
+  String get voidPaymentConfirmBody;
+
+  /// No description provided for @voidInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Void invoice'**
+  String get voidInvoice;
+
+  /// No description provided for @voidInvoiceConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Void this invoice?'**
+  String get voidInvoiceConfirmTitle;
+
+  /// No description provided for @voidInvoiceConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in the account\'s history, but it can\'t take payments or change again. This can\'t be undone.'**
+  String get voidInvoiceConfirmBody;
+
+  /// No description provided for @deleteInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete invoice'**
+  String get deleteInvoice;
+
+  /// No description provided for @deleteInvoiceConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this draft?'**
+  String get deleteInvoiceConfirmTitle;
+
+  /// No description provided for @deleteInvoiceConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The draft invoice will be deleted. This can\'t be undone.'**
+  String get deleteInvoiceConfirmBody;
+
+  /// No description provided for @voidInvoiceNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This invoice is void. It stays for the record.'**
+  String get voidInvoiceNotice;
+
+  /// No description provided for @invoiceCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No invoices} =1{1 invoice} other{{count} invoices}}'**
+  String invoiceCount(int count);
+
+  /// No description provided for @invoicesNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This invoice no longer exists.'**
+  String get invoicesNotFound;
+
+  /// No description provided for @invoicesDueDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a due date: the contract\'s payment terms don\'t set one.'**
+  String get invoicesDueDateRequired;
+
+  /// No description provided for @invoicesDueBeforeIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'The due date can\'t be before the issue date.'**
+  String get invoicesDueBeforeIssue;
+
+  /// No description provided for @invoicesNotDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a draft invoice can be changed or issued.'**
+  String get invoicesNotDraft;
+
+  /// No description provided for @invoicesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'An invoice needs line items and a total above zero to be issued.'**
+  String get invoicesEmpty;
+
+  /// No description provided for @invoicesVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'This invoice is already void.'**
+  String get invoicesVoid;
+
+  /// No description provided for @invoicesHasPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Void its payments first, then the invoice.'**
+  String get invoicesHasPayments;
+
+  /// No description provided for @invoicesOnlyDraftsDeletable.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a draft can be deleted. Void an issued invoice instead.'**
+  String get invoicesOnlyDraftsDeletable;
+
+  /// No description provided for @invoicesNotPayable.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments only go on an issued or partly paid invoice.'**
+  String get invoicesNotPayable;
+
+  /// No description provided for @invoicesOverpayment.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s more than the balance due.'**
+  String get invoicesOverpayment;
+
+  /// No description provided for @invoicesPaymentNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'That payment no longer exists.'**
+  String get invoicesPaymentNotFound;
+
+  /// No description provided for @invoicesPaymentAlreadyVoided.
+  ///
+  /// In en, this message translates to:
+  /// **'That payment is already voided.'**
+  String get invoicesPaymentAlreadyVoided;
 }
 
 class _AppLocalizationsDelegate

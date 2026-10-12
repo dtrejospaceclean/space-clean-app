@@ -29,6 +29,12 @@ import '../../features/tasks/presentation/screens/tasks_screen.dart';
 import '../../features/contracts/presentation/screens/contract_screen.dart';
 import '../../features/contracts/presentation/screens/contracts_screen.dart';
 import '../../features/contracts/presentation/screens/sign_contract_screen.dart';
+import '../../features/invoices/domain/entities/invoice.dart';
+import '../../features/invoices/presentation/screens/invoice_form_screen.dart';
+import '../../features/invoices/presentation/screens/invoice_line_screen.dart';
+import '../../features/invoices/presentation/screens/invoice_screen.dart';
+import '../../features/invoices/presentation/screens/invoices_screen.dart';
+import '../../features/invoices/presentation/screens/record_payment_screen.dart';
 import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
 import '../../features/locations/presentation/screens/location_form_screen.dart';
 import '../../features/locations/presentation/screens/location_screen.dart';
@@ -378,6 +384,48 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                                   clientId: state.pathParameters['clientId']!,
                                   contractId:
                                       state.pathParameters['contractId']!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SlideRoute(
+                        path: InvoicesScreen.route,
+                        // `?contract=` lists only that contract's invoices.
+                        builder: (_, state) => InvoicesScreen(
+                          clientId: state.pathParameters['clientId']!,
+                          contractId: state.uri.queryParameters['contract'],
+                        ),
+                        routes: [
+                          // Before ':invoiceId' so "new" isn't read as an id.
+                          SlideRoute(
+                            path: 'new',
+                            builder: (_, state) => InvoiceFormScreen(
+                              clientId: state.pathParameters['clientId']!,
+                            ),
+                            routes: [_invoiceLineRoute],
+                          ),
+                          SlideRoute(
+                            path: ':invoiceId',
+                            builder: (_, state) => InvoiceScreen(
+                              clientId: state.pathParameters['clientId']!,
+                              invoiceId: state.pathParameters['invoiceId']!,
+                            ),
+                            routes: [
+                              SlideRoute(
+                                path: 'edit',
+                                builder: (_, state) => InvoiceFormScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  invoiceId: state.pathParameters['invoiceId'],
+                                ),
+                                routes: [_invoiceLineRoute],
+                              ),
+                              SlideRoute(
+                                path: RecordPaymentScreen.route,
+                                builder: (_, state) => RecordPaymentScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  invoiceId: state.pathParameters['invoiceId']!,
                                 ),
                               ),
                             ],
@@ -750,6 +798,15 @@ final _jobRoutes = [
     ),
   ),
 ];
+
+/// An invoice form's line page; the line edited comes in `extra`.
+final _invoiceLineRoute = SlideRoute(
+  path: InvoiceLineScreen.route,
+  builder: (_, state) => InvoiceLineScreen(
+    clientId: state.pathParameters['clientId']!,
+    initial: state.extra as InvoiceLineDraft?,
+  ),
+);
 
 final _timeWindowRoute = SlideRoute(
   path: TimeWindowScreen.route,

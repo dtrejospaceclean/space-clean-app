@@ -34,6 +34,9 @@ import 'package:sp_cln_app/features/tasks/domain/entities/task.dart';
 import 'package:sp_cln_app/features/tasks/domain/repositories/tasks_repository.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repository.dart';
+import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
+import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
+import 'package:sp_cln_app/features/invoices/domain/repositories/invoices_repository.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dart';
@@ -1266,6 +1269,279 @@ class FakeComplaintsRepository implements ComplaintsRepository {
           ? ComplaintStatus.open
           : ComplaintStatus.inProgress,
       reopened: true,
+    );
+    _replace(next);
+    return next;
+  }
+}
+
+/// In-memory invoices with the API's rules: only a draft changes, is
+/// issued (with lines above zero) or deleted; payments go on issued or
+/// partly paid ones up to the balance and move the status; voiding needs
+/// nothing paid. Numbers come as `INV-2026-0000n`; an empty due date takes
+/// 30 days. Records each write in [writes].
+class FakeInvoicesRepository implements InvoicesRepository {
+  FakeInvoicesRepository([List<Invoice> invoices = const []])
+    : invoices = [...invoices];
+
+  List<Invoice> invoices;
+  final writes = <String>[];
+  final drafts = <InvoiceDraft>[];
+  final payments = <PaymentDraft>[];
+
+  @override
+  Future<List<Invoice>> getInvoices(
+    String clientId, {
+    String? contractId,
+  }) async => [
+    for (final i in invoices)
+      if (i.clientId == clientId &&
+          (contractId == null || i.contractId == contractId))
+        i,
+  ];
+
+  @override
+  Future<Invoice> getInvoice(String clientId, String invoiceId) async {
+    for (final i in invoices) {
+      if (i.id == invoiceId) return i;
+    }
+    throw const ServerFailure('invoices.not_found', statusCode: 404);
+  }
+
+  /// [i] with its total, what's paid and (when [payments] change) its
+  /// status worked out again.
+  static Invoice rebuild(
+    Invoice i, {
+    String? contractId,
+    String? invoiceNumber,
+    DateTime? issueDate,
+    DateTime? dueDate,
+    List<InvoiceLine>? lineItems,
+    List<Payment>? payments,
+    InvoiceStatus? status,
+  }) {
+    final lines = lineItems ?? i.lineItems;
+    final pays = payments ?? i.payments;
+    final total = lines.fold(0, (sum, l) => sum + toCents(l.lineTotal));
+    final paid = pays
+        .where((p) => !p.isVoided)
+        .fold(0, (sum, p) => sum + toCents(p.amount));
+    var next = status ?? i.status;
+    if (payments != null &&
+        next != InvoiceStatus.draft &&
+        next != InvoiceStatus.voided) {
+      next = paid <= 0
+          ? InvoiceStatus.issued
+          : paid >= total
+          ? InvoiceStatus.paid
+          : InvoiceStatus.partiallyPaid;
+    }
+    final open =
+        next == InvoiceStatus.issued || next == InvoiceStatus.partiallyPaid;
+    return Invoice(
+      id: i.id,
+      clientId: i.clientId,
+      contractId: contractId ?? i.contractId,
+      contractPaymentTerms: i.contractPaymentTerms,
+      invoiceNumber: invoiceNumber ?? i.invoiceNumber,
+      issueDate: issueDate ?? i.issueDate,
+      dueDate: dueDate ?? i.dueDate,
+      totalAmount: centsToDecimal(total),
+      status: next,
+      lineItems: lines,
+      payments: pays,
+      amountPaid: centsToDecimal(paid),
+      balanceDue: centsToDecimal(total - paid),
+      isOverdue: open && i.isOverdue,
+      daysOverdue: open ? i.daysOverdue : null,
+    );
+  }
+
+  static List<InvoiceLine> _lines(List<InvoiceLineDraft> drafts) => [
+    for (final (n, d) in drafts.indexed)
+      InvoiceLine(
+        id: 'line-$n',
+        jobId: d.jobId,
+        jobTitle: d.jobTitle,
+        description: d.description,
+        quantity: d.quantity,
+        unitPrice: d.unitPrice,
+        lineTotal: centsToDecimal(lineTotalCents(d.quantity, d.unitPrice)),
+      ),
+  ];
+
+  void _replace(Invoice next) =>
+      invoices = [for (final i in invoices) i.id == next.id ? next : i];
+
+  @override
+  Future<Invoice> createInvoice(String clientId, InvoiceDraft draft) async {
+    final number = switch (draft.invoiceNumber?.trim()) {
+      '' ||
+      null => 'INV-2026-${(invoices.length + 1).toString().padLeft(5, '0')}',
+      final n => n,
+    };
+    if (invoices.any((i) => i.invoiceNumber == number)) {
+      throw const ServerFailure('errors.unique_violation', statusCode: 409);
+    }
+    writes.add('create');
+    drafts.add(draft);
+    final created = rebuild(
+      Invoice(
+        id: 'inv-${invoices.length + 1}',
+        clientId: clientId,
+        contractId: draft.contractId,
+        invoiceNumber: number,
+        issueDate: draft.issueDate,
+        dueDate: draft.dueDate ?? draft.issueDate.add(const Duration(days: 30)),
+        totalAmount: '0',
+        status: InvoiceStatus.draft,
+      ),
+      lineItems: _lines(draft.lineItems),
+    );
+    invoices = [...invoices, created];
+    return created;
+  }
+
+  Future<Invoice> _draft(String clientId, String invoiceId) async {
+    final i = await getInvoice(clientId, invoiceId);
+    if (!i.isDraft) {
+      throw const ServerFailure('invoices.not_draft', statusCode: 409);
+    }
+    return i;
+  }
+
+  @override
+  Future<Invoice> updateInvoice(
+    String clientId,
+    String invoiceId,
+    InvoiceDraft draft,
+  ) async {
+    final i = await _draft(clientId, invoiceId);
+    writes.add('update:$invoiceId');
+    drafts.add(draft);
+    final next = rebuild(
+      i,
+      contractId: draft.contractId,
+      invoiceNumber: draft.invoiceNumber,
+      issueDate: draft.issueDate,
+      dueDate: draft.dueDate,
+      lineItems: _lines(draft.lineItems),
+    );
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Invoice> issueInvoice(String clientId, String invoiceId) async {
+    final i = await _draft(clientId, invoiceId);
+    if (!i.canIssue) {
+      throw const ServerFailure('invoices.empty', statusCode: 400);
+    }
+    writes.add('issue:$invoiceId');
+    final next = rebuild(i, status: InvoiceStatus.issued);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Invoice> voidInvoice(String clientId, String invoiceId) async {
+    final i = await getInvoice(clientId, invoiceId);
+    if (i.isVoided) {
+      throw const ServerFailure('invoices.void', statusCode: 409);
+    }
+    if (i.hasPayments) {
+      throw const ServerFailure('invoices.has_payments', statusCode: 409);
+    }
+    writes.add('void:$invoiceId');
+    final next = rebuild(i, status: InvoiceStatus.voided);
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<void> deleteInvoice(String clientId, String invoiceId) async {
+    final i = await getInvoice(clientId, invoiceId);
+    if (!i.isDraft) {
+      throw const ServerFailure(
+        'invoices.only_drafts_deletable',
+        statusCode: 409,
+      );
+    }
+    writes.add('delete:$invoiceId');
+    invoices = [
+      for (final other in invoices)
+        if (other.id != invoiceId) other,
+    ];
+  }
+
+  @override
+  Future<Invoice> recordPayment(
+    String clientId,
+    String invoiceId,
+    PaymentDraft payment,
+  ) async {
+    final i = await getInvoice(clientId, invoiceId);
+    if (!i.canPay) {
+      throw const ServerFailure('invoices.not_payable', statusCode: 409);
+    }
+    if (toCents(payment.amount) > toCents(i.balanceDue)) {
+      throw const ServerFailure('invoices.overpayment', statusCode: 400);
+    }
+    writes.add('pay:$invoiceId');
+    payments.add(payment);
+    final next = rebuild(
+      i,
+      payments: [
+        ...i.payments,
+        Payment(
+          id: 'pay-${i.payments.length + 1}',
+          amount: centsToDecimal(toCents(payment.amount)),
+          method: payment.method,
+          paymentDate: payment.paymentDate ?? testNow,
+          reference: switch (payment.reference?.trim()) {
+            '' || null => null,
+            final r => r,
+          },
+        ),
+      ],
+    );
+    _replace(next);
+    return next;
+  }
+
+  @override
+  Future<Invoice> voidPayment(
+    String clientId,
+    String invoiceId,
+    String paymentId,
+  ) async {
+    final i = await getInvoice(clientId, invoiceId);
+    final payment = i.payments.where((p) => p.id == paymentId).firstOrNull;
+    if (payment == null) {
+      throw const ServerFailure('invoices.payment_not_found', statusCode: 404);
+    }
+    if (payment.isVoided) {
+      throw const ServerFailure(
+        'invoices.payment_already_voided',
+        statusCode: 409,
+      );
+    }
+    writes.add('void-payment:$paymentId');
+    final next = rebuild(
+      i,
+      payments: [
+        for (final p in i.payments)
+          p.id == paymentId
+              ? Payment(
+                  id: p.id,
+                  amount: p.amount,
+                  method: p.method,
+                  paymentDate: p.paymentDate,
+                  reference: p.reference,
+                  isVoided: true,
+                )
+              : p,
+      ],
     );
     _replace(next);
     return next;
@@ -2514,6 +2790,7 @@ Future<SharedPreferences> pumpApp(
   TeamRepository? team,
   ProposalsRepository? proposals,
   ContractsRepository? contracts,
+  InvoicesRepository? invoices,
   ComplaintsRepository? complaints,
   TasksRepository? tasks,
   ScopesRepository? scopes,
@@ -2574,6 +2851,9 @@ Future<SharedPreferences> pumpApp(
         ),
         tasksRepositoryProvider.overrideWithValue(
           tasks ?? FakeTasksRepository(),
+        ),
+        invoicesRepositoryProvider.overrideWithValue(
+          invoices ?? FakeInvoicesRepository(),
         ),
         scopesRepositoryProvider.overrideWithValue(
           scopes ?? FakeScopesRepository(),

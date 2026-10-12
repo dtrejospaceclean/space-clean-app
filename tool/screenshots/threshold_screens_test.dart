@@ -27,6 +27,8 @@ import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/locations/domain/entities/location.dart';
 import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
+import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
+import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
 import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
 import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
 import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
@@ -163,6 +165,9 @@ Future<void> _sheet(
         calendarRepositoryProvider.overrideWithValue(_demoCalendar()),
         contractsRepositoryProvider.overrideWithValue(
           FakeContractsRepository(_demoContracts),
+        ),
+        invoicesRepositoryProvider.overrideWithValue(
+          FakeInvoicesRepository(_demoInvoices),
         ),
         scopesRepositoryProvider.overrideWithValue(
           FakeScopesRepository(_demoScopes),
@@ -710,6 +715,35 @@ void main() {
     ]);
   });
 
+  // Invoices: the list, an overdue one partly paid (and scrolled to its
+  // payments), a draft, recording a payment, dark, Spanish at 200%.
+  testWidgets('invoices', (tester) async {
+    const base = '/accounts/c1/invoices';
+    await _sheet(tester, 'invoices', TargetPlatform.iOS, [
+      Phone('1 · List', asOwner: true, location: base),
+      Phone('2 · Overdue', asOwner: true, location: '$base/inv1'),
+      Phone(
+        '3 · Overdue (scrolled)',
+        asOwner: true,
+        location: '$base/inv1',
+        act: (tester, phone) async {
+          await tester.drag(inPhoneScroll(phone), const Offset(0, -600));
+        },
+      ),
+      Phone('4 · Draft', asOwner: true, location: '$base/inv3'),
+      Phone('5 · Payment', asOwner: true, location: '$base/inv1/pay'),
+      Phone('6 · New', asOwner: true, location: '$base/new'),
+      Phone('7 · Dark', asOwner: true, dark: true, location: '$base/inv2'),
+      Phone(
+        '8 · Spanish, 200% text',
+        asOwner: true,
+        spanish: true,
+        textScale: 2,
+        location: '$base/inv1',
+      ),
+    ]);
+  });
+
   // A scope of work: one with jobs, one that can go, dark, Spanish at 200%.
   testWidgets('scope', (tester) async {
     const base = '/accounts/c1/scopes';
@@ -1183,6 +1217,133 @@ final _demoScopes = [
     areaName: 'Restrooms',
     frequency: ScopeFrequency.daily,
     schedules: const [ScopeSchedule(startTime: ClockTime(12, 0))],
+  ),
+];
+
+final _demoInvoices = [
+  // Issued a month ago under k1, $600 of $1,800 paid, 5 days past due.
+  Invoice(
+    id: 'inv1',
+    clientId: 'c1',
+    contractId: 'k1',
+    contractPaymentTerms: 'Net 30',
+    invoiceNumber: 'INV-2026-00041',
+    issueDate: DateTime(2026, 8, 19),
+    dueDate: DateTime(2026, 9, 18),
+    totalAmount: '1800',
+    status: InvoiceStatus.partiallyPaid,
+    lineItems: const [
+      InvoiceLine(
+        id: 'l1',
+        description: 'Monthly cleaning, August',
+        quantity: '1',
+        unitPrice: '1500',
+        lineTotal: '1500',
+      ),
+      InvoiceLine(
+        id: 'l2',
+        jobId: 'j1',
+        jobTitle: 'Lobby deep clean',
+        description: 'Lobby deep clean',
+        quantity: '2',
+        unitPrice: '150',
+        lineTotal: '300',
+      ),
+    ],
+    payments: [
+      Payment(
+        id: 'p1',
+        amount: '600',
+        method: PaymentMethod.check,
+        paymentDate: DateTime(2026, 9, 2),
+        reference: '#1042',
+      ),
+      Payment(
+        id: 'p2',
+        amount: '400',
+        method: PaymentMethod.check,
+        paymentDate: DateTime(2026, 9, 9),
+        reference: '#1057',
+        isVoided: true,
+      ),
+    ],
+    amountPaid: '600',
+    balanceDue: '1200',
+    isOverdue: true,
+    daysOverdue: 5,
+  ),
+  // July's, paid in full.
+  Invoice(
+    id: 'inv2',
+    clientId: 'c1',
+    contractId: 'k1',
+    contractPaymentTerms: 'Net 30',
+    invoiceNumber: 'INV-2026-00038',
+    issueDate: DateTime(2026, 7, 20),
+    dueDate: DateTime(2026, 8, 19),
+    totalAmount: '1500',
+    status: InvoiceStatus.paid,
+    lineItems: const [
+      InvoiceLine(
+        id: 'l3',
+        description: 'Monthly cleaning, July',
+        quantity: '1',
+        unitPrice: '1500',
+        lineTotal: '1500',
+      ),
+    ],
+    payments: [
+      Payment(
+        id: 'p3',
+        amount: '1500',
+        method: PaymentMethod.bankTransfer,
+        paymentDate: DateTime(2026, 8, 12),
+        reference: 'ACH 88213',
+      ),
+    ],
+    amountPaid: '1500',
+    balanceDue: '0',
+  ),
+  // September's, still a draft.
+  Invoice(
+    id: 'inv3',
+    clientId: 'c1',
+    contractId: 'k1',
+    contractPaymentTerms: 'Net 30',
+    invoiceNumber: 'INV-2026-00044',
+    issueDate: DateTime(2026, 9, 23),
+    dueDate: DateTime(2026, 10, 23),
+    totalAmount: '1500',
+    status: InvoiceStatus.draft,
+    lineItems: const [
+      InvoiceLine(
+        id: 'l4',
+        description: 'Monthly cleaning, September',
+        quantity: '1',
+        unitPrice: '1500',
+        lineTotal: '1500',
+      ),
+    ],
+  ),
+  // Issued this week, nothing paid yet.
+  Invoice(
+    id: 'inv4',
+    clientId: 'c1',
+    invoiceNumber: 'INV-2026-00043',
+    issueDate: DateTime(2026, 9, 21),
+    dueDate: DateTime(2026, 10, 21),
+    totalAmount: '320',
+    status: InvoiceStatus.issued,
+    lineItems: const [
+      InvoiceLine(
+        id: 'l5',
+        description: 'Carpet spot treatment',
+        quantity: '4',
+        unitPrice: '80',
+        lineTotal: '320',
+      ),
+    ],
+    balanceDue: '320',
   ),
 ];
 

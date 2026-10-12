@@ -6,6 +6,7 @@ import '../../calendar/presentation/screens/calendar_screen.dart';
 import '../../complaints/presentation/screens/complaints_screen.dart';
 import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
+import '../../invoices/presentation/screens/invoices_screen.dart';
 import '../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
@@ -70,6 +71,14 @@ final accountModules = <AccountModule>[
     label: (l10n) => l10n.moduleContracts,
     description: (l10n) => l10n.moduleContractsHint,
     route: ContractsScreen.route,
+  ),
+  AccountModule(
+    section: AccountSection.work,
+    permission: Permissions.invoiceView,
+    icon: Icons.receipt_long_outlined,
+    label: (l10n) => l10n.moduleInvoices,
+    description: (l10n) => l10n.moduleInvoicesHint,
+    route: InvoicesScreen.route,
   ),
   AccountModule(
     section: AccountSection.work,

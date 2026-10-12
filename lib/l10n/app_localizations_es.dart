@@ -2985,4 +2985,326 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noJobsForYouToday => 'Nada asignado a ti hoy';
+
+  @override
+  String get moduleInvoices => 'Facturas';
+
+  @override
+  String get moduleInvoicesHint => 'Cobros, pagos y lo vencido';
+
+  @override
+  String get invoiceTitle => 'Factura';
+
+  @override
+  String get newInvoiceTitle => 'Nueva factura';
+
+  @override
+  String get editInvoice => 'Editar factura';
+
+  @override
+  String get invoiceStatusDraft => 'Borrador';
+
+  @override
+  String get invoiceStatusIssued => 'Emitida';
+
+  @override
+  String get invoiceStatusPartiallyPaid => 'Pago parcial';
+
+  @override
+  String get invoiceStatusPaid => 'Pagada';
+
+  @override
+  String get invoiceStatusVoid => 'Anulada';
+
+  @override
+  String get invoiceStatusUnknown => 'Otro estado';
+
+  @override
+  String get invoiceStatusOverdue => 'Vencida';
+
+  @override
+  String invoiceDaysOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count días de atraso',
+      one: '1 día de atraso',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get invoicesFilterLabel => 'Qué facturas';
+
+  @override
+  String get invoicesFilterAll => 'Todas';
+
+  @override
+  String invoicesFilterOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Vencidas ($count)',
+      zero: 'Vencidas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noInvoicesYet => 'Sin facturas';
+
+  @override
+  String get noInvoicesYetHint => 'Factura a esta cuenta con el \"+\".';
+
+  @override
+  String get noInvoicesOverdue => 'Nada vencido';
+
+  @override
+  String get noInvoicesOverdueHint =>
+      'Todas las facturas emitidas están pagadas o aún no vencen.';
+
+  @override
+  String get invoicesOfOneContract => 'Mostrando las facturas de un contrato.';
+
+  @override
+  String invoiceDueOn(String date) {
+    return 'Vence el $date';
+  }
+
+  @override
+  String invoiceBalanceOf(String amount) {
+    return '$amount por cobrar';
+  }
+
+  @override
+  String get invoiceTotalLabel => 'Total de la factura';
+
+  @override
+  String get invoiceBalanceLabel => 'Saldo pendiente';
+
+  @override
+  String get invoicePaidLabel => 'Pagado';
+
+  @override
+  String invoicePaidOf(String paid, String total) {
+    return '$paid pagado de $total';
+  }
+
+  @override
+  String get invoicePaidInFull => 'Pagada por completo';
+
+  @override
+  String get invoiceIssueDateLabel => 'Fecha de emisión';
+
+  @override
+  String get invoiceDueDateLabel => 'Fecha de vencimiento';
+
+  @override
+  String get invoiceDueDateHelp =>
+      'Deja la fecha de vencimiento vacía para usar las condiciones de pago del contrato.';
+
+  @override
+  String get invoiceDueBeforeIssue =>
+      'Elige un día igual o posterior a la fecha de emisión.';
+
+  @override
+  String get invoiceNumberLabel => 'Número de factura';
+
+  @override
+  String get invoiceNumberHelp =>
+      'Déjalo vacío para numerarla automáticamente.';
+
+  @override
+  String get invoiceNumberTaken => 'Ese número de factura ya está en uso.';
+
+  @override
+  String get invoiceContractLabel => 'Contrato';
+
+  @override
+  String get invoiceNoContracts => 'Esta cuenta no tiene contratos.';
+
+  @override
+  String get invoiceLineJobLabel => 'Trabajo';
+
+  @override
+  String get invoiceLineNoJobs =>
+      'Esta cuenta no tuvo trabajos en los últimos 30 días.';
+
+  @override
+  String invoiceLineJob(String title) {
+    return 'Trabajo: $title';
+  }
+
+  @override
+  String get sectionPayments => 'Pagos';
+
+  @override
+  String get noPaymentsYet => 'Sin pagos todavía';
+
+  @override
+  String get paymentVoidedTag => 'Anulado';
+
+  @override
+  String get issueInvoice => 'Emitir factura';
+
+  @override
+  String get issueInvoiceConfirmTitle => '¿Emitir esta factura?';
+
+  @override
+  String get issueInvoiceConfirmBody =>
+      'Después ya no se pueden cambiar sus conceptos ni importes. Para corregir un error, anúlala y haz otra.';
+
+  @override
+  String get invoiceEmptyNotice => 'Agrega conceptos para poder emitirla.';
+
+  @override
+  String get notYet => 'Todavía no';
+
+  @override
+  String get keepInvoice => 'Conservarla';
+
+  @override
+  String get keepPayment => 'Conservarlo';
+
+  @override
+  String get recordPayment => 'Registrar pago';
+
+  @override
+  String get paymentAmountLabel => 'Importe';
+
+  @override
+  String paymentAmountHelp(String amount) {
+    return 'Saldo pendiente: $amount';
+  }
+
+  @override
+  String paymentOverBalance(String amount) {
+    return 'Es más que el saldo pendiente ($amount).';
+  }
+
+  @override
+  String get invalidAmount =>
+      'Escribe un importe mayor que cero, como 250 o 99.50.';
+
+  @override
+  String get paymentMethodLabel => 'Forma de pago';
+
+  @override
+  String get paymentMethodCash => 'Efectivo';
+
+  @override
+  String get paymentMethodCheck => 'Cheque';
+
+  @override
+  String get paymentMethodCard => 'Tarjeta';
+
+  @override
+  String get paymentMethodBankTransfer => 'Transferencia';
+
+  @override
+  String get paymentMethodOther => 'Otro';
+
+  @override
+  String get paymentMethodUnknown => 'Otra forma';
+
+  @override
+  String get paymentMethodRequired => 'Elige cómo se pagó.';
+
+  @override
+  String get paymentDateLabel => 'Fecha de pago';
+
+  @override
+  String get paymentReferenceLabel => 'Referencia';
+
+  @override
+  String get paymentReferenceHint =>
+      'Número de cheque, autorización, folio de transferencia';
+
+  @override
+  String get voidPayment => 'Anular pago';
+
+  @override
+  String get voidPaymentConfirmTitle => '¿Anular este pago?';
+
+  @override
+  String get voidPaymentConfirmBody =>
+      'Para un cheque rebotado o un reembolso. Queda registrado pero deja de contar, y el saldo vuelve a subir.';
+
+  @override
+  String get voidInvoice => 'Anular factura';
+
+  @override
+  String get voidInvoiceConfirmTitle => '¿Anular esta factura?';
+
+  @override
+  String get voidInvoiceConfirmBody =>
+      'Queda en el historial de la cuenta, pero ya no recibe pagos ni puede cambiar. No se puede deshacer.';
+
+  @override
+  String get deleteInvoice => 'Eliminar factura';
+
+  @override
+  String get deleteInvoiceConfirmTitle => '¿Eliminar este borrador?';
+
+  @override
+  String get deleteInvoiceConfirmBody =>
+      'Se eliminará el borrador de la factura. No se puede deshacer.';
+
+  @override
+  String get voidInvoiceNotice =>
+      'Esta factura está anulada. Se conserva como registro.';
+
+  @override
+  String invoiceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count facturas',
+      one: '1 factura',
+      zero: 'Ninguna factura',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get invoicesNotFound => 'Esta factura ya no existe.';
+
+  @override
+  String get invoicesDueDateRequired =>
+      'Elige una fecha de vencimiento: las condiciones de pago del contrato no la definen.';
+
+  @override
+  String get invoicesDueBeforeIssue =>
+      'La fecha de vencimiento no puede ser anterior a la de emisión.';
+
+  @override
+  String get invoicesNotDraft => 'Solo un borrador se puede cambiar o emitir.';
+
+  @override
+  String get invoicesEmpty =>
+      'Una factura necesita conceptos y un total mayor que cero para emitirse.';
+
+  @override
+  String get invoicesVoid => 'Esta factura ya está anulada.';
+
+  @override
+  String get invoicesHasPayments =>
+      'Anula primero sus pagos y luego la factura.';
+
+  @override
+  String get invoicesOnlyDraftsDeletable =>
+      'Solo se puede eliminar un borrador. Una factura emitida se anula.';
+
+  @override
+  String get invoicesNotPayable =>
+      'Solo se registran pagos en facturas emitidas o con pago parcial.';
+
+  @override
+  String get invoicesOverpayment => 'Es más que el saldo pendiente.';
+
+  @override
+  String get invoicesPaymentNotFound => 'Ese pago ya no existe.';
+
+  @override
+  String get invoicesPaymentAlreadyVoided => 'Ese pago ya está anulado.';
 }

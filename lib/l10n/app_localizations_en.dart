@@ -2959,4 +2959,323 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noJobsForYouToday => 'Nothing assigned to you today';
+
+  @override
+  String get moduleInvoices => 'Invoices';
+
+  @override
+  String get moduleInvoicesHint => 'Billing, payments and what\'s overdue';
+
+  @override
+  String get invoiceTitle => 'Invoice';
+
+  @override
+  String get newInvoiceTitle => 'New invoice';
+
+  @override
+  String get editInvoice => 'Edit invoice';
+
+  @override
+  String get invoiceStatusDraft => 'Draft';
+
+  @override
+  String get invoiceStatusIssued => 'Issued';
+
+  @override
+  String get invoiceStatusPartiallyPaid => 'Partly paid';
+
+  @override
+  String get invoiceStatusPaid => 'Paid';
+
+  @override
+  String get invoiceStatusVoid => 'Void';
+
+  @override
+  String get invoiceStatusUnknown => 'Other status';
+
+  @override
+  String get invoiceStatusOverdue => 'Overdue';
+
+  @override
+  String invoiceDaysOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days overdue',
+      one: '1 day overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get invoicesFilterLabel => 'Which invoices';
+
+  @override
+  String get invoicesFilterAll => 'All';
+
+  @override
+  String invoicesFilterOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Overdue ($count)',
+      zero: 'Overdue',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noInvoicesYet => 'No invoices';
+
+  @override
+  String get noInvoicesYetHint => 'Bill this account with the \"+\".';
+
+  @override
+  String get noInvoicesOverdue => 'Nothing overdue';
+
+  @override
+  String get noInvoicesOverdueHint =>
+      'Every issued invoice is paid or not due yet.';
+
+  @override
+  String get invoicesOfOneContract => 'Showing one contract\'s invoices.';
+
+  @override
+  String invoiceDueOn(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String invoiceBalanceOf(String amount) {
+    return '$amount due';
+  }
+
+  @override
+  String get invoiceTotalLabel => 'Invoice total';
+
+  @override
+  String get invoiceBalanceLabel => 'Balance due';
+
+  @override
+  String get invoicePaidLabel => 'Paid';
+
+  @override
+  String invoicePaidOf(String paid, String total) {
+    return '$paid paid of $total';
+  }
+
+  @override
+  String get invoicePaidInFull => 'Paid in full';
+
+  @override
+  String get invoiceIssueDateLabel => 'Issue date';
+
+  @override
+  String get invoiceDueDateLabel => 'Due date';
+
+  @override
+  String get invoiceDueDateHelp =>
+      'Leave the due date empty to use the contract\'s payment terms.';
+
+  @override
+  String get invoiceDueBeforeIssue => 'Pick a day on or after the issue date.';
+
+  @override
+  String get invoiceNumberLabel => 'Invoice number';
+
+  @override
+  String get invoiceNumberHelp => 'Leave it empty to number it automatically.';
+
+  @override
+  String get invoiceNumberTaken => 'That invoice number is already used.';
+
+  @override
+  String get invoiceContractLabel => 'Contract';
+
+  @override
+  String get invoiceNoContracts => 'This account has no contracts.';
+
+  @override
+  String get invoiceLineJobLabel => 'Job';
+
+  @override
+  String get invoiceLineNoJobs =>
+      'This account had no jobs in the last 30 days.';
+
+  @override
+  String invoiceLineJob(String title) {
+    return 'Job: $title';
+  }
+
+  @override
+  String get sectionPayments => 'Payments';
+
+  @override
+  String get noPaymentsYet => 'No payments yet';
+
+  @override
+  String get paymentVoidedTag => 'Voided';
+
+  @override
+  String get issueInvoice => 'Issue invoice';
+
+  @override
+  String get issueInvoiceConfirmTitle => 'Issue this invoice?';
+
+  @override
+  String get issueInvoiceConfirmBody =>
+      'Its lines and amounts can\'t change after this. To fix a mistake later, void it and make a new one.';
+
+  @override
+  String get invoiceEmptyNotice => 'Add line items to issue it.';
+
+  @override
+  String get notYet => 'Not yet';
+
+  @override
+  String get keepInvoice => 'Keep it';
+
+  @override
+  String get keepPayment => 'Keep it';
+
+  @override
+  String get recordPayment => 'Record payment';
+
+  @override
+  String get paymentAmountLabel => 'Amount';
+
+  @override
+  String paymentAmountHelp(String amount) {
+    return 'Balance due: $amount';
+  }
+
+  @override
+  String paymentOverBalance(String amount) {
+    return 'That\'s more than the balance due ($amount).';
+  }
+
+  @override
+  String get invalidAmount => 'Enter an amount above zero, like 250 or 99.50.';
+
+  @override
+  String get paymentMethodLabel => 'Method';
+
+  @override
+  String get paymentMethodCash => 'Cash';
+
+  @override
+  String get paymentMethodCheck => 'Check';
+
+  @override
+  String get paymentMethodCard => 'Card';
+
+  @override
+  String get paymentMethodBankTransfer => 'Bank transfer';
+
+  @override
+  String get paymentMethodOther => 'Other';
+
+  @override
+  String get paymentMethodUnknown => 'Other method';
+
+  @override
+  String get paymentMethodRequired => 'Pick how it was paid.';
+
+  @override
+  String get paymentDateLabel => 'Date received';
+
+  @override
+  String get paymentReferenceLabel => 'Reference';
+
+  @override
+  String get paymentReferenceHint => 'Check number, authorization, transfer ID';
+
+  @override
+  String get voidPayment => 'Void payment';
+
+  @override
+  String get voidPaymentConfirmTitle => 'Void this payment?';
+
+  @override
+  String get voidPaymentConfirmBody =>
+      'For a bounced check or a refund. It stays on record but no longer counts, and the balance goes back up.';
+
+  @override
+  String get voidInvoice => 'Void invoice';
+
+  @override
+  String get voidInvoiceConfirmTitle => 'Void this invoice?';
+
+  @override
+  String get voidInvoiceConfirmBody =>
+      'It stays in the account\'s history, but it can\'t take payments or change again. This can\'t be undone.';
+
+  @override
+  String get deleteInvoice => 'Delete invoice';
+
+  @override
+  String get deleteInvoiceConfirmTitle => 'Delete this draft?';
+
+  @override
+  String get deleteInvoiceConfirmBody =>
+      'The draft invoice will be deleted. This can\'t be undone.';
+
+  @override
+  String get voidInvoiceNotice =>
+      'This invoice is void. It stays for the record.';
+
+  @override
+  String invoiceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invoices',
+      one: '1 invoice',
+      zero: 'No invoices',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get invoicesNotFound => 'This invoice no longer exists.';
+
+  @override
+  String get invoicesDueDateRequired =>
+      'Pick a due date: the contract\'s payment terms don\'t set one.';
+
+  @override
+  String get invoicesDueBeforeIssue =>
+      'The due date can\'t be before the issue date.';
+
+  @override
+  String get invoicesNotDraft =>
+      'Only a draft invoice can be changed or issued.';
+
+  @override
+  String get invoicesEmpty =>
+      'An invoice needs line items and a total above zero to be issued.';
+
+  @override
+  String get invoicesVoid => 'This invoice is already void.';
+
+  @override
+  String get invoicesHasPayments =>
+      'Void its payments first, then the invoice.';
+
+  @override
+  String get invoicesOnlyDraftsDeletable =>
+      'Only a draft can be deleted. Void an issued invoice instead.';
+
+  @override
+  String get invoicesNotPayable =>
+      'Payments only go on an issued or partly paid invoice.';
+
+  @override
+  String get invoicesOverpayment => 'That\'s more than the balance due.';
+
+  @override
+  String get invoicesPaymentNotFound => 'That payment no longer exists.';
+
+  @override
+  String get invoicesPaymentAlreadyVoided => 'That payment is already voided.';
 }

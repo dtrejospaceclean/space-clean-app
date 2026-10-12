@@ -16,6 +16,8 @@ import '../../contacts/presentation/screens/contacts_screen.dart';
 import '../../complaints/presentation/screens/complaints_screen.dart';
 import '../../complaints/presentation/screens/resolve_complaint_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
+import '../../invoices/presentation/screens/invoices_screen.dart';
+import '../../invoices/presentation/screens/record_payment_screen.dart';
 import '../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../jobs/presentation/screens/job_checklist_screen.dart';
 import '../../jobs/presentation/screens/job_complete_screen.dart';
@@ -131,6 +133,13 @@ final _byPage = <String, List<_PlusOption>>{
       Permissions.contractEdit,
     ),
   ],
+  '${AccountsScreen.path}/:clientId/${InvoicesScreen.route}': [
+    _PlusOption.inAccount(
+      '${AccountsScreen.path}/:clientId/${InvoicesScreen.route}/new',
+      (l10n) => l10n.newInvoiceTitle,
+      Permissions.invoiceEdit,
+    ),
+  ],
   '${AccountsScreen.path}/:clientId/${ScopesScreen.route}': [
     _PlusOption.inAccount(
       '${AccountsScreen.path}/:clientId/${ScopesScreen.route}/new',
@@ -194,6 +203,7 @@ bool _noPlus(String route) =>
     route.endsWith('/approve') ||
     route.endsWith('/sign') ||
     route.endsWith('/${ResolveComplaintScreen.route}') ||
+    route.endsWith('/${RecordPaymentScreen.route}') ||
     route.endsWith('/reschedule') ||
     route.endsWith('/item') ||
     route.endsWith('/window') ||

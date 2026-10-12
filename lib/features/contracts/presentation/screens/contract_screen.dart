@@ -10,6 +10,7 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
+import '../../../invoices/presentation/screens/invoices_screen.dart';
 import '../../../proposals/presentation/screens/proposals_screen.dart';
 import '../../../proposals/presentation/widgets/line_item_row.dart';
 import '../../../scopes/presentation/screens/scopes_screen.dart';
@@ -156,6 +157,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
     final canEdit = access?.can(Permissions.contractEdit) ?? false;
     final canViewProposals = access?.can(Permissions.proposalView) ?? false;
     final canViewScopes = access?.can(Permissions.scopeView) ?? false;
+    final canViewInvoices = access?.can(Permissions.invoiceView) ?? false;
     final here = GoRouterState.of(context).matchedLocation;
     final list = here.substring(0, here.lastIndexOf('/'));
     final account = list.substring(0, list.lastIndexOf('/'));
@@ -262,6 +264,16 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
                               value: l10n.scopeOfWorkCount(c.scopeOfWorkCount),
                               onTap: () => context.push(
                                 '$account/${ScopesScreen.route}'
+                                '?contract=${c.id}',
+                              ),
+                            ),
+                          // What's been billed under it.
+                          if (canViewInvoices)
+                            FactRow(
+                              label: l10n.moduleInvoices,
+                              value: l10n.invoiceCount(c.invoiceCount),
+                              onTap: () => context.push(
+                                '$account/${InvoicesScreen.route}'
                                 '?contract=${c.id}',
                               ),
                             ),

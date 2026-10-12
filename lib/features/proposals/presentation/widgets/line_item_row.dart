@@ -22,6 +22,7 @@ class LineItemRow extends StatelessWidget {
     required this.unitPrice,
     required this.lineTotal,
     this.unit,
+    this.detail,
     this.onTap,
   });
 
@@ -34,6 +35,9 @@ class LineItemRow extends StatelessWidget {
 
   /// The linked service's unit ("sq ft"), when known.
   final String? unit;
+
+  /// One more thing about it, after the math ("Job: Lobby deep clean").
+  final String? detail;
   final VoidCallback? onTap;
 
   @override
@@ -45,7 +49,7 @@ class LineItemRow extends StatelessWidget {
         '${context.formatMoney(unitPrice)}';
     return ListRow(
       title: description,
-      subtitle: large ? '$math = $total' : math,
+      subtitle: [large ? '$math = $total' : math, ?detail].join(' · '),
       trailing: large ? null : Text(total, style: moneyStyle),
       onTap: onTap,
     );
