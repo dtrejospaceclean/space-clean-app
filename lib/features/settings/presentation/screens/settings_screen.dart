@@ -5,6 +5,7 @@ import '../../../../core/design/design.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/app_language.dart';
 import '../../domain/entities/app_theme_mode.dart';
+import '../controllers/app_version_provider.dart';
 import '../controllers/language_controller.dart';
 import '../controllers/theme_mode_controller.dart';
 
@@ -27,8 +28,9 @@ extension SettingsLabels on AppLocalizations {
   };
 }
 
-/// Me → Settings: the app's language and light or dark appearance. Both
-/// apply at once and are remembered on this phone.
+/// Me → Settings: the app's language and light or dark appearance (both
+/// apply at once and are remembered on this phone), then which version is
+/// installed, to tell support or check an update arrived.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -39,6 +41,7 @@ class SettingsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final language = currentLanguage(context, ref);
     final theme = ref.watch(themeModeControllerProvider);
+    final version = ref.watch(appVersionProvider).value;
 
     return SpacePage(
       title: l10n.sectionSettings,
@@ -98,6 +101,17 @@ class SettingsScreen extends ConsumerWidget {
                       .read(themeModeControllerProvider.notifier)
                       .select(option),
                 ),
+            ],
+          ),
+        ),
+        PageBox(top: 12, child: SectionHeader(title: l10n.aboutLabel)),
+        PageBox(
+          top: 0,
+          child: ListCard(
+            children: [
+              // Dashes until the phone answers, which is all but instant.
+              FactRow(label: l10n.appVersionLabel, value: version?.version),
+              FactRow(label: l10n.appBuildLabel, value: version?.build),
             ],
           ),
         ),

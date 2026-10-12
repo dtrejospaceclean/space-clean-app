@@ -187,6 +187,9 @@ Future<void> _sheet(
         passwordResetRepositoryProvider.overrideWithValue(
           FakePasswordResetRepository(),
         ),
+        appInfoRepositoryProvider.overrideWithValue(
+          const FakeAppInfoRepository(),
+        ),
       ],
       retry: (_, _) => null,
     );

@@ -5653,6 +5653,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This reset took too long or was already used. Send a new code to start again.'**
   String get authInvalidResetToken;
+
+  /// No description provided for @aboutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutLabel;
+
+  /// No description provided for @appVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get appVersionLabel;
+
+  /// No description provided for @appBuildLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get appBuildLabel;
 }
 
 class _AppLocalizationsDelegate

@@ -3315,4 +3315,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get authInvalidResetToken =>
       'El restablecimiento tardó demasiado o ya se usó. Pide un código nuevo para empezar de nuevo.';
+
+  @override
+  String get aboutLabel => 'Acerca de';
+
+  @override
+  String get appVersionLabel => 'Versión';
+
+  @override
+  String get appBuildLabel => 'Compilación';
 }

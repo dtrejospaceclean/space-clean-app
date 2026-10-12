@@ -3286,4 +3286,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authInvalidResetToken =>
       'This reset took too long or was already used. Send a new code to start again.';
+
+  @override
+  String get aboutLabel => 'About';
+
+  @override
+  String get appVersionLabel => 'Version';
+
+  @override
+  String get appBuildLabel => 'Build';
 }

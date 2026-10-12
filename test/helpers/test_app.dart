@@ -59,6 +59,9 @@ import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
 import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
 import 'package:sp_cln_app/features/scopes/domain/repositories/scopes_repository.dart';
 import 'package:sp_cln_app/features/service_catalog/di/service_catalog_providers.dart';
+import 'package:sp_cln_app/features/settings/di/settings_providers.dart';
+import 'package:sp_cln_app/features/settings/domain/entities/app_version.dart';
+import 'package:sp_cln_app/features/settings/domain/repositories/app_info_repository.dart';
 import 'package:sp_cln_app/features/team/di/team_providers.dart';
 import 'package:sp_cln_app/features/team/domain/entities/member.dart';
 import 'package:sp_cln_app/features/team/domain/repositories/team_repository.dart';
@@ -316,6 +319,18 @@ class FakePasswordResetRepository implements PasswordResetRepository {
     calls.add('reset:$resetToken');
     if (resetError case final error?) throw error;
   }
+}
+
+/// A fixed installed version, in place of the platform's.
+class FakeAppInfoRepository implements AppInfoRepository {
+  const FakeAppInfoRepository([
+    this.version = const AppVersion(version: '1.4.0', build: '27'),
+  ]);
+
+  final AppVersion version;
+
+  @override
+  Future<AppVersion> getVersion() async => version;
 }
 
 /// In-memory accounts; records every write.
@@ -2824,6 +2839,9 @@ Future<SharedPreferences> pumpApp(
         authRepositoryProvider.overrideWithValue(auth),
         passwordResetRepositoryProvider.overrideWithValue(
           passwordReset ?? FakePasswordResetRepository(),
+        ),
+        appInfoRepositoryProvider.overrideWithValue(
+          const FakeAppInfoRepository(),
         ),
         clientsRepositoryProvider.overrideWithValue(
           clients ?? FakeClientsRepository(),
