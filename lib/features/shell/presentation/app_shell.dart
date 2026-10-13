@@ -17,7 +17,9 @@ import '../../complaints/presentation/screens/complaints_screen.dart';
 import '../../complaints/presentation/screens/resolve_complaint_screen.dart';
 import '../../contracts/presentation/screens/contracts_screen.dart';
 import '../../invoices/presentation/screens/invoices_screen.dart';
+import '../../invoices/presentation/screens/invoice_pdf_screen.dart';
 import '../../invoices/presentation/screens/record_payment_screen.dart';
+import '../../invoices/presentation/screens/send_invoice_screen.dart';
 import '../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../jobs/presentation/screens/job_checklist_screen.dart';
 import '../../jobs/presentation/screens/job_complete_screen.dart';
@@ -204,6 +206,8 @@ bool _noPlus(String route) =>
     route.endsWith('/sign') ||
     route.endsWith('/${ResolveComplaintScreen.route}') ||
     route.endsWith('/${RecordPaymentScreen.route}') ||
+    route.endsWith('/invoices/:invoiceId/${InvoicePdfScreen.route}') ||
+    route.endsWith('/invoices/:invoiceId/${SendInvoiceScreen.route}') ||
     route.endsWith('/reschedule') ||
     route.endsWith('/item') ||
     route.endsWith('/window') ||

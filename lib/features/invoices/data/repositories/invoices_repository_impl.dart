@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../core/network/api_exception.dart';
 import '../../domain/entities/invoice.dart';
 import '../../domain/repositories/invoices_repository.dart';
@@ -53,6 +55,25 @@ class InvoicesRepositoryImpl implements InvoicesRepository {
     String invoiceId,
     PaymentDraft payment,
   ) => _guard(() => _remote.recordPayment(clientId, invoiceId, payment));
+
+  @override
+  Future<Uint8List> getInvoicePdf(
+    String clientId,
+    String invoiceId, {
+    required String language,
+  }) => _guard(
+    () => _remote.getInvoicePdf(clientId, invoiceId, language: language),
+  );
+
+  @override
+  Future<List<String>> sendInvoice(
+    String clientId,
+    String invoiceId, {
+    required List<String> to,
+    required String language,
+  }) => _guard(
+    () => _remote.sendInvoice(clientId, invoiceId, to: to, language: language),
+  );
 
   @override
   Future<Invoice> voidPayment(

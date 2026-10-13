@@ -33,6 +33,12 @@ final deleteInvoiceProvider = Provider(
 final recordPaymentProvider = Provider(
   (ref) => RecordPayment(ref.watch(invoicesRepositoryProvider)),
 );
+final getInvoicePdfProvider = Provider(
+  (ref) => GetInvoicePdf(ref.watch(invoicesRepositoryProvider)),
+);
+final sendInvoiceProvider = Provider(
+  (ref) => SendInvoice(ref.watch(invoicesRepositoryProvider)),
+);
 final voidPaymentProvider = Provider(
   (ref) => VoidPayment(ref.watch(invoicesRepositoryProvider)),
 );

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import '../error/failures.dart';
@@ -26,6 +28,17 @@ class ApiFieldError {
   final Map<String, dynamic> params;
 }
 
+/// An error response's body as JSON. A request for a file (bytes) gets its
+/// JSON error as bytes too; anything that doesn't decode is returned as is.
+Object? errorBody(Object? data) {
+  if (data is! List<int>) return data;
+  try {
+    return jsonDecode(utf8.decode(data));
+  } on FormatException {
+    return data;
+  }
+}
+
 /// A failed API call. [key] is a translation key, never display text.
 class ApiException implements Exception {
   const ApiException({
@@ -39,7 +52,7 @@ class ApiException implements Exception {
     if (response == null) {
       return const ApiException(key: NetworkFailure.key, statusCode: 0);
     }
-    final body = response.data;
+    final body = errorBody(response.data);
     if (body is! Map) {
       return ApiException(
         key: _fallbackKey(response.statusCode),

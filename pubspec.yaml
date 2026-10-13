@@ -45,6 +45,7 @@ dependencies:
   flutter_svg: ^2.3.0
   image_picker: ^1.2.4
   package_info_plus: ^10.2.2
+  pdfrx: ^2.6.5
 
 dev_dependencies:
   flutter_test:

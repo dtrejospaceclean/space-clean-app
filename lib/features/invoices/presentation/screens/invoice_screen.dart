@@ -18,7 +18,9 @@ import '../../domain/entities/invoice.dart';
 import '../../domain/usecases/invoice_usecases.dart';
 import '../controllers/invoices_providers.dart';
 import '../widgets/invoice_labels.dart';
+import 'invoice_pdf_screen.dart';
 import 'record_payment_screen.dart';
+import 'send_invoice_screen.dart';
 
 /// One invoice: a head card (number, status, total, dates, what's been
 /// paid), its lines, its payments and its contract. With `invoice.edit`, a
@@ -44,6 +46,17 @@ enum _Busy { issue, voidInvoice, delete, voidPayment }
 
 class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
   _Busy? _busy;
+
+  /// Who the invoice was just emailed to, to say so on the page.
+  List<String>? _sentTo;
+
+  /// Opens the send page, and says who it went to once it's back.
+  Future<void> _openSend(String here) async {
+    final sentTo = await context.push<List<String>>(
+      '$here/${SendInvoiceScreen.route}',
+    );
+    if (sentTo != null && mounted) setState(() => _sentTo = sentTo);
+  }
 
   InvoiceRef get _ref =>
       InvoiceRef(clientId: widget.clientId, invoiceId: widget.invoiceId);
@@ -215,6 +228,8 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
                 final editable = canEdit && i.isEditable;
                 final payable = canEdit && i.canPay;
                 final voidable = canEdit && i.canVoid;
+                final sendable = canEdit && i.canSend;
+                final primary = (editable && i.canIssue) || payable;
                 return SliverMainAxisGroup(
                   slivers: [
                     PageBox(
@@ -226,6 +241,13 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
                             : null,
                       ),
                     ),
+                    if (_sentTo case final sentTo?)
+                      PageBox(
+                        child: Notice(
+                          message: l10n.invoiceSentTo(sentTo.join(', ')),
+                          tone: NoticeTone.success,
+                        ),
+                      ),
                     if (i.isVoided)
                       PageBox(
                         child: Notice(
@@ -338,11 +360,33 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
                                 ),
                         ),
                       ),
+                    // The document itself, and (once issued) emailing it.
+                    PageBox(
+                      top: primary ? 12 : 24,
+                      child: SecondaryButton(
+                        label: l10n.viewInvoicePdf,
+                        icon: Icons.picture_as_pdf_outlined,
+                        onPressed: busy
+                            ? null
+                            : () => context.push(
+                                '$here/${InvoicePdfScreen.route}',
+                              ),
+                      ),
+                    ),
+                    if (sendable)
+                      PageBox(
+                        top: 12,
+                        child: SecondaryButton(
+                          label: l10n.sendInvoice,
+                          icon: Icons.send_outlined,
+                          onPressed: busy ? null : () => _openSend(here),
+                        ),
+                      ),
                     // Quiet actions at the foot: voiding what was issued,
                     // deleting a draft.
                     if (voidable || editable)
                       PageBox(
-                        top: (editable && i.canIssue) || payable ? 12 : 20,
+                        top: 12,
                         child: Column(
                           children: [
                             if (voidable)

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../core/usecase/usecase.dart';
 import '../entities/invoice.dart';
 import '../repositories/invoices_repository.dart';
@@ -124,6 +126,70 @@ class RecordPayment implements UseCase<Invoice, RecordPaymentParams> {
   @override
   Future<Invoice> call(RecordPaymentParams p) =>
       _repository.recordPayment(p.clientId, p.invoiceId, p.payment);
+}
+
+class InvoicePdfParams {
+  const InvoicePdfParams({
+    required this.clientId,
+    required this.invoiceId,
+    required this.language,
+  });
+
+  final String clientId;
+  final String invoiceId;
+
+  /// `en` or `es`: the app's current language.
+  final String language;
+
+  @override
+  bool operator ==(Object other) =>
+      other is InvoicePdfParams &&
+      other.clientId == clientId &&
+      other.invoiceId == invoiceId &&
+      other.language == language;
+
+  @override
+  int get hashCode => Object.hash(clientId, invoiceId, language);
+}
+
+class GetInvoicePdf implements UseCase<Uint8List, InvoicePdfParams> {
+  const GetInvoicePdf(this._repository);
+
+  final InvoicesRepository _repository;
+
+  @override
+  Future<Uint8List> call(InvoicePdfParams p) =>
+      _repository.getInvoicePdf(p.clientId, p.invoiceId, language: p.language);
+}
+
+class SendInvoiceParams {
+  const SendInvoiceParams({
+    required this.clientId,
+    required this.invoiceId,
+    required this.to,
+    required this.language,
+  });
+
+  final String clientId;
+  final String invoiceId;
+  final List<String> to;
+  final String language;
+}
+
+/// Emails the invoice to each address once (trimmed, lowercased); returns
+/// who it went to.
+class SendInvoice implements UseCase<List<String>, SendInvoiceParams> {
+  const SendInvoice(this._repository);
+
+  final InvoicesRepository _repository;
+
+  @override
+  Future<List<String>> call(SendInvoiceParams p) => _repository.sendInvoice(
+    p.clientId,
+    p.invoiceId,
+    to: {for (final email in p.to) email.trim().toLowerCase()}.toList(),
+    language: p.language,
+  );
 }
 
 class VoidPaymentParams {

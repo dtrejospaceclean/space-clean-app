@@ -2,14 +2,25 @@ import '../../../../core/usecase/usecase.dart';
 import '../entities/password_policy.dart';
 import '../repositories/password_reset_repository.dart';
 
-class RequestResetCode implements UseCase<void, String> {
+class RequestResetCodeParams {
+  const RequestResetCodeParams({required this.email, required this.language});
+
+  final String email;
+
+  /// `en` or `es`: the app's language, which the email is written in.
+  final String language;
+}
+
+class RequestResetCode implements UseCase<void, RequestResetCodeParams> {
   const RequestResetCode(this._repository);
 
   final PasswordResetRepository _repository;
 
   @override
-  Future<void> call(String email) =>
-      _repository.requestCode(email.trim().toLowerCase());
+  Future<void> call(RequestResetCodeParams params) => _repository.requestCode(
+    params.email.trim().toLowerCase(),
+    language: params.language,
+  );
 }
 
 class VerifyResetCodeParams {

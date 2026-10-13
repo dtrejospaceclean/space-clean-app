@@ -130,7 +130,9 @@ class ListRow extends StatelessWidget {
 
 /// One option of a single choice in a [ListCard] (a language, a theme):
 /// tapping picks it, and the picked one shows a filled check. Read out as a
-/// selected or unselected option of a group.
+/// selected or unselected option of a group. With [multiple], one of several
+/// that can be picked together (an invoice's recipients): tapping toggles it,
+/// and it's read out as a checkbox.
 class ChoiceRow extends StatelessWidget {
   const ChoiceRow({
     super.key,
@@ -139,25 +141,29 @@ class ChoiceRow extends StatelessWidget {
     required this.onSelect,
     this.subtitle,
     this.leading,
+    this.multiple = false,
   });
 
   final String title;
   final String? subtitle;
   final Widget? leading;
   final bool selected;
+
+  /// Picks it; with [multiple], toggles it.
   final VoidCallback onSelect;
+  final bool multiple;
 
   @override
   Widget build(BuildContext context) => MergeSemantics(
     child: Semantics(
       checked: selected,
-      inMutuallyExclusiveGroup: true,
+      inMutuallyExclusiveGroup: !multiple,
       child: ListRow(
         title: title,
         subtitle: subtitle,
         leading: leading,
         chevron: false,
-        onTap: selected
+        onTap: selected && !multiple
             ? null
             : () {
                 HapticFeedback.selectionClick();

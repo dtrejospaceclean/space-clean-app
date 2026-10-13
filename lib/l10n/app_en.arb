@@ -1497,5 +1497,22 @@
   "authInvalidPin": "That code is wrong or has expired. After 5 tries, send a new code.",
   "authInvalidResetToken": "This reset took too long or was already used. Send a new code to start again.",
   "aboutLabel": "About",
-  "appVersionLabel": "Version"
+  "appVersionLabel": "Version",
+  "viewInvoicePdf": "View PDF",
+  "invoicePdfTitle": "Invoice PDF",
+  "sendInvoice": "Send by email",
+  "sendInvoiceButton": "Send",
+  "sendInvoiceTo": "{count, plural, =1{Send to 1 person} other{Send to {count} people}}",
+  "@sendInvoiceTo": {"placeholders": {"count": {"type": "int"}}},
+  "sendInvoiceOtherEmails": "Other emails",
+  "sendInvoiceAddEmail": "Add email",
+  "sendInvoiceHelp": "Everyone on the list sees the others' addresses. The email and the attached PDF are in the language the app is in.",
+  "sendInvoiceNoRecipients": "Pick at least one person, or add an email.",
+  "sendInvoiceTooMany": "An invoice can go to up to {max} emails at once.",
+  "@sendInvoiceTooMany": {"placeholders": {"max": {"type": "int"}}},
+  "invoiceSentTo": "Sent to {emails}.",
+  "@invoiceSentTo": {"placeholders": {"emails": {"type": "String"}}},
+  "invoicesNotSendable": "Only an issued invoice can be sent. Drafts and void invoices can't.",
+  "invoicesNoRecipient": "This account has no billing or primary contact with an email. Add an email to send it.",
+  "mailSendFailed": "The email couldn't be sent. Try again in a moment."
 }

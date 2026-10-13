@@ -3321,4 +3321,63 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appVersionLabel => 'Versión';
+
+  @override
+  String get viewInvoicePdf => 'Ver PDF';
+
+  @override
+  String get invoicePdfTitle => 'PDF de la factura';
+
+  @override
+  String get sendInvoice => 'Enviar por correo';
+
+  @override
+  String get sendInvoiceButton => 'Enviar';
+
+  @override
+  String sendInvoiceTo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Enviar a $count personas',
+      one: 'Enviar a 1 persona',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sendInvoiceOtherEmails => 'Otros correos';
+
+  @override
+  String get sendInvoiceAddEmail => 'Agregar correo';
+
+  @override
+  String get sendInvoiceHelp =>
+      'Todos los destinatarios ven las direcciones de los demás. El correo y el PDF adjunto van en el idioma de la app.';
+
+  @override
+  String get sendInvoiceNoRecipients =>
+      'Elige al menos una persona o agrega un correo.';
+
+  @override
+  String sendInvoiceTooMany(int max) {
+    return 'Una factura puede enviarse a $max correos como máximo a la vez.';
+  }
+
+  @override
+  String invoiceSentTo(String emails) {
+    return 'Enviada a $emails.';
+  }
+
+  @override
+  String get invoicesNotSendable =>
+      'Solo se puede enviar una factura emitida. Los borradores y las anuladas no.';
+
+  @override
+  String get invoicesNoRecipient =>
+      'Esta cuenta no tiene contacto de facturación ni principal con correo. Agrega un correo para enviarla.';
+
+  @override
+  String get mailSendFailed =>
+      'No se pudo enviar el correo. Inténtalo de nuevo en un momento.';
 }

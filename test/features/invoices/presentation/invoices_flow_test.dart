@@ -1,6 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
+import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
+import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
 
@@ -11,7 +14,33 @@ const _tower = Client(
   legalName: 'Torre Norte S.A.',
   dba: 'Torre Norte',
   status: ClientStatus.active,
+  accountManager: ClientAssignee(
+    id: 'u-am',
+    name: 'Carlos Medina',
+    email: 'carlos@spaceclean.com',
+  ),
+  // No email: can't be offered.
+  supervisor: ClientAssignee(id: 'u-sup', name: 'Rosa Díaz'),
 );
+
+const _contacts = [
+  Contact(
+    id: 'ct1',
+    clientId: 'c1',
+    firstName: 'Laura',
+    lastName: 'Ortiz',
+    email: 'Laura@TorreNorte.com',
+    isBillingContact: true,
+  ),
+  Contact(
+    id: 'ct2',
+    clientId: 'c1',
+    firstName: 'Pedro',
+    lastName: 'Ruiz',
+    email: 'pedro@torrenorte.com',
+    isPrimary: true,
+  ),
+];
 
 final _contract = Contract(
   id: 'k1',
@@ -115,6 +144,7 @@ const _editor = {
   Permissions.invoiceView,
   Permissions.invoiceEdit,
   Permissions.contractView,
+  Permissions.infoView,
 };
 
 /// Opens Torre Norte → Invoices as a member with [permissions].
@@ -131,6 +161,7 @@ Future<FakeInvoicesRepository> _openInvoices(
     auth: FakeAuthRepository(sessionUser: ana),
     clients: FakeClientsRepository([_tower]),
     contracts: FakeContractsRepository([_contract]),
+    contacts: FakeContactsRepository(_contacts),
     invoices: repo,
     access: FakeAccessRepository({
       'c1': AccountAccess(
@@ -337,6 +368,13 @@ void main() {
     await _confirm(tester, 'Void payment');
     expect(invoices.writes, ['void-payment:pay-1']);
     expect(find.text('Voided'), findsOneWidget);
+    // The head card is above, out of view after scrolling down.
+    await tester.fling(
+      find.byType(Scrollable).first,
+      const Offset(0, 3000),
+      3000,
+    );
+    await tester.pumpAndSettle();
     expect(
       find.text(r'Balance due: $2,400.00 · 5 days overdue'),
       findsOneWidget,
@@ -406,5 +444,126 @@ void main() {
     expect(find.text('INV-2026-00040'), findsOneWidget);
     // The draft has no contract.
     expect(find.text('INV-2026-00042'), findsNothing);
+  });
+
+  testWidgets('anyone who sees an invoice opens its PDF', (tester) async {
+    final invoices = await _openInvoices(tester);
+    await _open(tester, 'INV-2026-00042');
+
+    await revealBelow(tester, find.text('View PDF'));
+    await tester.tap(find.text('View PDF'));
+    await tester.pumpAndSettle();
+
+    // In the app's language; drafts too (the server marks them).
+    expect(invoices.pdfs, ['inv-b:en']);
+    expect(find.text('INV-2026-00042'), findsOneWidget);
+    expect(find.textContaining('PDF INV-2026-00042-en.pdf'), findsOneWidget);
+    // Sending is for editors, and only once issued.
+    expect(find.byTooltip('Send by email'), findsNothing);
+  });
+
+  testWidgets('an editor emails the invoice to people they pick', (
+    tester,
+  ) async {
+    final invoices = await _openInvoices(tester, permissions: _editor);
+    await _open(tester, 'INV-2026-00041');
+
+    await revealBelow(tester, find.text('Send by email'));
+    await tester.tap(find.text('Send by email'));
+    await tester.pumpAndSettle();
+
+    // The people in charge with an email, then the contacts; the billing
+    // contact starts picked, like the server's own default.
+    expect(find.text('People in charge'), findsOneWidget);
+    expect(
+      find.text('Account manager · carlos@spaceclean.com'),
+      findsOneWidget,
+    );
+    expect(find.text('Rosa Díaz'), findsNothing);
+    expect(find.text('Billing · laura@torrenorte.com'), findsOneWidget);
+    expect(find.text('Send to 1 person'), findsOneWidget);
+
+    await tester.tap(find.text('Carlos Medina'));
+    await tester.pumpAndSettle();
+    await revealBelow(tester, find.text('Other emails'));
+    await tester.enterText(field('Email'), 'not-an-email');
+    await tester.tap(find.byTooltip('Add email'));
+    await tester.pumpAndSettle();
+    expect(find.text('Enter a valid email address.'), findsOneWidget);
+    await tester.enterText(field('Email'), 'Pagos@Torre.mx');
+    await tester.tap(find.byTooltip('Add email'));
+    await tester.pumpAndSettle();
+    expect(find.text('pagos@torre.mx'), findsOneWidget);
+
+    await tester.tap(find.text('Send to 3 people'));
+    await tester.pumpAndSettle();
+
+    final (to, language) = invoices.sends.single;
+    expect(
+      to,
+      unorderedEquals([
+        'laura@torrenorte.com',
+        'carlos@spaceclean.com',
+        'pagos@torre.mx',
+      ]),
+    );
+    expect(language, 'en');
+    // Back on the invoice, which says who got it.
+    expect(
+      find.text(
+        'Sent to laura@torrenorte.com, carlos@spaceclean.com, '
+        'pagos@torre.mx.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Record payment'), findsOneWidget);
+  });
+
+  testWidgets('sending needs someone to send to', (tester) async {
+    final invoices = await _openInvoices(tester, permissions: _editor);
+    await _open(tester, 'INV-2026-00041');
+    await revealBelow(tester, find.text('Send by email'));
+    await tester.tap(find.text('Send by email'));
+    await tester.pumpAndSettle();
+
+    // Untick the billing contact.
+    await revealBelow(tester, find.text('Laura Ortiz'));
+    await tester.tap(find.text('Laura Ortiz'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Send'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Pick at least one person, or add an email.'),
+      findsOneWidget,
+    );
+    expect(invoices.sends, isEmpty);
+  });
+
+  testWidgets('a failed email says so and stays on the page', (tester) async {
+    final invoices = await _openInvoices(tester, permissions: _editor)
+      ..sendError = const ServerFailure('mail.send_failed', statusCode: 502);
+    await _open(tester, 'INV-2026-00041');
+    await revealBelow(tester, find.text('Send by email'));
+    await tester.tap(find.text('Send by email'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Send to 1 person'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('The email couldn\'t be sent. Try again in a moment.'),
+      findsOneWidget,
+    );
+    expect(find.text('Send to 1 person'), findsOneWidget);
+    expect(invoices.sends, isEmpty);
+  });
+
+  testWidgets('a draft is not emailed', (tester) async {
+    await _openInvoices(tester, permissions: _editor);
+    await _open(tester, 'INV-2026-00042');
+
+    await revealBelow(tester, find.text('View PDF'));
+    expect(find.text('Send by email'), findsNothing);
   });
 }

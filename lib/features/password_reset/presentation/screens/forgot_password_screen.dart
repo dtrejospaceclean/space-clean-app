@@ -50,7 +50,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     try {
       await ref
           .read(passwordResetControllerProvider.notifier)
-          .requestCode(_emailController.text);
+          .requestCode(
+            _emailController.text,
+            // The email is written in the language the app is in.
+            language: Localizations.localeOf(context).languageCode == 'en'
+                ? 'en'
+                : 'es',
+          );
       if (mounted) context.push(ResetCodeScreen.path);
     } on Failure catch (f) {
       HapticFeedback.mediumImpact();

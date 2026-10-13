@@ -2,9 +2,10 @@ import '../entities/password_policy.dart';
 
 /// Reset by a 6-digit code sent by email. Every method throws a `Failure`.
 abstract interface class PasswordResetRepository {
-  /// Emails a code to [email] if it has an account. Succeeds either way, so
-  /// nobody can learn which emails exist.
-  Future<void> requestCode(String email);
+  /// Emails a code to [email] if it has an account, the whole email in
+  /// [language] (`en` or `es`). Succeeds either way, so nobody can learn
+  /// which emails exist.
+  Future<void> requestCode(String email, {required String language});
 
   /// Trades the code for a [ResetToken]. A wrong, expired or used-up code
   /// (5 tries) is `auth.invalid_pin`.

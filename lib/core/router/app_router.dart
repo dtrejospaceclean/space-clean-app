@@ -32,9 +32,11 @@ import '../../features/contracts/presentation/screens/sign_contract_screen.dart'
 import '../../features/invoices/domain/entities/invoice.dart';
 import '../../features/invoices/presentation/screens/invoice_form_screen.dart';
 import '../../features/invoices/presentation/screens/invoice_line_screen.dart';
+import '../../features/invoices/presentation/screens/invoice_pdf_screen.dart';
 import '../../features/invoices/presentation/screens/invoice_screen.dart';
 import '../../features/invoices/presentation/screens/invoices_screen.dart';
 import '../../features/invoices/presentation/screens/record_payment_screen.dart';
+import '../../features/invoices/presentation/screens/send_invoice_screen.dart';
 import '../../features/jobs/presentation/screens/account_jobs_screen.dart';
 import '../../features/locations/presentation/screens/location_form_screen.dart';
 import '../../features/locations/presentation/screens/location_screen.dart';
@@ -424,6 +426,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                               SlideRoute(
                                 path: RecordPaymentScreen.route,
                                 builder: (_, state) => RecordPaymentScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  invoiceId: state.pathParameters['invoiceId']!,
+                                ),
+                              ),
+                              SlideRoute(
+                                path: InvoicePdfScreen.route,
+                                builder: (_, state) => InvoicePdfScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  invoiceId: state.pathParameters['invoiceId']!,
+                                ),
+                              ),
+                              SlideRoute(
+                                path: SendInvoiceScreen.route,
+                                builder: (_, state) => SendInvoiceScreen(
                                   clientId: state.pathParameters['clientId']!,
                                   invoiceId: state.pathParameters['invoiceId']!,
                                 ),

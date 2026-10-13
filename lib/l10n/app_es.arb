@@ -927,5 +927,19 @@
   "authInvalidPin": "Ese código es incorrecto o ya venció. Después de 5 intentos, pide un código nuevo.",
   "authInvalidResetToken": "El restablecimiento tardó demasiado o ya se usó. Pide un código nuevo para empezar de nuevo.",
   "aboutLabel": "Acerca de",
-  "appVersionLabel": "Versión"
+  "appVersionLabel": "Versión",
+  "viewInvoicePdf": "Ver PDF",
+  "invoicePdfTitle": "PDF de la factura",
+  "sendInvoice": "Enviar por correo",
+  "sendInvoiceButton": "Enviar",
+  "sendInvoiceTo": "{count, plural, =1{Enviar a 1 persona} other{Enviar a {count} personas}}",
+  "sendInvoiceOtherEmails": "Otros correos",
+  "sendInvoiceAddEmail": "Agregar correo",
+  "sendInvoiceHelp": "Todos los destinatarios ven las direcciones de los demás. El correo y el PDF adjunto van en el idioma de la app.",
+  "sendInvoiceNoRecipients": "Elige al menos una persona o agrega un correo.",
+  "sendInvoiceTooMany": "Una factura puede enviarse a {max} correos como máximo a la vez.",
+  "invoiceSentTo": "Enviada a {emails}.",
+  "invoicesNotSendable": "Solo se puede enviar una factura emitida. Los borradores y las anuladas no.",
+  "invoicesNoRecipient": "Esta cuenta no tiene contacto de facturación ni principal con correo. Agrega un correo para enviarla.",
+  "mailSendFailed": "No se pudo enviar el correo. Inténtalo de nuevo en un momento."
 }

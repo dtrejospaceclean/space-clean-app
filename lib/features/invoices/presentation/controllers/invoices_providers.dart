@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 import '../../../contracts/presentation/controllers/contracts_providers.dart';
 import '../../di/invoices_providers.dart';
@@ -19,11 +23,26 @@ final invoiceProvider = FutureProvider.autoDispose
       ),
     );
 
+/// An invoice's PDF in one language. Loaded each time it's opened, so it
+/// shows the invoice as it is now.
+final invoicePdfProvider = FutureProvider.autoDispose
+    .family<Uint8List, InvoicePdfParams>(
+      (ref, params) => ref.watch(getInvoicePdfProvider)(params),
+    );
+
+/// Shows PDF bytes. Tests replace it, since the real viewer renders with a
+/// native library.
+final pdfViewProvider = Provider<Widget Function(Uint8List bytes, String name)>(
+  (ref) =>
+      (bytes, name) => PdfViewer.data(bytes, sourceName: name),
+);
+
 /// Drops cached invoices after any write, and the account's contracts,
 /// which count their invoices.
 void invalidateInvoices(WidgetRef ref, String clientId) {
   ref
     ..invalidate(invoicesProvider)
-    ..invalidate(invoiceProvider);
+    ..invalidate(invoiceProvider)
+    ..invalidate(invoicePdfProvider);
   invalidateContracts(ref, clientId);
 }

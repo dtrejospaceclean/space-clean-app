@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/paginated.dart';
 import '../../domain/entities/invoice.dart';
@@ -67,6 +69,30 @@ class InvoicesRemoteDataSource {
       body: InvoiceDraftModel.payment(payment),
     ),
   );
+
+  /// The PDF bytes, not an envelope.
+  Future<Uint8List> getInvoicePdf(
+    String clientId,
+    String invoiceId, {
+    required String language,
+  }) => _api.getBytes(
+    '${_path(clientId)}/$invoiceId/pdf',
+    query: {'language': language},
+    expectedType: 'application/pdf',
+  );
+
+  Future<List<String>> sendInvoice(
+    String clientId,
+    String invoiceId, {
+    required List<String> to,
+    required String language,
+  }) async {
+    final data = await _api.post(
+      '${_path(clientId)}/$invoiceId/send',
+      body: {'to': to, 'language': language},
+    ) as Map;
+    return [for (final email in data['sentTo'] as List? ?? const []) '$email'];
+  }
 
   /// Takes no body.
   Future<Invoice> voidPayment(

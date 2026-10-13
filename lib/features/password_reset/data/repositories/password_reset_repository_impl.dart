@@ -17,8 +17,8 @@ class PasswordResetRepositoryImpl implements PasswordResetRepository {
   }
 
   @override
-  Future<void> requestCode(String email) =>
-      _guard(() => _remote.requestCode(email));
+  Future<void> requestCode(String email, {required String language}) =>
+      _guard(() => _remote.requestCode(email, language: language));
 
   @override
   Future<ResetToken> verifyCode({

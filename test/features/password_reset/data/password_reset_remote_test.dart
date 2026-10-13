@@ -49,12 +49,12 @@ PasswordResetRemoteDataSource _remote(_Answer adapter) =>
 void main() {
   test('asks for a code by email', () async {
     final adapter = _Answer();
-    await _remote(adapter).requestCode('ana@example.com');
+    await _remote(adapter).requestCode('ana@example.com', language: 'en');
 
     final request = adapter.requests.single;
     expect(request.method, 'POST');
     expect(request.path, '/auth/forgot-password');
-    expect(request.data, {'email': 'ana@example.com'});
+    expect(request.data, {'email': 'ana@example.com', 'language': 'en'});
   });
 
   test('trades the code for a token', () async {

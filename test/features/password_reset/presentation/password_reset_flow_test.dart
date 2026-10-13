@@ -53,6 +53,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ana@example.com'), findsOneWidget);
+    // The code email is in the app's language.
+    expect(reset.languages, ['en']);
     // The code buys a token, and the token sets the password.
     expect(reset.calls, [
       'request:ana@example.com',

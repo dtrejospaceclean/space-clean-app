@@ -176,6 +176,13 @@ class Invoice {
 
   /// Payments that still count.
   bool get hasPayments => toCents(amountPaid) > 0;
+
+  /// Only an issued invoice goes out by email: a draft isn't final and a
+  /// void one isn't owed.
+  bool get canSend =>
+      status == InvoiceStatus.issued ||
+      status == InvoiceStatus.partiallyPaid ||
+      status == InvoiceStatus.paid;
 }
 
 /// A line as typed in the form. Numbers stay as typed ("1", "2400").

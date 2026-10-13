@@ -7,11 +7,12 @@ class PasswordResetRemoteDataSource {
 
   final ApiClient _api;
 
-  Future<void> requestCode(String email) => _api.post(
-    '/auth/forgot-password',
-    body: {'email': email},
-    authenticated: false,
-  );
+  Future<void> requestCode(String email, {required String language}) =>
+      _api.post(
+        '/auth/forgot-password',
+        body: {'email': email, 'language': language},
+        authenticated: false,
+      );
 
   Future<ResetToken> verifyCode({
     required String email,

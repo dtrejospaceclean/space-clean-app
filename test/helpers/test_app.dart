@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +39,7 @@ import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repo
 import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
 import 'package:sp_cln_app/features/invoices/domain/repositories/invoices_repository.dart';
+import 'package:sp_cln_app/features/invoices/presentation/controllers/invoices_providers.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dart';
@@ -296,7 +299,13 @@ class FakePasswordResetRepository implements PasswordResetRepository {
   Failure? resetError;
 
   @override
-  Future<void> requestCode(String email) async => calls.add('request:$email');
+  Future<void> requestCode(String email, {required String language}) async {
+    languages.add(language);
+    calls.add('request:$email');
+  }
+
+  /// The language of each code email asked for.
+  final languages = <String>[];
 
   @override
   Future<ResetToken> verifyCode({
@@ -1316,6 +1325,42 @@ class FakeInvoicesRepository implements InvoicesRepository {
   final writes = <String>[];
   final drafts = <InvoiceDraft>[];
   final payments = <PaymentDraft>[];
+
+  /// Each PDF asked for, as `<invoiceId>:<language>`.
+  final pdfs = <String>[];
+
+  /// Who each send went to, and in which language.
+  final sends = <(List<String>, String)>[];
+
+  /// Thrown by [sendInvoice] when set (a mail provider failure).
+  Failure? sendError;
+
+  @override
+  Future<Uint8List> getInvoicePdf(
+    String clientId,
+    String invoiceId, {
+    required String language,
+  }) async {
+    await getInvoice(clientId, invoiceId);
+    pdfs.add('$invoiceId:$language');
+    return Uint8List.fromList(utf8.encode('%PDF-1.7 $invoiceId'));
+  }
+
+  @override
+  Future<List<String>> sendInvoice(
+    String clientId,
+    String invoiceId, {
+    required List<String> to,
+    required String language,
+  }) async {
+    final i = await getInvoice(clientId, invoiceId);
+    if (!i.canSend) {
+      throw const ServerFailure('invoices.not_sendable', statusCode: 409);
+    }
+    if (sendError case final error?) throw error;
+    sends.add((to, language));
+    return to;
+  }
 
   @override
   Future<List<Invoice>> getInvoices(
@@ -2886,6 +2931,11 @@ Future<SharedPreferences> pumpApp(
         ),
         invoicesRepositoryProvider.overrideWithValue(
           invoices ?? FakeInvoicesRepository(),
+        ),
+        // The real viewer renders natively; this shows what it was given.
+        pdfViewProvider.overrideWithValue(
+          (bytes, name) =>
+              Center(child: Text('PDF $name (${bytes.length} bytes)')),
         ),
         scopesRepositoryProvider.overrideWithValue(
           scopes ?? FakeScopesRepository(),

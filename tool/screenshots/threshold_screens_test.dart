@@ -29,6 +29,7 @@ import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
 import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
+import 'package:sp_cln_app/features/invoices/presentation/controllers/invoices_providers.dart';
 import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
 import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
 import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';
@@ -167,6 +168,10 @@ Future<void> _sheet(
         invoicesRepositoryProvider.overrideWithValue(
           FakeInvoicesRepository(_demoInvoices),
         ),
+        // The real viewer renders natively, which tests can't.
+        pdfViewProvider.overrideWithValue(
+          (bytes, name) => Center(child: Text(name)),
+        ),
         scopesRepositoryProvider.overrideWithValue(
           FakeScopesRepository(_demoScopes),
         ),
@@ -265,7 +270,7 @@ Future<void> _sheet(
     if (phone.location.startsWith('/login/forgot/')) {
       await phone.container
           .read(passwordResetControllerProvider.notifier)
-          .requestCode('ana.perez@spacecleanllc.com');
+          .requestCode('ana.perez@spacecleanllc.com', language: 'en');
       router.go('/login/forgot');
       await _settle(tester);
       router.push(phone.location);
@@ -730,6 +735,7 @@ void main() {
       Phone('4 · Draft', asOwner: true, location: '$base/inv3'),
       Phone('5 · Payment', asOwner: true, location: '$base/inv1/pay'),
       Phone('6 · New', asOwner: true, location: '$base/new'),
+      Phone('6b · Send by email', asOwner: true, location: '$base/inv1/send'),
       Phone('7 · Dark', asOwner: true, dark: true, location: '$base/inv2'),
       Phone(
         '8 · Spanish, 200% text',

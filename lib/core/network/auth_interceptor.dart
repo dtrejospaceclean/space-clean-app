@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../storage/token_storage.dart';
 import 'api_client.dart';
+import 'api_exception.dart';
 
 /// Attaches the bearer token and, on an expired/missing access token, refreshes
 /// once and replays the request. Concurrent 401s share a single refresh call.
@@ -46,7 +47,8 @@ class AuthInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     final options = err.requestOptions;
-    final body = err.response?.data;
+    // A file request's error comes as bytes; read it like any other.
+    final body = errorBody(err.response?.data);
     final key = body is Map ? body['message'] : null;
     final canRefresh =
         err.response?.statusCode == 401 &&

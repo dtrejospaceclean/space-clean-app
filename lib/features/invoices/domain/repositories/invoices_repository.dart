@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../entities/invoice.dart';
 
 /// Every method throws a `Failure` on error.
@@ -39,6 +41,25 @@ abstract interface class InvoicesRepository {
     String invoiceId,
     PaymentDraft payment,
   );
+
+  /// The invoice as a PDF, written in [language] (`en` or `es`). Drafts carry
+  /// a "DRAFT" watermark and void ones "VOID". Needs `invoice.view`.
+  Future<Uint8List> getInvoicePdf(
+    String clientId,
+    String invoiceId, {
+    required String language,
+  });
+
+  /// Emails the PDF to [to] (1–10 addresses), the email and the PDF in
+  /// [language]; returns who it went to. Needs `invoice.edit`; only an issued,
+  /// partly paid or paid invoice (`invoices.not_sendable`). A mail provider
+  /// failure is `mail.send_failed`.
+  Future<List<String>> sendInvoice(
+    String clientId,
+    String invoiceId, {
+    required List<String> to,
+    required String language,
+  });
 
   /// A bounced check or a refund: the payment stays, voided, and the
   /// balance goes back up. Needs `invoice.edit`.

@@ -3292,4 +3292,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appVersionLabel => 'Version';
+
+  @override
+  String get viewInvoicePdf => 'View PDF';
+
+  @override
+  String get invoicePdfTitle => 'Invoice PDF';
+
+  @override
+  String get sendInvoice => 'Send by email';
+
+  @override
+  String get sendInvoiceButton => 'Send';
+
+  @override
+  String sendInvoiceTo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Send to $count people',
+      one: 'Send to 1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sendInvoiceOtherEmails => 'Other emails';
+
+  @override
+  String get sendInvoiceAddEmail => 'Add email';
+
+  @override
+  String get sendInvoiceHelp =>
+      'Everyone on the list sees the others\' addresses. The email and the attached PDF are in the language the app is in.';
+
+  @override
+  String get sendInvoiceNoRecipients =>
+      'Pick at least one person, or add an email.';
+
+  @override
+  String sendInvoiceTooMany(int max) {
+    return 'An invoice can go to up to $max emails at once.';
+  }
+
+  @override
+  String invoiceSentTo(String emails) {
+    return 'Sent to $emails.';
+  }
+
+  @override
+  String get invoicesNotSendable =>
+      'Only an issued invoice can be sent. Drafts and void invoices can\'t.';
+
+  @override
+  String get invoicesNoRecipient =>
+      'This account has no billing or primary contact with an email. Add an email to send it.';
+
+  @override
+  String get mailSendFailed =>
+      'The email couldn\'t be sent. Try again in a moment.';
 }
