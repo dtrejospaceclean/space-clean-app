@@ -149,6 +149,7 @@ class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
       slivers: [
         AsyncSlivers(
           value: loaded,
+          skeleton: SkeletonLayout.form,
           onRetry: () => ref
             ..invalidate(activeUsersProvider)
             ..invalidate(membersProvider(widget.clientId))
@@ -244,6 +245,7 @@ class MemberAccessScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Object?>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref
               ..invalidate(membersProvider(clientId))
               ..invalidate(permissionCatalogProvider),

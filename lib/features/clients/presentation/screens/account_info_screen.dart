@@ -112,6 +112,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
       slivers: [
         AsyncSlivers(
           value: client,
+          skeleton: SkeletonLayout.detail,
           onRetry: refresh,
           builder: (c) {
             // "1980 Post Oak Blvd" / "Houston, TX 77056".

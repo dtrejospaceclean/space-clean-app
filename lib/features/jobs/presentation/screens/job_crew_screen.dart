@@ -41,6 +41,7 @@ class JobCrewScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Job>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(jobProvider((clientId, jobId))),
             builder: (_) => const SliverToBoxAdapter(),
           ),
@@ -145,9 +146,9 @@ class _CrewFormState extends ConsumerState<_CrewForm> {
                   child: Notice(message: message, tone: tone),
                 ),
               if (members.isLoading && !members.hasValue)
-                const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Center(child: CircularProgressIndicator.adaptive()),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(side, 12, side, 0),
+                  child: const SkeletonListCard(rows: 3, leading: false),
                 ),
               if (people.isNotEmpty)
                 FormSection(l10n.jobCrew, [

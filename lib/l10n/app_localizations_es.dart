@@ -755,6 +755,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchingLabel => 'Buscando…';
 
   @override
+  String get loadingLabel => 'Cargando…';
+
+  @override
   String get moduleJobsHint => 'Agenda, equipo y avance';
 
   @override
@@ -1620,6 +1623,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get searchProposalsHint => 'Busca servicios, notas o etapa';
+
+  @override
+  String get searchTeamHint => 'Busca nombre, correo o rol';
+
+  @override
+  String get searchContactsHint => 'Busca nombre, cargo, correo o teléfono';
+
+  @override
+  String get searchTasksHint => 'Busca título, responsable o estado';
+
+  @override
+  String get searchComplaintsHint => 'Busca título, ubicación o responsable';
+
+  @override
+  String get searchInvoicesHint => 'Busca número, estado o conceptos';
+
+  @override
+  String get searchContractsHint => 'Busca fechas, estado o condiciones';
 
   @override
   String proposalValidUntil(String date) {

@@ -1388,6 +1388,12 @@ abstract class AppLocalizations {
   /// **'Searching…'**
   String get searchingLabel;
 
+  /// No description provided for @loadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get loadingLabel;
+
   /// No description provided for @moduleJobsHint.
   ///
   /// In en, this message translates to:
@@ -2875,6 +2881,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search services, notes or stage'**
   String get searchProposalsHint;
+
+  /// No description provided for @searchTeamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, email or role'**
+  String get searchTeamHint;
+
+  /// No description provided for @searchContactsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, title, email or phone'**
+  String get searchContactsHint;
+
+  /// No description provided for @searchTasksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search title, assignee or status'**
+  String get searchTasksHint;
+
+  /// No description provided for @searchComplaintsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search title, location or assignee'**
+  String get searchComplaintsHint;
+
+  /// No description provided for @searchInvoicesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search number, status or line items'**
+  String get searchInvoicesHint;
+
+  /// No description provided for @searchContractsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search dates, status or terms'**
+  String get searchContractsHint;
 
   /// No description provided for @proposalValidUntil.
   ///

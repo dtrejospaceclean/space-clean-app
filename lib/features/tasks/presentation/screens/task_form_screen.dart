@@ -43,6 +43,7 @@ class TaskFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Task>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(taskProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

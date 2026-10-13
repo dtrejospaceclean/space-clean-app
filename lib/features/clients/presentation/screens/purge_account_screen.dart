@@ -65,6 +65,7 @@ class _PurgeAccountScreenState extends ConsumerState<PurgeAccountScreen> {
       slivers: [
         AsyncSlivers(
           value: client,
+          skeleton: SkeletonLayout.form,
           onRetry: () =>
               ref.refresh(clientDetailProvider(widget.clientId).future),
           builder: (c) => SliverMainAxisGroup(

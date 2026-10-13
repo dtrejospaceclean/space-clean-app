@@ -50,6 +50,7 @@ class EventFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<CalendarEvent>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(eventProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

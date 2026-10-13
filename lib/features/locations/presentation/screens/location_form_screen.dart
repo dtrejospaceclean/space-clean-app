@@ -44,6 +44,7 @@ class LocationFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Location>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(locationProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

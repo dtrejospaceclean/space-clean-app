@@ -375,6 +375,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           slivers: [
             AsyncSlivers(
               value: job,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (job) => SliverMainAxisGroup(
                 slivers: [

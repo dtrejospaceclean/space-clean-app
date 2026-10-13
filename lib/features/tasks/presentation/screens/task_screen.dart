@@ -173,6 +173,7 @@ class _TaskScreenState extends ConsumerState<TaskScreen> {
           slivers: [
             AsyncSlivers(
               value: task,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (t) => SliverMainAxisGroup(
                 slivers: [

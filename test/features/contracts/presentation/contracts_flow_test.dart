@@ -6,6 +6,8 @@ import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
 
+import 'package:sp_cln_app/features/contracts/presentation/screens/contracts_screen.dart';
+
 import '../../../helpers/test_app.dart';
 
 const _tower = Client(
@@ -332,5 +334,24 @@ void main() {
     expect(find.text('Ended Sep 18, 2026'), findsNothing);
     // Expired isn't cancelled: it can still be edited or cancelled.
     expect(find.byTooltip('Edit contract'), findsOneWidget);
+  });
+
+  testWidgets('the search matches status, terms and signer', (tester) async {
+    await openContracts(tester);
+    Future<void> search(String text) async {
+      await tester.enterText(find.byType(TextField), text);
+      await tester.pumpAndSettle();
+    }
+
+    await search('draft');
+    expect(find.text('From Nov 1, 2026'), findsOneWidget);
+    expect(find.byType(ContractRow), findsOneWidget);
+
+    await search('carlos net 30');
+    expect(find.text('From Nov 1, 2026'), findsNothing);
+    expect(find.byType(ContractRow), findsOneWidget);
+
+    await search('nobody');
+    expect(find.text('Nothing matches'), findsOneWidget);
   });
 }

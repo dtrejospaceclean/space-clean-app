@@ -174,6 +174,7 @@ class _ContractScreenState extends ConsumerState<ContractScreen> {
           slivers: [
             AsyncSlivers(
               value: contract,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (c) {
                 final editable = canEdit && c.isEditable;

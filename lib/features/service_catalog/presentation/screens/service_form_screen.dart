@@ -37,6 +37,7 @@ class ServiceFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<ServiceItem>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(serviceProvider(id)),
             builder: (_) => const SliverToBoxAdapter(),
           ),

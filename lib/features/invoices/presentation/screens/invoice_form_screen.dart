@@ -56,6 +56,7 @@ class InvoiceFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Invoice>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(invoiceProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

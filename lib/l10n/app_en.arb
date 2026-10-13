@@ -338,6 +338,7 @@
   "noAccountsFound": "No accounts match",
   "noAccountsFoundHint": "Try another name or tax ID.",
   "searchingLabel": "Searching…",
+  "loadingLabel": "Loading…",
   "moduleJobsHint": "Schedule, crew and progress",
   "moduleInfoHint": "Billing and people in charge",
   "adminUsersHint": "Staff and client sign-ins",
@@ -742,6 +743,12 @@
     }
   },
   "searchProposalsHint": "Search services, notes or stage",
+  "searchTeamHint": "Search name, email or role",
+  "searchContactsHint": "Search name, title, email or phone",
+  "searchTasksHint": "Search title, assignee or status",
+  "searchComplaintsHint": "Search title, location or assignee",
+  "searchInvoicesHint": "Search number, status or line items",
+  "searchContractsHint": "Search dates, status or terms",
   "proposalValidUntil": "Valid until {date}",
   "@proposalValidUntil": {
     "placeholders": {

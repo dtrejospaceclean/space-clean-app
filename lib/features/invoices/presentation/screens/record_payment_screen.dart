@@ -49,6 +49,7 @@ class RecordPaymentScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Invoice>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(invoiceProvider(key)),
             builder: (_) => const SliverToBoxAdapter(),
           ),

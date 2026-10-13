@@ -163,6 +163,7 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
           slivers: [
             AsyncSlivers(
               value: complaint,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (c) {
                 String? text(String? v) =>

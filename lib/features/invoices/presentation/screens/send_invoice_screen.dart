@@ -55,6 +55,7 @@ class SendInvoiceScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Invoice>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(invoiceProvider(key)),
             builder: (_) => const SliverToBoxAdapter(),
           ),
@@ -206,7 +207,11 @@ class _SendFormState extends ConsumerState<_SendForm> {
     final problem = failure != null ? l10n.failureMessage(failure) : _notice;
     // Either list may be out of reach (no `info.view`); the other still
     // shows, and typed addresses always work.
-    final client = ref.watch(clientDetailProvider(widget.clientId)).value;
+    final clientDetail = ref.watch(clientDetailProvider(widget.clientId));
+    final client = clientDetail.value;
+    // The first load of the people in charge; a failed one just leaves the
+    // section out.
+    final loadingInCharge = clientDetail.isLoading && !clientDetail.hasValue;
     final contacts = ref.watch(contactsProvider(widget.clientId)).value;
     if (_picked == null && contacts != null) {
       // Set once, from the contacts, before anyone picks.
@@ -293,14 +298,17 @@ class _SendFormState extends ConsumerState<_SendForm> {
               top: 4,
               child: ListCard(children: [InvoiceRow(invoice: widget.invoice)]),
             ),
-            if (inCharge.isNotEmpty) ...[
+            if (loadingInCharge || inCharge.isNotEmpty) ...[
               PageBox(
                 top: 16,
                 child: SectionHeader(title: l10n.sectionPeopleInCharge),
               ),
               PageBox(
                 top: 0,
-                child: ListCard(children: [for (final r in inCharge) row(r)]),
+                child: loadingInCharge
+                    // Account manager, supervisor and salesperson at most.
+                    ? const SkeletonListCard(rows: 3, leading: false)
+                    : ListCard(children: [for (final r in inCharge) row(r)]),
               ),
             ],
             if (contactRows.isNotEmpty) ...[

@@ -61,6 +61,7 @@ class ComplaintFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Complaint>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(complaintProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

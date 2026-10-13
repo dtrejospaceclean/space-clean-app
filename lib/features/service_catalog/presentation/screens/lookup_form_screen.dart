@@ -57,6 +57,7 @@ class LookupFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Object>(
             value: value,
+            skeleton: SkeletonLayout.form,
             onRetry: () => kind == LookupKind.category
                 ? ref.invalidate(categoryProvider(id))
                 : ref.invalidate(unitProvider(id)),

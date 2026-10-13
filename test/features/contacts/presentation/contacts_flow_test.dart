@@ -238,4 +238,29 @@ void main() {
     expect(find.text('Another user already has this email.'), findsOneWidget);
     expect(contacts.writes, isEmpty);
   });
+
+  testWidgets('the search matches name, title, email and tags', (tester) async {
+    await openContacts(tester, ana);
+    Future<void> search(String text) async {
+      await tester.enterText(find.byType(TextField), text);
+      await tester.pumpAndSettle();
+    }
+
+    await search('gomez');
+    expect(find.text('Laura Gómez'), findsOneWidget);
+    expect(find.text('Pedro Ibarra'), findsNothing);
+
+    await search('billing');
+    expect(find.text('Pedro Ibarra'), findsOneWidget);
+    expect(find.text('Laura Gómez'), findsNothing);
+
+    await search('laura@torrenorte facilities');
+    expect(find.text('Laura Gómez'), findsOneWidget);
+
+    await search('nobody');
+    expect(find.text('Nothing matches'), findsOneWidget);
+    await search('');
+    expect(find.text('Laura Gómez'), findsOneWidget);
+    expect(find.text('Pedro Ibarra'), findsOneWidget);
+  });
 }

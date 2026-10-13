@@ -48,6 +48,7 @@ class JobChecklistScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Job>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(jobProvider((clientId, jobId))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

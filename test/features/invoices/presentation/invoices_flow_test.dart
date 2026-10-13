@@ -1,6 +1,9 @@
-import 'package:flutter/widgets.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
+import 'package:sp_cln_app/core/design/design.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
@@ -148,10 +151,24 @@ const _editor = {
 };
 
 /// Opens Torre Norte → Invoices as a member with [permissions].
+/// Holds [getClient] on [gate], like a slow server.
+class _SlowClients extends FakeClientsRepository {
+  _SlowClients() : super([_tower]);
+
+  Completer<void>? gate;
+
+  @override
+  Future<Client> getClient(String id) async {
+    await gate?.future;
+    return super.getClient(id);
+  }
+}
+
 Future<FakeInvoicesRepository> _openInvoices(
   WidgetTester tester, {
   Set<String> permissions = _viewer,
   List<Invoice>? invoices,
+  FakeClientsRepository? clients,
 }) async {
   final repo = FakeInvoicesRepository(
     invoices ?? [_overdue, _draftInvoice, _paid],
@@ -159,7 +176,7 @@ Future<FakeInvoicesRepository> _openInvoices(
   await pumpApp(
     tester,
     auth: FakeAuthRepository(sessionUser: ana),
-    clients: FakeClientsRepository([_tower]),
+    clients: clients ?? FakeClientsRepository([_tower]),
     contracts: FakeContractsRepository([_contract]),
     contacts: FakeContactsRepository(_contacts),
     invoices: repo,
@@ -519,6 +536,33 @@ void main() {
     expect(find.text('Record payment'), findsOneWidget);
   });
 
+  testWidgets('the people in charge shimmer while they load', (tester) async {
+    final clients = _SlowClients();
+    await _openInvoices(tester, permissions: _editor, clients: clients);
+    await _open(tester, 'INV-2026-00041');
+
+    clients.gate = Completer();
+    await revealBelow(tester, find.text('Send by email'));
+    await tester.tap(find.text('Send by email'));
+    // The shimmer never settles, so step through the page transition.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('People in charge'), findsOneWidget);
+    expect(find.byType(SkeletonListCard), findsOneWidget);
+    expect(find.text('Carlos Medina'), findsNothing);
+    // The contacts don't wait for them.
+    expect(find.text('Billing · laura@torrenorte.com'), findsOneWidget);
+
+    clients.gate!.complete();
+    await tester.pumpAndSettle();
+    expect(find.byType(SkeletonListCard), findsNothing);
+    expect(
+      find.text('Account manager · carlos@spaceclean.com'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('sending needs someone to send to', (tester) async {
     final invoices = await _openInvoices(tester, permissions: _editor);
     await _open(tester, 'INV-2026-00041');
@@ -565,5 +609,21 @@ void main() {
 
     await revealBelow(tester, find.text('View PDF'));
     expect(find.text('Send by email'), findsNothing);
+  });
+
+  testWidgets('the search finds an invoice by number', (tester) async {
+    await _openInvoices(tester);
+    Future<void> search(String text) async {
+      await tester.enterText(find.byType(TextField), text);
+      await tester.pumpAndSettle();
+    }
+
+    await search('00041');
+    expect(find.text('INV-2026-00041'), findsOneWidget);
+    expect(find.text('INV-2026-00042'), findsNothing);
+    expect(find.text('INV-2026-00040'), findsNothing);
+
+    await search('nothing like it');
+    expect(find.text('Nothing matches'), findsOneWidget);
   });
 }

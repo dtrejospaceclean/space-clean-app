@@ -41,6 +41,7 @@ class ContactFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Contact>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(contactsProvider(clientId)),
             builder: (_) => const SliverToBoxAdapter(),
           ),

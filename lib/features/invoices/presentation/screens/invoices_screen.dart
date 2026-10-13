@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/search/text_search.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -15,8 +16,8 @@ import '../widgets/invoice_labels.dart';
 
 /// One client account's invoices (or, with [contractId], one contract's),
 /// latest issue date first, each with its status and amount. A toggle
-/// narrows them to the overdue ones. New ones come from the dock's "+"
-/// (`invoice.edit`).
+/// narrows them to the overdue ones, and a search finds one. New ones come
+/// from the dock's "+" (`invoice.edit`).
 class InvoicesScreen extends ConsumerStatefulWidget {
   const InvoicesScreen({super.key, required this.clientId, this.contractId});
 
@@ -36,6 +37,17 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
   /// Only the overdue ones. The whole list is already here, so this
   /// filters on the phone.
   bool _overdueOnly = false;
+
+  final _search = TextEditingController();
+
+  /// The API can't search invoices, but the whole list is already here.
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +71,14 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
       title: l10n.moduleInvoices,
       onRefresh: refresh,
       slivers: [
+        PageBox(
+          top: 4,
+          child: SearchField(
+            controller: _search,
+            hint: l10n.searchInvoicesHint,
+            onChanged: (text) => setState(() => _query = text),
+          ),
+        ),
         if (widget.contractId != null)
           PageBox(
             top: 4,
@@ -80,16 +100,18 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
                     : null,
               );
             }
-            final overdue = list.where((i) => i.isOverdue).toList()
+            final found = list
+                .where((i) => matchesInvoice(context, i, _query))
+                .toList();
+            final overdue = found.where((i) => i.isOverdue).toList()
               // Longest overdue first: what to chase.
               ..sort(
                 (a, b) => (b.daysOverdue ?? 0).compareTo(a.daysOverdue ?? 0),
               );
-            final shown = _overdueOnly ? overdue : list;
+            final shown = _overdueOnly ? overdue : found;
             return SliverMainAxisGroup(
               slivers: [
                 PageBox(
-                  top: 4,
                   child: PillToggle<bool>(
                     semanticLabel: l10n.invoicesFilterLabel,
                     options: {
@@ -100,7 +122,13 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
                     onChanged: (v) => setState(() => _overdueOnly = v),
                   ),
                 ),
-                if (shown.isEmpty)
+                if (shown.isEmpty && _query.trim().isNotEmpty)
+                  MessageSliver(
+                    icon: Icons.search_off_rounded,
+                    title: l10n.noMatchesFound,
+                    hint: l10n.noMatchesHint,
+                  )
+                else if (shown.isEmpty)
                   MessageSliver(
                     icon: Icons.verified_outlined,
                     title: l10n.noInvoicesOverdue,
@@ -164,4 +192,19 @@ class InvoiceRow extends StatelessWidget {
       onTap: onTap,
     );
   }
+}
+
+/// Whether [query] appears in [i]'s number, status, line items (or their
+/// jobs), total, or issue and due dates as shown.
+bool matchesInvoice(BuildContext context, Invoice i, String query) {
+  final l10n = AppLocalizations.of(context);
+  return matchesSearch(query, [
+    i.invoiceNumber,
+    if (i.isOverdue) l10n.invoiceStatusOverdue,
+    l10n.invoiceStatus(i.status),
+    for (final line in i.lineItems) ...[line.description, line.jobTitle],
+    context.formatMoney(i.totalAmount),
+    context.formatDate(i.issueDate),
+    context.formatDate(i.dueDate),
+  ]);
 }

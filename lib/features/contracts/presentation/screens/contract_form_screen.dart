@@ -47,6 +47,7 @@ class ContractFormScreen extends ConsumerWidget {
           slivers: [
             AsyncSlivers<T>(
               value: value,
+              skeleton: SkeletonLayout.form,
               onRetry: retry,
               builder: (_) => const SliverToBoxAdapter(),
             ),

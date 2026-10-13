@@ -102,6 +102,7 @@ class MemberScreen extends ConsumerWidget {
       slivers: [
         AsyncSlivers(
           value: value,
+          skeleton: SkeletonLayout.detail,
           onRetry: refresh,
           builder: (loaded) {
             final (m, catalog) = loaded;

@@ -8,19 +8,23 @@ import '../../l10n/failure_messages.dart';
 import '../../../l10n/app_localizations.dart';
 import '../tokens.dart';
 import 'buttons.dart';
+import 'skeleton.dart';
 
-/// Loading, error and data states of an [AsyncValue] as slivers. Keeps the
-/// previous data on screen while a refresh is running, and the error (with a
-/// busy Retry) while a retry is.
+/// Loading, error and data states of an [AsyncValue] as slivers. The first
+/// load shows a shimmering [skeleton] of the page. Keeps the previous data
+/// on screen while a refresh is running, and the error (with a busy Retry)
+/// while a retry is.
 class AsyncSlivers<T> extends StatelessWidget {
   const AsyncSlivers({
     super.key,
     required this.value,
     required this.onRetry,
     required this.builder,
+    this.skeleton = SkeletonLayout.list,
   });
 
   final AsyncValue<T> value;
+  final SkeletonLayout skeleton;
   final VoidCallback onRetry;
   final Widget Function(T data) builder;
 
@@ -38,10 +42,7 @@ class AsyncSlivers<T> extends StatelessWidget {
         action: RetryButton(onRetry: onRetry, loading: value.isLoading),
       );
     }
-    return const SliverFillRemaining(
-      hasScrollBody: false,
-      child: Center(child: CircularProgressIndicator.adaptive()),
-    );
+    return SkeletonSlivers(layout: skeleton);
   }
 }
 

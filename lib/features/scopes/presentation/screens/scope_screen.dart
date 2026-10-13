@@ -115,6 +115,7 @@ class _ScopeScreenState extends ConsumerState<ScopeScreen> {
           slivers: [
             AsyncSlivers(
               value: scope,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (s) {
                 String? text(String? v) =>

@@ -338,4 +338,24 @@ void main() {
     expect(find.text('Restrooms out of paper'), findsOneWidget);
     expect(find.text('New complaint'), findsNothing);
   });
+
+  testWidgets('the search matches title, place and people', (tester) async {
+    await openComplaints(tester);
+    Future<void> search(String text) async {
+      await tester.enterText(find.byType(TextField), text);
+      await tester.pumpAndSettle();
+    }
+
+    await search('carlos');
+    expect(find.text('Restrooms out of paper'), findsOneWidget);
+    expect(find.text('Bins not emptied'), findsNothing);
+
+    await search('bins');
+    expect(find.text('Bins not emptied'), findsOneWidget);
+    expect(find.text('Restrooms out of paper'), findsNothing);
+
+    // Resolved, so not among the open ones.
+    await search('carpet');
+    expect(find.text('Nothing matches'), findsOneWidget);
+  });
 }

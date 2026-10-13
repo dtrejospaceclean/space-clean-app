@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design.dart';
+import '../../../../core/search/text_search.dart';
+import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -11,8 +13,8 @@ import '../controllers/complaints_providers.dart';
 import '../widgets/complaint_labels.dart';
 
 /// One client account's complaints: a toggle between the ones still being
-/// worked on (most urgent first) and the resolved ones (latest first). New
-/// ones come from the dock's "+" (`complaints.edit`).
+/// worked on (most urgent first) and the resolved ones (latest first), with
+/// a search. New ones come from the dock's "+" (`complaints.edit`).
 class ComplaintsScreen extends ConsumerStatefulWidget {
   const ComplaintsScreen({super.key, required this.clientId});
 
@@ -29,6 +31,17 @@ class _ComplaintsScreenState extends ConsumerState<ComplaintsScreen> {
   /// The resolved ones instead of the open ones. The whole list is already
   /// here, so this splits it on the phone.
   bool _resolved = false;
+
+  final _search = TextEditingController();
+
+  /// The API can't search complaints, but the whole list is already here.
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +61,14 @@ class _ComplaintsScreenState extends ConsumerState<ComplaintsScreen> {
       title: l10n.moduleComplaints,
       onRefresh: refresh,
       slivers: [
+        PageBox(
+          top: 4,
+          child: SearchField(
+            controller: _search,
+            hint: l10n.searchComplaintsHint,
+            onChanged: (text) => setState(() => _query = text),
+          ),
+        ),
         AsyncSlivers(
           value: complaints,
           onRetry: refresh,
@@ -59,12 +80,14 @@ class _ComplaintsScreenState extends ConsumerState<ComplaintsScreen> {
                 hint: canEdit ? l10n.noComplaintsYetHint : null,
               );
             }
-            final open = openByUrgency(list);
-            final shown = _resolved ? resolvedLatestFirst(list) : open;
+            final found = list
+                .where((c) => matchesComplaint(l10n, c, _query))
+                .toList();
+            final open = openByUrgency(found);
+            final shown = _resolved ? resolvedLatestFirst(found) : open;
             return SliverMainAxisGroup(
               slivers: [
                 PageBox(
-                  top: 4,
                   child: PillToggle<bool>(
                     semanticLabel: l10n.contractsFilterLabel,
                     options: {
@@ -75,7 +98,13 @@ class _ComplaintsScreenState extends ConsumerState<ComplaintsScreen> {
                     onChanged: (v) => setState(() => _resolved = v),
                   ),
                 ),
-                if (shown.isEmpty)
+                if (shown.isEmpty && _query.trim().isNotEmpty)
+                  MessageSliver(
+                    icon: Icons.search_off_rounded,
+                    title: l10n.noMatchesFound,
+                    hint: l10n.noMatchesHint,
+                  )
+                else if (shown.isEmpty)
                   _resolved
                       ? MessageSliver(
                           icon: Icons.task_alt_rounded,
@@ -106,3 +135,19 @@ class _ComplaintsScreenState extends ConsumerState<ComplaintsScreen> {
     );
   }
 }
+
+/// Whether [query] appears in [c]'s title or description, where it
+/// happened (location, area, job), who reported or has it, its status or
+/// its priority.
+bool matchesComplaint(AppLocalizations l10n, Complaint c, String query) =>
+    matchesSearch(query, [
+      c.title,
+      c.description,
+      c.locationName,
+      c.area,
+      c.jobTitle,
+      c.assignedToName,
+      c.reportedByName,
+      l10n.complaintStatus(c.status),
+      l10n.priorityName(c.priority),
+    ]);

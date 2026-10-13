@@ -43,6 +43,7 @@ class SignContractScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Contract>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(contractProvider(key)),
             builder: (_) => const SliverToBoxAdapter(),
           ),

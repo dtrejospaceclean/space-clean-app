@@ -54,6 +54,7 @@ class ScopeFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Scope>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(scopeProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

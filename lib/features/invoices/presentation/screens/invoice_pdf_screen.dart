@@ -61,6 +61,7 @@ class InvoicePdfScreen extends ConsumerWidget {
       slivers: [
         AsyncSlivers(
           value: pdf,
+          skeleton: SkeletonLayout.detail,
           onRetry: refresh,
           builder: (bytes) => SliverFillRemaining(
             hasScrollBody: true,

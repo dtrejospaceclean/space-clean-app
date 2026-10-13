@@ -203,4 +203,24 @@ void main() {
     expect(team.writes, ['remove:m1']);
     expect(find.text('No one on this team yet'), findsOneWidget);
   });
+
+  testWidgets('the search matches name, email and role', (tester) async {
+    await openTeam(tester, ana);
+    Future<void> search(String text) async {
+      await tester.enterText(find.byType(TextField), text);
+      await tester.pumpAndSettle();
+    }
+
+    // Accents don't matter.
+    await search('diaz');
+    expect(find.text('Marco Díaz'), findsOneWidget);
+    await search('marco@example');
+    expect(find.text('Marco Díaz'), findsOneWidget);
+    await search('supervisor');
+    expect(find.text('Marco Díaz'), findsOneWidget);
+
+    await search('nobody');
+    expect(find.text('Marco Díaz'), findsNothing);
+    expect(find.text('Nothing matches'), findsOneWidget);
+  });
 }

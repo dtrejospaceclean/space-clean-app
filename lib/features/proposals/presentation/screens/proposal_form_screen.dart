@@ -63,6 +63,7 @@ class ProposalFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Proposal>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(proposalProvider((clientId, id))),
             builder: (_) => const SliverToBoxAdapter(),
           ),

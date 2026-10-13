@@ -145,6 +145,7 @@ class _ProposalScreenState extends ConsumerState<ProposalScreen> {
           slivers: [
             AsyncSlivers(
               value: proposal,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (p) {
                 ListRow fact(IconData icon, String label, String? value) =>

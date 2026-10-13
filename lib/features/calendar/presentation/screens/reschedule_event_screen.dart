@@ -42,6 +42,7 @@ class RescheduleEventScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<CalendarEvent>(
             value: other,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(eventProvider(key)),
             builder: (_) => const SliverToBoxAdapter(),
           ),

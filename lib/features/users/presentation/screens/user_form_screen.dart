@@ -53,6 +53,7 @@ class UserFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Object?>(
             value: failed ?? const AsyncLoading(),
+            skeleton: SkeletonLayout.form,
             onRetry: () {
               ref.invalidate(rolesProvider);
               if (id != null) ref.invalidate(userProvider(id));

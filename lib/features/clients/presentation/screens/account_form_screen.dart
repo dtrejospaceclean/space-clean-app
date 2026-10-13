@@ -38,6 +38,7 @@ class AccountFormScreen extends ConsumerWidget {
         slivers: [
           AsyncSlivers<Object?>(
             value: client,
+            skeleton: SkeletonLayout.form,
             onRetry: () => ref.invalidate(clientDetailProvider(id!)),
             builder: (_) => const SliverToBoxAdapter(),
           ),

@@ -113,6 +113,7 @@ class UserDetailScreen extends ConsumerWidget {
       slivers: [
         AsyncSlivers(
           value: user,
+          skeleton: SkeletonLayout.detail,
           onRetry: refresh,
           builder: (user) => SliverMainAxisGroup(
             slivers: [

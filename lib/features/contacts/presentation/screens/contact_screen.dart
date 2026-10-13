@@ -107,6 +107,7 @@ class ContactScreen extends ConsumerWidget {
       slivers: [
         AsyncSlivers(
           value: contact,
+          skeleton: SkeletonLayout.detail,
           onRetry: refresh,
           builder: (c) {
             final Widget? signIn = switch (c) {

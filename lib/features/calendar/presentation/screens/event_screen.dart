@@ -211,6 +211,7 @@ class _EventScreenState extends ConsumerState<EventScreen> {
           slivers: [
             AsyncSlivers(
               value: event,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (e) {
                 ListRow fact(

@@ -290,4 +290,25 @@ void main() {
     // No longer due, so no longer late.
     expect(find.text('3 days overdue'), findsNothing);
   });
+
+  testWidgets('the search narrows the open tasks', (tester) async {
+    await openTasks(tester);
+    Future<void> search(String text) async {
+      await tester.enterText(find.byType(TextField), text);
+      await tester.pumpAndSettle();
+    }
+
+    await search('quote');
+    expect(find.text('Send the floor 3 quote'), findsOneWidget);
+    expect(find.text('Order restroom supplies'), findsNothing);
+
+    // The status by name.
+    await search('in progress');
+    expect(find.text('Order restroom supplies'), findsOneWidget);
+    expect(find.text('Send the floor 3 quote'), findsNothing);
+
+    // Done, so not among the open ones.
+    await search('walk the site');
+    expect(find.text('Nothing matches'), findsOneWidget);
+  });
 }

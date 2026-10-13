@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/search/text_search.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -151,32 +152,11 @@ String proposalSummary(AppLocalizations l10n, Proposal p) =>
     };
 
 /// Whether [query] appears in what [p] sells (any line item), its version
-/// note, its stage's name or who prepared it. Case and accents don't
-/// matter, so "negociacion" finds "Negociación".
-bool matchesProposal(AppLocalizations l10n, Proposal p, String query) {
-  final words = _fold(query).split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
-  if (words.isEmpty) return true;
-  final haystack = _fold(
-    [
+/// note, its stage's name or who prepared it.
+bool matchesProposal(AppLocalizations l10n, Proposal p, String query) =>
+    matchesSearch(query, [
       for (final item in p.lineItems) item.description,
-      ?p.versionNote,
+      p.versionNote,
       l10n.proposalStage(p.stage),
-      ?p.preparedByName,
-    ].join(' '),
-  );
-  // Every word must appear somewhere, so "office nego" narrows down.
-  return words.every(haystack.contains);
-}
-
-const _accents = {
-  'á': 'a',
-  'é': 'e',
-  'í': 'i',
-  'ó': 'o',
-  'ú': 'u',
-  'ü': 'u',
-  'ñ': 'n',
-};
-
-String _fold(String text) =>
-    text.toLowerCase().split('').map((c) => _accents[c] ?? c).join();
+      p.preparedByName,
+    ]);

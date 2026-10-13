@@ -102,6 +102,7 @@ class LocationScreen extends ConsumerWidget {
       slivers: [
         AsyncSlivers(
           value: location,
+          skeleton: SkeletonLayout.detail,
           onRetry: refresh,
           builder: (l) {
             // Beside the name it would squeeze it at large text sizes, so

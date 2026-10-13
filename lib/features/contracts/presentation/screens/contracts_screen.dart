@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/search/text_search.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -13,7 +14,8 @@ import '../controllers/contracts_providers.dart';
 import '../widgets/contract_status_label.dart';
 
 /// One client account's contracts, latest start first, each with its status
-/// and value. A toggle narrows them to the ones expiring within 30 days.
+/// and value. A toggle narrows them to the ones expiring within 30 days,
+/// and a search finds one.
 /// New ones come from the dock's "+" (`contract.edit`) or from an approved
 /// proposal.
 class ContractsScreen extends ConsumerStatefulWidget {
@@ -33,6 +35,17 @@ class _ContractsScreenState extends ConsumerState<ContractsScreen> {
   /// filters on the phone.
   bool _expiringOnly = false;
 
+  final _search = TextEditingController();
+
+  /// The API can't search contracts, but the whole list is already here.
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -51,6 +64,14 @@ class _ContractsScreenState extends ConsumerState<ContractsScreen> {
       title: l10n.moduleContracts,
       onRefresh: refresh,
       slivers: [
+        PageBox(
+          top: 4,
+          child: SearchField(
+            controller: _search,
+            hint: l10n.searchContractsHint,
+            onChanged: (text) => setState(() => _query = text),
+          ),
+        ),
         AsyncSlivers(
           value: contracts,
           onRetry: refresh,
@@ -62,14 +83,16 @@ class _ContractsScreenState extends ConsumerState<ContractsScreen> {
                 hint: canEdit ? l10n.noContractsYetHint : null,
               );
             }
-            final expiring = list.where((c) => c.isExpiringSoon).length;
+            final found = list
+                .where((c) => matchesContract(context, c, _query))
+                .toList();
+            final expiring = found.where((c) => c.isExpiringSoon).length;
             final shown = _expiringOnly
-                ? list.where((c) => c.isExpiringSoon).toList()
-                : list;
+                ? found.where((c) => c.isExpiringSoon).toList()
+                : found;
             return SliverMainAxisGroup(
               slivers: [
                 PageBox(
-                  top: 4,
                   child: PillToggle<bool>(
                     semanticLabel: l10n.contractsFilterLabel,
                     options: {
@@ -80,7 +103,13 @@ class _ContractsScreenState extends ConsumerState<ContractsScreen> {
                     onChanged: (v) => setState(() => _expiringOnly = v),
                   ),
                 ),
-                if (shown.isEmpty)
+                if (shown.isEmpty && _query.trim().isNotEmpty)
+                  MessageSliver(
+                    icon: Icons.search_off_rounded,
+                    title: l10n.noMatchesFound,
+                    hint: l10n.noMatchesHint,
+                  )
+                else if (shown.isEmpty)
                   MessageSliver(
                     icon: Icons.event_available_outlined,
                     title: l10n.noContractsExpiring,
@@ -149,4 +178,19 @@ String contractTerm(BuildContext context, Contract c) {
     final end? => '$start – ${context.formatDate(end)}',
     null => AppLocalizations.of(context).contractFrom(start),
   };
+}
+
+/// Whether [query] appears in [c]'s term as shown, its status (or
+/// "Expiring soon"), payment terms, signer, proposal or value.
+bool matchesContract(BuildContext context, Contract c, String query) {
+  final l10n = AppLocalizations.of(context);
+  return matchesSearch(query, [
+    contractTerm(context, c),
+    if (c.isExpiringSoon) l10n.contractExpiringSoon,
+    l10n.contractStatus(c.status),
+    c.paymentTerms,
+    c.signedByName,
+    if (c.proposalVersion case final v?) l10n.contractFromProposal(v),
+    context.formatMoney(c.contractValue),
+  ]);
 }

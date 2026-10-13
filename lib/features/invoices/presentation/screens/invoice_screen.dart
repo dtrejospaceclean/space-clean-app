@@ -223,6 +223,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
           slivers: [
             AsyncSlivers(
               value: invoice,
+              skeleton: SkeletonLayout.detail,
               onRetry: refresh,
               builder: (i) {
                 final editable = canEdit && i.isEditable;
