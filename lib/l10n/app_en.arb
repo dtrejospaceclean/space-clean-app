@@ -1497,6 +1497,5 @@
   "authInvalidPin": "That code is wrong or has expired. After 5 tries, send a new code.",
   "authInvalidResetToken": "This reset took too long or was already used. Send a new code to start again.",
   "aboutLabel": "About",
-  "appVersionLabel": "Version",
-  "appBuildLabel": "Build"
+  "appVersionLabel": "Version"
 }

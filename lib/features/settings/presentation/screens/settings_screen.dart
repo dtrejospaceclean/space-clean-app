@@ -111,7 +111,6 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               // Dashes until the phone answers, which is all but instant.
               FactRow(label: l10n.appVersionLabel, value: version?.version),
-              FactRow(label: l10n.appBuildLabel, value: version?.build),
             ],
           ),
         ),

@@ -3292,7 +3292,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appVersionLabel => 'Version';
-
-  @override
-  String get appBuildLabel => 'Build';
 }

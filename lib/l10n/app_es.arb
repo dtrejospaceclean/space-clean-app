@@ -927,6 +927,5 @@
   "authInvalidPin": "Ese código es incorrecto o ya venció. Después de 5 intentos, pide un código nuevo.",
   "authInvalidResetToken": "El restablecimiento tardó demasiado o ya se usó. Pide un código nuevo para empezar de nuevo.",
   "aboutLabel": "Acerca de",
-  "appVersionLabel": "Versión",
-  "appBuildLabel": "Compilación"
+  "appVersionLabel": "Versión"
 }

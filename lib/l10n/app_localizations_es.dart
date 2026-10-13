@@ -3321,7 +3321,4 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appVersionLabel => 'Versión';
-
-  @override
-  String get appBuildLabel => 'Compilación';
 }

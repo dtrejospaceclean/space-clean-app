@@ -5665,12 +5665,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get appVersionLabel;
-
-  /// No description provided for @appBuildLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Build'**
-  String get appBuildLabel;
 }
 
 class _AppLocalizationsDelegate
