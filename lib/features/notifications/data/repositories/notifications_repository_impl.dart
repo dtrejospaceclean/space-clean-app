@@ -1,15 +1,32 @@
+import '../../../../core/network/api_exception.dart';
+import '../../domain/entities/app_notification.dart';
 import '../../domain/repositories/notifications_repository.dart';
+import '../datasources/notifications_remote_data_source.dart';
 
-/// The backend has no notification endpoints yet. Until it does, this
-/// returns a fixed placeholder so the avatar's badge can be seen; replace
-/// it with a remote data source once the API contract is defined (don't
-/// guess it).
 class NotificationsRepositoryImpl implements NotificationsRepository {
-  const NotificationsRepositoryImpl();
+  const NotificationsRepositoryImpl(this._remote);
 
-  /// TODO(notifications): placeholder until the backend has the feature.
-  static const placeholderUnread = 3;
+  final NotificationsRemoteDataSource _remote;
+
+  Future<T> _guard<T>(Future<T> Function() action) async {
+    try {
+      return await action();
+    } on ApiException catch (e) {
+      throw e.toFailure();
+    }
+  }
 
   @override
-  Future<int> unreadCount() async => placeholderUnread;
+  Future<int> unreadCount() => _guard(_remote.unreadCount);
+
+  @override
+  Future<NotificationPage> getNotifications() =>
+      _guard(_remote.getNotifications);
+
+  @override
+  Future<AppNotification> markRead(String id) =>
+      _guard(() => _remote.markRead(id));
+
+  @override
+  Future<int> markAllRead() => _guard(_remote.markAllRead);
 }

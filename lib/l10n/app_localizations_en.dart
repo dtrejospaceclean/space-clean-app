@@ -3372,4 +3372,92 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get mailSendFailed =>
       'The email couldn\'t be sent. Try again in a moment.';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsRowHint =>
+      'Work assigned to you and changes to your jobs';
+
+  @override
+  String notificationsUnreadSummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread',
+      one: '1 unread',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get noNotificationsYet => 'No notifications yet';
+
+  @override
+  String get noNotificationsYetHint =>
+      'You\'ll see here when someone assigns you work or changes a job you\'re on.';
+
+  @override
+  String get notificationsLatestOnly => 'Showing the latest 100.';
+
+  @override
+  String get notificationUnread => 'Unread';
+
+  @override
+  String get notificationYesterday => 'Yesterday';
+
+  @override
+  String notifTaskAssigned(String actor) {
+    return '$actor assigned you a task';
+  }
+
+  @override
+  String get notifTaskAssignedNoActor => 'You were assigned a task';
+
+  @override
+  String notifComplaintAssigned(String actor) {
+    return '$actor assigned you a complaint';
+  }
+
+  @override
+  String get notifComplaintAssignedNoActor => 'You were assigned a complaint';
+
+  @override
+  String notifComplaintReported(String actor) {
+    return '$actor reported a complaint';
+  }
+
+  @override
+  String get notifComplaintReportedNoActor => 'A complaint was reported';
+
+  @override
+  String notifJobCrewAdded(String actor) {
+    return '$actor added you to a job';
+  }
+
+  @override
+  String get notifJobCrewAddedNoActor => 'You were added to a job';
+
+  @override
+  String notifJobRescheduled(String actor) {
+    return '$actor moved a job you\'re on';
+  }
+
+  @override
+  String get notifJobRescheduledNoActor => 'A job you\'re on was moved';
+
+  @override
+  String notifJobCancelled(String actor) {
+    return '$actor cancelled a job you\'re on';
+  }
+
+  @override
+  String get notifJobCancelledNoActor => 'A job you\'re on was cancelled';
+
+  @override
+  String get notifOther => 'New notification';
 }

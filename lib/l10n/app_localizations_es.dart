@@ -3401,4 +3401,93 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get mailSendFailed =>
       'No se pudo enviar el correo. Inténtalo de nuevo en un momento.';
+
+  @override
+  String get notificationsTitle => 'Notificaciones';
+
+  @override
+  String get notificationsRowHint =>
+      'Trabajo que te asignan y cambios en tus trabajos';
+
+  @override
+  String notificationsUnreadSummary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sin leer',
+      one: '1 sin leer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get markAllRead => 'Marcar todo como leído';
+
+  @override
+  String get noNotificationsYet => 'Aún no hay notificaciones';
+
+  @override
+  String get noNotificationsYetHint =>
+      'Aquí verás cuando alguien te asigne trabajo o cambie un trabajo en el que estás.';
+
+  @override
+  String get notificationsLatestOnly => 'Se muestran las 100 más recientes.';
+
+  @override
+  String get notificationUnread => 'Sin leer';
+
+  @override
+  String get notificationYesterday => 'Ayer';
+
+  @override
+  String notifTaskAssigned(String actor) {
+    return '$actor te asignó una tarea';
+  }
+
+  @override
+  String get notifTaskAssignedNoActor => 'Se te asignó una tarea';
+
+  @override
+  String notifComplaintAssigned(String actor) {
+    return '$actor te asignó una queja';
+  }
+
+  @override
+  String get notifComplaintAssignedNoActor => 'Se te asignó una queja';
+
+  @override
+  String notifComplaintReported(String actor) {
+    return '$actor reportó una queja';
+  }
+
+  @override
+  String get notifComplaintReportedNoActor => 'Se reportó una queja';
+
+  @override
+  String notifJobCrewAdded(String actor) {
+    return '$actor te agregó a un trabajo';
+  }
+
+  @override
+  String get notifJobCrewAddedNoActor => 'Te agregaron a un trabajo';
+
+  @override
+  String notifJobRescheduled(String actor) {
+    return '$actor cambió el horario de un trabajo tuyo';
+  }
+
+  @override
+  String get notifJobRescheduledNoActor =>
+      'Cambió el horario de un trabajo tuyo';
+
+  @override
+  String notifJobCancelled(String actor) {
+    return '$actor canceló un trabajo tuyo';
+  }
+
+  @override
+  String get notifJobCancelledNoActor => 'Se canceló un trabajo tuyo';
+
+  @override
+  String get notifOther => 'Nueva notificación';
 }

@@ -58,6 +58,7 @@ import '../../features/jobs/presentation/screens/job_crew_screen.dart';
 import '../../features/jobs/presentation/screens/job_detail_screen.dart';
 import '../../features/jobs/presentation/screens/job_form_screen.dart';
 import '../../features/jobs/presentation/screens/today_screen.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/password_reset/presentation/screens/forgot_password_screen.dart';
 import '../../features/password_reset/presentation/screens/new_password_screen.dart';
 import '../../features/password_reset/presentation/screens/reset_code_screen.dart';
@@ -693,6 +694,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   SlideRoute(
                     path: 'password',
                     builder: (_, _) => const ChangePasswordScreen(),
+                  ),
+                  SlideRoute(
+                    path: 'notifications',
+                    builder: (_, _) => const NotificationsScreen(),
                   ),
                   SlideRoute(
                     path: 'settings',

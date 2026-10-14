@@ -11,6 +11,7 @@ import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/refresh/live_data.dart';
 import 'package:sp_cln_app/core/storage/preferences.dart';
 import 'package:sp_cln_app/features/notifications/di/notifications_providers.dart';
+import 'package:sp_cln_app/features/notifications/domain/entities/app_notification.dart';
 import 'package:sp_cln_app/features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:sp_cln_app/features/access/di/access_providers.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
@@ -2959,14 +2960,56 @@ Future<SharedPreferences> pumpApp(
   return prefs;
 }
 
-/// A fixed unread count.
+/// An inbox of [items]. [unread] is the badge's count: set on its own,
+/// or worked out from [items] when they're given.
 class FakeNotificationsRepository implements NotificationsRepository {
-  FakeNotificationsRepository(this.unread);
+  FakeNotificationsRepository(this.unread, {List<AppNotification>? items})
+    : items = [...?items];
 
   int unread;
+  final List<AppNotification> items;
+
+  /// Ids marked read one at a time, in order.
+  final reads = <String>[];
+  int readAlls = 0;
+  Failure? readAllError;
 
   @override
   Future<int> unreadCount() async => unread;
+
+  @override
+  Future<NotificationPage> getNotifications() async =>
+      NotificationPage(items: [...items]);
+
+  AppNotification _read(AppNotification n) => AppNotification(
+    id: n.id,
+    type: n.type,
+    createdAt: n.createdAt,
+    params: n.params,
+    clientId: n.clientId,
+    accountName: n.accountName,
+    entity: n.entity,
+    entityId: n.entityId,
+    isRead: true,
+  );
+
+  @override
+  Future<AppNotification> markRead(String id) async {
+    reads.add(id);
+    final i = items.indexWhere((n) => n.id == id);
+    if (!items[i].isRead && unread > 0) unread--;
+    return items[i] = _read(items[i]);
+  }
+
+  @override
+  Future<int> markAllRead() async {
+    if (readAllError case final error?) throw error;
+    readAlls++;
+    final count = items.where((n) => !n.isRead).length;
+    items.setAll(0, items.map(_read));
+    unread = 0;
+    return count;
+  }
 }
 
 /// Scrolls the current page until [finder] is built and clear of the

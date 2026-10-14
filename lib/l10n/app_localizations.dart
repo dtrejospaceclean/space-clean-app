@@ -5791,6 +5791,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The email couldn\'t be sent. Try again in a moment.'**
   String get mailSendFailed;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Work assigned to you and changes to your jobs'**
+  String get notificationsRowHint;
+
+  /// No description provided for @notificationsUnreadSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unread} other{{count} unread}}'**
+  String notificationsUnreadSummary(int count);
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @noNotificationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotificationsYet;
+
+  /// No description provided for @noNotificationsYetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll see here when someone assigns you work or changes a job you\'re on.'**
+  String get noNotificationsYetHint;
+
+  /// No description provided for @notificationsLatestOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the latest 100.'**
+  String get notificationsLatestOnly;
+
+  /// No description provided for @notificationUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notificationUnread;
+
+  /// No description provided for @notificationYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get notificationYesterday;
+
+  /// No description provided for @notifTaskAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} assigned you a task'**
+  String notifTaskAssigned(String actor);
+
+  /// No description provided for @notifTaskAssignedNoActor.
+  ///
+  /// In en, this message translates to:
+  /// **'You were assigned a task'**
+  String get notifTaskAssignedNoActor;
+
+  /// No description provided for @notifComplaintAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} assigned you a complaint'**
+  String notifComplaintAssigned(String actor);
+
+  /// No description provided for @notifComplaintAssignedNoActor.
+  ///
+  /// In en, this message translates to:
+  /// **'You were assigned a complaint'**
+  String get notifComplaintAssignedNoActor;
+
+  /// No description provided for @notifComplaintReported.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} reported a complaint'**
+  String notifComplaintReported(String actor);
+
+  /// No description provided for @notifComplaintReportedNoActor.
+  ///
+  /// In en, this message translates to:
+  /// **'A complaint was reported'**
+  String get notifComplaintReportedNoActor;
+
+  /// No description provided for @notifJobCrewAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} added you to a job'**
+  String notifJobCrewAdded(String actor);
+
+  /// No description provided for @notifJobCrewAddedNoActor.
+  ///
+  /// In en, this message translates to:
+  /// **'You were added to a job'**
+  String get notifJobCrewAddedNoActor;
+
+  /// No description provided for @notifJobRescheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} moved a job you\'re on'**
+  String notifJobRescheduled(String actor);
+
+  /// No description provided for @notifJobRescheduledNoActor.
+  ///
+  /// In en, this message translates to:
+  /// **'A job you\'re on was moved'**
+  String get notifJobRescheduledNoActor;
+
+  /// No description provided for @notifJobCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'{actor} cancelled a job you\'re on'**
+  String notifJobCancelled(String actor);
+
+  /// No description provided for @notifJobCancelledNoActor.
+  ///
+  /// In en, this message translates to:
+  /// **'A job you\'re on was cancelled'**
+  String get notifJobCancelledNoActor;
+
+  /// No description provided for @notifOther.
+  ///
+  /// In en, this message translates to:
+  /// **'New notification'**
+  String get notifOther;
 }
 
 class _AppLocalizationsDelegate

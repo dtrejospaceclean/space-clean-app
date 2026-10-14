@@ -8,6 +8,8 @@ import '../../../../core/widgets/adaptive.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../jobs/presentation/screens/today_screen.dart';
+import '../../../notifications/presentation/controllers/notifications_providers.dart';
+import '../../../notifications/presentation/screens/notifications_screen.dart';
 import '../../../settings/presentation/controllers/language_controller.dart';
 import '../../../settings/presentation/controllers/theme_mode_controller.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
@@ -58,6 +60,7 @@ class ProfileScreen extends ConsumerWidget {
       _ => null,
     };
     if (user == null) return SizedBox.shrink();
+    final unread = ref.watch(unreadNotificationsProvider).value ?? 0;
 
     return SpacePage(
       // Opened from Today's avatar rather than a tab, so back returns there.
@@ -104,6 +107,25 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+        ),
+        PageBox(
+          top: 12,
+          child: ListCard(
+            children: [
+              ListRow(
+                leading: unread > 0
+                    ? const IconBadge.strong(
+                        icon: Icons.notifications_active_outlined,
+                      )
+                    : const IconBadge(icon: Icons.notifications_none_rounded),
+                title: l10n.notificationsTitle,
+                subtitle: unread > 0
+                    ? l10n.notificationsUnreadSummary(unread)
+                    : l10n.notificationsRowHint,
+                onTap: () => context.push(NotificationsScreen.path),
+              ),
+            ],
           ),
         ),
         PageBox(top: 12, child: SectionHeader(title: l10n.sectionSignIn)),
