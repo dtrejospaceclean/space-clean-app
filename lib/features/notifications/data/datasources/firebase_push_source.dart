@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../domain/entities/push_message.dart';
@@ -21,8 +22,11 @@ class FirebasePushSource {
   /// The server sends ours on this channel (`android.notification.channelId`).
   static const channelId = 'spclean_default';
 
-  /// The status bar icon: the launcher's monochrome mark.
-  static const _icon = 'ic_launcher_monochrome';
+  /// The status bar icon (the mark's silhouette), tinted brand orange in
+  /// the shade, with the colored mark beside the text.
+  static const _icon = 'ic_notification';
+  static const _largeIcon = 'ic_notification_large';
+  static const _color = Color(0xFFD14702);
 
   final _localTaps = StreamController<PushMessage>.broadcast();
   Future<void>? _ready;
@@ -107,6 +111,8 @@ class FirebasePushSource {
           importance: Importance.high,
           priority: Priority.high,
           icon: _icon,
+          color: _color,
+          largeIcon: const DrawableResourceAndroidBitmap(_largeIcon),
         ),
         iOS: const DarwinNotificationDetails(),
       ),

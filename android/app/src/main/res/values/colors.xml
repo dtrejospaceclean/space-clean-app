@@ -5,4 +5,6 @@
     <color name="ground">#EEF2F6</color>
     <!-- Launcher icon ground (flutter_launcher_icons). -->
     <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- Tints the notification icon in the shade (SpaceColors.primary). -->
+    <color name="notification">#D14702</color>
 </resources>
