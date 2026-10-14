@@ -71,6 +71,8 @@ import 'package:sp_cln_app/features/team/domain/entities/member.dart';
 import 'package:sp_cln_app/features/team/domain/repositories/team_repository.dart';
 import 'package:sp_cln_app/features/service_catalog/domain/entities/service_item.dart';
 import 'package:sp_cln_app/features/service_catalog/domain/repositories/service_catalog_repository.dart';
+import 'package:sp_cln_app/features/notifications/domain/entities/push_message.dart';
+import 'package:sp_cln_app/features/notifications/domain/repositories/push_repository.dart';
 import 'package:sp_cln_app/features/users/di/users_providers.dart';
 import 'package:sp_cln_app/features/users/domain/entities/managed_user.dart';
 import 'package:sp_cln_app/features/users/domain/entities/role_info.dart';
@@ -2870,6 +2872,7 @@ Future<SharedPreferences> pumpApp(
   ScopesRepository? scopes,
   CalendarRepository? calendar,
   NotificationsRepository? notifications,
+  PushRepository? push,
   Map<String, Object> preferences = const {},
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
@@ -2949,6 +2952,7 @@ Future<SharedPreferences> pumpApp(
         notificationsRepositoryProvider.overrideWithValue(
           notifications ?? FakeNotificationsRepository(0),
         ),
+        pushRepositoryProvider.overrideWithValue(push ?? FakePushRepository()),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,
@@ -2958,6 +2962,75 @@ Future<SharedPreferences> pumpApp(
   );
   await tester.pumpAndSettle();
   return prefs;
+}
+
+/// A phone that allows notifications and has [token], with pushes the test
+/// sends: [receive] while the app is open, [tap] on one, [launch] as the
+/// push that started the app.
+class FakePushRepository implements PushRepository {
+  FakePushRepository({this.allowed = true, this.launch});
+
+  bool allowed;
+  String? currentToken = 'token-1';
+  PushMessage? launch;
+
+  /// What the server was told, in order: (token, language).
+  final registered = <(String, String)>[];
+  final unregistered = <String>[];
+  final shown = <PushMessage>[];
+  int forgets = 0;
+  String? channelName;
+
+  final _received = StreamController<PushMessage>.broadcast();
+  final _opened = StreamController<PushMessage>.broadcast();
+  final _refreshes = StreamController<String>.broadcast();
+
+  void receive(PushMessage message) => _received.add(message);
+  void tap(PushMessage message) => _opened.add(message);
+  void refreshToken(String token) {
+    currentToken = token;
+    _refreshes.add(token);
+  }
+
+  @override
+  Future<bool> requestPermission() async => allowed;
+
+  @override
+  Future<void> prepareChannel(String channelName) async =>
+      this.channelName = channelName;
+
+  @override
+  Future<String?> token() async => currentToken;
+
+  @override
+  Stream<String> get tokenRefreshes => _refreshes.stream;
+
+  @override
+  Stream<PushMessage> get received => _received.stream;
+
+  @override
+  Stream<PushMessage> get opened => _opened.stream;
+
+  @override
+  Future<PushMessage?> launchMessage() async => launch;
+
+  @override
+  Future<void> show(PushMessage message) async => shown.add(message);
+
+  @override
+  Future<void> registerDevice({
+    required String token,
+    required String language,
+  }) async => registered.add((token, language));
+
+  @override
+  Future<void> unregisterDevice(String token) async => unregistered.add(token);
+
+  @override
+  Future<void> forgetToken() async {
+    forgets++;
+    currentToken = null;
+  }
 }
 
 /// An inbox of [items]. [unread] is the badge's count: set on its own,

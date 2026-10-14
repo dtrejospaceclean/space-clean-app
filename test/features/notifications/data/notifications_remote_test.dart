@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/network/api_client.dart';
+import 'package:sp_cln_app/features/notifications/data/datasources/devices_remote_data_source.dart';
 import 'package:sp_cln_app/features/notifications/data/datasources/notifications_remote_data_source.dart';
 import 'package:sp_cln_app/features/notifications/domain/entities/app_notification.dart';
 
@@ -120,5 +121,29 @@ void main() {
     final all = _Answer({'count': 7});
     expect(await _remote(all).markAllRead(), 7);
     expect(all.requests.single.path, '/me/notifications/read-all');
+  });
+
+  test('registers this phone and stops its pushes', () async {
+    final adapter = _Answer({'count': 1});
+    final devices = DevicesRemoteDataSource(
+      ApiClient(
+        Dio(BaseOptions(baseUrl: 'https://api.test'))
+          ..httpClientAdapter = adapter,
+      ),
+    );
+
+    await devices.register(token: 'abc:1', platform: 'android', language: 'es');
+    await devices.unregister('abc:1');
+
+    final [post, delete] = adapter.requests;
+    expect(post.method, 'POST');
+    expect(post.path, '/me/devices');
+    expect(post.data, {
+      'token': 'abc:1',
+      'platform': 'android',
+      'language': 'es',
+    });
+    expect(delete.method, 'DELETE');
+    expect(delete.path, '/me/devices/abc%3A1');
   });
 }

@@ -970,5 +970,6 @@
   "notifJobRescheduledNoActor": "Cambió el horario de un trabajo tuyo",
   "notifJobCancelled": "{actor} canceló un trabajo tuyo",
   "notifJobCancelledNoActor": "Se canceló un trabajo tuyo",
-  "notifOther": "Nueva notificación"
+  "notifOther": "Nueva notificación",
+  "pushChannelName": "Avisos de trabajo"
 }

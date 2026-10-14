@@ -5923,6 +5923,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New notification'**
   String get notifOther;
+
+  /// Name of the Android notification channel for pushes about work, shown in the phone's settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Work updates'**
+  String get pushChannelName;
 }
 
 class _AppLocalizationsDelegate

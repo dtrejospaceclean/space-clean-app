@@ -3460,4 +3460,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifOther => 'New notification';
+
+  @override
+  String get pushChannelName => 'Work updates';
 }

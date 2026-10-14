@@ -1550,5 +1550,9 @@
   "notifJobCancelled": "{actor} cancelled a job you're on",
   "@notifJobCancelled": {"placeholders": {"actor": {"type": "String"}}},
   "notifJobCancelledNoActor": "A job you're on was cancelled",
-  "notifOther": "New notification"
+  "notifOther": "New notification",
+  "pushChannelName": "Work updates",
+  "@pushChannelName": {
+    "description": "Name of the Android notification channel for pushes about work, shown in the phone's settings."
+  }
 }

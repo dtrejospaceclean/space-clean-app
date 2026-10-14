@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "252448611449",
+    "project_id": "space-clean-llc-adc6c",
+    "storage_bucket": "space-clean-llc-adc6c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252448611449:android:a55ca950af366e02a948a8",
+        "android_client_info": {
+          "package_name": "com.spacecleanllc.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0allds-VEw0Dp68LwuNtpBPrqd6x2wMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

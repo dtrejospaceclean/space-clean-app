@@ -138,15 +138,23 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
 /// Where tapping [n] goes: its task, complaint or job, in its account's
 /// stack. Null when the app can't open it.
-String? notificationPath(AppNotification n) {
-  if (!n.canOpen) return null;
-  final account = '${AccountsScreen.path}/${n.clientId}';
-  return switch (n.entity) {
-    NotificationEntity.task => '$account/${TasksScreen.route}/${n.entityId}',
+String? notificationPath(AppNotification n) => n.canOpen
+    ? entityPath(clientId: n.clientId!, entity: n.entity, entityId: n.entityId!)
+    : null;
+
+/// A task, complaint or job's page in its account's stack; null for
+/// something this app doesn't know.
+String? entityPath({
+  required String clientId,
+  required NotificationEntity entity,
+  required String entityId,
+}) {
+  final account = '${AccountsScreen.path}/$clientId';
+  return switch (entity) {
+    NotificationEntity.task => '$account/${TasksScreen.route}/$entityId',
     NotificationEntity.complaint =>
-      '$account/${ComplaintsScreen.route}/${n.entityId}',
-    NotificationEntity.job =>
-      '$account/${AccountJobsScreen.route}/${n.entityId}',
+      '$account/${ComplaintsScreen.route}/$entityId',
+    NotificationEntity.job => '$account/${AccountJobsScreen.route}/$entityId',
     NotificationEntity.unknown => null,
   };
 }

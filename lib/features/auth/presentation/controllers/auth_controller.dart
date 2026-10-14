@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
+import '../../../notifications/di/notifications_providers.dart';
 import '../../di/auth_providers.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/usecases/login.dart';
@@ -86,6 +87,11 @@ class AuthController extends AsyncNotifier<AuthState> {
   }
 
   Future<void> logout() async {
+    // While the session still works, so the server stops pushing here. A
+    // slow network doesn't hold up signing out.
+    await ref
+        .read(disablePushProvider)(true)
+        .timeout(const Duration(seconds: 3), onTimeout: () {});
     await ref.read(logoutProvider)(const NoParams());
     state = const AsyncData(Unauthenticated());
   }
