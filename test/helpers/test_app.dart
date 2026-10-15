@@ -53,9 +53,9 @@ import 'package:sp_cln_app/features/password_reset/domain/entities/password_poli
 import 'package:sp_cln_app/features/password_reset/domain/repositories/password_reset_repository.dart';
 import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
-import 'package:sp_cln_app/features/profile/domain/entities/profile_photo.dart';
+import 'package:sp_cln_app/core/domain/picked_photo.dart';
 import 'package:sp_cln_app/features/profile/domain/repositories/profile_repository.dart';
-import 'package:sp_cln_app/features/profile/presentation/photo_picker.dart';
+import 'package:sp_cln_app/core/media/photo_picker.dart';
 import 'package:sp_cln_app/features/proposals/di/proposals_providers.dart';
 import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
 import 'package:sp_cln_app/features/proposals/domain/repositories/proposals_repository.dart';
@@ -1155,6 +1155,7 @@ class FakeComplaintsRepository implements ComplaintsRepository {
     String? resolutionNotes,
     bool resolved = false,
     bool reopened = false,
+    List<ComplaintPhoto>? photos,
   }) {
     String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
     final assignee = assignedToId ?? c.assignedToId;
@@ -1193,6 +1194,7 @@ class FakeComplaintsRepository implements ComplaintsRepository {
           : reopened
           ? null
           : c.resolutionHours,
+      photos: photos ?? c.photos,
     );
   }
 
@@ -1312,6 +1314,49 @@ class FakeComplaintsRepository implements ComplaintsRepository {
     );
     _replace(next);
     return next;
+  }
+
+  /// Upload failures, by the picked file's path.
+  final photoFailures = <String, Failure>{};
+
+  @override
+  Future<ComplaintPhoto> addPhoto(
+    String clientId,
+    String complaintId,
+    PickedPhoto photo,
+  ) async {
+    final c = await _open(clientId, complaintId);
+    if (photoFailures[photo.path] case final f?) throw f;
+    if (c.photos.length >= Complaint.maxPhotos) {
+      throw const ServerFailure('complaints.photo_limit', statusCode: 400);
+    }
+    writes.add('photo:$complaintId:${photo.path}');
+    final added = ComplaintPhoto(
+      id: 'ph${c.photos.length + 1}',
+      url: 'https://cdn.test/${photo.path.split('/').last}',
+      createdAt: testNow,
+    );
+    _replace(_with(c, photos: [...c.photos, added]));
+    return added;
+  }
+
+  @override
+  Future<void> removePhoto(
+    String clientId,
+    String complaintId,
+    String photoId,
+  ) async {
+    final c = await _open(clientId, complaintId);
+    writes.add('unphoto:$complaintId:$photoId');
+    _replace(
+      _with(
+        c,
+        photos: [
+          for (final p in c.photos)
+            if (p.id != photoId) p,
+        ],
+      ),
+    );
   }
 }
 
@@ -2569,7 +2614,7 @@ class FakeProfileRepository implements ProfileRepository {
   }
 
   @override
-  Future<User> setPhoto(ProfilePhoto photo) async {
+  Future<User> setPhoto(PickedPhoto photo) async {
     writes.add('photo ${photo.path}');
     return auth.sessionUser = _withPhoto(
       'https://cdn.example.com/profile_photos/${auth.sessionUser!.id}/'
@@ -2617,12 +2662,12 @@ class FakeProfileRepository implements ProfileRepository {
 class FakePhotoPicker implements PhotoPicker {
   FakePhotoPicker([this.next]);
 
-  ProfilePhoto? next;
+  PickedPhoto? next;
   Object? error;
   final sources = <PhotoSource>[];
 
   @override
-  Future<ProfilePhoto?> pick(PhotoSource source) async {
+  Future<PickedPhoto?> pick(PhotoSource source, {bool selfie = false}) async {
     sources.add(source);
     if (error case final e?) throw e;
     return next;

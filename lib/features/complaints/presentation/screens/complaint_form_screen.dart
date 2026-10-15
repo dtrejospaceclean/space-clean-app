@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design.dart';
+import '../../../../core/domain/picked_photo.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/media/photo_picker.dart';
+import '../../../../core/widgets/adaptive.dart';
 import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
@@ -27,9 +32,11 @@ import 'complaints_screen.dart';
 
 /// A new complaint ([complaintId] null) or an edit of one that isn't
 /// resolved. Needs `complaints.edit`. A new one can start assigned (with
-/// `complaints.assign`); after that, assigning is done from its page. One
-/// reported from a job's page ([jobId]) starts linked to it and goes back
-/// there when saved.
+/// `complaints.assign`); after that, assigning is done from its page. A new
+/// one can take up to [Complaint.maxPhotos] photos, uploaded once it's
+/// saved; after that they're added and removed on its page. One reported
+/// from a job's page ([jobId]) starts linked to it and goes back there when
+/// saved.
 class ComplaintFormScreen extends ConsumerWidget {
   const ComplaintFormScreen({
     super.key,
@@ -105,6 +112,9 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
   late String? _locationId = widget.initial?.locationId;
   late String? _jobId = widget.initial?.jobId ?? widget.jobId;
   String? _assignedToId;
+
+  /// Photos for a new complaint, uploaded after it's created.
+  final _photos = <PickedPhoto>[];
 
   bool _saving = false;
   Failure? _failure;
@@ -195,6 +205,79 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
     );
   }
 
+  Future<void> _tell(String message) => showAdaptiveDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog.adaptive(
+      content: Text(message),
+      actions: [
+        adaptiveAction(
+          context,
+          label: AppLocalizations.of(context).doneButton,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    ),
+  );
+
+  Future<void> _addPhoto() async {
+    final l10n = AppLocalizations.of(context);
+    const camera = 'camera';
+    final choice = await showAppChoice(
+      context,
+      title: l10n.addPhoto,
+      allowClear: false,
+      options: {camera: l10n.takePhoto, 'library': l10n.chooseFromLibrary},
+    );
+    if (choice == null || !mounted) return;
+    String problem;
+    try {
+      final photo = await ref
+          .read(photoPickerProvider)
+          .pick(choice == camera ? PhotoSource.camera : PhotoSource.library);
+      if (photo == null || !mounted) return;
+      if (!photo.isTooLarge) {
+        setState(() => _photos.add(photo));
+        return;
+      }
+      problem = l10n.messageForKey(AddComplaintPhoto.tooLargeKey);
+    } on PhotoAccessDenied {
+      problem = l10n.photoAccessDenied;
+    } on Exception {
+      problem = l10n.photoPickFailed;
+    }
+    if (mounted) await _tell(problem);
+  }
+
+  /// Uploads [_photos] to the new complaint one by one. A photo that fails
+  /// doesn't undo the complaint: the user hears how many and why, and adds
+  /// them again from its page.
+  Future<void> _uploadPhotos(String complaintId) async {
+    final upload = ref.read(addComplaintPhotoProvider);
+    final complaint = ComplaintRef(
+      clientId: widget.clientId,
+      complaintId: complaintId,
+    );
+    Failure? first;
+    var failed = 0;
+    for (final photo in _photos) {
+      try {
+        await upload(
+          AddComplaintPhotoParams(complaint: complaint, photo: photo),
+        );
+      } on Failure catch (f) {
+        first ??= f;
+        failed++;
+      }
+    }
+    if (first == null || !mounted) return;
+    // Saved: the button stops spinning while the user reads why.
+    setState(() => _saving = false);
+    final l10n = AppLocalizations.of(context);
+    await _tell(
+      l10n.complaintPhotosNotAdded(failed, l10n.failureMessage(first)),
+    );
+  }
+
   Future<void> _save() async {
     setState(() => _failure = null);
     if (!_formKey.currentState!.validate()) {
@@ -218,6 +301,7 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
           ),
         ),
       );
+      if (_creating && _photos.isNotEmpty) await _uploadPhotos(saved.id);
       invalidateComplaints(ref, widget.clientId);
       if (!mounted) return;
       if (_creating && widget.jobId != null) {
@@ -376,6 +460,26 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
                     ],
                   ),
                 ]),
+                if (_creating)
+                  FormSection(l10n.complaintPhotosSection, [
+                    PhotoStrip(
+                      images: [
+                        for (final p in _photos) FileImage(File(p.path)),
+                      ],
+                      slots: Complaint.maxPhotos,
+                      onAdd: _saving ? null : _addPhoto,
+                      onRemove: _saving
+                          ? null
+                          : (i) => setState(() => _photos.removeAt(i)),
+                      onOpen: (i) => showPhotoViewer(
+                        context,
+                        images: [
+                          for (final p in _photos) FileImage(File(p.path)),
+                        ],
+                        initial: i,
+                      ),
+                    ),
+                  ], footer: l10n.complaintPhotosHint(Complaint.maxPhotos)),
                 FormSection(l10n.sectionWhere, [
                   PickerField(
                     label: l10n.locationLabel,

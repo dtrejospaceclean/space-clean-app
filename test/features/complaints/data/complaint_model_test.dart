@@ -31,6 +31,13 @@ void main() {
       'reportedBy': {'id': 'u1', 'name': 'Ana Pérez'},
       'resolvedBy': {'id': 'u2', 'name': 'Marco Díaz'},
       'resolutionHours': 4.5,
+      'photos': [
+        {
+          'id': 'p1',
+          'url': 'https://cdn.test/p1.webp',
+          'createdAt': '2026-09-26T15:05:00.000Z',
+        },
+      ],
     });
 
     expect(c.title, 'Baños sin papel');
@@ -49,6 +56,14 @@ void main() {
     expect(c.resolvedByName, 'Marco Díaz');
     expect(c.resolutionHours, 4.5);
     expect(c.resolutionNotes, 'Se repuso y se dejó stock extra.');
+    expect(c.photos.single.id, 'p1');
+    expect(c.photos.single.url, 'https://cdn.test/p1.webp');
+    expect(
+      c.photos.single.createdAt,
+      DateTime.utc(2026, 9, 26, 15, 5).toLocal(),
+    );
+    // Resolved: no more photos.
+    expect(c.canAddPhoto, isFalse);
   });
 
   test('an open complaint without links reads as unset', () {
@@ -69,6 +84,8 @@ void main() {
     expect(c.jobTitle, isNull);
     expect(c.assignedToName, isNull);
     expect(c.resolutionHours, isNull);
+    expect(c.photos, isEmpty);
+    expect(c.canAddPhoto, isTrue);
   });
 
   test('unknown statuses and priorities are kept as unknown', () {

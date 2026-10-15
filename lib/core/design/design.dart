@@ -15,6 +15,7 @@ export 'widgets/fields.dart';
 export 'widgets/list_card.dart';
 export 'widgets/logo.dart';
 export 'widgets/notice.dart';
+export 'widgets/photos.dart';
 export 'widgets/pickers.dart';
 export 'widgets/pill_toggle.dart';
 export 'widgets/progress_bar.dart';

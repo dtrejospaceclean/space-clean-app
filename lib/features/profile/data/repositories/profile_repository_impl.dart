@@ -5,7 +5,7 @@ import '../../../../core/network/api_exception.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../domain/entities/profile_draft.dart';
-import '../../domain/entities/profile_photo.dart';
+import '../../../../core/domain/picked_photo.dart';
 import '../../domain/repositories/profile_repository.dart';
 
 /// `PATCH /auth/me`, `/auth/me/photo` and `POST /auth/change-password`.
@@ -32,7 +32,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   // Dio sets the multipart Content-Type, boundary included.
   @override
-  Future<User> setPhoto(ProfilePhoto photo) => _guard(() async {
+  Future<User> setPhoto(PickedPhoto photo) => _guard(() async {
     final form = FormData.fromMap({
       'photo': await MultipartFile.fromFile(photo.path),
     });

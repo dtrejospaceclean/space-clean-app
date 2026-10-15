@@ -22,9 +22,11 @@ extension FailureMessages on AppLocalizations {
     'users.email_taken' => usersEmailTaken,
     'users.not_found' => usersNotFound,
     'users.cannot_deactivate_self' => usersCannotDeactivateSelf,
-    'users.photo_required' => usersPhotoRequired,
-    'users.photo_invalid_type' => usersPhotoInvalidType,
-    'users.photo_too_large' => usersPhotoTooLarge,
+    'users.photo_required' || 'complaints.photo_required' => usersPhotoRequired,
+    'users.photo_invalid_type' ||
+    'complaints.photo_invalid_type' => usersPhotoInvalidType,
+    'users.photo_too_large' ||
+    'complaints.photo_too_large' => usersPhotoTooLarge,
     'roles.still_assigned' => rolesStillAssigned,
     'roles.system_role_not_renamable' ||
     'roles.system_role_not_deletable' => rolesSystemRole,
@@ -78,6 +80,8 @@ extension FailureMessages on AppLocalizations {
     'complaints.already_resolved' => complaintsAlreadyResolved,
     'complaints.not_resolved' => complaintsNotResolved,
     'complaints.assignee_not_active' => complaintsAssigneeNotActive,
+    'complaints.photo_limit' => complaintsPhotoLimit,
+    'complaints.photo_not_found' => complaintsPhotoNotFound,
     'jobs.not_assigned' => jobsNotAssigned,
     'jobs.assignee_not_active' => jobsAssigneeNotActive,
     'jobs.location_required' => jobsLocationRequired,

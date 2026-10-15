@@ -33,3 +33,9 @@ final resolveComplaintProvider = Provider(
 final reopenComplaintProvider = Provider(
   (ref) => ReopenComplaint(ref.watch(complaintsRepositoryProvider)),
 );
+final addComplaintPhotoProvider = Provider(
+  (ref) => AddComplaintPhoto(ref.watch(complaintsRepositoryProvider)),
+);
+final removeComplaintPhotoProvider = Provider(
+  (ref) => RemoveComplaintPhoto(ref.watch(complaintsRepositoryProvider)),
+);

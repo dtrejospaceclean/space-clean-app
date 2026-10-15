@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+
+import '../../../../core/domain/picked_photo.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/paginated.dart';
 import '../../domain/entities/complaint.dart';
@@ -74,4 +77,26 @@ class ComplaintsRemoteDataSource {
     String clientId,
     String complaintId,
   ) async => _one(await _api.post('${_path(clientId)}/$complaintId/reopen'));
+
+  /// One file per request, as multipart field `photo`.
+  Future<ComplaintPhoto> addPhoto(
+    String clientId,
+    String complaintId,
+    PickedPhoto photo,
+  ) async {
+    final form = FormData.fromMap({
+      'photo': await MultipartFile.fromFile(photo.path),
+    });
+    final data = await _api.post(
+      '${_path(clientId)}/$complaintId/photos',
+      body: form,
+    );
+    return ComplaintModel.photoFromJson((data! as Map).cast<String, dynamic>());
+  }
+
+  Future<void> removePhoto(
+    String clientId,
+    String complaintId,
+    String photoId,
+  ) => _api.delete('${_path(clientId)}/$complaintId/photos/$photoId');
 }

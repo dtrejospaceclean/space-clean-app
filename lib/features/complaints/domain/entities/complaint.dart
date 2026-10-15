@@ -23,6 +23,21 @@ enum ComplaintStatus {
   );
 }
 
+/// A photo of what a complaint is about. The server re-encodes it (WebP,
+/// at most 1600 px). [url] may be a signed link that expires within the
+/// hour, so it's read fresh with the complaint, never kept.
+class ComplaintPhoto {
+  const ComplaintPhoto({
+    required this.id,
+    required this.url,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String url;
+  final DateTime createdAt;
+}
+
 /// A client's complaint about the service at one account, optionally tied
 /// to a location, an area of it and the job it's about. Complaints are
 /// never deleted: they're resolved, and can be reopened.
@@ -48,7 +63,11 @@ class Complaint {
     this.resolutionTime,
     this.resolutionNotes,
     this.resolutionHours,
+    this.photos = const [],
   });
+
+  /// The most photos a complaint can have (`complaints.photo_limit`).
+  static const maxPhotos = 3;
 
   final String id;
   final String clientId;
@@ -85,10 +104,17 @@ class Complaint {
   /// server; null unless resolved.
   final double? resolutionHours;
 
+  /// In the order they were added.
+  final List<ComplaintPhoto> photos;
+
   bool get isResolved => status == ComplaintStatus.resolved;
 
   /// A resolved complaint is read-only until it's reopened.
   bool get isEditable => !isResolved;
+
+  /// Photos are added and removed only while it [isEditable], up to
+  /// [maxPhotos].
+  bool get canAddPhoto => isEditable && photos.length < maxPhotos;
 }
 
 /// What's typed in the form. Assigning has its own endpoint, so an edit

@@ -2842,6 +2842,63 @@ class AppLocalizationsEs extends AppLocalizations {
       'La persona asignada debe ser un usuario activo.';
 
   @override
+  String get addPhoto => 'Agregar foto';
+
+  @override
+  String get photoTitle => 'Foto';
+
+  @override
+  String photoOf(int index, int count) {
+    return 'Foto $index de $count';
+  }
+
+  @override
+  String get photoLoadFailed => 'No se pudo cargar esta foto.';
+
+  @override
+  String get complaintPhotosSection => 'Fotos';
+
+  @override
+  String complaintPhotosHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Agrega hasta $count fotos de lo ocurrido.',
+      one: 'Agrega hasta 1 foto de lo ocurrido.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeComplaintPhotoTitle => '¿Quitar esta foto?';
+
+  @override
+  String get removeComplaintPhotoBody => 'Se elimina de la queja para siempre.';
+
+  @override
+  String get keepPhoto => 'Conservarla';
+
+  @override
+  String complaintPhotosNotAdded(int count, String reason) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'La queja se guardó, pero no se pudieron agregar $count fotos: $reason Agrégalas de nuevo desde la página de la queja.',
+      one:
+          'La queja se guardó, pero no se pudo agregar 1 foto: $reason Agrégala de nuevo desde la página de la queja.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get complaintsPhotoLimit =>
+      'Una queja puede tener como máximo 3 fotos.';
+
+  @override
+  String get complaintsPhotoNotFound => 'Esta foto ya no existe.';
+
+  @override
   String get noJobComplaints => 'Sin quejas sobre este trabajo';
 
   @override

@@ -2816,6 +2816,63 @@ class AppLocalizationsEn extends AppLocalizations {
       'The person assigned must be an active user.';
 
   @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get photoTitle => 'Photo';
+
+  @override
+  String photoOf(int index, int count) {
+    return 'Photo $index of $count';
+  }
+
+  @override
+  String get photoLoadFailed => 'This photo couldn\'t load.';
+
+  @override
+  String get complaintPhotosSection => 'Photos';
+
+  @override
+  String complaintPhotosHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add up to $count photos of what happened.',
+      one: 'Add up to 1 photo of what happened.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get removeComplaintPhotoTitle => 'Remove this photo?';
+
+  @override
+  String get removeComplaintPhotoBody =>
+      'It\'s deleted from the complaint for good.';
+
+  @override
+  String get keepPhoto => 'Keep it';
+
+  @override
+  String complaintPhotosNotAdded(int count, String reason) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'The complaint was saved, but $count photos couldn\'t be added: $reason Add them again from the complaint\'s page.',
+      one:
+          'The complaint was saved, but 1 photo couldn\'t be added: $reason Add it again from the complaint\'s page.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get complaintsPhotoLimit => 'A complaint can have at most 3 photos.';
+
+  @override
+  String get complaintsPhotoNotFound => 'This photo no longer exists.';
+
+  @override
   String get noJobComplaints => 'No complaints about this job';
 
   @override

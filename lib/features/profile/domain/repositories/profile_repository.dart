@@ -1,6 +1,6 @@
 import '../../../auth/domain/entities/user.dart';
 import '../entities/profile_draft.dart';
-import '../entities/profile_photo.dart';
+import '../../../../core/domain/picked_photo.dart';
 
 /// The signed-in user's own record. Every method throws a `Failure` on error.
 abstract interface class ProfileRepository {
@@ -9,7 +9,7 @@ abstract interface class ProfileRepository {
 
   /// Sets or replaces the user's own photo. Returns the saved user, with
   /// the new `photoUrl`.
-  Future<User> setPhoto(ProfilePhoto photo);
+  Future<User> setPhoto(PickedPhoto photo);
 
   /// Returns the saved user, with no `photoUrl`.
   Future<User> removePhoto();

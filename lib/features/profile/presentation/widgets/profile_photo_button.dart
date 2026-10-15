@@ -10,7 +10,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../di/profile_providers.dart';
-import '../photo_picker.dart';
+import '../../../../core/media/photo_picker.dart';
 
 /// The signed-in user's avatar on Me, with a camera badge: tapping it takes
 /// or chooses a new photo, or removes the current one.
@@ -55,7 +55,10 @@ class _ProfilePhotoButtonState extends ConsumerState<ProfilePhotoButton> {
       } else {
         final photo = await ref
             .read(photoPickerProvider)
-            .pick(choice == _camera ? PhotoSource.camera : PhotoSource.library);
+            .pick(
+              choice == _camera ? PhotoSource.camera : PhotoSource.library,
+              selfie: true,
+            );
         if (photo == null || !mounted) return;
         setState(() => _busy = true);
         saved = await ref.read(setMyPhotoProvider)(photo);

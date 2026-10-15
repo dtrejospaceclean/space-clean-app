@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../domain/entities/profile_photo.dart';
+import '../domain/picked_photo.dart';
 
 enum PhotoSource { camera, library }
 
@@ -10,7 +10,9 @@ enum PhotoSource { camera, library }
 /// backs out. Throws [PhotoAccessDenied] when the app may not use the
 /// camera or the library.
 abstract interface class PhotoPicker {
-  Future<ProfilePhoto?> pick(PhotoSource source);
+  /// [selfie] opens the front camera (a profile photo); otherwise the back
+  /// one, for photos of a site.
+  Future<PickedPhoto?> pick(PhotoSource source, {bool selfie = false});
 }
 
 class PhotoAccessDenied implements Exception {
@@ -21,14 +23,14 @@ class PhotoAccessDenied implements Exception {
 class DevicePhotoPicker implements PhotoPicker {
   const DevicePhotoPicker();
 
-  // The server keeps a 512 px square, so a smaller copy loses nothing and
-  // stays well under its 5 MB limit. Re-encoding also turns an iPhone's
-  // HEIC into JPEG, which the server accepts.
+  // The server keeps at most 1600 px (a profile photo, a 512 px square), so
+  // a smaller copy loses nothing and stays well under its 5 MB limit.
+  // Re-encoding also turns an iPhone's HEIC into JPEG, which it accepts.
   static const _maxSide = 1600.0;
   static const _quality = 90;
 
   @override
-  Future<ProfilePhoto?> pick(PhotoSource source) async {
+  Future<PickedPhoto?> pick(PhotoSource source, {bool selfie = false}) async {
     final XFile? file;
     try {
       file = await ImagePicker().pickImage(
@@ -36,7 +38,7 @@ class DevicePhotoPicker implements PhotoPicker {
           PhotoSource.camera => ImageSource.camera,
           PhotoSource.library => ImageSource.gallery,
         },
-        preferredCameraDevice: CameraDevice.front,
+        preferredCameraDevice: selfie ? CameraDevice.front : CameraDevice.rear,
         maxWidth: _maxSide,
         maxHeight: _maxSide,
         imageQuality: _quality,
@@ -48,7 +50,7 @@ class DevicePhotoPicker implements PhotoPicker {
       rethrow;
     }
     if (file == null) return null;
-    return ProfilePhoto(path: file.path, sizeInBytes: await file.length());
+    return PickedPhoto(path: file.path, sizeInBytes: await file.length());
   }
 }
 

@@ -40,7 +40,19 @@ abstract final class ComplaintModel {
     resolutionTime: _instant(json['resolutionTime']),
     resolutionNotes: json['resolutionNotes'] as String?,
     resolutionHours: (json['resolutionHours'] as num?)?.toDouble(),
+    photos: [
+      for (final p in json['photos'] as List? ?? const [])
+        photoFromJson((p as Map).cast<String, dynamic>()),
+    ],
   );
+
+  /// `{ id, url, createdAt }`.
+  static ComplaintPhoto photoFromJson(Map<String, dynamic> json) =>
+      ComplaintPhoto(
+        id: json['id'] as String,
+        url: json['url'] as String,
+        createdAt: _instant(json['createdAt']) ?? DateTime(1970),
+      );
 }
 
 abstract final class ComplaintDraftModel {

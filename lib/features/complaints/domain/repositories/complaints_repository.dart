@@ -1,3 +1,4 @@
+import '../../../../core/domain/picked_photo.dart';
 import '../entities/complaint.dart';
 
 /// Every method throws a `Failure` on error.
@@ -40,4 +41,16 @@ abstract interface class ComplaintsRepository {
   /// Opens a resolved complaint again (`complaints.not_resolved`
   /// otherwise). Needs `complaints.edit`.
   Future<Complaint> reopenComplaint(String clientId, String complaintId);
+
+  /// Uploads one photo. Needs `complaints.edit`; refused once resolved
+  /// (`complaints.already_resolved`) or at [Complaint.maxPhotos]
+  /// (`complaints.photo_limit`).
+  Future<ComplaintPhoto> addPhoto(
+    String clientId,
+    String complaintId,
+    PickedPhoto photo,
+  );
+
+  /// Removes it for good. Needs `complaints.edit`; refused once resolved.
+  Future<void> removePhoto(String clientId, String complaintId, String photoId);
 }

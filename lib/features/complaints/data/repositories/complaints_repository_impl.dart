@@ -1,3 +1,4 @@
+import '../../../../core/domain/picked_photo.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../domain/entities/complaint.dart';
 import '../../domain/repositories/complaints_repository.dart';
@@ -52,4 +53,18 @@ class ComplaintsRepositoryImpl implements ComplaintsRepository {
   @override
   Future<Complaint> reopenComplaint(String clientId, String complaintId) =>
       _guard(() => _remote.reopenComplaint(clientId, complaintId));
+
+  @override
+  Future<ComplaintPhoto> addPhoto(
+    String clientId,
+    String complaintId,
+    PickedPhoto photo,
+  ) => _guard(() => _remote.addPhoto(clientId, complaintId, photo));
+
+  @override
+  Future<void> removePhoto(
+    String clientId,
+    String complaintId,
+    String photoId,
+  ) => _guard(() => _remote.removePhoto(clientId, complaintId, photoId));
 }

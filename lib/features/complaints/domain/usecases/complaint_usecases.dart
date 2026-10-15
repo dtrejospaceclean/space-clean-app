@@ -1,3 +1,5 @@
+import '../../../../core/domain/picked_photo.dart';
+import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../entities/complaint.dart';
 import '../repositories/complaints_repository.dart';
@@ -125,4 +127,56 @@ class ReopenComplaint implements UseCase<Complaint, ComplaintRef> {
   @override
   Future<Complaint> call(ComplaintRef params) =>
       _repository.reopenComplaint(params.clientId, params.complaintId);
+}
+
+class AddComplaintPhotoParams {
+  const AddComplaintPhotoParams({required this.complaint, required this.photo});
+
+  final ComplaintRef complaint;
+  final PickedPhoto photo;
+}
+
+/// Throws `RuleFailure` `complaints.photo_too_large` without uploading when
+/// the file is over the server's limit.
+class AddComplaintPhoto
+    implements UseCase<ComplaintPhoto, AddComplaintPhotoParams> {
+  const AddComplaintPhoto(this._repository);
+
+  final ComplaintsRepository _repository;
+
+  static const tooLargeKey = 'complaints.photo_too_large';
+
+  @override
+  Future<ComplaintPhoto> call(AddComplaintPhotoParams p) async {
+    if (p.photo.isTooLarge) throw const RuleFailure(tooLargeKey);
+    return _repository.addPhoto(
+      p.complaint.clientId,
+      p.complaint.complaintId,
+      p.photo,
+    );
+  }
+}
+
+class RemoveComplaintPhotoParams {
+  const RemoveComplaintPhotoParams({
+    required this.complaint,
+    required this.photoId,
+  });
+
+  final ComplaintRef complaint;
+  final String photoId;
+}
+
+class RemoveComplaintPhoto
+    implements UseCase<void, RemoveComplaintPhotoParams> {
+  const RemoveComplaintPhoto(this._repository);
+
+  final ComplaintsRepository _repository;
+
+  @override
+  Future<void> call(RemoveComplaintPhotoParams p) => _repository.removePhoto(
+    p.complaint.clientId,
+    p.complaint.complaintId,
+    p.photoId,
+  );
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sp_cln_app/features/profile/domain/entities/profile_photo.dart';
-import 'package:sp_cln_app/features/profile/presentation/photo_picker.dart';
+import 'package:sp_cln_app/core/domain/picked_photo.dart';
+import 'package:sp_cln_app/core/media/photo_picker.dart';
 
 import '../../../helpers/test_app.dart';
 
@@ -61,7 +61,7 @@ void main() {
   });
 
   group('profile photo', () {
-    const picked = ProfilePhoto(path: '/tmp/me.jpg', sizeInBytes: 800000);
+    const picked = PickedPhoto(path: '/tmp/me.jpg', sizeInBytes: 800000);
 
     Future<void> openPhotoMenu(WidgetTester tester) async {
       await tester.tap(find.byTooltip('Change profile photo'));
@@ -115,9 +115,9 @@ void main() {
         tester,
         auth,
         photoPicker: FakePhotoPicker(
-          const ProfilePhoto(
+          const PickedPhoto(
             path: '/tmp/huge.png',
-            sizeInBytes: ProfilePhoto.maxBytes + 1,
+            sizeInBytes: PickedPhoto.maxBytes + 1,
           ),
         ),
       );

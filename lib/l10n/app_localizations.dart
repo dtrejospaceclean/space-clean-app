@@ -4880,6 +4880,78 @@ abstract class AppLocalizations {
   /// **'The person assigned must be an active user.'**
   String get complaintsAssigneeNotActive;
 
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get addPhoto;
+
+  /// No description provided for @photoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photoTitle;
+
+  /// No description provided for @photoOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo {index} of {count}'**
+  String photoOf(int index, int count);
+
+  /// No description provided for @photoLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo couldn\'t load.'**
+  String get photoLoadFailed;
+
+  /// No description provided for @complaintPhotosSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get complaintPhotosSection;
+
+  /// No description provided for @complaintPhotosHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Add up to 1 photo of what happened.} other{Add up to {count} photos of what happened.}}'**
+  String complaintPhotosHint(int count);
+
+  /// No description provided for @removeComplaintPhotoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this photo?'**
+  String get removeComplaintPhotoTitle;
+
+  /// No description provided for @removeComplaintPhotoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s deleted from the complaint for good.'**
+  String get removeComplaintPhotoBody;
+
+  /// No description provided for @keepPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepPhoto;
+
+  /// No description provided for @complaintPhotosNotAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{The complaint was saved, but 1 photo couldn\'t be added: {reason} Add it again from the complaint\'s page.} other{The complaint was saved, but {count} photos couldn\'t be added: {reason} Add them again from the complaint\'s page.}}'**
+  String complaintPhotosNotAdded(int count, String reason);
+
+  /// No description provided for @complaintsPhotoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'A complaint can have at most 3 photos.'**
+  String get complaintsPhotoLimit;
+
+  /// No description provided for @complaintsPhotoNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo no longer exists.'**
+  String get complaintsPhotoNotFound;
+
   /// No description provided for @noJobComplaints.
   ///
   /// In en, this message translates to:

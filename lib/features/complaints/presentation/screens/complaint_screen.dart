@@ -6,6 +6,7 @@ import '../../../../core/design/design.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/l10n/formatting.dart';
+import '../../../../core/media/photo_picker.dart';
 import '../../../../core/widgets/adaptive.dart';
 import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -24,8 +25,8 @@ import '../widgets/complaint_labels.dart';
 /// One complaint: a head card (title, status, priority, who reported it
 /// and what they said, Edit), then where it happened and who has it, and
 /// how it was resolved. While it's being worked on, `complaints.edit` edits
-/// and resolves it and `complaints.assign` (re)assigns it; once resolved it's
-/// read-only until reopened.
+/// and resolves it, adds and removes its photos, and `complaints.assign`
+/// (re)assigns it; once resolved it's read-only until reopened.
 class ComplaintScreen extends ConsumerStatefulWidget {
   const ComplaintScreen({
     super.key,
@@ -41,7 +42,7 @@ class ComplaintScreen extends ConsumerStatefulWidget {
 }
 
 /// What's in flight: nothing else on the page starts until it settles.
-enum _Busy { assign, reopen }
+enum _Busy { assign, reopen, photo }
 
 class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
   _Busy? _busy;
@@ -108,6 +109,63 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
         AssignComplaintParams(complaint: _ref, userId: picked),
       ),
     );
+  }
+
+  /// Takes or chooses a photo and uploads it.
+  Future<void> _addPhoto() async {
+    final l10n = AppLocalizations.of(context);
+    const camera = 'camera';
+    final choice = await showAppChoice(
+      context,
+      title: l10n.addPhoto,
+      allowClear: false,
+      options: {camera: l10n.takePhoto, 'library': l10n.chooseFromLibrary},
+    );
+    if (choice == null || !mounted) return;
+    final String problem;
+    try {
+      final photo = await ref
+          .read(photoPickerProvider)
+          .pick(choice == camera ? PhotoSource.camera : PhotoSource.library);
+      if (photo == null || !mounted) return;
+      await _run(
+        _Busy.photo,
+        () => ref.read(addComplaintPhotoProvider)(
+          AddComplaintPhotoParams(complaint: _ref, photo: photo),
+        ),
+      );
+      return;
+    } on PhotoAccessDenied {
+      problem = l10n.photoAccessDenied;
+    } on Exception {
+      problem = l10n.photoPickFailed;
+    }
+    if (!mounted) return;
+    await showAdaptiveDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog.adaptive(
+        content: Text(problem),
+        actions: [
+          adaptiveAction(
+            context,
+            label: l10n.doneButton,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Says whether it went; the viewer asked first.
+  Future<bool> _removePhoto(ComplaintPhoto photo) async {
+    var removed = false;
+    await _run(_Busy.photo, () async {
+      await ref.read(removeComplaintPhotoProvider)(
+        RemoveComplaintPhotoParams(complaint: _ref, photoId: photo.id),
+      );
+      removed = true;
+    });
+    return removed;
   }
 
   Future<void> _reopen() async {
@@ -186,6 +244,22 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
                             : null,
                       ),
                     ),
+                    if (c.photos.isNotEmpty || (canEdit && c.canAddPhoto)) ...[
+                      PageBox(
+                        top: 16,
+                        child: CapsHeader(l10n.complaintPhotosSection),
+                      ),
+                      PageBox(
+                        top: 0,
+                        child: _Photos(
+                          complaint: c,
+                          canEdit: canEdit,
+                          adding: _busy == _Busy.photo,
+                          onAdd: busy ? null : _addPhoto,
+                          onRemove: _removePhoto,
+                        ),
+                      ),
+                    ],
                     if (c.isResolved && (canEdit || canAssign))
                       PageBox(
                         child: Notice(
@@ -372,6 +446,63 @@ class _HeadCard extends StatelessWidget {
             child: Divider(),
           ),
           Text(c.description, style: theme.textTheme.bodyLarge),
+        ],
+      ),
+    );
+  }
+}
+
+/// The complaint's photos in a card: tap one to see it full screen (and
+/// remove it, with `complaints.edit`), or add one while there's room.
+class _Photos extends StatelessWidget {
+  const _Photos({
+    required this.complaint,
+    required this.canEdit,
+    required this.adding,
+    required this.onAdd,
+    required this.onRemove,
+  });
+
+  final Complaint complaint;
+  final bool canEdit;
+  final bool adding;
+  final VoidCallback? onAdd;
+  final Future<bool> Function(ComplaintPhoto photo) onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final photos = complaint.photos;
+    final images = [for (final p in photos) NetworkImage(p.url)];
+    final canAdd = canEdit && complaint.canAddPhoto;
+    return SpaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PhotoStrip(
+            images: images,
+            slots: Complaint.maxPhotos,
+            adding: adding,
+            onAdd: canAdd ? onAdd : null,
+            onOpen: (i) => showPhotoViewer(
+              context,
+              images: images,
+              initial: i,
+              onRemove: canEdit && complaint.isEditable
+                  ? (i) => onRemove(photos[i])
+                  : null,
+              removeTitle: l10n.removeComplaintPhotoTitle,
+              removeBody: l10n.removeComplaintPhotoBody,
+            ),
+          ),
+          if (canAdd && photos.isEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              l10n.complaintPhotosHint(Complaint.maxPhotos),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: context.colors.inkMuted),
+            ),
+          ],
         ],
       ),
     );

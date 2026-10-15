@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/design/design.dart';
+import 'package:sp_cln_app/core/domain/picked_photo.dart';
+import 'package:sp_cln_app/core/error/failures.dart';
+import 'package:sp_cln_app/core/media/photo_picker.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/complaints/domain/entities/complaint.dart';
@@ -77,10 +80,12 @@ Future<FakeComplaintsRepository> openComplaints(
   WidgetTester tester, {
   Set<String> permissions = _viewer,
   List<Complaint>? complaints,
+  FakePhotoPicker? photoPicker,
 }) async {
   final repo = FakeComplaintsRepository(complaints ?? [_bins, _paper, _carpet]);
   await pumpApp(
     tester,
+    photoPicker: photoPicker,
     auth: FakeAuthRepository(sessionUser: ana),
     clients: FakeClientsRepository([_tower]),
     complaints: repo,
@@ -220,6 +225,141 @@ void main() {
     expect(find.text('Complaint'), findsOneWidget);
     expect(find.text('Windows streaked'), findsOneWidget);
     expect(find.text('In progress'), findsOneWidget);
+  });
+
+  testWidgets('a new complaint uploads its photos once it is saved', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final picker = FakePhotoPicker();
+    final complaints = await openComplaints(
+      tester,
+      permissions: _editor,
+      photoPicker: picker,
+    );
+    complaints.photoFailures['/tmp/c.jpg'] = const ServerFailure(
+      'complaints.photo_invalid_type',
+      statusCode: 400,
+    );
+    await tester.tap(find.byTooltip('Create'));
+    await tester.pumpAndSettle();
+    await tester.enterText(field('Title'), 'Windows streaked');
+    await tester.enterText(field('Description'), 'Lobby glass, outside.');
+
+    Future<void> add(String path, {int size = 900000}) async {
+      picker.next = PickedPhoto(path: path, sizeInBytes: size);
+      await revealBelow(tester, find.byType(PhotoStrip));
+      await tester.tap(find.bySemanticsLabel('Add photo'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Choose from library'));
+      await tester.pumpAndSettle();
+    }
+
+    // Too large is refused on the phone, before anything is sent.
+    await add('/tmp/huge.jpg', size: PickedPhoto.maxBytes + 1);
+    expect(find.textContaining('over 5 MB'), findsOneWidget);
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+
+    await add('/tmp/a.jpg');
+    await add('/tmp/b.jpg');
+    await add('/tmp/x.jpg');
+    // A third is the limit: the add tile goes.
+    expect(find.bySemanticsLabel('Add photo'), findsNothing);
+    await revealBelow(tester, find.byType(PhotoStrip));
+    await tester.tap(find.bySemanticsLabel('Remove photo, Photo 3 of 3'));
+    await tester.pumpAndSettle();
+    await add('/tmp/c.jpg');
+    expect(complaints.writes, isEmpty);
+
+    await tester.tap(button('Save'));
+    await tester.pumpAndSettle();
+    expect(complaints.writes, [
+      'create:Windows streaked',
+      'photo:q4:/tmp/a.jpg',
+      'photo:q4:/tmp/b.jpg',
+    ]);
+    // The one that failed is told, and the complaint still opens.
+    expect(
+      find.textContaining("1 photo couldn't be added: Use a JPEG"),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    expect(find.text('Windows streaked'), findsOneWidget);
+    await revealBelow(tester, find.byType(PhotoStrip));
+    expect(find.bySemanticsLabel('Photo 2 of 2'), findsOneWidget);
+    semantics.dispose();
+  });
+
+  testWidgets('photos are added and removed on the page', (tester) async {
+    final semantics = tester.ensureSemantics();
+    final picker = FakePhotoPicker(
+      const PickedPhoto(path: '/tmp/stain.jpg', sizeInBytes: 900000),
+    );
+    final complaints = await openComplaints(
+      tester,
+      permissions: _editor,
+      photoPicker: picker,
+    );
+    await tester.tap(find.text('Restrooms out of paper'));
+    await tester.pumpAndSettle();
+    await revealBelow(tester, find.byType(PhotoStrip));
+    expect(find.text('PHOTOS'), findsOneWidget);
+    expect(find.text('Add up to 3 photos of what happened.'), findsOneWidget);
+
+    await tester.tap(find.bySemanticsLabel('Add photo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Take photo'));
+    await tester.pumpAndSettle();
+    expect(picker.sources, [PhotoSource.camera]);
+    expect(complaints.writes, ['photo:q-paper:/tmp/stain.jpg']);
+    expect(find.bySemanticsLabel('Photo 1 of 1'), findsOneWidget);
+
+    // Opened full screen, it can be removed after a confirmation.
+    await tester.tap(find.bySemanticsLabel('Photo 1 of 1'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Remove photo'));
+    await tester.pumpAndSettle();
+    expect(find.text('Remove this photo?'), findsOneWidget);
+    await tester.tap(find.text('Remove photo').last);
+    await tester.pumpAndSettle();
+    expect(complaints.writes.last, 'unphoto:q-paper:ph1');
+    expect(find.bySemanticsLabel('Photo 1 of 1'), findsNothing);
+    expect(find.text('Restrooms out of paper'), findsOneWidget);
+    semantics.dispose();
+  });
+
+  testWidgets('a viewer sees the photos but cannot change them', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final withPhoto = Complaint(
+      id: 'q-photo',
+      clientId: 'c1',
+      title: 'Stained carpet',
+      description: 'By the elevators.',
+      priority: Priority.medium,
+      status: ComplaintStatus.open,
+      reportedDate: DateTime(2026, 9, 22, 9),
+      photos: [
+        ComplaintPhoto(
+          id: 'ph1',
+          url: 'https://cdn.test/a.webp',
+          createdAt: DateTime(2026, 9, 22, 9),
+        ),
+      ],
+    );
+    await openComplaints(tester, complaints: [withPhoto, _bins]);
+    await tester.tap(find.text('Stained carpet'));
+    await tester.pumpAndSettle();
+    await revealBelow(tester, find.byType(PhotoStrip));
+    expect(find.bySemanticsLabel('Add photo'), findsNothing);
+    await tester.tap(find.bySemanticsLabel('Photo 1 of 1'));
+    await tester.pumpAndSettle();
+    expect(find.text('Photo'), findsOneWidget);
+    expect(find.byTooltip('Remove photo'), findsNothing);
+    semantics.dispose();
   });
 
   testWidgets('an editor assigns, resolves and reopens a complaint', (
