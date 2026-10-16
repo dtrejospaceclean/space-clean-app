@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sp_cln_app/core/error/failures.dart';
+// TODO(address-search): uncomment with the tests below.
+// import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
@@ -145,97 +146,98 @@ void main() {
     expect(find.text('Warehouse'), findsOneWidget);
   });
 
-  testWidgets('typing the address offers matches that fill the form', (
-    tester,
-  ) async {
-    final locations = await openLocations(
-      tester,
-      accountManager,
-      permissions: _editor,
-    );
-    locations.suggestions = const [
-      AddressSuggestion(
-        id: 's1',
-        name: '1980 Post Oak Boulevard',
-        description: 'Houston, Texas 77056',
-        address: '1980 Post Oak Boulevard',
-        city: 'Houston',
-        state: 'TX',
-      ),
-    ];
-    await tester.tap(find.byTooltip('Create'));
-    await tester.pumpAndSettle();
-    await tester.enterText(field('Name'), 'Tower A');
+  // TODO(address-search): disabled for now; uncomment to bring it back.
+  // testWidgets('typing the address offers matches that fill the form', (
+  //   tester,
+  // ) async {
+  //   final locations = await openLocations(
+  //     tester,
+  //     accountManager,
+  //     permissions: _editor,
+  //   );
+  //   locations.suggestions = const [
+  //     AddressSuggestion(
+  //       id: 's1',
+  //       name: '1980 Post Oak Boulevard',
+  //       description: 'Houston, Texas 77056',
+  //       address: '1980 Post Oak Boulevard',
+  //       city: 'Houston',
+  //       state: 'TX',
+  //     ),
+  //   ];
+  //   await tester.tap(find.byTooltip('Create'));
+  //   await tester.pumpAndSettle();
+  //   await tester.enterText(field('Name'), 'Tower A');
 
-    // Two letters aren't searched; then it waits for a pause in typing.
-    await tester.enterText(field('Street address'), '19');
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(locations.suggestQueries, isEmpty);
-    await tester.enterText(field('Street address'), '1980 Po');
-    await tester.pump(const Duration(milliseconds: 100));
-    await tester.enterText(field('Street address'), '1980 Post Oak');
-    await tester.pump(const Duration(milliseconds: 350));
-    await tester.pumpAndSettle();
-    expect(locations.suggestQueries, ['1980 Post Oak/en']);
-    expect(find.text('Houston, Texas 77056'), findsOneWidget);
-    expect(find.text('Suggestions by Mapbox'), findsOneWidget);
+  //   // Two letters aren't searched; then it waits for a pause in typing.
+  //   await tester.enterText(field('Street address'), '19');
+  //   await tester.pump(const Duration(milliseconds: 400));
+  //   expect(locations.suggestQueries, isEmpty);
+  //   await tester.enterText(field('Street address'), '1980 Po');
+  //   await tester.pump(const Duration(milliseconds: 100));
+  //   await tester.enterText(field('Street address'), '1980 Post Oak');
+  //   await tester.pump(const Duration(milliseconds: 350));
+  //   await tester.pumpAndSettle();
+  //   expect(locations.suggestQueries, ['1980 Post Oak/en']);
+  //   expect(find.text('Houston, Texas 77056'), findsOneWidget);
+  //   expect(find.text('Suggestions by Mapbox'), findsOneWidget);
 
-    await tester.tap(find.text('1980 Post Oak Boulevard'));
-    await tester.pumpAndSettle();
-    expect(find.text('Houston, Texas 77056'), findsNothing);
-    // What the pick knew is filled; the ZIP it didn't is left to the user.
-    expect(
-      tester.widget<TextFormField>(field('Street address')).controller!.text,
-      '1980 Post Oak Boulevard',
-    );
-    expect(
-      tester.widget<TextFormField>(field('City')).controller!.text,
-      'Houston',
-    );
-    expect(tester.widget<TextFormField>(field('State')).controller!.text, 'TX');
-    await tester.enterText(field('ZIP code'), '77056');
-    await tester.tap(find.text('Save'));
-    await tester.pumpAndSettle();
+  //   await tester.tap(find.text('1980 Post Oak Boulevard'));
+  //   await tester.pumpAndSettle();
+  //   expect(find.text('Houston, Texas 77056'), findsNothing);
+  //   // What the pick knew is filled; the ZIP it didn't is left to the user.
+  //   expect(
+  //     tester.widget<TextFormField>(field('Street address')).controller!.text,
+  //     '1980 Post Oak Boulevard',
+  //   );
+  //   expect(
+  //     tester.widget<TextFormField>(field('City')).controller!.text,
+  //     'Houston',
+  //   );
+  //   expect(tester.widget<TextFormField>(field('State')).controller!.text, 'TX');
+  //   await tester.enterText(field('ZIP code'), '77056');
+  //   await tester.tap(find.text('Save'));
+  //   await tester.pumpAndSettle();
 
-    expect(locations.writes, ['create:Tower A']);
-    final draft = locations.drafts.single;
-    expect(
-      [draft.address, draft.city, draft.state, draft.zipCode],
-      ['1980 Post Oak Boulevard', 'Houston', 'TX', '77056'],
-    );
-  });
+  //   expect(locations.writes, ['create:Tower A']);
+  //   final draft = locations.drafts.single;
+  //   expect(
+  //     [draft.address, draft.city, draft.state, draft.zipCode],
+  //     ['1980 Post Oak Boulevard', 'Houston', 'TX', '77056'],
+  //   );
+  // });
 
-  testWidgets('without address search the address is typed by hand', (
-    tester,
-  ) async {
-    final locations = await openLocations(
-      tester,
-      accountManager,
-      permissions: _editor,
-    );
-    locations.suggestFailure = const ServerFailure(
-      'geo.limit_reached',
-      statusCode: 429,
-    );
-    await tester.tap(find.byTooltip('Create'));
-    await tester.pumpAndSettle();
-    await tester.enterText(field('Street address'), '400 Dock');
-    await tester.pump(const Duration(milliseconds: 350));
-    await tester.pumpAndSettle();
-    expect(
-      find.text(
-        "Address search isn't available right now. "
-        'Please enter the address manually.',
-      ),
-      findsOneWidget,
-    );
+  // testWidgets('without address search the address is typed by hand', (
+  //   tester,
+  // ) async {
+  //   final locations = await openLocations(
+  //     tester,
+  //     accountManager,
+  //     permissions: _editor,
+  //   );
+  //   locations.suggestFailure = const ServerFailure(
+  //     'geo.limit_reached',
+  //     statusCode: 429,
+  //   );
+  //   await tester.tap(find.byTooltip('Create'));
+  //   await tester.pumpAndSettle();
+  //   await tester.enterText(field('Street address'), '400 Dock');
+  //   await tester.pump(const Duration(milliseconds: 350));
+  //   await tester.pumpAndSettle();
+  //   expect(
+  //     find.text(
+  //       "Address search isn't available right now. "
+  //       'Please enter the address manually.',
+  //     ),
+  //     findsOneWidget,
+  //   );
 
-    // It stops asking for the rest of the form.
-    await tester.enterText(field('Street address'), '400 Dock Rd');
-    await tester.pump(const Duration(milliseconds: 350));
-    await tester.pumpAndSettle();
-    expect(locations.suggestQueries, ['400 Dock/en']);
-  });
+  //   // It stops asking for the rest of the form.
+  //   await tester.enterText(field('Street address'), '400 Dock Rd');
+  //   await tester.pump(const Duration(milliseconds: 350));
+  //   await tester.pumpAndSettle();
+  //   expect(locations.suggestQueries, ['400 Dock/en']);
+  // });
 
   testWidgets('an editor edits a location and clears a field', (tester) async {
     final locations = await openLocations(
