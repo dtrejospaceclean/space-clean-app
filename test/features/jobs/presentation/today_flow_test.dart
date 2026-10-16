@@ -4,6 +4,7 @@ import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
+import 'package:sp_cln_app/features/notifications/domain/entities/push_message.dart';
 import 'package:sp_cln_app/features/tasks/domain/entities/task.dart';
 
 import '../../../helpers/test_app.dart';
@@ -54,6 +55,8 @@ Future<(FakeJobsRepository, FakeTasksRepository)> _today(
   WidgetTester tester, {
   User user = ana,
   List<Task> tasks = const [],
+  Duration? liveRefresh,
+  FakePushRepository? push,
 }) async {
   final jobs = FakeJobsRepository({
     'c1': [_lobby],
@@ -76,6 +79,8 @@ Future<(FakeJobsRepository, FakeTasksRepository)> _today(
     jobs: jobs,
     tasks: taskRepo,
     access: FakeAccessRepository({'c1': access}),
+    liveRefresh: liveRefresh,
+    push: push,
   );
   return (jobs, taskRepo);
 }
@@ -177,5 +182,67 @@ void main() {
     expect(tasks.writes, ['delete:t-quote']);
     expect(find.text('Overdue tasks'), findsNothing);
     expect(find.text('Your jobs'), findsOneWidget);
+  });
+
+  group('keeps itself current', () {
+    /// Someone else schedules a job at the clinic.
+    void scheduleWindows(FakeJobsRepository jobs) => jobs.byClient['c2'] = [
+      _exam,
+      job('w', 'c2', title: 'Window washing', hour: 11),
+    ];
+
+    testWidgets('while it stays on screen, every minute', (tester) async {
+      final (jobs, _) = await _today(
+        tester,
+        liveRefresh: const Duration(minutes: 1),
+      );
+      scheduleWindows(jobs);
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pumpAndSettle();
+      expect(find.text('Window washing'), findsNothing);
+
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pumpAndSettle();
+      await revealBelow(tester, find.text('Window washing'));
+      expect(find.text('Window washing'), findsOneWidget);
+      // Leaving the app's pages cancels the timer before the test ends.
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('when it comes back into view', (tester) async {
+      final (jobs, _) = await _today(tester);
+      await tester.tap(find.byTooltip('Accounts'));
+      await tester.pumpAndSettle();
+      scheduleWindows(jobs);
+      jobs.listed.clear();
+
+      await tester.tap(find.byTooltip('Today'));
+      await tester.pumpAndSettle();
+      expect(jobs.listed, unorderedEquals(['c1', 'c2']));
+      await revealBelow(tester, find.text('Window washing'));
+      expect(find.text('Window washing'), findsOneWidget);
+    });
+
+    testWidgets('when a push arrives', (tester) async {
+      final push = FakePushRepository();
+      final (jobs, _) = await _today(tester, push: push);
+      jobs.byClient['c1'] = [
+        _lobby,
+        job('g', 'c1', title: 'Garage sweep', hour: 18, assignees: _onCrew),
+      ];
+
+      push.receive(
+        PushMessage.fromData(const {
+          'source': 'spclean',
+          'notificationId': 'n-crew',
+          'type': 'notifications.job_crew_added',
+          'clientId': 'c1',
+          'entityType': 'job',
+          'entityId': 'g',
+        }),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Garage sweep'), findsOneWidget);
+    });
   });
 }

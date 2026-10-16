@@ -6,6 +6,7 @@ import '../../../../core/design/design.dart';
 import '../../../../core/l10n/formatting.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
+import '../../../../core/refresh/live_data.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../tasks/domain/entities/task.dart';
 import '../../../tasks/presentation/controllers/tasks_providers.dart';
@@ -23,7 +24,9 @@ import '../widgets/job_row.dart';
 /// they're on the crew of (`GET /me/jobs`, one request) and their overdue
 /// tasks (`GET /me/tasks`). Office staff (a global owner, account manager
 /// or supervisor) also see the other jobs today in their accounts, merged
-/// from one request per account ([todayJobsProvider]).
+/// from one request per account ([todayJobsProvider]). It keeps itself
+/// current while on screen ([RefreshWhileShown]) and when a push arrives
+/// ([refreshToday]).
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 
@@ -58,12 +61,8 @@ class TodayScreen extends ConsumerWidget {
     final now = ref.watch(clockProvider)();
 
     Future<void> refresh() async {
-      ref
-        ..invalidate(myClientsProvider)
-        ..invalidate(unreadNotificationsProvider)
-        ..invalidate(myOverdueTasksProvider)
-        ..invalidate(todayJobsProvider)
-        ..invalidate(myDayJobsProvider);
+      ref.invalidate(myClientsProvider);
+      refreshToday(ref);
       await ref.read(myDayJobsProvider.future);
     }
 
@@ -83,148 +82,164 @@ class TodayScreen extends ConsumerWidget {
       ),
     );
 
-    return SpacePage(
-      // A tab's home: nothing to go back to.
-      showBack: false,
-      title: l10n.todayTitle,
-      onRefresh: refresh,
-      actions: [
-        if (user != null)
-          _ProfileButton(name: user.name, photoUrl: user.photoUrl),
-      ],
-      slivers: [
-        PageBox(
-          top: 4,
-          child: Text(
-            context.formatDayLong(now),
-            style: Theme.of(context).textTheme.bodyMedium,
+    return RefreshWhileShown(
+      onRefresh: () => refreshToday(ref),
+      child: SpacePage(
+        // A tab's home: nothing to go back to.
+        showBack: false,
+        title: l10n.todayTitle,
+        onRefresh: refresh,
+        actions: [
+          if (user != null)
+            _ProfileButton(name: user.name, photoUrl: user.photoUrl),
+        ],
+        slivers: [
+          PageBox(
+            top: 4,
+            child: Text(
+              context.formatDayLong(now),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
-        ),
-        AsyncSlivers(
-          value: mine,
-          onRetry: refresh,
-          builder: (mine) {
-            final mineIds = {for (final j in mine) j.job.id};
-            final others = [
-              for (final j in everyone?.value?.jobs ?? const <AccountJob>[])
-                if (!mineIds.contains(j.job.id)) j,
-            ];
-            final failedClients = everyone?.value?.failedClients ?? const [];
-            final everyoneError = everyone?.error;
-            // The day's work the user can see: their own and, for staff,
-            // everyone else's.
-            final all = [...mine, ...others];
-            int count(JobStatus status) =>
-                all.where((j) => j.job.status == status).length;
-            final nothing =
-                all.isEmpty &&
-                overdue.isEmpty &&
-                failedClients.isEmpty &&
-                everyoneError == null;
+          AsyncSlivers(
+            value: mine,
+            onRetry: refresh,
+            builder: (mine) {
+              final mineIds = {for (final j in mine) j.job.id};
+              final others = [
+                for (final j in everyone?.value?.jobs ?? const <AccountJob>[])
+                  if (!mineIds.contains(j.job.id)) j,
+              ];
+              final failedClients = everyone?.value?.failedClients ?? const [];
+              final everyoneError = everyone?.error;
+              // The day's work the user can see: their own and, for staff,
+              // everyone else's.
+              final all = [...mine, ...others];
+              int count(JobStatus status) =>
+                  all.where((j) => j.job.status == status).length;
+              final nothing =
+                  all.isEmpty &&
+                  overdue.isEmpty &&
+                  failedClients.isEmpty &&
+                  everyoneError == null;
 
-            return SliverMainAxisGroup(
-              slivers: [
-                PageBox(
-                  top: 20,
-                  child: HeroHeadline(
-                    primary: l10n.greeting(firstName),
-                    secondary: l10n.jobsTodayCount(all.length),
-                  ),
-                ),
-                if (all.isNotEmpty)
+              return SliverMainAxisGroup(
+                slivers: [
                   PageBox(
                     top: 20,
-                    // One compact row so the jobs stay near the top.
-                    child: CardRow(
-                      children: [
-                        StatCard(
-                          compact: true,
-                          label: l10n.statToDo,
-                          value: '${count(JobStatus.scheduled)}',
-                        ),
-                        StatCard(
-                          compact: true,
-                          label: l10n.jobStatusInProgress,
-                          value: '${count(JobStatus.inProgress)}',
-                        ),
-                        StatCard(
-                          compact: true,
-                          label: l10n.jobStatusCompleted,
-                          value: '${count(JobStatus.completed)}',
-                        ),
-                      ],
+                    child: HeroHeadline(
+                      primary: l10n.greeting(firstName),
+                      secondary: l10n.jobsTodayCount(all.length),
                     ),
                   ),
-                if (nothing)
-                  MessageSliver(
-                    icon: Icons.wb_sunny_outlined,
-                    title: l10n.noJobsToday,
-                    hint: l10n.noJobsTodayHint,
-                  )
-                else ...[
-                  // Late work first: it's what needs doing.
-                  if (overdue.isNotEmpty) ...[
+                  if (all.isNotEmpty)
+                    PageBox(
+                      top: 20,
+                      // One compact row so the jobs stay near the top.
+                      child: CardRow(
+                        children: [
+                          StatCard(
+                            compact: true,
+                            label: l10n.statToDo,
+                            value: '${count(JobStatus.scheduled)}',
+                          ),
+                          StatCard(
+                            compact: true,
+                            label: l10n.jobStatusInProgress,
+                            value: '${count(JobStatus.inProgress)}',
+                          ),
+                          StatCard(
+                            compact: true,
+                            label: l10n.jobStatusCompleted,
+                            value: '${count(JobStatus.completed)}',
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (nothing)
+                    MessageSliver(
+                      icon: Icons.wb_sunny_outlined,
+                      title: l10n.noJobsToday,
+                      hint: l10n.noJobsTodayHint,
+                    )
+                  else ...[
+                    // Late work first: it's what needs doing.
+                    if (overdue.isNotEmpty) ...[
+                      PageBox(
+                        top: 12,
+                        child: SectionHeader(title: l10n.overdueTasks),
+                      ),
+                      PageBox(
+                        top: 0,
+                        child: ListCard(
+                          children: [
+                            for (final t in overdue)
+                              TaskRow(
+                                task: t,
+                                onTap: () =>
+                                    context.push(taskPath(t.clientId, t.id)),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
                     PageBox(
                       top: 12,
-                      child: SectionHeader(title: l10n.overdueTasks),
+                      child: SectionHeader(title: l10n.yourJobs),
                     ),
-                    PageBox(
-                      top: 0,
-                      child: ListCard(
-                        children: [
-                          for (final t in overdue)
-                            TaskRow(
-                              task: t,
-                              onTap: () =>
-                                  context.push(taskPath(t.clientId, t.id)),
-                            ),
-                        ],
+                    if (mine.isEmpty)
+                      PageBox(
+                        top: 0,
+                        child: ListCard(
+                          children: [
+                            ListRow(title: l10n.noJobsForYouToday, muted: true),
+                          ],
+                        ),
+                      )
+                    else
+                      jobCards(mine),
+                    if (everyoneError is Failure)
+                      PageBox(
+                        child: Notice(
+                          message: l10n.failureMessage(everyoneError),
+                        ),
+                      )
+                    else if (failedClients.isNotEmpty)
+                      PageBox(
+                        child: Notice(
+                          message: l10n.someAccountsFailed(
+                            failedClients.length,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                  PageBox(top: 12, child: SectionHeader(title: l10n.yourJobs)),
-                  if (mine.isEmpty)
-                    PageBox(
-                      top: 0,
-                      child: ListCard(
-                        children: [
-                          ListRow(title: l10n.noJobsForYouToday, muted: true),
-                        ],
+                    if (others.isNotEmpty) ...[
+                      PageBox(
+                        top: 16,
+                        child: SectionHeader(title: l10n.otherJobsToday),
                       ),
-                    )
-                  else
-                    jobCards(mine),
-                  if (everyoneError is Failure)
-                    PageBox(
-                      child: Notice(
-                        message: l10n.failureMessage(everyoneError),
-                      ),
-                    )
-                  else if (failedClients.isNotEmpty)
-                    PageBox(
-                      child: Notice(
-                        message: l10n.someAccountsFailed(failedClients.length),
-                      ),
-                    ),
-                  if (others.isNotEmpty) ...[
-                    PageBox(
-                      top: 16,
-                      child: SectionHeader(title: l10n.otherJobsToday),
-                    ),
-                    jobCards(others),
+                      jobCards(others),
+                    ],
                   ],
                 ],
-              ],
-            );
-          },
-        ),
-      ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
 
 /// The user's avatar, which opens Me (profile, administration, settings),
 /// with the unread notifications counted on it.
+/// Reloads what Today shows: the user's jobs, overdue tasks, the other jobs
+/// today and the unread count. Each keeps its last value while reloading.
+void refreshToday(WidgetRef ref) => ref
+  ..invalidate(unreadNotificationsProvider)
+  ..invalidate(myOverdueTasksProvider)
+  ..invalidate(todayJobsProvider)
+  ..invalidate(myDayJobsProvider);
+
 class _ProfileButton extends ConsumerWidget {
   const _ProfileButton({required this.name, this.photoUrl});
 

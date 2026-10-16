@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sp_cln_app/core/refresh/live_data.dart';
 import 'package:sp_cln_app/app.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/router/app_router.dart';
@@ -122,6 +123,8 @@ Future<void> _sheet(
   for (final phone in phones) {
     phone.container = ProviderContainer(
       overrides: [
+        // No polling: a pending timer fails the test.
+        liveRefreshIntervalProvider.overrideWithValue(null),
         languageRepositoryProvider.overrideWithValue(
           _MemoryLanguage(phone.spanish ? AppLanguage.es : AppLanguage.en),
         ),

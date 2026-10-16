@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../jobs/presentation/screens/today_screen.dart';
 import '../../di/notifications_providers.dart';
 import '../../domain/entities/push_message.dart';
 import '../../domain/usecases/push_usecases.dart';
@@ -116,6 +117,9 @@ class _PushListenerState extends ConsumerState<PushListener> {
   void _received(PushMessage message) {
     if (message.source != PushSource.spclean || !mounted) return;
     invalidateNotifications(ref);
+    // Every push is about the user's work (a job or task of theirs changed),
+    // so Today shows it at once.
+    refreshToday(ref);
     ref.read(showPushProvider)(message);
   }
 

@@ -84,3 +84,5 @@ desktop.ini
 .agents/
 .agent/
 .impeccable/
+# Diff images Flutter writes when a golden comparison fails
+**/failures/*.png

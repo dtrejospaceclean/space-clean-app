@@ -94,6 +94,7 @@ Future<_Adapter> _pumpSignedIn(WidgetTester tester) async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         clockProvider.overrideWithValue(() => testNow),
+        liveRefreshIntervalProvider.overrideWithValue(null),
         dioProvider.overrideWith((ref) {
           final options = BaseOptions(baseUrl: 'http://api.test');
           final dio = Dio(options)..httpClientAdapter = adapter;

@@ -2992,6 +2992,7 @@ Future<SharedPreferences> pumpApp(
   NotificationsRepository? notifications,
   PushRepository? push,
   Map<String, Object> preferences = const {},
+  Duration? liveRefresh,
 }) async {
   tester.view.physicalSize = const Size(1170, 2532);
   tester.view.devicePixelRatio = 3;
@@ -3003,6 +3004,8 @@ Future<SharedPreferences> pumpApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
+        // Polling off unless a test asks: a pending timer fails a test.
+        liveRefreshIntervalProvider.overrideWithValue(liveRefresh),
         authRepositoryProvider.overrideWithValue(auth),
         passwordResetRepositoryProvider.overrideWithValue(
           passwordReset ?? FakePasswordResetRepository(),
