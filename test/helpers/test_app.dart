@@ -39,6 +39,7 @@ import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repository.dart';
 import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
+import 'package:sp_cln_app/features/invoices/domain/entities/job_billing_suggestion.dart';
 import 'package:sp_cln_app/features/invoices/domain/repositories/invoices_repository.dart';
 import 'package:sp_cln_app/core/widgets/pdf_view.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
@@ -1393,6 +1394,22 @@ class FakeInvoicesRepository implements InvoicesRepository {
 
   /// Each PDF asked for, as `<invoiceId>:<language>`.
   final pdfs = <String>[];
+
+  /// What each job's service suggests for a line; jobs not listed suggest
+  /// nothing.
+  Map<String, JobBillingSuggestion> billing = {};
+
+  /// When set, lookups wait on it, so a test can see the fields loading.
+  Completer<void>? billingGate;
+
+  @override
+  Future<JobBillingSuggestion> getJobBillingSuggestion(
+    String clientId,
+    String jobId,
+  ) async {
+    await billingGate?.future;
+    return billing[jobId] ?? JobBillingSuggestion.none;
+  }
 
   /// Who each send went to, and in which language.
   final sends = <(List<String>, String)>[];

@@ -3432,6 +3432,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get invoicePdfTitle => 'PDF de la factura';
 
   @override
+  String get invoiceLinePriceFromProposal => 'Precio acordado en la propuesta.';
+
+  @override
+  String get invoiceLinePriceFromCatalog => 'Precio del catálogo de servicios.';
+
+  @override
+  String get invoiceLinePricing => 'Buscando el precio del trabajo…';
+
+  @override
   String get proposalPdfTitle => 'PDF de la propuesta';
 
   @override

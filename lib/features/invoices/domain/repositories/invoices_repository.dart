@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../entities/invoice.dart';
+import '../entities/job_billing_suggestion.dart';
 
 /// Every method throws a `Failure` on error.
 abstract interface class InvoicesRepository {
@@ -67,5 +68,13 @@ abstract interface class InvoicesRepository {
     String clientId,
     String invoiceId,
     String paymentId,
+  );
+
+  /// What [jobId]'s service suggests for an invoice line: the quantity and
+  /// unit price agreed in the contract's proposal, else the catalog's
+  /// default price. Needs `invoice.edit`.
+  Future<JobBillingSuggestion> getJobBillingSuggestion(
+    String clientId,
+    String jobId,
   );
 }

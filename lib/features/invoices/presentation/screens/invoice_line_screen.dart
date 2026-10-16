@@ -12,7 +12,10 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../jobs/domain/entities/job.dart';
 import '../../../jobs/domain/usecases/job_usecases.dart';
 import '../../../jobs/presentation/controllers/jobs_providers.dart';
+import '../../di/invoices_providers.dart';
 import '../../domain/entities/invoice.dart';
+import '../../domain/entities/job_billing_suggestion.dart';
+import '../../domain/usecases/invoice_usecases.dart';
 
 /// What the line page hands back to the invoice form: the line as edited,
 /// or null [line] to remove it.
@@ -24,8 +27,10 @@ class InvoiceLineResult {
 
 /// Adds a line to the invoice being edited ([initial] null) or changes one:
 /// what's billed, how many, at what price, and optionally the job it's
-/// for. Nothing is saved here: "Done" hands the line back to the form,
-/// whose Save sends the whole invoice.
+/// for. Picking a job fills what its service was agreed at in the
+/// contract's proposal (else the catalog price) into the quantity and unit
+/// price, unless they were typed by hand. Nothing is saved here: "Done"
+/// hands the line back to the form, whose Save sends the whole invoice.
 class InvoiceLineScreen extends ConsumerStatefulWidget {
   const InvoiceLineScreen({super.key, required this.clientId, this.initial});
 
@@ -62,6 +67,19 @@ class _InvoiceLineScreenState extends ConsumerState<InvoiceLineScreen> {
 
   /// Why the job picker didn't open (no recent jobs).
   String? _note;
+
+  /// What the last picked job filled in, so picking another job replaces
+  /// those but never what was typed by hand.
+  String? _filledQuantity;
+  String? _filledUnitPrice;
+
+  /// Where [_filledUnitPrice] came from, said under the total while the
+  /// price is still the one filled in.
+  BillingSource? _priceSource;
+
+  /// The job whose price is being looked up; its spinners show in the
+  /// quantity and unit price.
+  String? _pricing;
 
   /// Jobs bill after the work, so the past month's (today's too) are offered.
   late final JobQuery _recentJobs = JobQuery.recent(
@@ -113,6 +131,48 @@ class _InvoiceLineScreenState extends ConsumerState<InvoiceLineScreen> {
       if (next != null && untouched) _description.text = next.title;
       _jobTitle = next?.title;
     });
+    if (next != null) await _suggestPrice(next.id);
+  }
+
+  /// "12000.00" → "12000", "0.10" → "0.1": as someone would type it.
+  static String _plain(String decimal) => decimal.contains('.')
+      ? decimal.replaceFirst(RegExp(r'\.?0+$'), '')
+      : decimal;
+
+  /// Fills the quantity and unit price from [jobId]'s service, each only if
+  /// it's empty, untouched or filled by an earlier pick. A failure leaves
+  /// them to be typed, as before.
+  Future<void> _suggestPrice(String jobId) async {
+    setState(() => _pricing = jobId);
+    final JobBillingSuggestion suggestion;
+    try {
+      suggestion = await ref.read(getJobBillingSuggestionProvider)(
+        JobBillingParams(clientId: widget.clientId, jobId: jobId),
+      );
+    } on Failure {
+      if (mounted && _pricing == jobId) setState(() => _pricing = null);
+      return;
+    }
+    if (!mounted) return;
+    // Another job may have been picked meanwhile; its own lookup decides.
+    if (_jobId != jobId || _pricing != jobId) return;
+    bool untouched(TextEditingController c, String? filled, [String? start]) {
+      final text = c.text.trim();
+      return text.isEmpty || text == filled || text == start;
+    }
+
+    setState(() {
+      _pricing = null;
+      if (suggestion.quantity case final q?
+          when untouched(_quantity, _filledQuantity, '1')) {
+        _quantity.text = _filledQuantity = _plain(q);
+      }
+      if (suggestion.unitPrice case final price?
+          when untouched(_unitPrice, _filledUnitPrice)) {
+        _unitPrice.text = _filledUnitPrice = _plain(price);
+        _priceSource = suggestion.source;
+      }
+    });
   }
 
   void _done() {
@@ -149,6 +209,15 @@ class _InvoiceLineScreenState extends ConsumerState<InvoiceLineScreen> {
     final total = centsToDecimal(
       lineTotalCents(_quantity.text, _unitPrice.text),
     );
+    // Only while the price is still the one the job filled in.
+    final pricing = _pricing != null;
+    final priceSource = _unitPrice.text.trim() == _filledUnitPrice
+        ? switch (_priceSource) {
+            BillingSource.proposal => l10n.invoiceLinePriceFromProposal,
+            BillingSource.catalog => l10n.invoiceLinePriceFromCatalog,
+            null => null,
+          }
+        : null;
 
     return SpacePage(
       title: widget.initial == null ? l10n.addLineItem : l10n.editLineItem,
@@ -192,49 +261,60 @@ class _InvoiceLineScreenState extends ConsumerState<InvoiceLineScreen> {
                     child: Notice(message: note, tone: NoticeTone.info),
                   ),
                 // One card: what's billed and what it costs.
-                FormSection(null, [
-                  PickerField(
-                    label: l10n.invoiceLineJobLabel,
-                    value: switch (job) {
-                      final j? => _jobLabel(j),
-                      // Older than the past month, or not loaded yet.
-                      null => _jobTitle,
-                    },
-                    onTap: _pickJob,
-                  ),
-                  SpaceTextField(
-                    label: l10n.lineItemDescriptionLabel,
-                    controller: _description,
-                    textCapitalization: TextCapitalization.sentences,
-                    maxLines: null,
-                    validator: (v) => switch ((v ?? '').trim()) {
-                      '' => l10n.validationRequired,
-                      final t when t.length > 500 => l10n.validationMaxLength(
-                        '500',
-                      ),
-                      _ => null,
-                    },
-                  ),
-                  SpaceTextField(
-                    label: l10n.lineItemQuantityLabel,
-                    controller: _quantity,
-                    hint: '1',
-                    keyboardType: decimalKeyboard,
-                    inputFormatters: decimalOnly,
-                    onChanged: (_) => setState(() {}),
-                    validator: (v) => decimal(v ?? '', l10n.invalidQuantity),
-                  ),
-                  SpaceTextField(
-                    label: l10n.lineItemUnitPriceLabel,
-                    controller: _unitPrice,
-                    hint: '2400',
-                    keyboardType: decimalKeyboard,
-                    inputFormatters: decimalOnly,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (_) => setState(() {}),
-                    validator: (v) => decimal(v ?? '', l10n.invalidPrice),
-                  ),
-                ], footer: l10n.lineItemTotal(context.formatMoney(total))),
+                FormSection(
+                  null,
+                  [
+                    PickerField(
+                      label: l10n.invoiceLineJobLabel,
+                      value: switch (job) {
+                        final j? => _jobLabel(j),
+                        // Older than the past month, or not loaded yet.
+                        null => _jobTitle,
+                      },
+                      onTap: _pickJob,
+                    ),
+                    SpaceTextField(
+                      label: l10n.lineItemDescriptionLabel,
+                      controller: _description,
+                      textCapitalization: TextCapitalization.sentences,
+                      maxLines: null,
+                      validator: (v) => switch ((v ?? '').trim()) {
+                        '' => l10n.validationRequired,
+                        final t when t.length > 500 => l10n.validationMaxLength(
+                          '500',
+                        ),
+                        _ => null,
+                      },
+                    ),
+                    SpaceTextField(
+                      label: l10n.lineItemQuantityLabel,
+                      controller: _quantity,
+                      busy: pricing,
+                      hint: '1',
+                      keyboardType: decimalKeyboard,
+                      inputFormatters: decimalOnly,
+                      onChanged: (_) => setState(() {}),
+                      validator: (v) => decimal(v ?? '', l10n.invalidQuantity),
+                    ),
+                    SpaceTextField(
+                      label: l10n.lineItemUnitPriceLabel,
+                      controller: _unitPrice,
+                      busy: pricing,
+                      hint: '2400',
+                      keyboardType: decimalKeyboard,
+                      inputFormatters: decimalOnly,
+                      textInputAction: TextInputAction.done,
+                      onChanged: (_) => setState(() {}),
+                      validator: (v) => decimal(v ?? '', l10n.invalidPrice),
+                    ),
+                  ],
+                  footer: [
+                    l10n.lineItemTotal(context.formatMoney(total)),
+                    // What's loading, read out (the spinners aren't), else
+                    // where the price came from.
+                    if (pricing) l10n.invoiceLinePricing else ?priceSource,
+                  ].join('\n'),
+                ),
                 // Only a line already on the invoice can be taken off it.
                 if (widget.initial != null)
                   Padding(

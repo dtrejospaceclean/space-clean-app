@@ -5822,6 +5822,24 @@ abstract class AppLocalizations {
   /// **'Invoice PDF'**
   String get invoicePdfTitle;
 
+  /// No description provided for @invoiceLinePriceFromProposal.
+  ///
+  /// In en, this message translates to:
+  /// **'Price agreed in the proposal.'**
+  String get invoiceLinePriceFromProposal;
+
+  /// No description provided for @invoiceLinePriceFromCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Price from the service catalog.'**
+  String get invoiceLinePriceFromCatalog;
+
+  /// No description provided for @invoiceLinePricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the job\'s price…'**
+  String get invoiceLinePricing;
+
   /// No description provided for @proposalPdfTitle.
   ///
   /// In en, this message translates to:

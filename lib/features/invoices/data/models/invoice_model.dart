@@ -1,4 +1,5 @@
 import '../../domain/entities/invoice.dart';
+import '../../domain/entities/job_billing_suggestion.dart';
 
 abstract final class InvoiceModel {
   /// A decimal column: a string from the API, tolerated as a number.
@@ -109,4 +110,22 @@ abstract final class InvoiceDraftModel {
     if (p.paymentDate case final day?) 'paymentDate': ymd(day),
     'transactionReference': ?_text(p.reference),
   };
+}
+
+abstract final class JobBillingSuggestionModel {
+  static JobBillingSuggestion fromJson(Map<String, dynamic> json) {
+    // Decimals may come as strings or numbers.
+    String? decimal(Object? v) => v == null ? null : '$v';
+    return JobBillingSuggestion(
+      serviceId: json['serviceId'] as String?,
+      serviceName: json['serviceName'] as String?,
+      quantity: decimal(json['quantity']),
+      unitPrice: decimal(json['unitPrice']),
+      source: switch (json['source']) {
+        'proposal' => BillingSource.proposal,
+        'catalog' => BillingSource.catalog,
+        _ => null,
+      },
+    );
+  }
 }

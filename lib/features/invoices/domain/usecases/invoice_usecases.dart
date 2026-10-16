@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import '../../../../core/usecase/usecase.dart';
 import '../entities/invoice.dart';
+import '../entities/job_billing_suggestion.dart';
 import '../repositories/invoices_repository.dart';
 
 class InvoiceQuery {
@@ -212,4 +213,24 @@ class VoidPayment implements UseCase<Invoice, VoidPaymentParams> {
   @override
   Future<Invoice> call(VoidPaymentParams p) =>
       _repository.voidPayment(p.clientId, p.invoiceId, p.paymentId);
+}
+
+class JobBillingParams {
+  const JobBillingParams({required this.clientId, required this.jobId});
+
+  final String clientId;
+  final String jobId;
+}
+
+/// What an invoice line for the job should bill (see
+/// [InvoicesRepository.getJobBillingSuggestion]).
+class GetJobBillingSuggestion
+    implements UseCase<JobBillingSuggestion, JobBillingParams> {
+  const GetJobBillingSuggestion(this._repository);
+
+  final InvoicesRepository _repository;
+
+  @override
+  Future<JobBillingSuggestion> call(JobBillingParams p) =>
+      _repository.getJobBillingSuggestion(p.clientId, p.jobId);
 }

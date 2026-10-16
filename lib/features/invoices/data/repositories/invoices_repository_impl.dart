@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import '../../../../core/network/api_exception.dart';
 import '../../domain/entities/invoice.dart';
+import '../../domain/entities/job_billing_suggestion.dart';
 import '../../domain/repositories/invoices_repository.dart';
 import '../datasources/invoices_remote_data_source.dart';
 
@@ -81,4 +82,10 @@ class InvoicesRepositoryImpl implements InvoicesRepository {
     String invoiceId,
     String paymentId,
   ) => _guard(() => _remote.voidPayment(clientId, invoiceId, paymentId));
+
+  @override
+  Future<JobBillingSuggestion> getJobBillingSuggestion(
+    String clientId,
+    String jobId,
+  ) => _guard(() => _remote.getJobBillingSuggestion(clientId, jobId));
 }

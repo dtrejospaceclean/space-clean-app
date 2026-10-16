@@ -9,6 +9,7 @@ import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
 import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
+import 'package:sp_cln_app/features/invoices/domain/entities/job_billing_suggestion.dart';
 
 import '../../../helpers/test_app.dart';
 
@@ -169,6 +170,7 @@ Future<FakeInvoicesRepository> _openInvoices(
   Set<String> permissions = _viewer,
   List<Invoice>? invoices,
   FakeClientsRepository? clients,
+  FakeJobsRepository? jobs,
 }) async {
   final repo = FakeInvoicesRepository(
     invoices ?? [_overdue, _draftInvoice, _paid],
@@ -180,6 +182,7 @@ Future<FakeInvoicesRepository> _openInvoices(
     contracts: FakeContractsRepository([_contract]),
     contacts: FakeContactsRepository(_contacts),
     invoices: repo,
+    jobs: jobs,
     access: FakeAccessRepository({
       'c1': AccountAccess(
         clientId: 'c1',
@@ -294,6 +297,131 @@ void main() {
     expect(find.text('Invoice'), findsOneWidget);
     expect(find.text('INV-2026-00001'), findsOneWidget);
     expect(find.text('Draft'), findsOneWidget);
+  });
+
+  group('picking a job prices the line from its service', () {
+    final jobs = FakeJobsRepository({
+      'c1': [
+        job('j1', 'c1', title: 'Office cleaning', day: 22),
+        job('j2', 'c1', title: 'Window washing', day: 21),
+        job('j3', 'c1', title: 'Carpet care', day: 20),
+      ],
+    });
+
+    Future<FakeInvoicesRepository> openLine(WidgetTester tester) async {
+      final invoices = await _openInvoices(
+        tester,
+        permissions: _editor,
+        jobs: jobs,
+      );
+      invoices.billing = {
+        'j1': const JobBillingSuggestion(
+          serviceId: 's1',
+          serviceName: 'Office cleaning',
+          quantity: '12000.00',
+          unitPrice: '0.12',
+          source: BillingSource.proposal,
+        ),
+        'j2': const JobBillingSuggestion(
+          serviceId: 's2',
+          serviceName: 'Window washing',
+          unitPrice: '150.00',
+          source: BillingSource.catalog,
+        ),
+      };
+      await tester.tap(find.byTooltip('Create'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Add line item'));
+      await tester.pumpAndSettle();
+      return invoices;
+    }
+
+    /// Opens the job picker from its value ("Not set" or the job picked).
+    Future<void> pickJob(
+      WidgetTester tester,
+      String label, {
+      String? from,
+    }) async {
+      await tester.tap(find.text(from ?? 'Not set'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(label));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('with the price agreed in the proposal', (tester) async {
+      await openLine(tester);
+      await pickJob(tester, 'Office cleaning · Sep 22, 2026');
+
+      expect(find.text('Office cleaning'), findsWidgets);
+      expect(_text(tester, 'Quantity'), '12000');
+      expect(_text(tester, 'Unit price'), '0.12');
+      expect(
+        find.text('Line total: \$1,440.00\nPrice agreed in the proposal.'),
+        findsOneWidget,
+      );
+
+      // Another job replaces what the first one filled in; the catalog has
+      // no quantity, so the one filled in stays.
+      await pickJob(
+        tester,
+        'Window washing · Sep 21, 2026',
+        from: 'Office cleaning · Sep 22, 2026',
+      );
+      expect(_text(tester, 'Unit price'), '150');
+      expect(_text(tester, 'Quantity'), '12000');
+      expect(
+        find.textContaining('Price from the service catalog.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('the price fields spin while the price is looked up', (
+      tester,
+    ) async {
+      final invoices = await openLine(tester)
+        ..billingGate = Completer();
+      await tester.tap(find.text('Not set'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Office cleaning · Sep 22, 2026'));
+      // The spinners never settle, so step past the sheet closing.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      // Quantity and unit price, the fields about to be filled; the footer
+      // says so in words, for screen readers.
+      expect(find.byType(CircularProgressIndicator), findsNWidgets(2));
+      expect(
+        find.textContaining("Looking up the job's price…"),
+        findsOneWidget,
+      );
+      expect(_text(tester, 'Unit price'), '');
+
+      invoices.billingGate!.complete();
+      await tester.pumpAndSettle();
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(_text(tester, 'Unit price'), '0.12');
+    });
+
+    testWidgets('never over what was typed by hand', (tester) async {
+      await openLine(tester);
+      await tester.enterText(field('Unit price'), '95');
+      await tester.enterText(field('Quantity'), '3');
+      await pickJob(tester, 'Office cleaning · Sep 22, 2026');
+
+      expect(_text(tester, 'Quantity'), '3');
+      expect(_text(tester, 'Unit price'), '95');
+      expect(find.textContaining('Price agreed'), findsNothing);
+    });
+
+    testWidgets('a job with nothing to suggest leaves the line', (
+      tester,
+    ) async {
+      await openLine(tester);
+      await pickJob(tester, 'Carpet care · Sep 20, 2026');
+
+      expect(_text(tester, 'Quantity'), '1');
+      expect(_text(tester, 'Unit price'), '');
+    });
   });
 
   testWidgets('a number already used shows on its field', (tester) async {
@@ -627,3 +755,11 @@ void main() {
     expect(find.text('Nothing matches'), findsOneWidget);
   });
 }
+
+/// What the field labelled [label] holds.
+String _text(WidgetTester tester, String label) => tester
+    .widget<TextField>(
+      find.descendant(of: field(label), matching: find.byType(TextField)),
+    )
+    .controller!
+    .text;

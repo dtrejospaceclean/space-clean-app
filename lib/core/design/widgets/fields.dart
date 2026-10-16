@@ -27,6 +27,7 @@ class SpaceTextField extends StatelessWidget {
     this.helper,
     this.errorText,
     this.suffix,
+    this.busy = false,
     this.keyboardType,
     this.textInputAction = TextInputAction.next,
     this.autofillHints,
@@ -55,6 +56,11 @@ class SpaceTextField extends StatelessWidget {
   /// A server-side error, shown like a validator error.
   final String? errorText;
   final Widget? suffix;
+
+  /// A spinner takes [suffix]'s place: the field is about to be filled in
+  /// (it stays editable). Say what's loading in text nearby too, since the
+  /// spinner isn't read out.
+  final bool busy;
   final TextInputType? keyboardType;
   final TextInputAction textInputAction;
   final Iterable<String>? autofillHints;
@@ -129,7 +135,21 @@ class SpaceTextField extends StatelessWidget {
                 color: context.colors.inkMuted,
               ),
               errorText: errorText,
-              suffixIcon: suffix,
+              // Visual only: the field merges its semantics and a spinner's
+              // node can't merge, so say what's loading in text nearby.
+              suffixIcon: busy
+                  ? const ExcludeSemantics(
+                      child: Padding(
+                        padding: EdgeInsets.all(14),
+                        child: SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator.adaptive(
+                            strokeWidth: 2.5,
+                          ),
+                        ),
+                      ),
+                    )
+                  : suffix,
               suffixIconColor: context.colors.inkMuted,
             ),
           ),

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/paginated.dart';
 import '../../domain/entities/invoice.dart';
+import '../../domain/entities/job_billing_suggestion.dart';
 import '../models/invoice_model.dart';
 
 /// Talks to `/clients/:clientId/invoices`. Throws `ApiException`.
@@ -102,4 +103,17 @@ class InvoicesRemoteDataSource {
   ) async => _one(
     await _api.post('${_path(clientId)}/$invoiceId/payments/$paymentId/void'),
   );
+
+  /// `GET /clients/:clientId/jobs/:jobId/billing-suggestion`.
+  Future<JobBillingSuggestion> getJobBillingSuggestion(
+    String clientId,
+    String jobId,
+  ) async {
+    final data = await _api.get(
+      '/clients/$clientId/jobs/$jobId/billing-suggestion',
+    );
+    return data is Map
+        ? JobBillingSuggestionModel.fromJson(data.cast<String, dynamic>())
+        : JobBillingSuggestion.none;
+  }
 }

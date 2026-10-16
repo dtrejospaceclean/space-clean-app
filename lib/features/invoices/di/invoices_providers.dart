@@ -42,3 +42,6 @@ final sendInvoiceProvider = Provider(
 final voidPaymentProvider = Provider(
   (ref) => VoidPayment(ref.watch(invoicesRepositoryProvider)),
 );
+final getJobBillingSuggestionProvider = Provider(
+  (ref) => GetJobBillingSuggestion(ref.watch(invoicesRepositoryProvider)),
+);
