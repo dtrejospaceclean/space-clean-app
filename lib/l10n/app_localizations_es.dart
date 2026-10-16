@@ -2899,6 +2899,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get complaintsPhotoNotFound => 'Esta foto ya no existe.';
 
   @override
+  String get addressSearchHint => 'Empieza a escribir para buscar';
+
+  @override
+  String get addressSearchUnavailable =>
+      'La búsqueda de direcciones no está disponible por ahora. Ingresa la dirección manualmente.';
+
+  @override
+  String addressSuggestionsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count direcciones encontradas',
+      one: '1 dirección encontrada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addressSuggestionsBy => 'Sugerencias de Mapbox';
+
+  @override
+  String get geoUnavailable =>
+      'La búsqueda de direcciones no está disponible por ahora. Ingresa la dirección manualmente.';
+
+  @override
   String get noJobComplaints => 'Sin quejas sobre este trabajo';
 
   @override

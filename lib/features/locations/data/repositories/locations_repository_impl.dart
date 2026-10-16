@@ -38,4 +38,13 @@ class LocationsRepositoryImpl implements LocationsRepository {
   @override
   Future<void> deleteLocation(String clientId, String locationId) =>
       _guard(() => _remote.deleteLocation(clientId, locationId));
+
+  @override
+  Future<List<AddressSuggestion>> suggestAddresses(
+    String clientId,
+    String query, {
+    required String language,
+  }) => _guard(
+    () => _remote.suggestAddresses(clientId, query, language: language),
+  );
 }

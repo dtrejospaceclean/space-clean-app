@@ -43,4 +43,19 @@ class LocationsRemoteDataSource {
 
   Future<void> deleteLocation(String clientId, String locationId) async =>
       _api.delete('${_path(clientId)}/$locationId');
+
+  Future<List<AddressSuggestion>> suggestAddresses(
+    String clientId,
+    String query, {
+    required String language,
+  }) async {
+    final data = await _api.get(
+      '${_path(clientId)}/address-suggestions',
+      query: {'q': query, 'language': language},
+    );
+    return [
+      for (final row in data as List? ?? const [])
+        LocationModel.suggestionFromJson((row as Map).cast<String, dynamic>()),
+    ];
+  }
 }

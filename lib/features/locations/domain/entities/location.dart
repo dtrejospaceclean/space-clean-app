@@ -15,6 +15,9 @@ class Location {
     this.specialInstructions,
     this.scopeOfWorkCount = 0,
     this.jobCount = 0,
+    this.latitude,
+    this.longitude,
+    this.geocodedAt,
   });
 
   final String id;
@@ -36,6 +39,15 @@ class Location {
   final String? specialInstructions;
   final int scopeOfWorkCount;
   final int jobCount;
+
+  /// Where the address is on the map, worked out by the server when the
+  /// address is saved. Null when it couldn't be placed, or for a location
+  /// saved before addresses were geocoded.
+  final double? latitude;
+  final double? longitude;
+  final DateTime? geocodedAt;
+
+  bool get hasCoordinates => latitude != null && longitude != null;
 
   /// "Houston, TX 77056".
   String get cityLine => [
@@ -74,4 +86,34 @@ class LocationDraft {
   /// As typed: a whole number.
   final String? floorCount;
   final String? specialInstructions;
+}
+
+/// A US street address offered while the address is typed in the location
+/// form. Picking it fills the address fields; [city], [state] and
+/// [zipCode] may be missing, and are then left to the user. It carries no
+/// coordinates: the server places the address when it's saved.
+class AddressSuggestion {
+  const AddressSuggestion({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.address,
+    this.city,
+    this.state,
+    this.zipCode,
+  });
+
+  final String id;
+
+  /// "1980 Post Oak Boulevard".
+  final String name;
+
+  /// "Houston, Texas 77056".
+  final String description;
+  final String address;
+  final String? city;
+
+  /// Two letters, e.g. "TX".
+  final String? state;
+  final String? zipCode;
 }

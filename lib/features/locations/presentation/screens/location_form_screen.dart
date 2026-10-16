@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,13 +9,18 @@ import '../../../../core/design/design.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/l10n/failure_messages.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../invoices/presentation/screens/invoice_pdf_screen.dart';
 import '../../di/locations_providers.dart';
 import '../../domain/entities/location.dart';
 import '../../domain/usecases/location_usecases.dart';
 import '../controllers/locations_providers.dart';
 
 /// Add a location to an account ([locationId] null) or edit one. Both need
-/// `info.edit` on the account.
+/// `info.edit` on the account. Typing the street address suggests US
+/// addresses (debounced, since every search counts toward a monthly
+/// allowance); a pick fills the address fields, which stay editable. When
+/// search can't be used the address is typed by hand. The server places
+/// the address on the map when it's saved.
 class LocationFormScreen extends ConsumerWidget {
   const LocationFormScreen({
     super.key,
@@ -93,8 +100,93 @@ class _LocationFormState extends ConsumerState<_LocationForm> {
   bool _saving = false;
   Failure? _failure;
 
+  final _addressFocus = FocusNode();
+  Timer? _debounce;
+
+  /// Bumped per search, so a slow answer to an older one is dropped.
+  int _searchId = 0;
+  bool _searching = false;
+  List<AddressSuggestion> _suggestions = const [];
+
+  /// Search can't be used for the rest of this form (`geo.*`).
+  bool _searchOff = false;
+
+  static const _debounceTime = Duration(milliseconds: 300);
+
+  @override
+  void initState() {
+    super.initState();
+    _addressFocus.addListener(() {
+      if (!_addressFocus.hasFocus) _clearSuggestions();
+    });
+  }
+
+  void _clearSuggestions() {
+    _debounce?.cancel();
+    _searchId++;
+    if (_suggestions.isNotEmpty || _searching) {
+      setState(() {
+        _suggestions = const [];
+        _searching = false;
+      });
+    }
+  }
+
+  void _addressChanged(String value) {
+    if (_searchOff) return;
+    _clearSuggestions();
+    if (value.trim().length < SuggestAddresses.minLength) return;
+    _debounce = Timer(_debounceTime, () => _search(value));
+  }
+
+  Future<void> _search(String query) async {
+    final id = ++_searchId;
+    setState(() => _searching = true);
+    try {
+      final found = await ref.read(suggestAddressesProvider)(
+        AddressSearch(
+          clientId: widget.clientId,
+          query: query,
+          language: documentLanguage(context),
+        ),
+      );
+      if (!mounted || id != _searchId) return;
+      setState(() => _suggestions = found);
+    } on Failure catch (f) {
+      if (!mounted || id != _searchId) return;
+      // Offline or a one-off error: just no suggestions this time.
+      if (SuggestAddresses.unavailableKeys.contains(f.messageKey)) {
+        setState(() => _searchOff = true);
+      }
+    } finally {
+      if (mounted && id == _searchId) setState(() => _searching = false);
+    }
+  }
+
+  /// Copies the pick into the fields; one it doesn't know is left as typed,
+  /// and the next field gets the focus while one is still empty.
+  void _pick(AddressSuggestion s) {
+    _address.text = s.address;
+    if (s.city case final city?) _city.text = city;
+    if (s.state case final state?) _state.text = state;
+    if (s.zipCode case final zip?) _zip.text = zip;
+    _clearSuggestions();
+    final complete = [
+      _city,
+      _state,
+      _zip,
+    ].every((c) => c.text.trim().isNotEmpty);
+    if (complete) {
+      _addressFocus.unfocus();
+    } else {
+      FocusScope.of(context).nextFocus();
+    }
+  }
+
   @override
   void dispose() {
+    _debounce?.cancel();
+    _addressFocus.dispose();
     for (final c in [
       _name,
       _address,
@@ -242,12 +334,41 @@ class _LocationFormState extends ConsumerState<_LocationForm> {
                   ),
                 ]),
                 FormSection(l10n.sectionAddress, [
-                  _text(
-                    l10n.streetAddressLabel,
-                    _address,
-                    'address',
-                    keyboardType: TextInputType.streetAddress,
-                    validate: required,
+                  if (_searchOff)
+                    Notice(
+                      message: l10n.addressSearchUnavailable,
+                      tone: NoticeTone.info,
+                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SpaceTextField(
+                        label: l10n.streetAddressLabel,
+                        controller: _address,
+                        focusNode: _addressFocus,
+                        enabled: !_saving,
+                        hint: _searchOff ? null : l10n.addressSearchHint,
+                        textCapitalization: TextCapitalization.words,
+                        keyboardType: TextInputType.streetAddress,
+                        suffix: _searching
+                            ? const Padding(
+                                padding: EdgeInsets.all(14),
+                                child: SizedBox.square(
+                                  dimension: 18,
+                                  child: CircularProgressIndicator.adaptive(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : null,
+                        onChanged: _addressChanged,
+                        validator: _validator('address', required),
+                      ),
+                      if (_suggestions.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        _Suggestions(suggestions: _suggestions, onPick: _pick),
+                      ],
+                    ],
                   ),
                   _text(
                     l10n.billingCityLabel,
@@ -320,6 +441,98 @@ class _LocationFormState extends ConsumerState<_LocationForm> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The addresses found for what's typed, under the street field.
+class _Suggestions extends StatelessWidget {
+  const _Suggestions({required this.suggestions, required this.onPick});
+
+  final List<AddressSuggestion> suggestions;
+  final ValueChanged<AddressSuggestion> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.addressSuggestionsLabel(suggestions.length),
+      child: Material(
+        color: c.sunken,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(SpaceRadius.inner),
+          side: BorderSide(color: c.line),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final (i, s) in suggestions.indexed) ...[
+              if (i > 0) const Divider(height: 1),
+              Semantics(
+                container: true,
+                button: true,
+                label: '${s.name}, ${s.description}',
+                excludeSemantics: true,
+                child: InkWell(
+                  onTap: () => onPick(s),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.place_outlined,
+                            size: 20,
+                            color: c.inkMuted,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  s.name,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                if (s.description.isNotEmpty)
+                                  Text(
+                                    s.description,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: c.inkMuted,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+              child: Text(
+                l10n.addressSuggestionsBy,
+                textAlign: TextAlign.end,
+                style: theme.textTheme.labelSmall?.copyWith(color: c.inkFaint),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -574,6 +574,23 @@ class FakeLocationsRepository implements LocationsRepository {
   /// Every non-empty search the server received.
   final searches = <String>[];
 
+  /// What address search offers, for any query; [suggestFailure] instead
+  /// fails it. [suggestQueries] records `query/language`.
+  List<AddressSuggestion> suggestions = const [];
+  Failure? suggestFailure;
+  final suggestQueries = <String>[];
+
+  @override
+  Future<List<AddressSuggestion>> suggestAddresses(
+    String clientId,
+    String query, {
+    required String language,
+  }) async {
+    suggestQueries.add('$query/$language');
+    if (suggestFailure case final f?) throw f;
+    return suggestions;
+  }
+
   @override
   Future<List<Location>> getLocations(
     String clientId, {

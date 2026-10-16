@@ -4952,6 +4952,36 @@ abstract class AppLocalizations {
   /// **'This photo no longer exists.'**
   String get complaintsPhotoNotFound;
 
+  /// No description provided for @addressSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start typing to search'**
+  String get addressSearchHint;
+
+  /// No description provided for @addressSearchUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Address search isn\'t available right now. Please enter the address manually.'**
+  String get addressSearchUnavailable;
+
+  /// No description provided for @addressSuggestionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 address found} other{{count} addresses found}}'**
+  String addressSuggestionsLabel(int count);
+
+  /// No description provided for @addressSuggestionsBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestions by Mapbox'**
+  String get addressSuggestionsBy;
+
+  /// No description provided for @geoUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Address search isn\'t available right now. Please enter the address manually.'**
+  String get geoUnavailable;
+
   /// No description provided for @noJobComplaints.
   ///
   /// In en, this message translates to:

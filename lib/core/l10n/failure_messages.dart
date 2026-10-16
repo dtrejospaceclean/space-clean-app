@@ -36,6 +36,7 @@ extension FailureMessages on AppLocalizations {
     'clients.has_related_records' => clientsHasRelatedRecords,
     'client_contacts.not_found' => clientContactsNotFound,
     'locations.not_found' => locationsNotFound,
+    'geo.limit_reached' || 'geo.unavailable' => geoUnavailable,
     'members.not_found' => membersNotFound,
     'proposals.not_found' => proposalsNotFound,
     'proposals.not_current_version' => proposalsNotCurrentVersion,

@@ -24,3 +24,6 @@ final saveLocationProvider = Provider(
 final deleteLocationProvider = Provider(
   (ref) => DeleteLocation(ref.watch(locationsRepositoryProvider)),
 );
+final suggestAddressesProvider = Provider(
+  (ref) => SuggestAddresses(ref.watch(locationsRepositoryProvider)),
+);

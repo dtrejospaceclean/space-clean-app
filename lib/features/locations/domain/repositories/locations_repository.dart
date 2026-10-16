@@ -22,4 +22,14 @@ abstract interface class LocationsRepository {
   /// Needs `info.edit`, and only while no scope of work or job uses it
   /// (`locations.has_related_records` otherwise).
   Future<void> deleteLocation(String clientId, String locationId);
+
+  /// Up to 5 US street addresses matching [query] (3 characters or more),
+  /// worded in [language] (`en`, `es`). Needs `info.edit`. Every call counts
+  /// toward a monthly allowance; once it's spent, or when the map service is
+  /// down, it throws `geo.limit_reached` / `geo.unavailable`.
+  Future<List<AddressSuggestion>> suggestAddresses(
+    String clientId,
+    String query, {
+    required String language,
+  });
 }

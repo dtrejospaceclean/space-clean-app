@@ -21,7 +21,34 @@ abstract final class LocationModel {
     specialInstructions: json['specialInstructions'] as String?,
     scopeOfWorkCount: (json['scopeOfWorkCount'] as num?)?.toInt() ?? 0,
     jobCount: (json['jobCount'] as num?)?.toInt() ?? 0,
+    latitude: _coordinate(json['latitude']),
+    longitude: _coordinate(json['longitude']),
+    geocodedAt: switch (json['geocodedAt']) {
+      final String s => DateTime.tryParse(s)?.toLocal(),
+      _ => null,
+    },
   );
+
+  /// A number, or a decimal string should the API send one.
+  static double? _coordinate(Object? value) => switch (value) {
+    final num n => n.toDouble(),
+    final String s => double.tryParse(s),
+    _ => null,
+  };
+
+  static AddressSuggestion suggestionFromJson(Map<String, dynamic> json) {
+    String? text(Object? v) =>
+        v is String && v.trim().isNotEmpty ? v.trim() : null;
+    return AddressSuggestion(
+      id: json['id'] as String,
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      address: json['address'] as String? ?? json['name'] as String? ?? '',
+      city: text(json['city']),
+      state: text(json['state']),
+      zipCode: text(json['zipCode']),
+    );
+  }
 }
 
 abstract final class LocationDraftModel {

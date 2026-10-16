@@ -2873,6 +2873,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get complaintsPhotoNotFound => 'This photo no longer exists.';
 
   @override
+  String get addressSearchHint => 'Start typing to search';
+
+  @override
+  String get addressSearchUnavailable =>
+      'Address search isn\'t available right now. Please enter the address manually.';
+
+  @override
+  String addressSuggestionsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count addresses found',
+      one: '1 address found',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get addressSuggestionsBy => 'Suggestions by Mapbox';
+
+  @override
+  String get geoUnavailable =>
+      'Address search isn\'t available right now. Please enter the address manually.';
+
+  @override
   String get noJobComplaints => 'No complaints about this job';
 
   @override

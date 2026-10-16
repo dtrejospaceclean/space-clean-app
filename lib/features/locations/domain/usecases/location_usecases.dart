@@ -71,3 +71,43 @@ class DeleteLocation implements UseCase<void, LocationRef> {
   Future<void> call(LocationRef params) =>
       _repository.deleteLocation(params.clientId, params.locationId);
 }
+
+class AddressSearch {
+  const AddressSearch({
+    required this.clientId,
+    required this.query,
+    required this.language,
+  });
+
+  final String clientId;
+  final String query;
+
+  /// `en` or `es`.
+  final String language;
+}
+
+/// Suggests addresses for what's typed, trimmed. Under [minLength]
+/// characters it answers nothing without calling the API.
+class SuggestAddresses
+    implements UseCase<List<AddressSuggestion>, AddressSearch> {
+  const SuggestAddresses(this._repository);
+
+  final LocationsRepository _repository;
+
+  static const minLength = 3;
+
+  /// Search can't be used for now (the month's allowance is spent, or the
+  /// map service is down): the address is typed by hand. Saving still works.
+  static const unavailableKeys = {'geo.limit_reached', 'geo.unavailable'};
+
+  @override
+  Future<List<AddressSuggestion>> call(AddressSearch p) async {
+    final query = p.query.trim();
+    if (query.length < minLength) return const [];
+    return _repository.suggestAddresses(
+      p.clientId,
+      query,
+      language: p.language,
+    );
+  }
+}
