@@ -365,7 +365,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
                     PageBox(
                       top: primary ? 12 : 24,
                       child: SecondaryButton(
-                        label: l10n.viewInvoicePdf,
+                        label: l10n.viewPdf,
                         icon: Icons.picture_as_pdf_outlined,
                         onPressed: busy
                             ? null
@@ -378,7 +378,7 @@ class _InvoiceScreenState extends ConsumerState<InvoiceScreen> {
                       PageBox(
                         top: 12,
                         child: SecondaryButton(
-                          label: l10n.sendInvoice,
+                          label: l10n.sendByEmail,
                           icon: Icons.send_outlined,
                           onPressed: busy ? null : () => _openSend(here),
                         ),

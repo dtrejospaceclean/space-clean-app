@@ -29,7 +29,7 @@ import 'package:sp_cln_app/features/contracts/di/contracts_providers.dart';
 import 'package:sp_cln_app/features/contracts/domain/entities/contract.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
 import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
-import 'package:sp_cln_app/features/invoices/presentation/controllers/invoices_providers.dart';
+import 'package:sp_cln_app/core/widgets/pdf_view.dart';
 import 'package:sp_cln_app/features/locations/di/locations_providers.dart';
 import 'package:sp_cln_app/features/scopes/di/scopes_providers.dart';
 import 'package:sp_cln_app/features/scopes/domain/entities/scope.dart';

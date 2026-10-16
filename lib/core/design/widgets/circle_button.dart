@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../tokens.dart';
 
 /// The round header buttons: orange for the main action ("+"), white for
-/// secondary ones (back, arrows). 44 dp visible, 48 dp touch target.
+/// secondary ones (back, arrows). [CircleButton.flat] has no fill, for an
+/// icon inside a card; only the tap ripple shows its round shape.
+/// 44 dp visible, 48 dp touch target.
 /// While [busy] it shows a spinner in place of the icon and can't be tapped.
 /// With [active] a small orange dot marks it as on (a filter in use); say so
 /// in [tooltip] too, since the dot is only color.
@@ -15,6 +17,17 @@ class CircleButton extends StatelessWidget {
     required this.onPressed,
     this.busy = false,
   }) : _dark = true,
+       _flat = false,
+       active = false;
+
+  const CircleButton.flat({
+    super.key,
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+    this.busy = false,
+  }) : _dark = false,
+       _flat = true,
        active = false;
 
   const CircleButton.light({
@@ -24,7 +37,8 @@ class CircleButton extends StatelessWidget {
     required this.onPressed,
     this.busy = false,
     this.active = false,
-  }) : _dark = false;
+  }) : _dark = false,
+       _flat = false;
 
   final IconData icon;
   final String tooltip;
@@ -32,6 +46,7 @@ class CircleButton extends StatelessWidget {
   final bool busy;
   final bool active;
   final bool _dark;
+  final bool _flat;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +89,11 @@ class CircleButton extends StatelessWidget {
 
   Widget _circle(BuildContext context) => Center(
     child: Material(
-      color: _dark ? context.colors.primary : context.colors.surface,
+      color: _dark
+          ? context.colors.primary
+          : _flat
+          ? Colors.transparent
+          : context.colors.surface,
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
       child: InkWell(

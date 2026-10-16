@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/design/design.dart';
+import '../../../../core/l10n/document_language.dart';
+import '../../../../core/widgets/pdf_view.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
@@ -53,7 +55,7 @@ class InvoicePdfScreen extends ConsumerWidget {
         if (canEdit && (invoice?.canSend ?? false))
           CircleButton.light(
             icon: Icons.send_outlined,
-            tooltip: l10n.sendInvoice,
+            tooltip: l10n.sendByEmail,
             onPressed: () =>
                 context.push('$invoicePage/${SendInvoiceScreen.route}'),
           ),
@@ -79,8 +81,3 @@ class InvoicePdfScreen extends ConsumerWidget {
     );
   }
 }
-
-/// The language the server writes documents in: the app's, which is English
-/// or Spanish.
-String documentLanguage(BuildContext context) =>
-    Localizations.localeOf(context).languageCode == 'en' ? 'en' : 'es';

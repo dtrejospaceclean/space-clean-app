@@ -25,7 +25,9 @@ import '../../jobs/presentation/screens/job_checklist_screen.dart';
 import '../../jobs/presentation/screens/job_complete_screen.dart';
 import '../../jobs/presentation/screens/job_crew_screen.dart';
 import '../../locations/presentation/screens/locations_screen.dart';
+import '../../proposals/presentation/screens/proposal_pdf_screen.dart';
 import '../../proposals/presentation/screens/proposals_screen.dart';
+import '../../proposals/presentation/screens/send_proposal_screen.dart';
 import '../../scopes/presentation/screens/scopes_screen.dart';
 import '../../tasks/presentation/screens/tasks_screen.dart';
 import '../../service_catalog/domain/usecases/service_catalog_usecases.dart';
@@ -208,6 +210,8 @@ bool _noPlus(String route) =>
     route.endsWith('/${RecordPaymentScreen.route}') ||
     route.endsWith('/invoices/:invoiceId/${InvoicePdfScreen.route}') ||
     route.endsWith('/invoices/:invoiceId/${SendInvoiceScreen.route}') ||
+    route.endsWith('/proposals/:proposalId/${ProposalPdfScreen.route}') ||
+    route.endsWith('/proposals/:proposalId/${SendProposalScreen.route}') ||
     route.endsWith('/reschedule') ||
     route.endsWith('/item') ||
     route.endsWith('/window') ||

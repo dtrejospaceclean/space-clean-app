@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../core/network/api_exception.dart';
 import '../../domain/entities/proposal.dart';
 import '../../domain/repositories/proposals_repository.dart';
@@ -59,4 +61,24 @@ class ProposalsRepositoryImpl implements ProposalsRepository {
   @override
   Future<void> deleteProposal(String clientId, String proposalId) =>
       _guard(() => _remote.deleteProposal(clientId, proposalId));
+
+  @override
+  Future<Uint8List> getProposalPdf(
+    String clientId,
+    String proposalId, {
+    required String language,
+  }) => _guard(
+    () => _remote.getProposalPdf(clientId, proposalId, language: language),
+  );
+
+  @override
+  Future<List<String>> sendProposal(
+    String clientId,
+    String proposalId, {
+    required List<String> to,
+    required String language,
+  }) => _guard(
+    () =>
+        _remote.sendProposal(clientId, proposalId, to: to, language: language),
+  );
 }

@@ -18,6 +18,8 @@ import '../../domain/usecases/proposal_usecases.dart';
 import '../controllers/proposals_providers.dart';
 import '../widgets/line_item_row.dart';
 import '../widgets/proposal_stage_label.dart';
+import 'proposal_pdf_screen.dart';
+import 'send_proposal_screen.dart';
 
 /// One version of a negotiation: its stage and price, the line items, and
 /// every version of it. With `proposal.edit`, the current version can be
@@ -41,6 +43,17 @@ class _ProposalScreenState extends ConsumerState<ProposalScreen> {
   /// While the delete is in flight: the trash button spins, and nothing
   /// else on the page (edit, back) can start.
   bool _deleting = false;
+
+  /// Who the last send went to, shown until the page is left.
+  List<String>? _sentTo;
+
+  /// Opens the send page, and says who it went to once it's back.
+  Future<void> _openSend(String here) async {
+    final sentTo = await context.push<List<String>>(
+      '$here/${SendProposalScreen.route}',
+    );
+    if (sentTo != null && mounted) setState(() => _sentTo = sentTo);
+  }
 
   /// Asks first, then deletes the whole negotiation and goes back to [list].
   Future<void> _delete(String list) async {
@@ -164,8 +177,25 @@ class _ProposalScreenState extends ConsumerState<ProposalScreen> {
                   slivers: [
                     PageBox(
                       top: 4,
-                      child: _PriceCard(proposal: p, expired: expired),
+                      child: _PriceCard(
+                        proposal: p,
+                        expired: expired,
+                        onViewPdf: () =>
+                            context.push('$here/${ProposalPdfScreen.route}'),
+                        // Only the current version is emailed.
+                        onSend: canEdit && p.isCurrent
+                            ? () => _openSend(here)
+                            : null,
+                      ),
                     ),
+                    // Right under the card whose button sent it.
+                    if (_sentTo case final sentTo?)
+                      PageBox(
+                        child: Notice(
+                          message: l10n.proposalSentTo(sentTo.join(', ')),
+                          tone: NoticeTone.success,
+                        ),
+                      ),
                     if (!p.isCurrent)
                       PageBox(
                         child: Notice(
@@ -319,15 +349,26 @@ class _ProposalScreenState extends ConsumerState<ProposalScreen> {
 }
 
 /// The head of the page: the price on the left; the stage and how long
-/// the price holds on the right; then the version and who prepared it. At
-/// large text everything stacks, so neither side is squeezed.
+/// the price holds on the right; then the version and who prepared it, with
+/// the PDF and email buttons at its end. At large text everything stacks,
+/// so neither side is squeezed.
 class _PriceCard extends StatelessWidget {
-  const _PriceCard({required this.proposal, required this.expired});
+  const _PriceCard({
+    required this.proposal,
+    required this.expired,
+    required this.onViewPdf,
+    this.onSend,
+  });
 
   final Proposal proposal;
 
   /// Past its valid-until date while still open.
   final bool expired;
+
+  final VoidCallback onViewPdf;
+
+  /// Null hides the email button.
+  final VoidCallback? onSend;
 
   @override
   Widget build(BuildContext context) {
@@ -413,20 +454,40 @@ class _PriceCard extends StatelessWidget {
           ],
           const SizedBox(height: 14),
           // Which version and when, then who. Each phrase stays whole and
-          // drops to the next line when there's no room.
-          Wrap(
-            spacing: 12,
-            runSpacing: 2,
+          // drops to the next line when there's no room; the document's
+          // buttons keep the end of the row.
+          Row(
             children: [
-              Text(
-                [
-                  l10n.proposalVersion(p.versionNumber),
-                  if (p.createdAt case final at?) context.formatDate(at),
-                ].join(' · '),
-                style: small,
+              Expanded(
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 2,
+                  children: [
+                    Text(
+                      [
+                        l10n.proposalVersion(p.versionNumber),
+                        if (p.createdAt case final at?) context.formatDate(at),
+                      ].join(' · '),
+                      style: small,
+                    ),
+                    if (p.preparedByName case final name?)
+                      Text(l10n.proposalPreparedBy(name), style: small),
+                  ],
+                ),
               ),
-              if (p.preparedByName case final name?)
-                Text(l10n.proposalPreparedBy(name), style: small),
+              const SizedBox(width: 8),
+              CircleButton.flat(
+                icon: Icons.picture_as_pdf_outlined,
+                tooltip: l10n.viewPdf,
+                onPressed: onViewPdf,
+              ),
+              if (onSend case final send?) ...[
+                CircleButton.flat(
+                  icon: Icons.send_outlined,
+                  tooltip: l10n.sendByEmail,
+                  onPressed: send,
+                ),
+              ],
             ],
           ),
         ],

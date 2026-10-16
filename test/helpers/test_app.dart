@@ -40,7 +40,7 @@ import 'package:sp_cln_app/features/contracts/domain/repositories/contracts_repo
 import 'package:sp_cln_app/features/invoices/di/invoices_providers.dart';
 import 'package:sp_cln_app/features/invoices/domain/entities/invoice.dart';
 import 'package:sp_cln_app/features/invoices/domain/repositories/invoices_repository.dart';
-import 'package:sp_cln_app/features/invoices/presentation/controllers/invoices_providers.dart';
+import 'package:sp_cln_app/core/widgets/pdf_view.dart';
 import 'package:sp_cln_app/features/jobs/di/jobs_providers.dart';
 import 'package:sp_cln_app/features/jobs/domain/entities/job.dart';
 import 'package:sp_cln_app/features/jobs/domain/repositories/jobs_repository.dart';
@@ -1850,6 +1850,45 @@ class FakeProposalsRepository implements ProposalsRepository {
   List<Proposal> proposals;
   final writes = <String>[];
   final drafts = <ProposalDraft>[];
+
+  /// Each PDF asked for, as `<proposalId>:<language>`.
+  final pdfs = <String>[];
+
+  /// Who each send went to, and in which language.
+  final sends = <(List<String>, String)>[];
+
+  /// Thrown by [sendProposal] when set (a mail provider failure).
+  Failure? sendError;
+
+  @override
+  Future<Uint8List> getProposalPdf(
+    String clientId,
+    String proposalId, {
+    required String language,
+  }) async {
+    await getProposal(clientId, proposalId);
+    pdfs.add('$proposalId:$language');
+    return Uint8List.fromList(utf8.encode('%PDF-1.7 $proposalId'));
+  }
+
+  @override
+  Future<List<String>> sendProposal(
+    String clientId,
+    String proposalId, {
+    required List<String> to,
+    required String language,
+  }) async {
+    final p = await getProposal(clientId, proposalId);
+    if (!p.isCurrent) {
+      throw const ServerFailure(
+        'proposals.not_current_version',
+        statusCode: 409,
+      );
+    }
+    if (sendError case final error?) throw error;
+    sends.add((to, language));
+    return to;
+  }
 
   @override
   Future<List<Proposal>> getProposals(String clientId) async => proposals

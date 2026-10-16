@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../entities/proposal.dart';
 
 /// Every method throws a `Failure` on error.
@@ -46,4 +48,23 @@ abstract interface class ProposalsRepository {
   /// approved (`proposals.already_approved`) or a contract uses one
   /// (`proposals.has_related_records`).
   Future<void> deleteProposal(String clientId, String proposalId);
+
+  /// Any version as a PDF, written in [language] (`en` or `es`); an earlier
+  /// version says it was superseded. Needs `proposal.view`.
+  Future<Uint8List> getProposalPdf(
+    String clientId,
+    String proposalId, {
+    required String language,
+  });
+
+  /// Emails the PDF to [to] (1–10 addresses), the email and the PDF in
+  /// [language]; returns who it went to. Needs `proposal.edit`; only the
+  /// current version, at any stage (`proposals.not_current_version`). A mail
+  /// provider failure is `mail.send_failed`.
+  Future<List<String>> sendProposal(
+    String clientId,
+    String proposalId, {
+    required List<String> to,
+    required String language,
+  });
 }

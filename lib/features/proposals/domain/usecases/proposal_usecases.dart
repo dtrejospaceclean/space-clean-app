@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../core/usecase/usecase.dart';
 import '../entities/proposal.dart';
 import '../repositories/proposals_repository.dart';
@@ -117,5 +119,72 @@ class ApproveProposal implements UseCase<Proposal, ApproveProposalParams> {
     p.clientId,
     p.proposalId,
     agreedPrice: p.agreedPrice,
+  );
+}
+
+class ProposalPdfParams {
+  const ProposalPdfParams({
+    required this.clientId,
+    required this.proposalId,
+    required this.language,
+  });
+
+  final String clientId;
+  final String proposalId;
+
+  /// `en` or `es`: the app's current language.
+  final String language;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ProposalPdfParams &&
+      other.clientId == clientId &&
+      other.proposalId == proposalId &&
+      other.language == language;
+
+  @override
+  int get hashCode => Object.hash(clientId, proposalId, language);
+}
+
+class GetProposalPdf implements UseCase<Uint8List, ProposalPdfParams> {
+  const GetProposalPdf(this._repository);
+
+  final ProposalsRepository _repository;
+
+  @override
+  Future<Uint8List> call(ProposalPdfParams p) => _repository.getProposalPdf(
+    p.clientId,
+    p.proposalId,
+    language: p.language,
+  );
+}
+
+class SendProposalParams {
+  const SendProposalParams({
+    required this.clientId,
+    required this.proposalId,
+    required this.to,
+    required this.language,
+  });
+
+  final String clientId;
+  final String proposalId;
+  final List<String> to;
+  final String language;
+}
+
+/// Emails the proposal to each address once (trimmed, lowercased); returns
+/// who it went to.
+class SendProposal implements UseCase<List<String>, SendProposalParams> {
+  const SendProposal(this._repository);
+
+  final ProposalsRepository _repository;
+
+  @override
+  Future<List<String>> call(SendProposalParams p) => _repository.sendProposal(
+    p.clientId,
+    p.proposalId,
+    to: {for (final email in p.to) email.trim().toLowerCase()}.toList(),
+    language: p.language,
   );
 }

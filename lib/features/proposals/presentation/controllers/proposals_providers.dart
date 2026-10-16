@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../di/proposals_providers.dart';
@@ -26,9 +28,17 @@ final proposalVersionsProvider =
       ),
     );
 
+/// A version's PDF in one language. Loaded each time it's opened, so it
+/// shows the proposal as it is now.
+final proposalPdfProvider = FutureProvider.autoDispose
+    .family<Uint8List, ProposalPdfParams>(
+      (ref, params) => ref.watch(getProposalPdfProvider)(params),
+    );
+
 /// Drops an account's cached proposals after any save: a new version or an
 /// approval changes the list, the version history and the old version.
 void invalidateProposals(WidgetRef ref, String clientId) => ref
   ..invalidate(proposalsProvider(clientId))
   ..invalidate(proposalProvider)
-  ..invalidate(proposalVersionsProvider);
+  ..invalidate(proposalVersionsProvider)
+  ..invalidate(proposalPdfProvider);

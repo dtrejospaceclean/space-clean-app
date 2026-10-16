@@ -5810,11 +5810,11 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get appVersionLabel;
 
-  /// No description provided for @viewInvoicePdf.
+  /// No description provided for @viewPdf.
   ///
   /// In en, this message translates to:
   /// **'View PDF'**
-  String get viewInvoicePdf;
+  String get viewPdf;
 
   /// No description provided for @invoicePdfTitle.
   ///
@@ -5822,53 +5822,71 @@ abstract class AppLocalizations {
   /// **'Invoice PDF'**
   String get invoicePdfTitle;
 
-  /// No description provided for @sendInvoice.
+  /// No description provided for @proposalPdfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposal PDF'**
+  String get proposalPdfTitle;
+
+  /// No description provided for @proposalSentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {emails}.'**
+  String proposalSentTo(String emails);
+
+  /// No description provided for @proposalsNoRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has no primary contact with an email. Add an email to send it.'**
+  String get proposalsNoRecipient;
+
+  /// No description provided for @sendByEmail.
   ///
   /// In en, this message translates to:
   /// **'Send by email'**
-  String get sendInvoice;
+  String get sendByEmail;
 
-  /// No description provided for @sendInvoiceButton.
+  /// No description provided for @sendButton.
   ///
   /// In en, this message translates to:
   /// **'Send'**
-  String get sendInvoiceButton;
+  String get sendButton;
 
-  /// No description provided for @sendInvoiceTo.
+  /// No description provided for @sendToCount.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =1{Send to 1 person} other{Send to {count} people}}'**
-  String sendInvoiceTo(int count);
+  String sendToCount(int count);
 
-  /// No description provided for @sendInvoiceOtherEmails.
+  /// No description provided for @sendOtherEmails.
   ///
   /// In en, this message translates to:
   /// **'Other emails'**
-  String get sendInvoiceOtherEmails;
+  String get sendOtherEmails;
 
-  /// No description provided for @sendInvoiceAddEmail.
+  /// No description provided for @sendAddEmail.
   ///
   /// In en, this message translates to:
   /// **'Add email'**
-  String get sendInvoiceAddEmail;
+  String get sendAddEmail;
 
-  /// No description provided for @sendInvoiceHelp.
+  /// No description provided for @sendHelp.
   ///
   /// In en, this message translates to:
   /// **'Everyone on the list sees the others\' addresses. The email and the attached PDF are in the language the app is in.'**
-  String get sendInvoiceHelp;
+  String get sendHelp;
 
-  /// No description provided for @sendInvoiceNoRecipients.
+  /// No description provided for @sendNoRecipients.
   ///
   /// In en, this message translates to:
   /// **'Pick at least one person, or add an email.'**
-  String get sendInvoiceNoRecipients;
+  String get sendNoRecipients;
 
-  /// No description provided for @sendInvoiceTooMany.
+  /// No description provided for @sendTooMany.
   ///
   /// In en, this message translates to:
-  /// **'An invoice can go to up to {max} emails at once.'**
-  String sendInvoiceTooMany(int max);
+  /// **'Up to {max} emails at once.'**
+  String sendTooMany(int max);
 
   /// No description provided for @invoiceSentTo.
   ///

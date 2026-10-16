@@ -32,6 +32,13 @@ void main() {
     expect(ids(jobs), ['yesterday', 'last-week', 'old']);
   });
 
+  test('recent is the past 30 days and today, latest first', () async {
+    final jobs = await GetAccountJobs(repo)(
+      JobQuery.recent(clientId: 'c1', today: testNow),
+    );
+    expect(ids(jobs), ['late', 'early', 'yesterday', 'last-week', 'old']);
+  });
+
   test('queries on the same day are the same list', () {
     expect(
       JobQuery(clientId: 'c1', period: JobPeriod.past, today: testNow),

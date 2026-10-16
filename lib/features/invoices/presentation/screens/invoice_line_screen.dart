@@ -63,10 +63,9 @@ class _InvoiceLineScreenState extends ConsumerState<InvoiceLineScreen> {
   /// Why the job picker didn't open (no recent jobs).
   String? _note;
 
-  /// Jobs bill after the work, so the past month's are offered.
-  late final JobQuery _recentJobs = JobQuery(
+  /// Jobs bill after the work, so the past month's (today's too) are offered.
+  late final JobQuery _recentJobs = JobQuery.recent(
     clientId: widget.clientId,
-    period: JobPeriod.past,
     today: ref.read(clockProvider)(),
   );
 

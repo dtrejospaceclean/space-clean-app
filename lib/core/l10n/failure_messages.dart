@@ -43,6 +43,7 @@ extension FailureMessages on AppLocalizations {
     'proposals.already_approved' => proposalsAlreadyApproved,
     'proposals.has_related_records' => proposalsHasRelatedRecords,
     'proposals.agreed_price_required' => proposalsAgreedPriceRequired,
+    'proposals.no_recipient' => proposalsNoRecipient,
     'contracts.not_found' => contractsNotFound,
     'contracts.contract_value_required' => contractsValueRequired,
     'contracts.proposal_not_approved' => contractsProposalNotApproved,

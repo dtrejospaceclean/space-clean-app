@@ -30,3 +30,9 @@ final approveProposalProvider = Provider(
 final deleteProposalProvider = Provider(
   (ref) => DeleteProposal(ref.watch(proposalsRepositoryProvider)),
 );
+final getProposalPdfProvider = Provider(
+  (ref) => GetProposalPdf(ref.watch(proposalsRepositoryProvider)),
+);
+final sendProposalProvider = Provider(
+  (ref) => SendProposal(ref.watch(proposalsRepositoryProvider)),
+);

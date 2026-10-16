@@ -45,9 +45,11 @@ import '../../features/proposals/domain/entities/proposal.dart';
 import '../../features/proposals/domain/usecases/proposal_usecases.dart';
 import '../../features/proposals/presentation/screens/approve_proposal_screen.dart';
 import '../../features/proposals/presentation/screens/line_item_screen.dart';
+import '../../features/proposals/presentation/screens/proposal_pdf_screen.dart';
 import '../../features/proposals/presentation/screens/proposal_form_screen.dart';
 import '../../features/proposals/presentation/screens/proposal_screen.dart';
 import '../../features/proposals/presentation/screens/proposals_screen.dart';
+import '../../features/proposals/presentation/screens/send_proposal_screen.dart';
 import '../../features/scopes/presentation/screens/scope_form_screen.dart';
 import '../../features/scopes/presentation/screens/scope_screen.dart';
 import '../../features/scopes/presentation/screens/scopes_screen.dart';
@@ -269,6 +271,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                               SlideRoute(
                                 path: 'approve',
                                 builder: (_, state) => ApproveProposalScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  proposalId:
+                                      state.pathParameters['proposalId']!,
+                                ),
+                              ),
+                              SlideRoute(
+                                path: ProposalPdfScreen.route,
+                                builder: (_, state) => ProposalPdfScreen(
+                                  clientId: state.pathParameters['clientId']!,
+                                  proposalId:
+                                      state.pathParameters['proposalId']!,
+                                ),
+                              ),
+                              SlideRoute(
+                                path: SendProposalScreen.route,
+                                builder: (_, state) => SendProposalScreen(
                                   clientId: state.pathParameters['clientId']!,
                                   proposalId:
                                       state.pathParameters['proposalId']!,

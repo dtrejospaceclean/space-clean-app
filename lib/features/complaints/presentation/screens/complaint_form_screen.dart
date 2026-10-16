@@ -138,10 +138,10 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
     }
   }
 
-  /// The past month's jobs: what a complaint is usually about.
-  JobQuery get _recentJobs => JobQuery(
+  /// The past month's jobs, today's included: what a complaint is usually
+  /// about.
+  JobQuery get _recentJobs => JobQuery.recent(
     clientId: widget.clientId,
-    period: JobPeriod.past,
     today: ref.read(clockProvider)(),
   );
 

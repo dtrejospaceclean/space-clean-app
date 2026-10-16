@@ -99,13 +99,23 @@ class JobQuery {
     required this.clientId,
     required this.period,
     required this.today,
-  });
+  }) : withToday = false;
+
+  /// The past [pastDays] days and all of today, latest first: what job
+  /// pickers offer, since work is billed or complained about as soon as
+  /// it's done.
+  const JobQuery.recent({required this.clientId, required this.today})
+    : period = JobPeriod.past,
+      withToday = true;
 
   /// How far back [JobPeriod.past] reaches.
   static const pastDays = 30;
 
   final String clientId;
   final JobPeriod period;
+
+  /// Whether [JobPeriod.past] also takes in today's jobs.
+  final bool withToday;
 
   /// Any time on the current (local) day.
   final DateTime today;
@@ -117,10 +127,11 @@ class JobQuery {
       other is JobQuery &&
       other.clientId == clientId &&
       other.period == period &&
+      other.withToday == withToday &&
       other._startOfToday == _startOfToday;
 
   @override
-  int get hashCode => Object.hash(clientId, period, _startOfToday);
+  int get hashCode => Object.hash(clientId, period, withToday, _startOfToday);
 }
 
 /// One account's jobs for a [JobPeriod]: upcoming soonest first, past
@@ -142,7 +153,11 @@ class GetAccountJobs implements UseCase<List<Job>, JobQuery> {
         clientId: q.clientId,
         from: DateTime(today.year, today.month, today.day - JobQuery.pastDays),
         // The API's `to` is inclusive.
-        to: today.subtract(const Duration(milliseconds: 1)),
+        to: DateTime(
+          today.year,
+          today.month,
+          today.day + (q.withToday ? 1 : 0),
+        ).subtract(const Duration(milliseconds: 1)),
       ),
     };
     final sorted = [...jobs]

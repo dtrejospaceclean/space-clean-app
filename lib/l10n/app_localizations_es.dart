@@ -3426,19 +3426,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appVersionLabel => 'Versión';
 
   @override
-  String get viewInvoicePdf => 'Ver PDF';
+  String get viewPdf => 'Ver PDF';
 
   @override
   String get invoicePdfTitle => 'PDF de la factura';
 
   @override
-  String get sendInvoice => 'Enviar por correo';
+  String get proposalPdfTitle => 'PDF de la propuesta';
 
   @override
-  String get sendInvoiceButton => 'Enviar';
+  String proposalSentTo(String emails) {
+    return 'Enviada a $emails.';
+  }
 
   @override
-  String sendInvoiceTo(int count) {
+  String get proposalsNoRecipient =>
+      'Esta cuenta no tiene contacto principal con correo. Agrega un correo para enviarla.';
+
+  @override
+  String get sendByEmail => 'Enviar por correo';
+
+  @override
+  String get sendButton => 'Enviar';
+
+  @override
+  String sendToCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -3449,22 +3461,22 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get sendInvoiceOtherEmails => 'Otros correos';
+  String get sendOtherEmails => 'Otros correos';
 
   @override
-  String get sendInvoiceAddEmail => 'Agregar correo';
+  String get sendAddEmail => 'Agregar correo';
 
   @override
-  String get sendInvoiceHelp =>
+  String get sendHelp =>
       'Todos los destinatarios ven las direcciones de los demás. El correo y el PDF adjunto van en el idioma de la app.';
 
   @override
-  String get sendInvoiceNoRecipients =>
+  String get sendNoRecipients =>
       'Elige al menos una persona o agrega un correo.';
 
   @override
-  String sendInvoiceTooMany(int max) {
-    return 'Una factura puede enviarse a $max correos como máximo a la vez.';
+  String sendTooMany(int max) {
+    return 'Hasta $max correos a la vez.';
   }
 
   @override

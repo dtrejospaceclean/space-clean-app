@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/features/access/domain/entities/account_access.dart';
 import 'package:sp_cln_app/features/auth/domain/entities/user.dart';
 import 'package:sp_cln_app/features/clients/domain/entities/client.dart';
+import 'package:sp_cln_app/features/contacts/domain/entities/contact.dart';
 import 'package:sp_cln_app/features/proposals/domain/entities/proposal.dart';
 import 'package:sp_cln_app/features/proposals/presentation/screens/proposals_screen.dart';
 
@@ -66,6 +68,26 @@ final _v2 = Proposal(
   lineItems: const [_offices, _windows],
 );
 
+/// The billing contact is left alone: proposals go to the primary one.
+const _contacts = [
+  Contact(
+    id: 'ct1',
+    clientId: 'c1',
+    firstName: 'Laura',
+    lastName: 'Ortiz',
+    email: 'laura@torrenorte.com',
+    isBillingContact: true,
+  ),
+  Contact(
+    id: 'ct2',
+    clientId: 'c1',
+    firstName: 'Pedro',
+    lastName: 'Ruiz',
+    email: 'Pedro@TorreNorte.com',
+    isPrimary: true,
+  ),
+];
+
 const _lead = Proposal(
   id: 'p-lead',
   clientId: 'c1',
@@ -86,6 +108,7 @@ Future<FakeProposalsRepository> openProposals(
     tester,
     auth: FakeAuthRepository(sessionUser: user),
     clients: FakeClientsRepository([_tower]),
+    contacts: FakeContactsRepository(_contacts),
     proposals: repo,
     access: FakeAccessRepository({
       'c1': AccountAccess(
@@ -383,6 +406,93 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byTooltip('Delete proposal'), findsNothing);
     expect(find.byTooltip('Edit proposal'), findsNothing);
+  });
+
+  testWidgets('anyone who sees a proposal opens its PDF', (tester) async {
+    final proposals = await openProposals(tester, ana);
+    await openCurrent(tester);
+
+    // Sending is for editors.
+    expect(find.byTooltip('Send by email'), findsNothing);
+    await tester.tap(find.byTooltip('View PDF'));
+    await tester.pumpAndSettle();
+
+    expect(proposals.pdfs, ['p-v2:en']);
+    expect(find.text('Version 2'), findsOneWidget);
+    expect(find.textContaining('PDF proposal-v2-en.pdf'), findsOneWidget);
+    expect(find.byTooltip('Send by email'), findsNothing);
+  });
+
+  testWidgets('an editor emails the current version to its primary contact', (
+    tester,
+  ) async {
+    final proposals = await openProposals(
+      tester,
+      accountManager,
+      permissions: _editor,
+    );
+    await openCurrent(tester);
+
+    await tester.tap(find.byTooltip('Send by email'));
+    await tester.pumpAndSettle();
+
+    // The primary contact starts picked, like the server's own default;
+    // the billing contact is offered but not picked.
+    expect(find.text('Primary · pedro@torrenorte.com'), findsOneWidget);
+    expect(find.text('Billing · laura@torrenorte.com'), findsOneWidget);
+    expect(find.text('Send to 1 person'), findsOneWidget);
+
+    await tester.tap(find.text('Send to 1 person'));
+    await tester.pumpAndSettle();
+
+    final (to, language) = proposals.sends.single;
+    expect(to, ['pedro@torrenorte.com']);
+    expect(language, 'en');
+    // Back on the proposal, which says who got it.
+    expect(find.text('Sent to pedro@torrenorte.com.'), findsOneWidget);
+  });
+
+  testWidgets('a failed proposal email says so and stays on the page', (
+    tester,
+  ) async {
+    final proposals =
+        await openProposals(tester, accountManager, permissions: _editor)
+          ..sendError = const ServerFailure(
+            'mail.send_failed',
+            statusCode: 502,
+          );
+    await openCurrent(tester);
+    await tester.tap(find.byTooltip('Send by email'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Send to 1 person'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text("The email couldn't be sent. Try again in a moment."),
+      findsOneWidget,
+    );
+    expect(proposals.sends, isEmpty);
+  });
+
+  testWidgets('an earlier version opens as a PDF but is not emailed', (
+    tester,
+  ) async {
+    final proposals = await openProposals(
+      tester,
+      accountManager,
+      permissions: _editor,
+    );
+    await openCurrent(tester);
+    await revealBelow(tester, find.text('Version 1'));
+    await tester.tap(find.text('Version 1'));
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Send by email'), findsNothing);
+    await tester.tap(find.byTooltip('View PDF'));
+    await tester.pumpAndSettle();
+    expect(proposals.pdfs, ['p-v1:en']);
+    expect(find.byTooltip('Send by email'), findsNothing);
   });
 
   testWidgets('swiping a line item left removes it', (tester) async {

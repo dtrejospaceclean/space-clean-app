@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/paginated.dart';
 import '../../domain/entities/proposal.dart';
@@ -76,4 +78,28 @@ class ProposalsRemoteDataSource {
   /// Removes every version of the negotiation; returns no data.
   Future<void> deleteProposal(String clientId, String proposalId) =>
       _api.delete('${_path(clientId)}/$proposalId');
+
+  /// The PDF bytes, not an envelope.
+  Future<Uint8List> getProposalPdf(
+    String clientId,
+    String proposalId, {
+    required String language,
+  }) => _api.getBytes(
+    '${_path(clientId)}/$proposalId/pdf',
+    query: {'language': language},
+    expectedType: 'application/pdf',
+  );
+
+  Future<List<String>> sendProposal(
+    String clientId,
+    String proposalId, {
+    required List<String> to,
+    required String language,
+  }) async {
+    final data = await _api.post(
+      '${_path(clientId)}/$proposalId/send',
+      body: {'to': to, 'language': language},
+    ) as Map;
+    return [for (final email in data['sentTo'] as List? ?? const []) '$email'];
+  }
 }
