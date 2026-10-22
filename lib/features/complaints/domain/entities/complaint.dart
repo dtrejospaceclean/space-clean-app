@@ -128,6 +128,7 @@ class ComplaintDraft {
     this.area,
     this.jobId,
     this.assignedToId,
+    this.externalMessageId,
   });
 
   final String title;
@@ -139,6 +140,9 @@ class ComplaintDraft {
 
   /// Only on a create.
   final String? assignedToId;
+
+  /// The chat message it was made from; only on a create.
+  final String? externalMessageId;
 }
 
 /// Complaints still being worked on, most urgent first: by priority, then

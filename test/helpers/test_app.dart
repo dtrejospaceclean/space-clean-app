@@ -10,6 +10,9 @@ import 'package:sp_cln_app/app.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
 import 'package:sp_cln_app/core/refresh/live_data.dart';
 import 'package:sp_cln_app/core/storage/preferences.dart';
+import 'package:sp_cln_app/features/chat/di/chat_providers.dart';
+import 'package:sp_cln_app/features/chat/domain/entities/chat.dart';
+import 'package:sp_cln_app/features/chat/domain/repositories/chat_repository.dart';
 import 'package:sp_cln_app/features/notifications/di/notifications_providers.dart';
 import 'package:sp_cln_app/features/notifications/domain/entities/app_notification.dart';
 import 'package:sp_cln_app/features/notifications/domain/repositories/notifications_repository.dart';
@@ -2991,6 +2994,7 @@ Future<SharedPreferences> pumpApp(
   CalendarRepository? calendar,
   NotificationsRepository? notifications,
   PushRepository? push,
+  ChatRepository? chat,
   Map<String, Object> preferences = const {},
   Duration? liveRefresh,
 }) async {
@@ -3074,6 +3078,8 @@ Future<SharedPreferences> pumpApp(
           notifications ?? FakeNotificationsRepository(0),
         ),
         pushRepositoryProvider.overrideWithValue(push ?? FakePushRepository()),
+        // Chat off unless a test says otherwise: no Stream connection.
+        chatRepositoryProvider.overrideWithValue(chat ?? FakeChatRepository()),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,
@@ -3225,3 +3231,37 @@ Finder field(String label) => find.descendant(
   of: find.ancestor(of: find.text(label), matching: find.byType(Column)).first,
   matching: find.byType(TextFormField),
 );
+
+/// The server's chat endpoints. Off by default (`chat.unavailable`, as when
+/// Stream isn't configured); with [failure] every call fails with it.
+class FakeChatRepository implements ChatRepository {
+  FakeChatRepository({
+    this.failure = const ServerFailure('chat.unavailable', statusCode: 503),
+    this.people = const [],
+  });
+
+  Failure? failure;
+  List<ChatContact> people;
+  int credentialCalls = 0;
+  final opened = <ChatTarget>[];
+
+  @override
+  Future<ChatCredentials> credentials() async {
+    credentialCalls++;
+    if (failure case final f?) throw f;
+    return const ChatCredentials(apiKey: 'key', userId: 'u1', token: 't');
+  }
+
+  @override
+  Future<ChatChannelRef> openChannel(ChatTarget target) async {
+    opened.add(target);
+    if (failure case final f?) throw f;
+    return const ChatChannelRef(type: 'messaging', id: 'channel-1');
+  }
+
+  @override
+  Future<List<ChatContact>> contacts() async {
+    if (failure case final f?) throw f;
+    return people;
+  }
+}

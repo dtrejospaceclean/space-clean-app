@@ -86,6 +86,7 @@ class TaskDraft {
     this.description,
     this.assignedToId,
     this.dueDate,
+    this.externalMessageId,
   });
 
   final String title;
@@ -93,6 +94,9 @@ class TaskDraft {
   final Priority priority;
   final String? assignedToId;
   final DateTime? dueDate;
+
+  /// The chat message it was made from; only on a create.
+  final String? externalMessageId;
 }
 
 /// Open tasks, keeping the server's order (soonest due first, undated

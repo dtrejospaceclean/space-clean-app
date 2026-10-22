@@ -58,7 +58,8 @@ abstract final class ComplaintModel {
 abstract final class ComplaintDraftModel {
   /// Body for a create or an update (`PATCH`). Text is trimmed. An update
   /// sends empty optional fields as null so they're cleared, and never the
-  /// assignee (that's `POST …/assign`); a create leaves them out.
+  /// assignee (that's `POST …/assign`) or the chat message it came from; a
+  /// create leaves them out.
   static Map<String, dynamic> toJson(ComplaintDraft d, {required bool create}) {
     String? text(String? v) => v == null || v.trim().isEmpty ? null : v.trim();
     final optional = <String, dynamic>{
@@ -66,6 +67,7 @@ abstract final class ComplaintDraftModel {
       'area': text(d.area),
       'jobId': d.jobId,
       if (create) 'assignedToUserId': d.assignedToId,
+      if (create) 'externalMessageId': d.externalMessageId,
     };
     if (create) optional.removeWhere((_, v) => v == null);
     return {

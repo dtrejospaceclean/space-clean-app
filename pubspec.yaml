@@ -46,10 +46,12 @@ dependencies:
   image_picker: ^1.2.4
   package_info_plus: ^10.2.2
   pdfrx: ^2.6.5
-  shimmer: ^4.0.0
+  shimmer: ^3.0.0
   firebase_core: ^4.15.0
   firebase_messaging: ^16.7.0
   flutter_local_notifications: ^22.3.2
+  stream_chat_flutter: ^10.6.0
+  stream_chat_localizations: ^10.6.0
 
 dev_dependencies:
   flutter_test:

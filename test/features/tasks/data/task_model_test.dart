@@ -76,5 +76,21 @@ void main() {
         'dueDate': '2026-10-01',
       });
     });
+
+    test('a task made from a chat message keeps its id, on a create only', () {
+      const fromChat = TaskDraft(
+        title: 'Restock soap',
+        priority: Priority.medium,
+        externalMessageId: 'm1',
+      );
+      expect(
+        TaskDraftModel.toJson(fromChat, create: true)['externalMessageId'],
+        'm1',
+      );
+      expect(
+        TaskDraftModel.toJson(fromChat, create: false),
+        isNot(contains('externalMessageId')),
+      );
+    });
   });
 }

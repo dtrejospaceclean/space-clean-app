@@ -3596,4 +3596,68 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pushChannelName => 'Avisos de trabajo';
+
+  @override
+  String get chatTitle => 'Chat';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mensajes sin leer',
+      one: '1 mensaje sin leer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNewMessage => 'Nuevo mensaje';
+
+  @override
+  String get chatContactsTitle => 'Nuevo mensaje';
+
+  @override
+  String get chatNoContacts => 'Aún no hay a quién escribir';
+
+  @override
+  String get chatNoContactsHint =>
+      'Aquí aparecen las personas que comparten una cuenta contigo.';
+
+  @override
+  String get chatConnecting => 'Conectando al chat…';
+
+  @override
+  String get chatConnectFailed => 'No se pudo conectar al chat.';
+
+  @override
+  String get chatUnavailable => 'El chat no está disponible en este momento.';
+
+  @override
+  String get chatCreateTask => 'Crear tarea';
+
+  @override
+  String get chatReportComplaint => 'Reportar queja';
+
+  @override
+  String chatFromMessage(String name) {
+    return 'De un mensaje del chat de $name.';
+  }
+
+  @override
+  String get chatFromMessageNoName => 'De un mensaje del chat.';
+
+  @override
+  String get chatThread => 'Hilo';
+
+  @override
+  String get searchPeopleHint => 'Buscar por nombre';
+
+  @override
+  String get chatDirectNotAllowed =>
+      'Solo puedes escribir a personas que comparten una cuenta contigo.';
+
+  @override
+  String get chatDirectSelf =>
+      'No puedes iniciar una conversación contigo mismo.';
 }

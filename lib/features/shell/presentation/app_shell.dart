@@ -202,6 +202,9 @@ final _everywhere = [_newAccount, _newService, _newUser];
 /// Forms and editors: nothing to add while filling one in.
 bool _noPlus(String route) =>
     route.endsWith('/new') ||
+    // Conversations and what's made from their messages.
+    route.endsWith('/chat') ||
+    route.contains('/chat/') ||
     route.endsWith('/edit') ||
     route.endsWith('/version') ||
     route.endsWith('/approve') ||

@@ -16,6 +16,7 @@ import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
+import '../../../chat/domain/entities/chat.dart';
 import '../../../clients/presentation/screens/accounts_screen.dart';
 import '../../../jobs/domain/entities/job.dart';
 import '../../../jobs/domain/usecases/job_usecases.dart';
@@ -43,6 +44,7 @@ class ComplaintFormScreen extends ConsumerWidget {
     required this.clientId,
     this.complaintId,
     this.jobId,
+    this.fromMessage,
   });
 
   final String clientId;
@@ -51,11 +53,22 @@ class ComplaintFormScreen extends ConsumerWidget {
   /// The job a new complaint is about.
   final String? jobId;
 
+  /// The chat message a new complaint is made from: it starts with the
+  /// message's words (and the conversation's job), keeps its id and goes
+  /// back to the conversation on save.
+  final ChatMessageRef? fromMessage;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final id = complaintId;
-    if (id == null) return _ComplaintForm(clientId: clientId, jobId: jobId);
+    if (id == null) {
+      return _ComplaintForm(
+        clientId: clientId,
+        jobId: jobId ?? fromMessage?.jobId,
+        fromMessage: fromMessage,
+      );
+    }
     // Wait for the complaint before building fields.
     return switch (ref.watch(complaintProvider((clientId, id)))) {
       AsyncValue(value: final complaint?) => _ComplaintForm(
@@ -84,6 +97,7 @@ class _ComplaintForm extends ConsumerStatefulWidget {
     required this.clientId,
     this.initial,
     this.jobId,
+    this.fromMessage,
   });
 
   final String clientId;
@@ -94,15 +108,20 @@ class _ComplaintForm extends ConsumerStatefulWidget {
   /// The job a new complaint starts linked to.
   final String? jobId;
 
+  /// The chat message a new complaint is made from.
+  final ChatMessageRef? fromMessage;
+
   @override
   ConsumerState<_ComplaintForm> createState() => _ComplaintFormState();
 }
 
 class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
   final _formKey = GlobalKey<FormState>();
-  late final _title = TextEditingController(text: widget.initial?.title);
+  late final _title = TextEditingController(
+    text: widget.initial?.title ?? widget.fromMessage?.suggestedTitle,
+  );
   late final _description = TextEditingController(
-    text: widget.initial?.description,
+    text: widget.initial?.description ?? widget.fromMessage?.text,
   );
   late final _area = TextEditingController(text: widget.initial?.area);
   late Priority _priority = switch (widget.initial?.priority) {
@@ -298,14 +317,15 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
             area: _area.text,
             jobId: _jobId,
             assignedToId: _creating ? _assignedToId : null,
+            externalMessageId: widget.fromMessage?.id,
           ),
         ),
       );
       if (_creating && _photos.isNotEmpty) await _uploadPhotos(saved.id);
       invalidateComplaints(ref, widget.clientId);
       if (!mounted) return;
-      if (_creating && widget.jobId != null) {
-        // Back to the job, which lists it now.
+      if (_creating && (widget.jobId != null || widget.fromMessage != null)) {
+        // Back to the job, which lists it now, or the conversation.
         context.pop();
       } else if (_creating) {
         // A new complaint has its own page.
@@ -398,6 +418,18 @@ class _ComplaintFormState extends ConsumerState<_ComplaintForm> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(side, 4, side, 4),
                     child: Notice(message: l10n.failureMessage(failure)),
+                  ),
+                if (widget.fromMessage case final message?)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(side, 4, side, 4),
+                    child: Notice(
+                      message: switch (message.authorName) {
+                        final name? when name.isNotEmpty =>
+                          l10n.chatFromMessage(name),
+                        _ => l10n.chatFromMessageNoName,
+                      },
+                      tone: NoticeTone.info,
+                    ),
                   ),
                 if (_pickerNote case final note?)
                   Padding(

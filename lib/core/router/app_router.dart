@@ -18,6 +18,10 @@ import '../../features/contacts/presentation/screens/contact_form_screen.dart';
 import '../../features/contacts/presentation/screens/contact_login_screen.dart';
 import '../../features/contacts/presentation/screens/contact_screen.dart';
 import '../../features/contacts/presentation/screens/contacts_screen.dart';
+import '../../features/chat/domain/entities/chat.dart';
+import '../../features/chat/presentation/screens/chat_channel_screen.dart';
+import '../../features/chat/presentation/screens/chat_contacts_screen.dart';
+import '../../features/chat/presentation/screens/chat_list_screen.dart';
 import '../../features/complaints/presentation/screens/complaint_form_screen.dart';
 import '../../features/complaints/presentation/screens/complaint_screen.dart';
 import '../../features/complaints/presentation/screens/complaints_screen.dart';
@@ -166,6 +170,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       jobId: state.pathParameters['jobId']!,
                     ),
                     routes: _jobRoutes,
+                  ),
+                  // The user's conversations, opened from Today.
+                  SlideRoute(
+                    path: 'chat',
+                    builder: (_, _) => const ChatListScreen(),
+                    routes: [
+                      // Before ':channelId' so "new" isn't read as an id.
+                      SlideRoute(
+                        path: ChatContactsScreen.route,
+                        builder: (_, _) => const ChatContactsScreen(),
+                      ),
+                      SlideRoute(
+                        path: ':channelId',
+                        builder: (_, state) => ChatChannelScreen(
+                          key: ValueKey(state.pathParameters['channelId']),
+                          channelId: state.pathParameters['channelId']!,
+                        ),
+                        routes: _chatRecordRoutes,
+                      ),
+                    ],
                   ),
                   // An overdue task from Today, in Today's own stack.
                   SlideRoute(
@@ -349,6 +373,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                               complaintId: state.pathParameters['complaintId']!,
                             ),
                             routes: [
+                              SlideRoute(
+                                path: ChatChannelScreen.route,
+                                builder: (_, state) => ChatChannelScreen(
+                                  target: ComplaintChat(
+                                    clientId: state.pathParameters['clientId']!,
+                                    complaintId:
+                                        state.pathParameters['complaintId']!,
+                                  ),
+                                ),
+                                routes: _chatRecordRoutes,
+                              ),
                               SlideRoute(
                                 path: 'edit',
                                 builder: (_, state) => ComplaintFormScreen(
@@ -806,8 +841,19 @@ final _lineItemRoute = SlideRoute(
 /// A scope form's time window page. The window and whether it needs
 /// weekdays come in `extra`; a page reopened without them starts a new
 /// window.
-/// A job's editors, under its page in the account's jobs and on Today.
+/// A job's editors and conversation, under its page in the account's jobs
+/// and on Today.
 final _jobRoutes = [
+  SlideRoute(
+    path: ChatChannelScreen.route,
+    builder: (_, state) => ChatChannelScreen(
+      target: JobChat(
+        clientId: state.pathParameters['clientId']!,
+        jobId: state.pathParameters['jobId']!,
+      ),
+    ),
+    routes: _chatRecordRoutes,
+  ),
   SlideRoute(
     path: 'edit',
     builder: (_, state) => JobFormScreen(
@@ -856,3 +902,26 @@ final _timeWindowRoute = SlideRoute(
     },
   ),
 );
+
+/// A task or complaint made from a chat message (in `extra`), under a
+/// conversation. The account is in the path or in `?client=`.
+final _chatRecordRoutes = [
+  SlideRoute(
+    path: ChatChannelScreen.newTaskRoute,
+    builder: (_, state) => TaskFormScreen(
+      clientId:
+          state.uri.queryParameters['client'] ??
+          state.pathParameters['clientId']!,
+      fromMessage: state.extra as ChatMessageRef?,
+    ),
+  ),
+  SlideRoute(
+    path: ChatChannelScreen.newComplaintRoute,
+    builder: (_, state) => ComplaintFormScreen(
+      clientId:
+          state.uri.queryParameters['client'] ??
+          state.pathParameters['clientId']!,
+      fromMessage: state.extra as ChatMessageRef?,
+    ),
+  ),
+];

@@ -27,9 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Take a profile photo.</string>
+	<string>Take photos for your profile, complaints and chat messages.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Choose a profile photo from your library.</string>
+	<string>Choose photos from your library for your profile, complaints and chat messages.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

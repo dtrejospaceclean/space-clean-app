@@ -3565,4 +3565,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pushChannelName => 'Work updates';
+
+  @override
+  String get chatTitle => 'Chat';
+
+  @override
+  String chatUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread messages',
+      one: '1 unread message',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chatNewMessage => 'New message';
+
+  @override
+  String get chatContactsTitle => 'New message';
+
+  @override
+  String get chatNoContacts => 'No one to message yet';
+
+  @override
+  String get chatNoContactsHint =>
+      'People who share an account with you show up here.';
+
+  @override
+  String get chatConnecting => 'Connecting to chat…';
+
+  @override
+  String get chatConnectFailed => 'Couldn\'t connect to chat.';
+
+  @override
+  String get chatUnavailable => 'Chat isn\'t available right now.';
+
+  @override
+  String get chatCreateTask => 'Create task';
+
+  @override
+  String get chatReportComplaint => 'Report complaint';
+
+  @override
+  String chatFromMessage(String name) {
+    return 'From a chat message by $name.';
+  }
+
+  @override
+  String get chatFromMessageNoName => 'From a chat message.';
+
+  @override
+  String get chatThread => 'Thread';
+
+  @override
+  String get searchPeopleHint => 'Search by name';
+
+  @override
+  String get chatDirectNotAllowed =>
+      'You can only message people who share an account with you.';
+
+  @override
+  String get chatDirectSelf => 'You can\'t start a conversation with yourself.';
 }

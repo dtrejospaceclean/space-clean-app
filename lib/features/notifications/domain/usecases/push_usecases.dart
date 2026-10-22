@@ -97,3 +97,20 @@ class ShowPush implements UseCase<void, PushMessage> {
   @override
   Future<void> call(PushMessage message) => _repository.show(message);
 }
+
+/// This install's push token, for another service to push to (chat); null
+/// when there isn't one. Never throws.
+class GetPushToken implements UseCase<String?, NoParams> {
+  const GetPushToken(this._repository);
+
+  final PushRepository _repository;
+
+  @override
+  Future<String?> call(NoParams params) async {
+    try {
+      return await _repository.token();
+    } catch (_) {
+      return null;
+    }
+  }
+}

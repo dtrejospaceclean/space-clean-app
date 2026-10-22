@@ -6067,6 +6067,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Work updates'**
   String get pushChannelName;
+
+  /// No description provided for @chatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get chatTitle;
+
+  /// No description provided for @chatUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unread message} other{{count} unread messages}}'**
+  String chatUnread(int count);
+
+  /// No description provided for @chatNewMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'New message'**
+  String get chatNewMessage;
+
+  /// No description provided for @chatContactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New message'**
+  String get chatContactsTitle;
+
+  /// No description provided for @chatNoContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'No one to message yet'**
+  String get chatNoContacts;
+
+  /// No description provided for @chatNoContactsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'People who share an account with you show up here.'**
+  String get chatNoContactsHint;
+
+  /// No description provided for @chatConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting to chat…'**
+  String get chatConnecting;
+
+  /// No description provided for @chatConnectFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t connect to chat.'**
+  String get chatConnectFailed;
+
+  /// No description provided for @chatUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat isn\'t available right now.'**
+  String get chatUnavailable;
+
+  /// No description provided for @chatCreateTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Create task'**
+  String get chatCreateTask;
+
+  /// No description provided for @chatReportComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Report complaint'**
+  String get chatReportComplaint;
+
+  /// No description provided for @chatFromMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'From a chat message by {name}.'**
+  String chatFromMessage(String name);
+
+  /// No description provided for @chatFromMessageNoName.
+  ///
+  /// In en, this message translates to:
+  /// **'From a chat message.'**
+  String get chatFromMessageNoName;
+
+  /// No description provided for @chatThread.
+  ///
+  /// In en, this message translates to:
+  /// **'Thread'**
+  String get chatThread;
+
+  /// No description provided for @searchPeopleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get searchPeopleHint;
+
+  /// No description provided for @chatDirectNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'You can only message people who share an account with you.'**
+  String get chatDirectNotAllowed;
+
+  /// No description provided for @chatDirectSelf.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t start a conversation with yourself.'**
+  String get chatDirectSelf;
 }
 
 class _AppLocalizationsDelegate

@@ -101,7 +101,11 @@ class FirebasePushSource {
   Future<void> show(PushMessage message) async {
     await _init();
     await _local.show(
-      id: (message.notificationId ?? '${DateTime.now()}').hashCode,
+      id:
+          (message.notificationId ??
+                  message.chatMessageId ??
+                  '${DateTime.now()}')
+              .hashCode,
       title: message.title,
       body: message.body,
       notificationDetails: NotificationDetails(
