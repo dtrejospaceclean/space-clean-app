@@ -259,7 +259,7 @@ class _ChatButton extends ConsumerWidget {
       label: unread > 0 ? l10n.chatUnread(unread) : null,
       child: CountBadge(
         count: unread,
-        child: CircleButton.light(
+        child: CircleButton.flat(
           icon: Icons.chat_bubble_outline_rounded,
           tooltip: l10n.chatTitle,
           onPressed: () => context.push(ChatListScreen.path),

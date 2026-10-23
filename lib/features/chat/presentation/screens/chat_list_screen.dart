@@ -28,8 +28,8 @@ class ChatListScreen extends ConsumerWidget {
       title: l10n.chatTitle,
       actions: [
         if (session is ChatReady)
-          CircleButton.light(
-            icon: Icons.edit_square,
+          CircleButton.flat(
+            icon: Icons.add_comment_outlined,
             tooltip: l10n.chatNewMessage,
             onPressed: () => context.push('$path/${ChatContactsScreen.route}'),
           ),

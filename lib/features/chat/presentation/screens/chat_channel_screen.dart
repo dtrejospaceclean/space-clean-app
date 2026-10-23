@@ -98,12 +98,7 @@ class _ChatChannelScreenState extends ConsumerState<ChatChannelScreen> {
 
     return SpacePage(
       title: channel == null ? l10n.chatTitle : null,
-      heading: channel == null
-          ? null
-          : StreamChannelName(
-              channel: channel,
-              textStyle: Theme.of(context).textTheme.headlineSmall,
-            ),
+      heading: channel == null ? null : _ChannelTitle(channel: channel),
       body: switch (session) {
         ChatReady() when failure != null => CustomScrollView(
           slivers: [
@@ -121,6 +116,28 @@ class _ChatChannelScreenState extends ConsumerState<ChatChannelScreen> {
         ChatReady() => const ChatStatus(session: ChatConnecting()),
         _ => ChatStatus(session: session),
       },
+    );
+  }
+}
+
+/// The conversation's name, once it has loaded: a job's or complaint's
+/// thread the server just made isn't yet (Stream's name widget needs it),
+/// so "Chat" stands in until then.
+class _ChannelTitle extends StatelessWidget {
+  const _ChannelTitle({required this.channel});
+
+  final Channel channel;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.headlineSmall;
+    Widget name() => StreamChannelName(channel: channel, textStyle: style);
+    if (channel.state != null) return name();
+    return FutureBuilder<bool>(
+      future: channel.initialized,
+      builder: (context, _) => channel.state != null
+          ? name()
+          : Text(AppLocalizations.of(context).chatTitle, style: style),
     );
   }
 }

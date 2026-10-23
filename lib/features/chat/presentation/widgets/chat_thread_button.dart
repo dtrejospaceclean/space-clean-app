@@ -17,7 +17,7 @@ class ChatThreadButton extends ConsumerWidget {
     if (ref.watch(chatSessionProvider) is ChatOff) {
       return const SizedBox.shrink();
     }
-    return CircleButton.light(
+    return CircleButton.flat(
       icon: Icons.chat_bubble_outline_rounded,
       tooltip: AppLocalizations.of(context).chatTitle,
       onPressed: () => context.push(
