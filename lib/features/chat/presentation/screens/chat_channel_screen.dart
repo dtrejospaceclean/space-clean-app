@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart' show ImageSource;
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import '../../../../core/design/design.dart';
@@ -217,6 +218,8 @@ class _ConversationState extends ConsumerState<_Conversation> {
       composer: StreamMessageComposer(
         // Photos only: from the gallery or the camera.
         allowedAttachmentPickerTypes: chatAttachmentTypes,
+        useSystemAttachmentPicker: true,
+        attachmentPickerOptionsBuilder: chatPhotoOptions,
         focusNode: _focus,
         messageComposerController: _composer,
         onQuotedMessageCleared: _composer.clearQuotedMessage,
@@ -272,6 +275,39 @@ class _ConversationState extends ConsumerState<_Conversation> {
 /// and the camera. No videos, files, polls or commands.
 const chatAttachmentTypes = [AttachmentPickerType.images];
 
+/// The composer's photo options. The system picker (on, in the composers)
+/// opens Android's photo picker, which needs no permission to read the
+/// phone's photos (Stream's in-app gallery would need `READ_MEDIA_IMAGES`,
+/// which Google Play restricts). It has no camera option, so one is added:
+/// the camera app, through Stream's handler, scaled down like the app's
+/// other photos.
+List<AttachmentPickerOption> chatPhotoOptions(
+  BuildContext context,
+  List<AttachmentPickerOption> defaults,
+) => [
+  ...defaults,
+  SystemAttachmentPickerOption(
+    key: 'camera-photo',
+    supportedTypes: const [AttachmentPickerType.images],
+    icon: context.streamIcons.camera,
+    title: context.translations.photoFromCameraLabel,
+    onTap: (context, controller) async {
+      try {
+        final photo = await StreamAttachmentHandler.instance.pickImage(
+          source: ImageSource.camera,
+          maxWidth: 1600,
+          maxHeight: 1600,
+          imageQuality: 85,
+        );
+        if (photo != null) await controller.addAttachment(photo);
+      } catch (error) {
+        // Cancelled, no camera, or over the attachment limit: nothing added.
+        debugPrint('Chat camera photo not added: $error');
+      }
+    },
+  ),
+];
+
 /// Replies to one message, in Stream's list and composer.
 class _ThreadPage extends StatefulWidget {
   const _ThreadPage({required this.parent});
@@ -300,6 +336,8 @@ class _ThreadPageState extends State<_ThreadPage> {
       messages: StreamMessageListView(parentMessage: widget.parent),
       composer: StreamMessageComposer(
         allowedAttachmentPickerTypes: chatAttachmentTypes,
+        useSystemAttachmentPicker: true,
+        attachmentPickerOptionsBuilder: chatPhotoOptions,
         messageComposerController: _composer,
       ),
     ),
