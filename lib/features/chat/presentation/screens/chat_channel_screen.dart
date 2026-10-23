@@ -13,6 +13,7 @@ import '../../di/chat_providers.dart';
 import '../../domain/entities/chat.dart';
 import '../controllers/chat_session.dart';
 import '../widgets/chat_status.dart';
+import '../widgets/conversation_layout.dart';
 
 /// One conversation, in Stream's own message list and composer: an
 /// existing channel ([channelId], from the chat list or a push) or one the
@@ -177,36 +178,32 @@ class _ConversationState extends ConsumerState<_Conversation> {
       final clientId? => ref.watch(accountAccessProvider(clientId)).value,
       null => null,
     };
-    return Column(
-      children: [
-        Expanded(
-          child: StreamMessageListView(
-            config: const StreamMessageListViewConfiguration(
-              swipeToReply: true,
+    return ConversationLayout(
+      messages: StreamMessageListView(
+        config: const StreamMessageListViewConfiguration(swipeToReply: true),
+        onReplyTap: _reply,
+        threadBuilder: (_, parent) => _ThreadPage(parent: parent!),
+        messageBuilder: (context, message, props) =>
+            StreamMessageItem.fromProps(
+              key: ValueKey(message.id),
+              props: props.copyWith(
+                actionsBuilder: (context, defaults) =>
+                    StreamContextMenuAction.partitioned(
+                      items: [
+                        ...defaults,
+                        ..._recordActions(context, message, info, access),
+                      ],
+                    ),
+              ),
             ),
-            onReplyTap: _reply,
-            threadBuilder: (_, parent) => _ThreadPage(parent: parent!),
-            messageBuilder: (context, message, props) =>
-                StreamMessageItem.fromProps(
-                  key: ValueKey(message.id),
-                  props: props.copyWith(
-                    actionsBuilder: (context, defaults) =>
-                        StreamContextMenuAction.partitioned(
-                          items: [
-                            ...defaults,
-                            ..._recordActions(context, message, info, access),
-                          ],
-                        ),
-                  ),
-                ),
-          ),
-        ),
-        StreamMessageComposer(
-          focusNode: _focus,
-          messageComposerController: _composer,
-          onQuotedMessageCleared: _composer.clearQuotedMessage,
-        ),
-      ],
+      ),
+      composer: StreamMessageComposer(
+        // Photos only: from the gallery or the camera.
+        allowedAttachmentPickerTypes: chatAttachmentTypes,
+        focusNode: _focus,
+        messageComposerController: _composer,
+        onQuotedMessageCleared: _composer.clearQuotedMessage,
+      ),
     );
   }
 
@@ -254,6 +251,10 @@ class _ConversationState extends ConsumerState<_Conversation> {
   }
 }
 
+/// What the composer's attachment picker offers: photos from the gallery
+/// and the camera. No videos, files, polls or commands.
+const chatAttachmentTypes = [AttachmentPickerType.images];
+
 /// Replies to one message, in Stream's list and composer.
 class _ThreadPage extends StatefulWidget {
   const _ThreadPage({required this.parent});
@@ -278,11 +279,12 @@ class _ThreadPageState extends State<_ThreadPage> {
   @override
   Widget build(BuildContext context) => SpacePage(
     title: AppLocalizations.of(context).chatThread,
-    body: Column(
-      children: [
-        Expanded(child: StreamMessageListView(parentMessage: widget.parent)),
-        StreamMessageComposer(messageComposerController: _composer),
-      ],
+    body: ConversationLayout(
+      messages: StreamMessageListView(parentMessage: widget.parent),
+      composer: StreamMessageComposer(
+        allowedAttachmentPickerTypes: chatAttachmentTypes,
+        messageComposerController: _composer,
+      ),
     ),
   );
 }
