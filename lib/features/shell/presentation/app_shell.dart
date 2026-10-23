@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../chat/presentation/screens/chat_contacts_screen.dart';
+import '../../chat/presentation/screens/chat_list_screen.dart';
 import '../../../core/design/design.dart';
 import '../../../core/refresh/live_data.dart';
 import '../../../l10n/app_localizations.dart';
@@ -228,6 +230,14 @@ bool _noPlus(String route) =>
     route.startsWith('${CategoriesScreen.path}/:') ||
     route.startsWith('${UnitsScreen.path}/:');
 
+/// A conversation (the user's, a job's or a complaint's) and what's made
+/// from its messages, which hide the dock. The chat list and "New message"
+/// keep it.
+bool _inConversation(String route) =>
+    (route.endsWith('/chat') || route.contains('/chat/')) &&
+    route != ChatListScreen.path &&
+    route != '${ChatListScreen.path}/${ChatContactsScreen.route}';
+
 /// The matches of the page on top: its route pattern ("/me/services") and
 /// path parameters. Pushed pages sit in the list as imperative matches, so
 /// follow them down.
@@ -297,6 +307,8 @@ class AppShell extends ConsumerWidget {
           builder: (context, ref, _) {
             final top = _top(router.routerDelegate.currentConfiguration);
             final route = top.fullPath;
+            // A conversation gets the whole screen for its messages.
+            if (_inConversation(route)) return const SizedBox.shrink();
             final page = _byPage[route];
             // Pages inside an account gate "+" by the user's permissions there.
             final access = switch (top.pathParameters['clientId']) {

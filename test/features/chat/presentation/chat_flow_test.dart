@@ -121,4 +121,24 @@ void main() {
     expect(draft.title, 'Restroom 3B is out of soap');
     expect(draft.externalMessageId, 'm1');
   });
+
+  testWidgets('a conversation hides the dock; the chat list keeps it', (
+    tester,
+  ) async {
+    await pumpApp(tester, auth: FakeAuthRepository(sessionUser: ana));
+    expect(find.byTooltip('Accounts'), findsOneWidget);
+    final router = _router(tester);
+
+    router.push('/today/chat');
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Accounts'), findsOneWidget);
+
+    router.push('/today/chat/account-c1');
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Accounts'), findsNothing);
+
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Accounts'), findsOneWidget);
+  });
 }
