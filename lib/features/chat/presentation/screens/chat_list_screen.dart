@@ -66,16 +66,42 @@ class _ChannelListState extends State<_ChannelList> {
   }
 
   @override
-  Widget build(BuildContext context) => RefreshIndicator.adaptive(
-    onRefresh: _controller.refresh,
-    color: context.colors.primary,
-    child: StreamChannelListView(
-      controller: _controller,
-      onChannelTap: (channel) {
-        if (channel.id case final id?) {
-          context.push(ChatListScreen.channelPath(id));
-        }
-      },
-    ),
-  );
+  Widget build(BuildContext context) {
+    const corner = Radius.circular(SpaceRadius.card);
+    final side = pageSide(context);
+    return RefreshIndicator.adaptive(
+      onRefresh: _controller.refresh,
+      color: context.colors.primary,
+      // Stream's rows, grouped in one white card like the app's ListCard.
+      child: StreamChannelListView(
+        controller: _controller,
+        padding: EdgeInsets.fromLTRB(
+          side,
+          4,
+          side,
+          MediaQuery.paddingOf(context).bottom + 24,
+        ),
+        itemBuilder: (context, channels, index, row) => ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            top: index == 0 ? corner : Radius.zero,
+            bottom: index == channels.length - 1 ? corner : Radius.zero,
+          ),
+          child: row,
+        ),
+        separatorBuilder: (context, channels, index) => ColoredBox(
+          color: context.colors.surface,
+          child: const Divider(
+            height: 1,
+            indent: SpaceSpace.card,
+            endIndent: SpaceSpace.card,
+          ),
+        ),
+        onChannelTap: (channel) {
+          if (channel.id case final id?) {
+            context.push(ChatListScreen.channelPath(id));
+          }
+        },
+      ),
+    );
+  }
 }
