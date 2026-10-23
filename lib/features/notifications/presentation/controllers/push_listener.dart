@@ -120,12 +120,16 @@ class _PushListenerState extends ConsumerState<PushListener> {
   void _received(PushMessage message) {
     if (!mounted) return;
     if (message.source == PushSource.streamChat) {
-      final reading = ref.read(openChatChannelIdProvider);
-      if (message.chatChannelId != null &&
-          message.chatChannelId != reading &&
-          message.title != null) {
-        ref.read(showPushProvider)(message);
-      }
+      if (message.chatChannelId == ref.read(openChatChannelIdProvider)) return;
+      // A data-only push (Android) has no words of its own.
+      final shown = message.title != null
+          ? message
+          : untitledChatPush(
+              message.data,
+              hasNotification: false,
+              title: AppLocalizations.of(context).chatNewMessage,
+            );
+      if (shown != null) ref.read(showPushProvider)(shown);
       return;
     }
     if (message.source != PushSource.spclean) return;

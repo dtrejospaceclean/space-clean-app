@@ -60,4 +60,44 @@ void main() {
     expect(again.chatChannelId, 'account-c1');
     expect(again.chatMessageId, 'm1');
   });
+
+  test('only an untitled Stream Chat push about a conversation is drawn', () {
+    const data = {
+      'sender': 'stream.chat',
+      'channel_type': 'messaging',
+      'channel_id': 'job-1',
+      'message_id': 'm1',
+    };
+    final drawn = untitledChatPush(
+      data,
+      hasNotification: false,
+      title: 'New message',
+    );
+    expect(drawn?.title, 'New message');
+    expect(drawn?.chatChannelId, 'job-1');
+    expect(drawn?.data['sender'], 'stream.chat');
+
+    // The phone shows it by itself.
+    expect(
+      untitledChatPush(data, hasNotification: true, title: 'New message'),
+      isNull,
+    );
+    // Ours, or Stream's about no conversation.
+    expect(
+      untitledChatPush(
+        const {'source': 'spclean', 'notificationId': 'n1'},
+        hasNotification: false,
+        title: 'New message',
+      ),
+      isNull,
+    );
+    expect(
+      untitledChatPush(
+        const {'sender': 'stream.chat'},
+        hasNotification: false,
+        title: 'New message',
+      ),
+      isNull,
+    );
+  });
 }

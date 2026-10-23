@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/refresh/live_data.dart';
 import 'core/storage/preferences.dart';
+import 'features/notifications/data/datasources/firebase_push_source.dart';
 import 'features/notifications/di/notifications_providers.dart';
 import 'firebase_options.dart';
 
@@ -34,6 +36,7 @@ Future<bool> _startFirebase() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    FirebaseMessaging.onBackgroundMessage(showBackgroundPush);
     return true;
   } catch (error) {
     debugPrint('Firebase failed to start, so no pushes: $error');

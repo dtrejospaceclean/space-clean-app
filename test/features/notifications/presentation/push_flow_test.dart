@@ -26,6 +26,15 @@ const _quote = Task(
   status: TaskStatus.pending,
 );
 
+/// Stream Chat's, data only, as Android gets it.
+final _chatPush = PushMessage.fromData(const {
+  'sender': 'stream.chat',
+  'type': 'message.new',
+  'channel_type': 'messaging',
+  'channel_id': 'account-c1',
+  'message_id': 'm1',
+});
+
 /// Ours, about [_quote], as the server sends it.
 final _taskPush = PushMessage.fromData(
   const {
@@ -131,7 +140,9 @@ void main() {
     expect(find.text('1 unread'), findsOneWidget);
   });
 
-  testWidgets("Stream Chat's pushes are left alone", (tester) async {
+  testWidgets('a Stream Chat push about no conversation shows nothing', (
+    tester,
+  ) async {
     final push = FakePushRepository();
     await _start(tester, push: push);
 
@@ -141,6 +152,46 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(push.shown, isEmpty);
+  });
+
+  testWidgets('a chat push with no words of its own shows "New message"', (
+    tester,
+  ) async {
+    final push = FakePushRepository();
+    await _start(tester, push: push);
+
+    push.receive(_chatPush);
+    await tester.pumpAndSettle();
+
+    final shown = push.shown.single;
+    expect(shown.title, 'New message');
+    expect(shown.chatChannelId, 'account-c1');
+  });
+
+  testWidgets('a chat push with a title shows as it came', (tester) async {
+    final push = FakePushRepository();
+    await _start(tester, push: push);
+
+    final titled = PushMessage.fromData(
+      _chatPush.data,
+      title: 'Bea Ruiz',
+      body: 'On my way',
+    );
+    push.receive(titled);
+    await tester.pumpAndSettle();
+
+    expect(push.shown, [titled]);
+  });
+
+  testWidgets('tapping a chat push opens the conversation', (tester) async {
+    final push = FakePushRepository();
+    await _start(tester, push: push);
+
+    push.tap(_chatPush);
+    await tester.pumpAndSettle();
+
+    // Chat is off in tests, so the conversation page says so.
+    expect(find.text("Chat isn't available right now."), findsOneWidget);
   });
 
   testWidgets('tapping a push opens it and marks it read', (tester) async {

@@ -1,10 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../firebase_options.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../settings/data/repositories/language_repository_impl.dart';
 import '../../domain/entities/push_message.dart';
 
 /// Firebase Cloud Messaging, plus local notifications to show a push that
@@ -159,4 +165,32 @@ Stream<T> _merge<T>(List<Stream<T>> streams) {
     },
   );
   return controller.stream;
+}
+
+/// Pushes that arrive while the app is closed or in the background (`main`
+/// registers it). Ours and iOS's carry a notification the phone shows by
+/// itself; a Stream Chat push on Android is data only, so this shows a
+/// plain "New message" that opens the conversation. It runs in its own
+/// isolate, without the app's providers.
+@pragma('vm:entry-point')
+Future<void> showBackgroundPush(RemoteMessage remote) async {
+  if (remote.notification != null ||
+      PushSource.of(remote.data) != PushSource.streamChat) {
+    return;
+  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final preferences = await SharedPreferences.getInstance();
+  final code =
+      preferences.getString(LanguageRepositoryImpl.key) ??
+      PlatformDispatcher.instance.locale.languageCode;
+  final l10n = lookupAppLocalizations(Locale(code == 'es' ? 'es' : 'en'));
+  final message = untitledChatPush(
+    remote.data,
+    hasNotification: false,
+    title: l10n.chatNewMessage,
+  );
+  if (message == null) return;
+  final source = FirebasePushSource();
+  await source.prepareChannel(l10n.pushChannelName);
+  await source.show(message);
 }

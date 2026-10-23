@@ -87,3 +87,27 @@ class PushMessage {
     'message_id': ?chatMessageId,
   };
 }
+
+/// A Stream Chat push with nothing for the phone to show (its payload is
+/// data only, which Android leaves to the app), as one to show titled
+/// [title]. Null when it isn't Stream's, already shows itself
+/// ([hasNotification]) or names no conversation.
+PushMessage? untitledChatPush(
+  Map<String, Object?> data, {
+  required bool hasNotification,
+  required String title,
+}) {
+  if (hasNotification) return null;
+  final message = PushMessage.fromData(data);
+  if (message.source != PushSource.streamChat ||
+      message.chatChannelId == null) {
+    return null;
+  }
+  return PushMessage(
+    source: PushSource.streamChat,
+    chatChannelType: message.chatChannelType,
+    chatChannelId: message.chatChannelId,
+    chatMessageId: message.chatMessageId,
+    title: title,
+  );
+}
