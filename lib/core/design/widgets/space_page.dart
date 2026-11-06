@@ -16,7 +16,8 @@ class SpacePage extends StatelessWidget {
     super.key,
     this.title,
     this.heading,
-    required this.slivers,
+    this.slivers = const [],
+    this.body,
     this.actions = const [],
     this.onRefresh,
     this.bottom,
@@ -31,6 +32,10 @@ class SpacePage extends StatelessWidget {
   /// two-tone [HeroHeadline] ("Post Oak Tower / Your role: Supervisor").
   final Widget? heading;
   final List<Widget> slivers;
+
+  /// In place of [slivers]: content that fills the page under the header
+  /// and scrolls itself (a chat's messages and composer).
+  final Widget? body;
 
   /// Round buttons on the right of the header.
   final List<Widget> actions;
@@ -82,27 +87,57 @@ class SpacePage extends StatelessWidget {
       ),
     );
 
-    final scroll = CustomScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      slivers: [
-        SliverSafeArea(
-          bottom: false,
-          sliver: SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              pageSide(context),
-              12,
-              pageSide(context),
-              0,
+    final body = this.body;
+    final Widget content;
+    if (body != null) {
+      content = SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                pageSide(context),
+                12,
+                pageSide(context),
+                8,
+              ),
+              child: header,
             ),
-            sliver: SliverToBoxAdapter(child: header),
+            Expanded(child: body),
+          ],
+        ),
+      );
+    } else {
+      final scroll = CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverSafeArea(
+            bottom: false,
+            sliver: SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                pageSide(context),
+                12,
+                pageSide(context),
+                0,
+              ),
+              sliver: SliverToBoxAdapter(child: header),
+            ),
           ),
-        ),
-        ...slivers,
-        SliverToBoxAdapter(
-          child: SizedBox(height: MediaQuery.paddingOf(context).bottom + 24),
-        ),
-      ],
-    );
+          ...slivers,
+          SliverToBoxAdapter(
+            child: SizedBox(height: MediaQuery.paddingOf(context).bottom + 24),
+          ),
+        ],
+      );
+      content = onRefresh == null
+          ? scroll
+          : RefreshIndicator.adaptive(
+              onRefresh: onRefresh!,
+              color: context.colors.primary,
+              child: scroll,
+            );
+    }
 
     final page = AnnotatedRegion<SystemUiOverlayStyle>(
       // Status bar icons contrast with the ground in either theme.
@@ -113,13 +148,7 @@ class SpacePage extends StatelessWidget {
               .copyWith(statusBarColor: Colors.transparent),
       child: Scaffold(
         backgroundColor: context.colors.ground,
-        body: onRefresh == null
-            ? scroll
-            : RefreshIndicator.adaptive(
-                onRefresh: onRefresh!,
-                color: context.colors.primary,
-                child: scroll,
-              ),
+        body: content,
         bottomNavigationBar: bottom,
       ),
     );

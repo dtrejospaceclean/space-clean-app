@@ -994,5 +994,22 @@
   "notifJobCancelled": "{actor} canceló un trabajo tuyo",
   "notifJobCancelledNoActor": "Se canceló un trabajo tuyo",
   "notifOther": "Nueva notificación",
-  "pushChannelName": "Avisos de trabajo"
+  "pushChannelName": "Avisos de trabajo",
+  "chatTitle": "Chat",
+  "chatUnread": "{count, plural, =1{1 mensaje sin leer} other{{count} mensajes sin leer}}",
+  "chatNewMessage": "Nuevo mensaje",
+  "chatContactsTitle": "Nuevo mensaje",
+  "chatNoContacts": "Aún no hay a quién escribir",
+  "chatNoContactsHint": "Aquí aparecen las personas que comparten una cuenta contigo.",
+  "chatConnecting": "Conectando al chat…",
+  "chatConnectFailed": "No se pudo conectar al chat.",
+  "chatUnavailable": "El chat no está disponible en este momento.",
+  "chatCreateTask": "Crear tarea",
+  "chatReportComplaint": "Reportar queja",
+  "chatFromMessage": "De un mensaje del chat de {name}.",
+  "chatFromMessageNoName": "De un mensaje del chat.",
+  "chatThread": "Hilo",
+  "searchPeopleHint": "Buscar por nombre",
+  "chatDirectNotAllowed": "Solo puedes escribir a personas que comparten una cuenta contigo.",
+  "chatDirectSelf": "No puedes iniciar una conversación contigo mismo."
 }

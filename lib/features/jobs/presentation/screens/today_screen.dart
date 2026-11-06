@@ -13,6 +13,8 @@ import '../../../tasks/presentation/controllers/tasks_providers.dart';
 import '../../../tasks/presentation/widgets/task_labels.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../chat/presentation/controllers/chat_session.dart';
+import '../../../chat/presentation/screens/chat_list_screen.dart';
 import '../../../clients/presentation/controllers/clients_providers.dart';
 import '../../../notifications/presentation/controllers/notifications_providers.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
@@ -90,6 +92,7 @@ class TodayScreen extends ConsumerWidget {
         title: l10n.todayTitle,
         onRefresh: refresh,
         actions: [
+          const _ChatButton(),
           if (user != null)
             _ProfileButton(name: user.name, photoUrl: user.photoUrl),
         ],
@@ -239,6 +242,32 @@ void refreshToday(WidgetRef ref) => ref
   ..invalidate(myOverdueTasksProvider)
   ..invalidate(todayJobsProvider)
   ..invalidate(myDayJobsProvider);
+
+/// Opens the user's conversations, with their unread messages counted on
+/// it. Hidden when chat isn't set up on the server.
+class _ChatButton extends ConsumerWidget {
+  const _ChatButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(chatSessionProvider) is ChatOff) {
+      return const SizedBox.shrink();
+    }
+    final l10n = AppLocalizations.of(context);
+    final unread = ref.watch(chatUnreadProvider).value ?? 0;
+    return Semantics(
+      label: unread > 0 ? l10n.chatUnread(unread) : null,
+      child: CountBadge(
+        count: unread,
+        child: CircleButton.flat(
+          icon: Icons.chat_bubble_outline_rounded,
+          tooltip: l10n.chatTitle,
+          onPressed: () => context.push(ChatListScreen.path),
+        ),
+      ),
+    );
+  }
+}
 
 class _ProfileButton extends ConsumerWidget {
   const _ProfileButton({required this.name, this.photoUrl});

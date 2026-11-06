@@ -121,5 +121,22 @@ void main() {
         'jobId': null,
       });
     });
+
+    test('a complaint made from a chat message keeps its id on a create', () {
+      const fromChat = ComplaintDraft(
+        title: 'Lobby floor still wet',
+        description: 'Lobby floor still wet',
+        priority: Priority.medium,
+        externalMessageId: 'm1',
+      );
+      expect(
+        ComplaintDraftModel.toJson(fromChat, create: true)['externalMessageId'],
+        'm1',
+      );
+      expect(
+        ComplaintDraftModel.toJson(fromChat, create: false),
+        isNot(contains('externalMessageId')),
+      );
+    });
   });
 }

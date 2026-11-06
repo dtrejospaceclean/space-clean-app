@@ -14,6 +14,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../chat/presentation/widgets/chat_thread_button.dart';
 import '../../../clients/presentation/screens/accounts_screen.dart';
 import '../../../complaints/presentation/controllers/complaints_providers.dart';
 import '../../../complaints/presentation/screens/complaints_screen.dart';
@@ -364,6 +365,7 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           title: j?.title,
           onRefresh: busy ? null : refresh,
           actions: [
+            const ChatThreadButton(),
             if (menu.isNotEmpty)
               CircleButton.light(
                 icon: Icons.more_horiz_rounded,

@@ -1,12 +1,12 @@
 import 'app_notification.dart';
 
-/// Who sent a push. One Firebase project carries ours and, later, Stream
-/// Chat's, so every handler routes by this first.
+/// Who sent a push. One Firebase project carries ours and Stream Chat's,
+/// so every handler routes by this first.
 enum PushSource {
   /// Ours: `data.source == 'spclean'`, about a row in the inbox.
   spclean,
 
-  /// Stream Chat's (`data.sender == 'stream.chat'`); not handled yet.
+  /// Stream Chat's (`data.sender == 'stream.chat'`): a new chat message.
   streamChat,
 
   other;
@@ -27,6 +27,9 @@ class PushMessage {
     this.clientId,
     this.entity = NotificationEntity.unknown,
     this.entityId,
+    this.chatChannelType,
+    this.chatChannelId,
+    this.chatMessageId,
     this.title,
     this.body,
   });
@@ -47,6 +50,9 @@ class PushMessage {
       clientId: text('clientId'),
       entity: NotificationEntity.fromWire(text('entityType')),
       entityId: text('entityId'),
+      chatChannelType: text('channel_type'),
+      chatChannelId: text('channel_id'),
+      chatMessageId: text('message_id') ?? text('id'),
       title: title,
       body: body,
     );
@@ -59,15 +65,49 @@ class PushMessage {
   final String? clientId;
   final NotificationEntity entity;
   final String? entityId;
+
+  /// A chat message's channel (`channel_type`, `channel_id`) and id.
+  final String? chatChannelType;
+  final String? chatChannelId;
+  final String? chatMessageId;
+
   final String? title;
   final String? body;
 
   /// The `data` it was built from, to carry it through a tap.
   Map<String, String> get data => {
     if (source == PushSource.spclean) 'source': 'spclean',
+    if (source == PushSource.streamChat) 'sender': 'stream.chat',
     'notificationId': ?notificationId,
     'clientId': ?clientId,
     if (entity != NotificationEntity.unknown) 'entityType': entity.wire,
     'entityId': ?entityId,
+    'channel_type': ?chatChannelType,
+    'channel_id': ?chatChannelId,
+    'message_id': ?chatMessageId,
   };
+}
+
+/// A Stream Chat push with nothing for the phone to show (its payload is
+/// data only, which Android leaves to the app), as one to show titled
+/// [title]. Null when it isn't Stream's, already shows itself
+/// ([hasNotification]) or names no conversation.
+PushMessage? untitledChatPush(
+  Map<String, Object?> data, {
+  required bool hasNotification,
+  required String title,
+}) {
+  if (hasNotification) return null;
+  final message = PushMessage.fromData(data);
+  if (message.source != PushSource.streamChat ||
+      message.chatChannelId == null) {
+    return null;
+  }
+  return PushMessage(
+    source: PushSource.streamChat,
+    chatChannelType: message.chatChannelType,
+    chatChannelId: message.chatChannelId,
+    chatMessageId: message.chatMessageId,
+    title: title,
+  );
 }

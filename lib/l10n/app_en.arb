@@ -1582,5 +1582,24 @@
   "pushChannelName": "Work updates",
   "@pushChannelName": {
     "description": "Name of the Android notification channel for pushes about work, shown in the phone's settings."
-  }
+  },
+  "chatTitle": "Chat",
+  "chatUnread": "{count, plural, =1{1 unread message} other{{count} unread messages}}",
+  "@chatUnread": {"placeholders": {"count": {"type": "int"}}},
+  "chatNewMessage": "New message",
+  "chatContactsTitle": "New message",
+  "chatNoContacts": "No one to message yet",
+  "chatNoContactsHint": "People who share an account with you show up here.",
+  "chatConnecting": "Connecting to chat…",
+  "chatConnectFailed": "Couldn't connect to chat.",
+  "chatUnavailable": "Chat isn't available right now.",
+  "chatCreateTask": "Create task",
+  "chatReportComplaint": "Report complaint",
+  "chatFromMessage": "From a chat message by {name}.",
+  "@chatFromMessage": {"placeholders": {"name": {"type": "String"}}},
+  "chatFromMessageNoName": "From a chat message.",
+  "chatThread": "Thread",
+  "searchPeopleHint": "Search by name",
+  "chatDirectNotAllowed": "You can only message people who share an account with you.",
+  "chatDirectSelf": "You can't start a conversation with yourself."
 }

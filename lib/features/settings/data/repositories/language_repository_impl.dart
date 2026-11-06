@@ -8,13 +8,14 @@ class LanguageRepositoryImpl implements LanguageRepository {
 
   final SharedPreferences _preferences;
 
-  static const _key = 'settings.language';
+  /// Also read by the background push handler, which has no providers.
+  static const key = 'settings.language';
 
   @override
   AppLanguage? get savedLanguage =>
-      AppLanguage.tryParse(_preferences.getString(_key));
+      AppLanguage.tryParse(_preferences.getString(key));
 
   @override
   Future<void> saveLanguage(AppLanguage language) =>
-      _preferences.setString(_key, language.name);
+      _preferences.setString(key, language.name);
 }

@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../chat/presentation/controllers/chat_session.dart';
+import '../../../chat/presentation/screens/chat_list_screen.dart';
 import '../../../jobs/presentation/screens/today_screen.dart';
 import '../../di/notifications_providers.dart';
 import '../../domain/entities/push_message.dart';
@@ -18,8 +20,9 @@ import 'notifications_providers.dart';
 /// or token changes, so pushes come worded in the app's language); on
 /// sign-out it drops the token. Our pushes (`source: 'spclean'`) refresh
 /// the unread count, show as a notification while the app is open, and on
-/// a tap open what they're about, as the inbox does. Others (Stream Chat,
-/// later) are left alone.
+/// a tap open what they're about, as the inbox does. Stream Chat's show
+/// while the app is open too (unless that conversation is on screen) and
+/// open the conversation on a tap.
 class PushListener extends ConsumerStatefulWidget {
   const PushListener({super.key, required this.child});
 
@@ -115,7 +118,21 @@ class _PushListenerState extends ConsumerState<PushListener> {
   }
 
   void _received(PushMessage message) {
-    if (message.source != PushSource.spclean || !mounted) return;
+    if (!mounted) return;
+    if (message.source == PushSource.streamChat) {
+      if (message.chatChannelId == ref.read(openChatChannelIdProvider)) return;
+      // A data-only push (Android) has no words of its own.
+      final shown = message.title != null
+          ? message
+          : untitledChatPush(
+              message.data,
+              hasNotification: false,
+              title: AppLocalizations.of(context).chatNewMessage,
+            );
+      if (shown != null) ref.read(showPushProvider)(shown);
+      return;
+    }
+    if (message.source != PushSource.spclean) return;
     invalidateNotifications(ref);
     // Every push is about the user's work (a job or task of theirs changed),
     // so Today shows it at once.
@@ -124,7 +141,8 @@ class _PushListenerState extends ConsumerState<PushListener> {
   }
 
   void _opened(PushMessage message) {
-    if (message.source != PushSource.spclean || !mounted) return;
+    if (!mounted) return;
+    if (message.source == PushSource.other) return;
     if (_userId == null) {
       _pending = message;
       return;
@@ -133,6 +151,12 @@ class _PushListenerState extends ConsumerState<PushListener> {
   }
 
   void _open(PushMessage message) {
+    if (message.source == PushSource.streamChat) {
+      if (message.chatChannelId case final channelId?) {
+        ref.read(appRouterProvider).go(ChatListScreen.channelPath(channelId));
+      }
+      return;
+    }
     if (message.notificationId case final id?) {
       ref
           .read(markNotificationReadProvider)(id)

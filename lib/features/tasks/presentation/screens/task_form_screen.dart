@@ -9,6 +9,7 @@ import '../../../../core/l10n/failure_messages.dart';
 import '../../../../core/l10n/formatting.dart';
 import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../chat/domain/entities/chat.dart';
 import '../../../clients/presentation/screens/accounts_screen.dart';
 import '../../../jobs/presentation/controllers/jobs_providers.dart';
 import '../../../team/presentation/controllers/team_providers.dart';
@@ -19,18 +20,28 @@ import '../controllers/tasks_providers.dart';
 import 'tasks_screen.dart';
 
 /// A new task ([taskId] null) or an edit of an open one. Needs
-/// `tasks.edit`. The assignee comes from the account's team.
+/// `tasks.edit`. The assignee comes from the account's team. A new task
+/// [fromMessage] starts with the message's words, keeps its id and goes
+/// back to the conversation on save.
 class TaskFormScreen extends ConsumerWidget {
-  const TaskFormScreen({super.key, required this.clientId, this.taskId});
+  const TaskFormScreen({
+    super.key,
+    required this.clientId,
+    this.taskId,
+    this.fromMessage,
+  });
 
   final String clientId;
   final String? taskId;
+  final ChatMessageRef? fromMessage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final id = taskId;
-    if (id == null) return _TaskForm(clientId: clientId);
+    if (id == null) {
+      return _TaskForm(clientId: clientId, fromMessage: fromMessage);
+    }
     // Wait for the task before building fields.
     return switch (ref.watch(taskProvider((clientId, id)))) {
       AsyncValue(value: final task?) => _TaskForm(
@@ -54,12 +65,20 @@ class TaskFormScreen extends ConsumerWidget {
 }
 
 class _TaskForm extends ConsumerStatefulWidget {
-  const _TaskForm({super.key, required this.clientId, this.initial});
+  const _TaskForm({
+    super.key,
+    required this.clientId,
+    this.initial,
+    this.fromMessage,
+  });
 
   final String clientId;
 
   /// The task edited; null to create.
   final Task? initial;
+
+  /// The chat message a new task is made from.
+  final ChatMessageRef? fromMessage;
 
   @override
   ConsumerState<_TaskForm> createState() => _TaskFormState();
@@ -67,9 +86,11 @@ class _TaskForm extends ConsumerStatefulWidget {
 
 class _TaskFormState extends ConsumerState<_TaskForm> {
   final _formKey = GlobalKey<FormState>();
-  late final _title = TextEditingController(text: widget.initial?.title);
+  late final _title = TextEditingController(
+    text: widget.initial?.title ?? widget.fromMessage?.suggestedTitle,
+  );
   late final _description = TextEditingController(
-    text: widget.initial?.description,
+    text: widget.initial?.description ?? widget.fromMessage?.text,
   );
   late Priority _priority = switch (widget.initial?.priority) {
     final p? when p != Priority.unknown => p,
@@ -173,12 +194,16 @@ class _TaskFormState extends ConsumerState<_TaskForm> {
             priority: _priority,
             dueDate: _due,
             assignedToId: _assignedToId,
+            externalMessageId: widget.fromMessage?.id,
           ),
         ),
       );
       invalidateTasks(ref, widget.clientId);
       if (!mounted) return;
-      if (_creating) {
+      if (widget.fromMessage != null) {
+        // Back to the conversation it came from.
+        context.pop();
+      } else if (_creating) {
         // A new task has its own page.
         context.go(
           '${AccountsScreen.path}/${widget.clientId}/'
@@ -239,6 +264,18 @@ class _TaskFormState extends ConsumerState<_TaskForm> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(side, 4, side, 4),
                     child: Notice(message: l10n.failureMessage(failure)),
+                  ),
+                if (widget.fromMessage case final message?)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(side, 4, side, 4),
+                    child: Notice(
+                      message: switch (message.authorName) {
+                        final name? when name.isNotEmpty =>
+                          l10n.chatFromMessage(name),
+                        _ => l10n.chatFromMessageNoName,
+                      },
+                      tone: NoticeTone.info,
+                    ),
                   ),
                 if (_pickerNote case final note?)
                   Padding(

@@ -12,6 +12,7 @@ import '../../../../core/widgets/priority_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../access/domain/entities/account_access.dart';
 import '../../../access/presentation/controllers/account_access_provider.dart';
+import '../../../chat/presentation/widgets/chat_thread_button.dart';
 import '../../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../../locations/presentation/screens/locations_screen.dart';
 import '../../../proposals/presentation/widgets/line_item_row.dart';
@@ -218,6 +219,7 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
         child: SpacePage(
           title: l10n.complaintTitle,
           onRefresh: busy ? null : refresh,
+          actions: const [ChatThreadButton()],
           slivers: [
             AsyncSlivers(
               value: complaint,

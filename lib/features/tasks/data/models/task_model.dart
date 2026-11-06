@@ -48,6 +48,7 @@ abstract final class TaskDraftModel {
         final DateTime day => ymd(day),
         null => null,
       },
+      if (create) 'externalMessageId': d.externalMessageId,
     };
     if (create) optional.removeWhere((_, v) => v == null);
     return {

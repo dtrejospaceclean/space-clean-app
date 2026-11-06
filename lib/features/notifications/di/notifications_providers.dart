@@ -63,3 +63,6 @@ final watchPushTokenRefreshProvider = Provider(
 final showPushProvider = Provider(
   (ref) => ShowPush(ref.watch(pushRepositoryProvider)),
 );
+final getPushTokenProvider = Provider(
+  (ref) => GetPushToken(ref.watch(pushRepositoryProvider)),
+);
