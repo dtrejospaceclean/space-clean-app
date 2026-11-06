@@ -138,7 +138,8 @@ flutter:
 # Regenerate with: flutter test --update-goldens tool/brand && dart run flutter_launcher_icons
 flutter_launcher_icons:
   android: "ic_launcher"
-  ios: false
+  ios: true
+  remove_alpha_ios: true
   image_path: assets/brand/launcher_icon.png
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: assets/brand/launcher_icon_foreground.png

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Sp Cln App</string>
+	<string>Space Clean</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -24,10 +24,16 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos for your profile, complaints and chat messages.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record voice messages in chat.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save photos from chat messages to your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Choose photos from your library for your profile, complaints and chat messages.</string>
 	<key>UIApplicationSceneManifest</key>
