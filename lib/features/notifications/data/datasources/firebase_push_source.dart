@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,11 +20,15 @@ class FirebasePushSource {
   FirebasePushSource({
     FirebaseMessaging? messaging,
     FlutterLocalNotificationsPlugin? local,
+    this.apnsTimeout = const Duration(seconds: 10),
   }) : _messaging = messaging ?? FirebaseMessaging.instance,
        _local = local ?? FlutterLocalNotificationsPlugin();
 
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _local;
+
+  /// How long [token] waits for APNs on iOS.
+  final Duration apnsTimeout;
 
   /// The server sends ours on this channel (`android.notification.channelId`).
   static const channelId = 'spclean_default';
@@ -80,7 +85,23 @@ class FirebasePushSource {
     };
   }
 
-  Future<String?> token() => _messaging.getToken();
+  Future<String?> token() async {
+    if (!await _apnsReady()) return null;
+    return _messaging.getToken();
+  }
+
+  /// On iOS, asking FCM for a token throws until APNs has answered, which
+  /// can be a moment after the permission prompt. Past the wait there's no
+  /// token for now; `tokenRefreshes` brings it when APNs does answer.
+  Future<bool> _apnsReady() async {
+    if (defaultTargetPlatform != TargetPlatform.iOS) return true;
+    final deadline = DateTime.now().add(apnsTimeout);
+    while (await _messaging.getAPNSToken() == null) {
+      if (DateTime.now().isAfter(deadline)) return false;
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+    return true;
+  }
 
   Stream<String> get tokenRefreshes => _messaging.onTokenRefresh;
 
