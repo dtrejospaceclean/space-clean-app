@@ -16,6 +16,7 @@ import '../../../complaints/presentation/screens/complaints_screen.dart';
 import '../../../jobs/presentation/controllers/jobs_providers.dart';
 import '../../../jobs/presentation/screens/account_jobs_screen.dart';
 import '../../../tasks/presentation/screens/tasks_screen.dart';
+import '../../../whatsapp/presentation/screens/tickets_screen.dart';
 import '../../di/notifications_providers.dart';
 import '../../domain/entities/app_notification.dart';
 import '../controllers/notifications_providers.dart';
@@ -137,20 +138,23 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 }
 
 /// Where tapping [n] goes: its task, complaint or job, in its account's
-/// stack. Null when the app can't open it.
+/// stack, or its WhatsApp ticket. Null when the app can't open it.
 String? notificationPath(AppNotification n) => n.canOpen
-    ? entityPath(clientId: n.clientId!, entity: n.entity, entityId: n.entityId!)
+    ? entityPath(clientId: n.clientId, entity: n.entity, entityId: n.entityId!)
     : null;
 
-/// A task, complaint or job's page in its account's stack; null for
-/// something this app doesn't know.
+/// A task, complaint or job's page in its account's stack, or a WhatsApp
+/// ticket's under Me; null for something this app doesn't know, or an
+/// account's item without [clientId].
 String? entityPath({
-  required String clientId,
+  required String? clientId,
   required NotificationEntity entity,
   required String entityId,
 }) {
   final account = '${AccountsScreen.path}/$clientId';
   return switch (entity) {
+    NotificationEntity.whatsAppTicket => '${TicketsScreen.path}/$entityId',
+    _ when clientId == null => null,
     NotificationEntity.task => '$account/${TasksScreen.route}/$entityId',
     NotificationEntity.complaint =>
       '$account/${ComplaintsScreen.route}/$entityId',
@@ -189,6 +193,7 @@ String notificationHeadline(AppLocalizations l10n, AppNotification n) {
       actor != null
           ? l10n.notifJobCancelled(actor)
           : l10n.notifJobCancelledNoActor,
+    NotificationTypes.whatsAppTicketOpened => l10n.notifWhatsAppTicketOpened,
     _ => l10n.notifOther,
   };
 }
@@ -211,11 +216,19 @@ class NotificationRow extends ConsumerWidget {
       NotificationEntity.task => Icons.task_alt_rounded,
       NotificationEntity.complaint => Icons.report_outlined,
       NotificationEntity.job => Icons.cleaning_services_outlined,
+      NotificationEntity.whatsAppTicket => Icons.forum_outlined,
       NotificationEntity.unknown => Icons.notifications_none_rounded,
     };
     final start = n.date('start');
     final details = [
-      ?(n.text('taskTitle') ?? n.text('complaintTitle') ?? n.text('jobTitle')),
+      ?(n.text('taskTitle') ??
+          n.text('complaintTitle') ??
+          n.text('jobTitle') ??
+          n.text('contactName') ??
+          switch (n.text('contactPhone')) {
+            final phone? => '+$phone',
+            null => null,
+          }),
       if (start != null)
         '${context.formatDate(start)}, ${context.formatTime(start)}',
       ?n.accountName,

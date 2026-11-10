@@ -3592,6 +3592,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifJobCancelledNoActor => 'Se canceló un trabajo tuyo';
 
   @override
+  String get notifWhatsAppTicketOpened =>
+      'Un cliente de WhatsApp quiere hablar con una persona';
+
+  @override
   String get notifOther => 'Nueva notificación';
 
   @override

@@ -993,6 +993,7 @@
   "notifJobRescheduledNoActor": "Cambió el horario de un trabajo tuyo",
   "notifJobCancelled": "{actor} canceló un trabajo tuyo",
   "notifJobCancelledNoActor": "Se canceló un trabajo tuyo",
+  "notifWhatsAppTicketOpened": "Un cliente de WhatsApp quiere hablar con una persona",
   "notifOther": "Nueva notificación",
   "pushChannelName": "Avisos de trabajo",
   "chatTitle": "Chat",

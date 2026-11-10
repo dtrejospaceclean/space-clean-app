@@ -9,6 +9,8 @@ import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../chat/presentation/controllers/chat_session.dart';
 import '../../../chat/presentation/screens/chat_list_screen.dart';
 import '../../../jobs/presentation/screens/today_screen.dart';
+import '../../../whatsapp/presentation/controllers/whatsapp_providers.dart';
+import '../../domain/entities/app_notification.dart';
 import '../../di/notifications_providers.dart';
 import '../../domain/entities/push_message.dart';
 import '../../domain/usecases/push_usecases.dart';
@@ -137,6 +139,10 @@ class _PushListenerState extends ConsumerState<PushListener> {
     // Every push is about the user's work (a job or task of theirs changed),
     // so Today shows it at once.
     refreshToday(ref);
+    // A new WhatsApp ticket joins the queue, if it's on screen.
+    if (message.entity == NotificationEntity.whatsAppTicket) {
+      ref.invalidate(ticketsProvider);
+    }
     ref.read(showPushProvider)(message);
   }
 
@@ -166,7 +172,7 @@ class _PushListenerState extends ConsumerState<PushListener> {
           });
     }
     final path = switch (message) {
-      PushMessage(:final clientId?, :final entityId?, :final entity) =>
+      PushMessage(:final clientId, :final entityId?, :final entity) =>
         entityPath(clientId: clientId, entity: entity, entityId: entityId),
       _ => null,
     };

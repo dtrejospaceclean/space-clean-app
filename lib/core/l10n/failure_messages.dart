@@ -114,8 +114,7 @@ extension FailureMessages on AppLocalizations {
     'errors.too_many_requests' => errorsTooManyRequests,
     // The WhatsApp bot's codes, prefixed by its data source.
     'whatsapp.forbidden' => whatsappForbidden,
-    'whatsapp.unauthenticated' ||
-    'whatsapp.invalid_credentials' => whatsappUnauthenticated,
+    'whatsapp.unauthenticated' => whatsappUnauthenticated,
     'whatsapp.ticket_not_found' => whatsappTicketNotFound,
     'whatsapp.ticket_closed' => whatsappTicketClosed,
     'whatsapp.ticket_assigned_to_another_agent' => whatsappTicketTaken,
@@ -124,7 +123,6 @@ extension FailureMessages on AppLocalizations {
     'whatsapp.message_not_sent' => whatsappMessageNotSent,
     'whatsapp.reply_too_long' => whatsappReplyTooLong,
     'whatsapp.validation_failed' => validationFailed,
-    'whatsapp.too_many_requests' => errorsTooManyRequests,
     'whatsapp.internal_error' => errorsInternal,
     'errors.not_found' => errorsNotFound,
     'errors.internal' => errorsInternal,

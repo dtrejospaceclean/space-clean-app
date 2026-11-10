@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sp_cln_app/core/error/failures.dart';
+import 'package:sp_cln_app/features/notifications/domain/entities/app_notification.dart';
+import 'package:sp_cln_app/features/notifications/domain/entities/push_message.dart';
 import 'package:sp_cln_app/features/whatsapp/domain/entities/ticket.dart';
 
 import '../../../helpers/test_app.dart';
@@ -172,5 +174,68 @@ void main() {
       find.text('Only owners can open the WhatsApp tickets.'),
       findsOneWidget,
     );
+  });
+
+  group('a customer asking for a person', () {
+    // What the server writes for every owner, outside any account.
+    final row = AppNotification(
+      id: 'n-wa',
+      type: NotificationTypes.whatsAppTicketOpened,
+      params: const {'contactName': 'Ana López', 'contactPhone': '50488887777'},
+      entity: NotificationEntity.whatsAppTicket,
+      entityId: 't1',
+      createdAt: testNow.subtract(const Duration(minutes: 5)),
+    );
+    final push = PushMessage.fromData(
+      const {
+        'source': 'spclean',
+        'notificationId': 'n-wa',
+        'type': 'notifications.whatsapp_ticket_opened',
+        'entityType': 'whatsapp_ticket',
+        'entityId': 't1',
+      },
+      title: 'A WhatsApp customer wants to talk to a person',
+      body: 'Ana López',
+    );
+
+    testWidgets('shows in the inbox and opens the ticket', (tester) async {
+      final notifications = FakeNotificationsRepository(1, items: [row]);
+      await pumpApp(
+        tester,
+        auth: FakeAuthRepository(sessionUser: owner),
+        notifications: notifications,
+      );
+      await tester.tap(find.byTooltip('Me'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Notifications'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Ana López · '), findsOneWidget);
+      await tester.tap(
+        find.text('A WhatsApp customer wants to talk to a person'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(notifications.reads, ['n-wa']);
+      expect(find.text('Necesito una cotización'), findsOneWidget);
+      expect(find.text('+50488887777'), findsOneWidget);
+    });
+
+    testWidgets('a tapped push opens the ticket', (tester) async {
+      final pushes = FakePushRepository();
+      final notifications = FakeNotificationsRepository(1, items: [row]);
+      await pumpApp(
+        tester,
+        auth: FakeAuthRepository(sessionUser: owner),
+        notifications: notifications,
+        push: pushes,
+      );
+
+      pushes.tap(push);
+      await tester.pumpAndSettle();
+
+      expect(notifications.reads, ['n-wa']);
+      expect(find.text('Necesito una cotización'), findsOneWidget);
+    });
   });
 }

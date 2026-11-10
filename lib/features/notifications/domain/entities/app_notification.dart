@@ -4,12 +4,19 @@ enum NotificationEntity {
   complaint('complaint'),
   job('job'),
 
+  /// A WhatsApp bot ticket, outside any account.
+  whatsAppTicket('whatsapp_ticket'),
+
   /// Something newer than this app: shown, but tapping opens nothing.
   unknown('');
 
   const NotificationEntity(this.wire);
 
   final String wire;
+
+  /// Whether its page lives in an account, so it needs the notification's
+  /// account to open.
+  bool get inAccount => this != whatsAppTicket;
 
   static NotificationEntity fromWire(String? value) => values.firstWhere(
     (e) => e.wire == value && e != unknown,
@@ -25,6 +32,9 @@ abstract final class NotificationTypes {
   static const jobCrewAdded = 'notifications.job_crew_added';
   static const jobRescheduled = 'notifications.job_rescheduled';
   static const jobCancelled = 'notifications.job_cancelled';
+
+  /// To every owner: a customer asked the WhatsApp bot for a person.
+  static const whatsAppTicketOpened = 'notifications.whatsapp_ticket_opened';
 }
 
 /// Something that happened to the signed-in user (`/me/notifications`).
@@ -74,9 +84,9 @@ class AppNotification {
 
   /// Whether tapping it can open what it's about.
   bool get canOpen =>
-      clientId != null &&
       entityId != null &&
-      entity != NotificationEntity.unknown;
+      entity != NotificationEntity.unknown &&
+      (clientId != null || !entity.inAccount);
 }
 
 /// The latest notifications, newest first. [hasMore] when older ones exist

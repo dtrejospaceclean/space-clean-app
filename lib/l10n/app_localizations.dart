@@ -6056,6 +6056,12 @@ abstract class AppLocalizations {
   /// **'A job you\'re on was cancelled'**
   String get notifJobCancelledNoActor;
 
+  /// No description provided for @notifWhatsAppTicketOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'A WhatsApp customer wants to talk to a person'**
+  String get notifWhatsAppTicketOpened;
+
   /// No description provided for @notifOther.
   ///
   /// In en, this message translates to:

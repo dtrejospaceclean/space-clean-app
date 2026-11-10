@@ -1578,6 +1578,7 @@
   "notifJobCancelled": "{actor} cancelled a job you're on",
   "@notifJobCancelled": {"placeholders": {"actor": {"type": "String"}}},
   "notifJobCancelledNoActor": "A job you're on was cancelled",
+  "notifWhatsAppTicketOpened": "A WhatsApp customer wants to talk to a person",
   "notifOther": "New notification",
   "pushChannelName": "Work updates",
   "@pushChannelName": {

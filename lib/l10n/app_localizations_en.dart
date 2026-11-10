@@ -3561,6 +3561,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifJobCancelledNoActor => 'A job you\'re on was cancelled';
 
   @override
+  String get notifWhatsAppTicketOpened =>
+      'A WhatsApp customer wants to talk to a person';
+
+  @override
   String get notifOther => 'New notification';
 
   @override
