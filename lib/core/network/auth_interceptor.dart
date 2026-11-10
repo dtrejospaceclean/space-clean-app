@@ -11,6 +11,7 @@ class AuthInterceptor extends Interceptor {
     required this._dio,
     required this._refreshDio,
     required this._tokenStorage,
+    this.endsSessionOnRefusedReplay = true,
   });
 
   final Dio _dio;
@@ -18,6 +19,11 @@ class AuthInterceptor extends Interceptor {
   /// Has no interceptors, so a failing refresh can't recurse.
   final Dio _refreshDio;
   final TokenStorage _tokenStorage;
+
+  /// Whether a replay still refused with fresh tokens ends the session. Off
+  /// for another service that takes our tokens (the WhatsApp bot): its
+  /// refusal says nothing about the session with our own API.
+  final bool endsSessionOnRefusedReplay;
 
   Future<_Refresh>? _refreshing;
 
@@ -50,9 +56,11 @@ class AuthInterceptor extends Interceptor {
     // A file request's error comes as bytes; read it like any other.
     final body = errorBody(err.response?.data);
     final key = body is Map ? body['message'] : null;
+    // The WhatsApp bot answers `{code, message}` instead of our envelope.
+    final code = body is Map ? body['code'] : null;
     final canRefresh =
         err.response?.statusCode == 401 &&
-        _refreshableKeys.contains(key) &&
+        (_refreshableKeys.contains(key) || code == 'UNAUTHENTICATED') &&
         options.extra[ApiClient.skipAuth] != true &&
         options.extra[_retriedKey] != true;
     if (!canRefresh) return handler.next(err);
@@ -77,7 +85,7 @@ class AuthInterceptor extends Interceptor {
           handler.resolve(await _dio.fetch<Object?>(options));
         } on DioException catch (e) {
           // Refused even with fresh tokens: they're no good either.
-          if (e.response?.statusCode == 401) {
+          if (e.response?.statusCode == 401 && endsSessionOnRefusedReplay) {
             await _tokenStorage.expireSession();
           }
           handler.next(e);

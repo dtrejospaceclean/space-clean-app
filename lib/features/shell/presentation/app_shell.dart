@@ -39,6 +39,7 @@ import '../../service_catalog/presentation/screens/services_screen.dart';
 import '../../users/domain/usecases/user_usecases.dart';
 import '../../users/presentation/screens/users_screen.dart';
 import 'page_action.dart';
+import '../../whatsapp/presentation/screens/tickets_screen.dart';
 
 /// Something the "+" beside the tab dock can open.
 class _PlusOption {
@@ -207,6 +208,7 @@ bool _noPlus(String route) =>
     // Conversations and what's made from their messages.
     route.endsWith('/chat') ||
     route.contains('/chat/') ||
+    route == _whatsAppTicket ||
     route.endsWith('/edit') ||
     route.endsWith('/version') ||
     route.endsWith('/approve') ||
@@ -230,13 +232,17 @@ bool _noPlus(String route) =>
     route.startsWith('${CategoriesScreen.path}/:') ||
     route.startsWith('${UnitsScreen.path}/:');
 
-/// A conversation (the user's, a job's or a complaint's) and what's made
-/// from its messages, which hide the dock. The chat list and "New message"
-/// keep it.
+/// A WhatsApp ticket's conversation, with its reply box at the foot.
+const _whatsAppTicket = '${TicketsScreen.path}/:ticketId';
+
+/// A conversation (the user's, a job's, a complaint's or a WhatsApp
+/// ticket's) and what's made from its messages, which hide the dock. The
+/// chat list and "New message" keep it.
 bool _inConversation(String route) =>
-    (route.endsWith('/chat') || route.contains('/chat/')) &&
-    route != ChatListScreen.path &&
-    route != '${ChatListScreen.path}/${ChatContactsScreen.route}';
+    route == _whatsAppTicket ||
+    ((route.endsWith('/chat') || route.contains('/chat/')) &&
+        route != ChatListScreen.path &&
+        route != '${ChatListScreen.path}/${ChatContactsScreen.route}');
 
 /// The matches of the page on top: its route pattern ("/me/services") and
 /// path parameters. Pushed pages sit in the list as imperative matches, so

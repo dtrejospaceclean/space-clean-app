@@ -5,13 +5,20 @@ import '../../../helpers/test_app.dart';
 
 void main() {
   test('owners and account managers get users, roles and services', () {
-    for (final user in [owner, accountManager]) {
-      expect(visibleAdminModules(user).map((m) => m.path), [
-        '/me/users',
-        '/me/roles',
-        '/me/services',
-      ]);
-    }
+    expect(visibleAdminModules(accountManager).map((m) => m.path), [
+      '/me/users',
+      '/me/roles',
+      '/me/services',
+    ]);
+  });
+
+  test('owners also get the WhatsApp tickets', () {
+    expect(visibleAdminModules(owner).map((m) => m.path), [
+      '/me/users',
+      '/me/roles',
+      '/me/services',
+      '/me/whatsapp',
+    ]);
   });
 
   test('everyone else gets no administration', () {

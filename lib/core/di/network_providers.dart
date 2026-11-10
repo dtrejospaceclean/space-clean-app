@@ -13,13 +13,14 @@ final tokenStorageProvider = Provider<TokenStorage>((ref) {
   return storage;
 });
 
-BaseOptions _baseOptions() => BaseOptions(
-  baseUrl: AppConfig.apiBaseUrl,
-  contentType: Headers.jsonContentType,
-  responseType: ResponseType.json,
-  connectTimeout: const Duration(seconds: 15),
-  receiveTimeout: const Duration(seconds: 30),
-);
+BaseOptions _baseOptions([String baseUrl = AppConfig.apiBaseUrl]) =>
+    BaseOptions(
+      baseUrl: baseUrl,
+      contentType: Headers.jsonContentType,
+      responseType: ResponseType.json,
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 30),
+    );
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(_baseOptions());
@@ -37,3 +38,20 @@ final dioProvider = Provider<Dio>((ref) {
 final apiClientProvider = Provider<ApiClient>(
   (ref) => ApiClient(ref.watch(dioProvider)),
 );
+
+/// The WhatsApp bot's service. It takes our access token (owners only) and
+/// refreshes it through our own API, but answers without our envelope, so
+/// it has no [ApiClient].
+final botDioProvider = Provider<Dio>((ref) {
+  final dio = Dio(_baseOptions(AppConfig.botBaseUrl));
+  dio.interceptors.add(
+    AuthInterceptor(
+      dio: dio,
+      refreshDio: Dio(_baseOptions()),
+      tokenStorage: ref.watch(tokenStorageProvider),
+      endsSessionOnRefusedReplay: false,
+    ),
+  );
+  ref.onDispose(dio.close);
+  return dio;
+});

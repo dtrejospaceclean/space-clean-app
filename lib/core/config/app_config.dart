@@ -7,4 +7,13 @@ abstract final class AppConfig {
     'API_BASE_URL',
     defaultValue: _defaultApiBaseUrl,
   );
+
+  static const _defaultBotBaseUrl = 'https://whatsapp-bot.spacecleanllc.com';
+
+  /// The WhatsApp bot's own service (tickets handed over to people). Override
+  /// with `--dart-define=BOT_API_BASE_URL=http://localhost:3001`.
+  static const botBaseUrl = String.fromEnvironment(
+    'BOT_API_BASE_URL',
+    defaultValue: _defaultBotBaseUrl,
+  );
 }

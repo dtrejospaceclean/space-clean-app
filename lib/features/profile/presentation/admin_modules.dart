@@ -7,6 +7,8 @@ import '../../service_catalog/presentation/screens/services_screen.dart';
 import '../../users/domain/usecases/user_usecases.dart';
 import '../../users/presentation/screens/roles_screen.dart';
 import '../../users/presentation/screens/users_screen.dart';
+import '../../whatsapp/domain/usecases/whatsapp_usecases.dart';
+import '../../whatsapp/presentation/screens/tickets_screen.dart';
 
 /// One staff-wide tool under Me → Administration.
 class AdminModule {
@@ -53,6 +55,13 @@ final adminModules = <AdminModule>[
     description: (l10n) => l10n.adminServicesHint,
     path: ServicesScreen.path,
     isVisibleTo: ServiceCatalogPolicy.canManage,
+  ),
+  AdminModule(
+    icon: Icons.forum_outlined,
+    label: (l10n) => l10n.whatsappTitle,
+    description: (l10n) => l10n.adminWhatsAppHint,
+    path: TicketsScreen.path,
+    isVisibleTo: WhatsAppPolicy.canView,
   ),
 ];
 

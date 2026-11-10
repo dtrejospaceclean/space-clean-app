@@ -3660,4 +3660,176 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get chatDirectSelf =>
       'No puedes iniciar una conversación contigo mismo.';
+
+  @override
+  String get whatsappTitle => 'WhatsApp';
+
+  @override
+  String get adminWhatsAppHint => 'Clientes que el bot transfirió';
+
+  @override
+  String ticketsFilterOpen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Abiertos ($count)',
+      zero: 'Abiertos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ticketsFilterMine => 'Míos';
+
+  @override
+  String get ticketsFilterClosed => 'Cerrados';
+
+  @override
+  String get ticketsFilterLabel => 'Qué tickets';
+
+  @override
+  String get searchTicketsHint => 'Buscar por nombre, número o mensaje';
+
+  @override
+  String get noOpenTickets => 'Nadie está esperando';
+
+  @override
+  String get noOpenTicketsHint =>
+      'Cuando un cliente le pide al bot hablar con una persona, aparece aquí.';
+
+  @override
+  String get noMyTickets => 'No tienes tickets';
+
+  @override
+  String get noMyTicketsHint => 'Toma uno de Abiertos o respóndelo.';
+
+  @override
+  String get noClosedTickets => 'Aún no hay tickets cerrados';
+
+  @override
+  String get ticketStatusWaiting => 'En espera';
+
+  @override
+  String get ticketStatusAssigned => 'Asignado';
+
+  @override
+  String get ticketStatusClosed => 'Cerrado';
+
+  @override
+  String get ticketStatusUnknown => 'Desconocido';
+
+  @override
+  String get ticketWithYou => 'Contigo';
+
+  @override
+  String ticketWith(String name) {
+    return 'Con $name';
+  }
+
+  @override
+  String get ticketNoMessages => 'Aún no hay mensajes';
+
+  @override
+  String ticketAttachment(String type) {
+    return 'Adjunto ($type), solo visible en WhatsApp';
+  }
+
+  @override
+  String get ticketSenderBot => 'Bot';
+
+  @override
+  String get ticketSenderYou => 'Tú';
+
+  @override
+  String get deliverySent => 'Enviado';
+
+  @override
+  String get deliveryDelivered => 'Entregado';
+
+  @override
+  String get deliveryRead => 'Leído';
+
+  @override
+  String get deliveryFailed => 'No entregado';
+
+  @override
+  String get ticketReplyHint => 'Escribe una respuesta';
+
+  @override
+  String get sendReply => 'Enviar';
+
+  @override
+  String get takeTicket => 'Tomar ticket';
+
+  @override
+  String ticketTakenBy(String name) {
+    return '$name tiene este ticket. Tómalo para responder.';
+  }
+
+  @override
+  String get ticketWaitingHint => 'Al responder, este ticket pasa a ser tuyo.';
+
+  @override
+  String get closeTicket => 'Cerrar y devolver al bot';
+
+  @override
+  String get closeTicketConfirmTitle => '¿Cerrar este ticket?';
+
+  @override
+  String get closeTicketConfirmBody =>
+      'El cliente vuelve con el bot. Si vuelve a pedir una persona, se abre un ticket nuevo.';
+
+  @override
+  String get keepTicketOpen => 'Mantener abierto';
+
+  @override
+  String get closeTicketAction => 'Cerrar';
+
+  @override
+  String get ticketClosedNotice =>
+      'Este ticket está cerrado. El cliente volvió con el bot.';
+
+  @override
+  String get replyWindowClosed =>
+      'WhatsApp solo permite responder dentro de las 24 horas siguientes al último mensaje del cliente. Primero tiene que volver a escribir.';
+
+  @override
+  String replyWindowUntil(String when) {
+    return 'Puedes responder hasta $when';
+  }
+
+  @override
+  String ticketOpenedAt(String when) {
+    return 'Abierto $when';
+  }
+
+  @override
+  String get whatsappForbidden =>
+      'Solo los propietarios pueden abrir los tickets de WhatsApp.';
+
+  @override
+  String get whatsappUnauthenticated =>
+      'El bot de WhatsApp no aceptó tu sesión. Inténtalo más tarde.';
+
+  @override
+  String get whatsappTicketNotFound => 'Este ticket ya no existe.';
+
+  @override
+  String get whatsappTicketClosed => 'Este ticket ya está cerrado.';
+
+  @override
+  String get whatsappTicketTaken =>
+      'Otra persona tiene este ticket. Tómalo primero para responder.';
+
+  @override
+  String get whatsappConcurrentUpdate =>
+      'Alguien cambió este ticket al mismo tiempo. Se volvió a cargar; inténtalo de nuevo.';
+
+  @override
+  String get whatsappMessageNotSent =>
+      'WhatsApp no aceptó el mensaje. Inténtalo de nuevo.';
+
+  @override
+  String get whatsappReplyTooLong =>
+      'Demasiado largo para un mensaje de WhatsApp (4.096 caracteres como máximo).';
 }

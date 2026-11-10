@@ -6169,6 +6169,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can\'t start a conversation with yourself.'**
   String get chatDirectSelf;
+
+  /// No description provided for @whatsappTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get whatsappTitle;
+
+  /// No description provided for @adminWhatsAppHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers the bot handed over'**
+  String get adminWhatsAppHint;
+
+  /// No description provided for @ticketsFilterOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Open} other{Open ({count})}}'**
+  String ticketsFilterOpen(int count);
+
+  /// No description provided for @ticketsFilterMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Mine'**
+  String get ticketsFilterMine;
+
+  /// No description provided for @ticketsFilterClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get ticketsFilterClosed;
+
+  /// No description provided for @ticketsFilterLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Which tickets'**
+  String get ticketsFilterLabel;
+
+  /// No description provided for @searchTicketsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, number or message'**
+  String get searchTicketsHint;
+
+  /// No description provided for @noOpenTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'No one is waiting'**
+  String get noOpenTickets;
+
+  /// No description provided for @noOpenTicketsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a customer asks the bot for a person, they show up here.'**
+  String get noOpenTicketsHint;
+
+  /// No description provided for @noMyTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no tickets'**
+  String get noMyTickets;
+
+  /// No description provided for @noMyTicketsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Take one from Open, or reply to it.'**
+  String get noMyTicketsHint;
+
+  /// No description provided for @noClosedTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'No closed tickets yet'**
+  String get noClosedTickets;
+
+  /// No description provided for @ticketStatusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get ticketStatusWaiting;
+
+  /// No description provided for @ticketStatusAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned'**
+  String get ticketStatusAssigned;
+
+  /// No description provided for @ticketStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get ticketStatusClosed;
+
+  /// No description provided for @ticketStatusUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get ticketStatusUnknown;
+
+  /// No description provided for @ticketWithYou.
+  ///
+  /// In en, this message translates to:
+  /// **'With you'**
+  String get ticketWithYou;
+
+  /// No description provided for @ticketWith.
+  ///
+  /// In en, this message translates to:
+  /// **'With {name}'**
+  String ticketWith(String name);
+
+  /// No description provided for @ticketNoMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get ticketNoMessages;
+
+  /// No description provided for @ticketAttachment.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachment ({type}), only visible in WhatsApp'**
+  String ticketAttachment(String type);
+
+  /// No description provided for @ticketSenderBot.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot'**
+  String get ticketSenderBot;
+
+  /// No description provided for @ticketSenderYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get ticketSenderYou;
+
+  /// No description provided for @deliverySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get deliverySent;
+
+  /// No description provided for @deliveryDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get deliveryDelivered;
+
+  /// No description provided for @deliveryRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get deliveryRead;
+
+  /// No description provided for @deliveryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not delivered'**
+  String get deliveryFailed;
+
+  /// No description provided for @ticketReplyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a reply'**
+  String get ticketReplyHint;
+
+  /// No description provided for @sendReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get sendReply;
+
+  /// No description provided for @takeTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Take ticket'**
+  String get takeTicket;
+
+  /// No description provided for @ticketTakenBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has this ticket. Take it to reply.'**
+  String ticketTakenBy(String name);
+
+  /// No description provided for @ticketWaitingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Replying makes this ticket yours.'**
+  String get ticketWaitingHint;
+
+  /// No description provided for @closeTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Close and hand back to the bot'**
+  String get closeTicket;
+
+  /// No description provided for @closeTicketConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this ticket?'**
+  String get closeTicketConfirmTitle;
+
+  /// No description provided for @closeTicketConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The customer goes back to the bot. If they ask for a person again, a new ticket opens.'**
+  String get closeTicketConfirmBody;
+
+  /// No description provided for @keepTicketOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep open'**
+  String get keepTicketOpen;
+
+  /// No description provided for @closeTicketAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeTicketAction;
+
+  /// No description provided for @ticketClosedNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This ticket is closed. The customer is back with the bot.'**
+  String get ticketClosedNotice;
+
+  /// No description provided for @replyWindowClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp only takes replies within 24 hours of the customer\'s last message. They need to write again first.'**
+  String get replyWindowClosed;
+
+  /// No description provided for @replyWindowUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'You can reply until {when}'**
+  String replyWindowUntil(String when);
+
+  /// No description provided for @ticketOpenedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened {when}'**
+  String ticketOpenedAt(String when);
+
+  /// No description provided for @whatsappForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Only owners can open the WhatsApp tickets.'**
+  String get whatsappForbidden;
+
+  /// No description provided for @whatsappUnauthenticated.
+  ///
+  /// In en, this message translates to:
+  /// **'The WhatsApp bot didn\'t accept your sign-in. Try again later.'**
+  String get whatsappUnauthenticated;
+
+  /// No description provided for @whatsappTicketNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This ticket no longer exists.'**
+  String get whatsappTicketNotFound;
+
+  /// No description provided for @whatsappTicketClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This ticket is already closed.'**
+  String get whatsappTicketClosed;
+
+  /// No description provided for @whatsappTicketTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone else has this ticket. Take it first to reply.'**
+  String get whatsappTicketTaken;
+
+  /// No description provided for @whatsappConcurrentUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone changed this ticket at the same moment. It\'s been reloaded; try again.'**
+  String get whatsappConcurrentUpdate;
+
+  /// No description provided for @whatsappMessageNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp didn\'t accept the message. Try again.'**
+  String get whatsappMessageNotSent;
+
+  /// No description provided for @whatsappReplyTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Too long for one WhatsApp message (4,096 characters at most).'**
+  String get whatsappReplyTooLong;
 }
 
 class _AppLocalizationsDelegate

@@ -86,6 +86,8 @@ import '../../features/users/presentation/screens/user_detail_screen.dart';
 import '../../features/users/presentation/screens/user_form_screen.dart';
 import '../../features/users/presentation/screens/users_screen.dart';
 import 'transitions.dart';
+import '../../features/whatsapp/presentation/screens/ticket_screen.dart';
+import '../../features/whatsapp/presentation/screens/tickets_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Bridges auth state into go_router so redirects re-run on login/logout.
@@ -755,6 +757,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   SlideRoute(
                     path: 'settings',
                     builder: (_, _) => const SettingsScreen(),
+                  ),
+                  SlideRoute(
+                    path: 'whatsapp',
+                    builder: (_, _) => const TicketsScreen(),
+                    routes: [
+                      SlideRoute(
+                        path: ':ticketId',
+                        builder: (_, state) => TicketScreen(
+                          ticketId: state.pathParameters['ticketId']!,
+                        ),
+                      ),
+                    ],
                   ),
                   SlideRoute(
                     path: 'services',

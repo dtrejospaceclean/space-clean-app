@@ -58,6 +58,9 @@ import 'package:sp_cln_app/features/password_reset/domain/repositories/password_
 import 'package:sp_cln_app/features/profile/di/profile_providers.dart';
 import 'package:sp_cln_app/features/profile/domain/entities/profile_draft.dart';
 import 'package:sp_cln_app/core/domain/picked_photo.dart';
+import 'package:sp_cln_app/features/whatsapp/di/whatsapp_providers.dart';
+import 'package:sp_cln_app/features/whatsapp/domain/entities/ticket.dart';
+import 'package:sp_cln_app/features/whatsapp/domain/repositories/whatsapp_repository.dart';
 import 'package:sp_cln_app/features/profile/domain/repositories/profile_repository.dart';
 import 'package:sp_cln_app/core/media/photo_picker.dart';
 import 'package:sp_cln_app/features/proposals/di/proposals_providers.dart';
@@ -2969,6 +2972,200 @@ extension on JobsRepository {
   }
 }
 
+/// The WhatsApp bot with four customers: Ana waiting, Carlos with the user
+/// (agent "me"), Luis with Marta, and Rosa's ticket closed. Every reply
+/// window is open unless a test changes it.
+class FakeWhatsAppRepository implements WhatsAppRepository {
+  FakeWhatsAppRepository({List<Ticket>? tickets, this.failure})
+    : tickets = [...tickets ?? _seed()];
+
+  static const me = BotAgent(id: 'me', name: 'Olga Ruiz');
+  static const marta = BotAgent(id: 'a2', name: 'Marta');
+
+  List<Ticket> tickets;
+
+  /// Thrown by every call when set.
+  Failure? failure;
+
+  final replies = <(String, String)>[];
+  final taken = <String>[];
+  final closed = <String>[];
+
+  static BotMessage _said(String id, String ticketId, String body, int min) =>
+      BotMessage(
+        id: id,
+        ticketId: ticketId,
+        sender: MessageSender.customer,
+        type: 'text',
+        body: body,
+        createdAt: testNow.subtract(Duration(minutes: min)),
+      );
+
+  static Ticket _ticket(
+    String id,
+    String name,
+    String waId,
+    TicketStatus status, {
+    BotAgent? agent,
+    required String last,
+  }) {
+    final message = _said('m-$id', id, last, 10);
+    return Ticket(
+      id: id,
+      status: status,
+      contact: BotContact(id: 'c-$id', waId: waId, name: name),
+      assignedAgent: agent,
+      openedAt: testNow.subtract(const Duration(minutes: 30)),
+      closedAt: status == TicketStatus.closed ? testNow : null,
+      lastMessage: message,
+      replyWindowClosesAt: message.createdAt.add(const Duration(hours: 24)),
+    );
+  }
+
+  static List<Ticket> _seed() => [
+    _ticket(
+      't1',
+      'Ana López',
+      '50488887777',
+      TicketStatus.waiting,
+      last: 'Necesito una cotización',
+    ),
+    _ticket(
+      't2',
+      'Carlos Medina',
+      '17135550142',
+      TicketStatus.assigned,
+      agent: me,
+      last: '¿A qué hora llegan?',
+    ),
+    _ticket(
+      't3',
+      'Luis Vega',
+      '17135550199',
+      TicketStatus.assigned,
+      agent: marta,
+      last: 'Gracias',
+    ),
+    _ticket(
+      't4',
+      'Rosa Díaz',
+      '17135550111',
+      TicketStatus.closed,
+      last: 'Listo',
+    ),
+  ];
+
+  /// Messages after the seeded last one, per ticket.
+  final _sent = <String, List<BotMessage>>{};
+
+  void _check() {
+    if (failure case final f?) throw f;
+  }
+
+  Ticket _find(String id) => tickets.firstWhere(
+    (t) => t.id == id,
+    orElse: () =>
+        throw const ServerFailure('whatsapp.ticket_not_found', statusCode: 404),
+  );
+
+  Ticket _replace(Ticket t, {TicketStatus? status, BotAgent? agent}) {
+    final updated = Ticket(
+      id: t.id,
+      status: status ?? t.status,
+      contact: t.contact,
+      assignedAgent: agent ?? t.assignedAgent,
+      openedAt: t.openedAt,
+      closedAt: status == TicketStatus.closed ? testNow : t.closedAt,
+      lastMessage: _sent[t.id]?.last ?? t.lastMessage,
+      replyWindowClosesAt: t.replyWindowClosesAt,
+    );
+    tickets = [for (final x in tickets) x.id == t.id ? updated : x];
+    return updated;
+  }
+
+  @override
+  Future<BotAgent> getMe() async {
+    _check();
+    return me;
+  }
+
+  @override
+  Future<List<Ticket>> getTickets(TicketView view) async {
+    _check();
+    return switch (view) {
+      TicketView.open => [
+        for (final t in tickets)
+          if (!t.isClosed) t,
+      ],
+      TicketView.mine => [
+        for (final t in tickets)
+          if (!t.isClosed && t.isAssignedTo(me.id)) t,
+      ],
+      TicketView.closed => [
+        for (final t in tickets)
+          if (t.isClosed) t,
+      ],
+    };
+  }
+
+  @override
+  Future<TicketDetail> getTicket(String ticketId) async {
+    _check();
+    final t = _find(ticketId);
+    return TicketDetail(
+      ticket: t,
+      messages: switch (_sent[ticketId]) {
+        // The last one is then the user's reply; the customer's came before.
+        final sent? => [
+          ?_seed().where((s) => s.id == ticketId).firstOrNull?.lastMessage,
+          ...sent,
+        ],
+        null => [?t.lastMessage],
+      },
+    );
+  }
+
+  @override
+  Future<Ticket> takeTicket(String ticketId) async {
+    _check();
+    taken.add(ticketId);
+    return _replace(_find(ticketId), status: TicketStatus.assigned, agent: me);
+  }
+
+  @override
+  Future<Ticket> closeTicket(String ticketId) async {
+    _check();
+    closed.add(ticketId);
+    return _replace(_find(ticketId), status: TicketStatus.closed);
+  }
+
+  @override
+  Future<BotMessage> reply(String ticketId, String body) async {
+    _check();
+    final t = _find(ticketId);
+    if (t.needsTakingBy(me.id)) {
+      throw const ServerFailure(
+        'whatsapp.ticket_assigned_to_another_agent',
+        statusCode: 409,
+      );
+    }
+    replies.add((ticketId, body));
+    final message = BotMessage(
+      id: 'sent-${replies.length}',
+      ticketId: ticketId,
+      sender: MessageSender.agent,
+      agent: me,
+      type: 'text',
+      body: body,
+      delivery: DeliveryStatus.sent,
+      createdAt: testNow,
+    );
+    (_sent[ticketId] ??= []).add(message);
+    _replace(t, status: TicketStatus.assigned, agent: me);
+    return message;
+  }
+}
+
 /// Pumps the whole app on a phone-sized screen with fakes behind the domain.
 Future<SharedPreferences> pumpApp(
   WidgetTester tester, {
@@ -2995,6 +3192,7 @@ Future<SharedPreferences> pumpApp(
   NotificationsRepository? notifications,
   PushRepository? push,
   ChatRepository? chat,
+  WhatsAppRepository? whatsApp,
   Map<String, Object> preferences = const {},
   Duration? liveRefresh,
 }) async {
@@ -3080,6 +3278,9 @@ Future<SharedPreferences> pumpApp(
         pushRepositoryProvider.overrideWithValue(push ?? FakePushRepository()),
         // Chat off unless a test says otherwise: no Stream connection.
         chatRepositoryProvider.overrideWithValue(chat ?? FakeChatRepository()),
+        whatsAppRepositoryProvider.overrideWithValue(
+          whatsApp ?? FakeWhatsAppRepository(),
+        ),
         clockProvider.overrideWithValue(() => testNow),
       ],
       retry: (_, _) => null,
